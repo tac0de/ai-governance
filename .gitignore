@@ -21,3 +21,5 @@ hub/.vitest/
 out/
 
 .archive/
+
+.legacy/
