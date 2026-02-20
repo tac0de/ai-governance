@@ -25,6 +25,7 @@ Applies to `local_exec` command authorization in `control-plane/go` runtime.
 ## Runtime Binding
 - Enforced in `run` before execution.
 - Re-validated in `audit` as deterministic policy check.
+- Runtime/governance mapping source: `constitution/contracts/command-binding-table.v1.md`.
 
 ## Change Management
 Any matrix change requires:

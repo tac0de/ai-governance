@@ -81,6 +81,7 @@ Example:
 ## Compatibility Rule
 - This contract is additive over v1 policies.
 - Existing workflow gates (`ROLES_CHARTER_VERSION`, `OPM_VERSION`, `secret_tier`) remain authoritative.
+- Runtime command binding table: `constitution/contracts/command-binding-table.v1.md`.
 
 ## Change Management
 Any command-system change requires:
