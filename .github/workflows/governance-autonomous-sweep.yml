@@ -1,0 +1,102 @@
+name: "governance: autonomous sweep"
+
+on:
+  schedule:
+    - cron: "17 */12 * * *"
+  workflow_dispatch:
+
+permissions: read-all
+
+concurrency:
+  group: governance-autonomous-sweep
+  cancel-in-progress: true
+
+jobs:
+  sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26.x"
+
+      - name: Build control-plane runtime
+        working-directory: control-plane/go
+        run: |
+          set -euo pipefail
+          go build -o /tmp/cp-bin ./cmd/hub
+
+      - name: Execute deterministic sweep
+        run: |
+          set -euo pipefail
+          mkdir -p out/autonomous-sweep
+          /tmp/cp-bin validate --plan constitution/cases/pass/case001.plan.json
+          /tmp/cp-bin run --plan constitution/cases/pass/case001.plan.json --outdir out/autonomous-sweep
+          /tmp/cp-bin audit \
+            --plan constitution/cases/pass/case001.plan.json \
+            --result out/autonomous-sweep/result.json \
+            --evidence out/autonomous-sweep/evidence.json \
+            --out out/autonomous-sweep/audit.json
+
+      - name: Write sweep status artifact
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+import json, hashlib, pathlib, datetime
+
+base = pathlib.Path('out/autonomous-sweep')
+audit = json.loads((base / 'audit.json').read_text())
+
+summary = {
+  "checked_at": datetime.datetime.utcnow().replace(microsecond=0).isoformat() + "Z",
+  "status": audit.get("status"),
+  "reason_code": audit.get("reason_code"),
+  "request_id": audit.get("request_id"),
+  "checksums": audit.get("checksums", {}),
+  "mode": "silent-signal-only"
+}
+
+payload = json.dumps(summary, sort_keys=True).encode('utf-8')
+summary["summary_hash"] = hashlib.sha256(payload).hexdigest()
+
+(base / 'status.json').write_text(json.dumps(summary, indent=2) + "\n")
+PY
+
+      - name: Append step summary
+        run: |
+          set -euo pipefail
+          status=$(python3 - <<'PY'
+import json
+print(json.load(open('out/autonomous-sweep/status.json'))['status'])
+PY
+)
+          reason=$(python3 - <<'PY'
+import json
+v = json.load(open('out/autonomous-sweep/status.json')).get('reason_code')
+print(v if v is not None else 'null')
+PY
+)
+          checked=$(python3 - <<'PY'
+import json
+print(json.load(open('out/autonomous-sweep/status.json'))['checked_at'])
+PY
+)
+          echo "## Autonomous Sweep" >> "$GITHUB_STEP_SUMMARY"
+          echo "- checked_at: $checked" >> "$GITHUB_STEP_SUMMARY"
+          echo "- status: $status" >> "$GITHUB_STEP_SUMMARY"
+          echo "- reason_code: $reason" >> "$GITHUB_STEP_SUMMARY"
+          echo "- issue/comment: none (silent mode)" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload sweep artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: autonomous-sweep-${{ github.run_id }}
+          path: |
+            out/autonomous-sweep/status.json
+            out/autonomous-sweep/audit.json
+            out/autonomous-sweep/result.json
+            out/autonomous-sweep/evidence.json
+            out/autonomous-sweep/logs/
