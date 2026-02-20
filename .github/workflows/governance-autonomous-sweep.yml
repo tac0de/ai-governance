@@ -61,6 +61,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: "1.26.x"
+          cache-dependency-path: control-plane/go/go.sum
 
       - name: Build control-plane runtime
         working-directory: control-plane/go
