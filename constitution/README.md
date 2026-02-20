@@ -1,6 +1,6 @@
-# AI Hunbup v0
+# AI Constitution v0
 
-AI Hunbup is the single source of normative truth for ai-governance v0.
+AI Constitution is the single source of normative truth for ai-governance v0.
 
 ## Scope
 - Philosophy and role separation (Planner, Executor, Auditor)

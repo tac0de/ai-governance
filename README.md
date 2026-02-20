@@ -23,7 +23,7 @@ Constitution repo for the kernel platform: this repo defines governance, contrac
 - No runtime MCP server implementation.
 - No build artifacts, binaries, or infra execution payloads.
 
-## Main-Hub v0 Exception
+## ai-governance v0 Exception
 - `constitution/` is the normative source for v0 (schemas, reason codes, deterministic cases).
 - `hub/` is a limited deterministic runtime module for v0 (`validate`, `run`, `audit`) on Node 20+.
 - This exception is scoped to local/offline verification only and does not allow service deployment.
@@ -49,7 +49,7 @@ Constitution repo for the kernel platform: this repo defines governance, contrac
 - Offline high-privilege checklist: `docs/63_OFFLINE_WORK_CHECKLIST.md`
 - Docs-only keep list: `docs/54_MAIN_HUB_KEEP_LIST.md`
 - Local + remote parser: `docs/65_LOCAL_REMOTE_REPO_PARSER.md`
-- Main-hub concept: `docs/66_MAIN_HUB_CONCEPT.md`
+- ai-governance concept: `docs/66_MAIN_HUB_CONCEPT.md`
 - OpenAI admin audit workflow: `docs/67_OPENAI_ADMIN_AUDIT_WORKFLOW.md`
 - OpenAI weekly usage workflow: `.github/workflows/openai-usage-weekly-report.yml`
 - Reusable auto-merge workflow: `.github/workflows/reusable-auto-merge.yml`

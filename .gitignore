@@ -14,10 +14,7 @@ knowledge/history/inbox/
 knowledge/history/active/
 knowledge/history/dump_sensitive/
 knowledge/history/history_manifest.jsonl
-**/node_modules/
 _artifacts/
-.DS_Store
-.env
 .env.*
 hub/dist/
 hub/.vitest/
