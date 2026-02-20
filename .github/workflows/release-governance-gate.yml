@@ -1,0 +1,64 @@
+name: "governance: release gate"
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      approver_role:
+        description: "Release approver role"
+        required: false
+        type: string
+
+permissions: read-all
+
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+    env:
+      APPROVER_ROLE: ${{ github.event.inputs.approver_role != '' && github.event.inputs.approver_role || vars.RELEASE_APPROVER_ROLE }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26.x"
+
+      - name: Build control-plane runtime
+        working-directory: control-plane/go
+        run: |
+          set -euo pipefail
+          go build -o /tmp/cp-bin ./cmd/hub
+
+      - name: Run deterministic gate path
+        run: |
+          set -euo pipefail
+          mkdir -p out/release-gate
+          /tmp/cp-bin validate --plan constitution/cases/pass/case001.plan.json
+          /tmp/cp-bin run --plan constitution/cases/pass/case001.plan.json --outdir out/release-gate
+          /tmp/cp-bin audit \
+            --plan constitution/cases/pass/case001.plan.json \
+            --result out/release-gate/result.json \
+            --evidence out/release-gate/evidence.json \
+            --out out/release-gate/audit.json
+
+      - name: Verify audit verdict
+        run: |
+          set -euo pipefail
+          status=$(jq -r '.status' out/release-gate/audit.json)
+          if [ "$status" != "PASS" ]; then
+            echo "Release blocked: audit status=$status"
+            exit 1
+          fi
+
+      - name: Verify release authority role
+        run: |
+          set -euo pipefail
+          role="${APPROVER_ROLE:-}"
+          if [ "$role" != "ControlPlaneOperator" ]; then
+            echo "Release blocked: approver role must be ControlPlaneOperator (got: ${role:-<empty>})"
+            exit 1
+          fi
