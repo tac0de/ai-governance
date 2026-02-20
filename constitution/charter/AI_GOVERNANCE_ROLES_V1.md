@@ -51,6 +51,16 @@ This model is normative and is used for policy enforcement and audit interpretat
 - Proposes domain plans and desired outcomes.
 - Cannot bypass policy or audit decisions.
 
+### 6) Game Level Design Department (AI Enterprise: Domain Department)
+- Owns level-system design and state-reactive gameplay parameters.
+- Converts domain intent into deterministic level definitions.
+- Must operate within policy-approved ranges and release gates.
+
+### 7) Game UI Department (AI Enterprise: Domain Department)
+- Owns player-facing interface language and mood-reactive presentation.
+- Converts level-state and policy constraints into readable UX.
+- Must preserve governance-critical visibility and accessibility baselines.
+
 ## Separation of Duties
 - Planning, execution, and audit must remain separate.
 - No single role can self-authorize and self-audit the same action.

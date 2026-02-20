@@ -81,6 +81,8 @@ Policy source: `constitution/policies/OPERATING_PROFILE_MATRIX_V1.md`
 - thedivineparadox onboarding: `constitution/charter/THE_DIVINE_PARADOX_ONBOARDING_V1.md`
 - thedivineparadox bootstrap ADR: `constitution/decision-log/ADR-0005-thedivineparadox-bootstrap-v1.md`
 - thedivineparadox MVP spec: `constitution/contracts/THE_DIVINE_PARADOX_MVP_SPEC_V0_1.md`
+- game level design department: `constitution/charter/GAME_LEVEL_DESIGN_DEPARTMENT_V1.md`
+- game UI department: `constitution/charter/GAME_UI_DEPARTMENT_V1.md`
 
 ### Action Required
 
