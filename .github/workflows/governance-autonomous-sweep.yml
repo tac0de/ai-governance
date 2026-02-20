@@ -80,7 +80,7 @@ jobs:
             echo "Sweep blocked: ROLES_CHARTER_VERSION must be v1"
             exit 1
           fi
-          if ! rg -q "ROLES_CHARTER_VERSION=v1" constitution/charter/AI_GOVERNANCE_ROLES_V1.md; then
+          if ! grep -q "ROLES_CHARTER_VERSION=v1" constitution/charter/AI_GOVERNANCE_ROLES_V1.md; then
             echo "Sweep blocked: charter tag mismatch"
             exit 1
           fi
@@ -93,7 +93,7 @@ jobs:
             echo "Sweep blocked: OPM_VERSION must be v1"
             exit 1
           fi
-          if ! rg -q "OPM_VERSION=v1" constitution/policies/OPERATING_PROFILE_MATRIX_V1.md; then
+          if ! grep -q "OPM_VERSION=v1" constitution/policies/OPERATING_PROFILE_MATRIX_V1.md; then
             echo "Sweep blocked: operating profile tag mismatch"
             exit 1
           fi
