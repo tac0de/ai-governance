@@ -15,7 +15,7 @@ AI Constitution is the single source of normative truth for ai-governance v0.
 
 ## Determinism contract
 Given identical inputs (`plan.json`, `result.json`, `evidence.json`) and identical environment policy,
-Auditor must produce the same `status` and `reason_code`.
+Auditor must produce the same `status`, `reason_code`, and `governance_command`.
 
 ## Reason code policy
 - Reason codes are fixed in `reasons/reason_codes.json`.

@@ -22,4 +22,5 @@ Store normative role definition in:
 ## Consequences
 - Positive: clearer accountability and cleaner escalation paths.
 - Positive: deterministic policy/audit ownership.
+- Principle: AI is not a rights-bearing subject; human sovereignty is final.
 - Constraint: role boundary changes must go through ADR + policy + charter updates.

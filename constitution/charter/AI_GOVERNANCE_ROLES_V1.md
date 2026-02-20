@@ -12,6 +12,11 @@ This model is normative and is used for policy enforcement and audit interpretat
 - External execution and delivery operate under AI Enterprise principles.
 - This boundary is mandatory and cannot be bypassed by runtime workflows.
 
+## Human Sovereignty and AI Status
+- AI is not a subject of rights; it is an automated control mechanism defined by humans.
+- Risk control is enforced by pre-defined rules, not autonomous AI discretion.
+- Final sovereignty always belongs to humans; AI only executes human intent consistently.
+
 ## Charter Version Tag
 - `ROLES_CHARTER_VERSION=v1`
 
