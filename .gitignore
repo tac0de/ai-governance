@@ -19,3 +19,5 @@ _artifacts/
 hub/dist/
 hub/.vitest/
 out/
+
+.archive/

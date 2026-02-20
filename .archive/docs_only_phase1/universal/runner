@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-# Thin wrapper to call the original codex runner
-DIR=$(cd "$(dirname "$0")/.." && pwd)
-node "$DIR/codex/runner/codex.mjs" "$@"

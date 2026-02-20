@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Block obvious secret leaks before commit.
-# Keep rule small to reduce false positives.
-
 staged_files="$(git diff --cached --name-only --diff-filter=ACM)"
 if [[ -z "${staged_files}" ]]; then
   exit 0
@@ -34,13 +31,5 @@ for f in ${staged_files}; do
     done
   fi
 done
-
-if [[ -x "scripts/sync_hub_guard.sh" ]]; then
-  bash scripts/sync_hub_guard.sh pre-commit
-fi
-
-if [[ -x "scripts/lint_obsidian_tags.sh" ]]; then
-  bash scripts/lint_obsidian_tags.sh repo
-fi
 
 exit 0

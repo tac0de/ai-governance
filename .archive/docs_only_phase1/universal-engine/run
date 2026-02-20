@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-# Wrapper that points to `codex-engine` directory
-DIR=$(cd "$(dirname "$0")/.." && pwd)
-echo "This wrapper delegates to codex-engine README and tooling."
-echo "Original location: $DIR/codex-engine"
-exit 0
