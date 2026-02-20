@@ -1,0 +1,21 @@
+{
+  "version": "0.1",
+  "case_id": "thedivineparadox-case001-neutral",
+  "window_size": 1000,
+  "inputs": {
+    "cooperation_ratio": 0.60,
+    "greed_ratio": 0.25,
+    "abuse_ratio": 0.15
+  },
+  "formula": "S=(1.2*C)-(1.0*G)-(1.5*A)",
+  "computed": {
+    "score": 0.245,
+    "rounded_score_3dp": 0.245
+  },
+  "expected": {
+    "mood": "NEUTRAL",
+    "reward_probability": 0.1,
+    "track": "local-simulation"
+  },
+  "notes": "Near-threshold neutral case for stability check"
+}

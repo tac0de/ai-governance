@@ -26,3 +26,4 @@ Auditor must produce the same `status`, `reason_code`, and `governance_command`.
 - `cases/pass`: expected PASS vectors
 - `cases/reject`: expected REJECT vectors
 - Expected outputs are defined by `*.expected.audit.json`.
+- `cases/thedivineparadox`: local simulation vectors for global mood transitions (MVP v0.1).
