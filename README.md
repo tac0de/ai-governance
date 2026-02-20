@@ -73,3 +73,9 @@ Resolution order:
 
 If required secrets for selected tier are missing, workflow fails immediately.
 Policy source: `constitution/policies/SECRETS_TIERING_POLICY_V1.md`
+
+### Action Required
+
+- `audit.status != PASS`
+- `reason_code != null`
+- `secret tier gate failed`
