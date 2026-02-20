@@ -84,45 +84,48 @@ jobs:
         run: |
           set -euo pipefail
           python3 - <<'PY'
-import json, hashlib, pathlib, datetime
+          import datetime
+          import hashlib
+          import json
+          import pathlib
 
-base = pathlib.Path('out/autonomous-sweep')
-audit = json.loads((base / 'audit.json').read_text())
+          base = pathlib.Path('out/autonomous-sweep')
+          audit = json.loads((base / 'audit.json').read_text())
 
-summary = {
-  "checked_at": datetime.datetime.utcnow().replace(microsecond=0).isoformat() + "Z",
-  "status": audit.get("status"),
-  "reason_code": audit.get("reason_code"),
-  "request_id": audit.get("request_id"),
-  "checksums": audit.get("checksums", {}),
-  "mode": "silent-signal-only"
-}
+          summary = {
+            "checked_at": datetime.datetime.utcnow().replace(microsecond=0).isoformat() + "Z",
+            "status": audit.get("status"),
+            "reason_code": audit.get("reason_code"),
+            "request_id": audit.get("request_id"),
+            "checksums": audit.get("checksums", {}),
+            "mode": "silent-signal-only"
+          }
 
-payload = json.dumps(summary, sort_keys=True).encode('utf-8')
-summary["summary_hash"] = hashlib.sha256(payload).hexdigest()
+          payload = json.dumps(summary, sort_keys=True).encode('utf-8')
+          summary["summary_hash"] = hashlib.sha256(payload).hexdigest()
 
-(base / 'status.json').write_text(json.dumps(summary, indent=2) + "\n")
-PY
+          (base / 'status.json').write_text(json.dumps(summary, indent=2) + "\n")
+          PY
 
       - name: Append step summary
         run: |
           set -euo pipefail
           status=$(python3 - <<'PY'
-import json
-print(json.load(open('out/autonomous-sweep/status.json'))['status'])
-PY
-)
+          import json
+          print(json.load(open('out/autonomous-sweep/status.json'))['status'])
+          PY
+          )
           reason=$(python3 - <<'PY'
-import json
-v = json.load(open('out/autonomous-sweep/status.json')).get('reason_code')
-print(v if v is not None else 'null')
-PY
-)
+          import json
+          v = json.load(open('out/autonomous-sweep/status.json')).get('reason_code')
+          print(v if v is not None else 'null')
+          PY
+          )
           checked=$(python3 - <<'PY'
-import json
-print(json.load(open('out/autonomous-sweep/status.json'))['checked_at'])
-PY
-)
+          import json
+          print(json.load(open('out/autonomous-sweep/status.json'))['checked_at'])
+          PY
+          )
           echo "## Autonomous Sweep" >> "$GITHUB_STEP_SUMMARY"
           echo "- checked_at: $checked" >> "$GITHUB_STEP_SUMMARY"
           echo "- secret_tier: ${SECRET_TIER}" >> "$GITHUB_STEP_SUMMARY"
