@@ -15,6 +15,11 @@ This model is normative and is used for policy enforcement and audit interpretat
 ## Charter Version Tag
 - `ROLES_CHARTER_VERSION=v1`
 
+## Technology Neutrality
+- The role model is protocol-agnostic and implementation-agnostic.
+- MCP is an optional integration mechanism, not a governance role.
+- No policy or audit decision may depend on a specific protocol name.
+
 ## Role Set
 
 ### 1) Strategy Board (AI Government: Legislature)

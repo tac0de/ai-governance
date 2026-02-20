@@ -38,6 +38,7 @@ structural integrity prevails.
   3) 집행 엔지니어가 다음으로 할것 추천:
 - In section 3, prioritize macro-level execution steps (architecture, delivery track, governance milestones).
 - Avoid local-only suggestions unless they are direct blockers to the macro step.
+
 ## Persistent Time Context
 - Default operator-facing reference timezone is KST (Asia/Seoul, UTC+09:00).
 - Fixed conversion record:
