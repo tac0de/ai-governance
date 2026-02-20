@@ -9,6 +9,10 @@ Applies to autonomous scheduled operations in ai-governance.
 ## Core Rule
 Default mode is silent and signal-only.
 
+## Governance Baseline Gate
+- Autonomous sweep must verify `ROLES_CHARTER_VERSION=v1` before execution.
+- If charter tag verification fails, run must stop as policy violation.
+
 ## Logging Policy
 - Do not open or update GitHub issues for heartbeat/status records.
 - Do not create periodic status comments.
