@@ -1,9 +1,0 @@
-{
-  "github_plan": "free_private",
-  "warning_single_file_mib": 50,
-  "max_single_file_mib": 100,
-  "target_repo_size_gib": 1,
-  "hard_repo_size_gib": 10,
-  "max_push_size_gib": 2,
-  "enforce_block_on_hard_limit": true
-}
