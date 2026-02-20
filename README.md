@@ -1,44 +1,55 @@
 # ai-governance
 
-`ai-governance` is a governance-first repository with a deterministic v0 runtime module.
+ai-governance is a deterministic, schema-enforced execution and audit framework.
 
-## Repository Layout
-- `constitution/`: single source of normative rules
-  - JSON schemas (`plan`, `result`, `evidence`, `audit`)
-  - fixed `reason_code` catalog
-  - deterministic test vectors
-- `hub/`: TypeScript (Node 20+) runtime
-  - `validate`: validate `plan.json`
-  - `run`: execute single-action plan and emit `result.json` + `evidence.json`
-  - `audit`: deterministic PASS/REJECT with fixed `reason_code`
+## Runtime Baseline
 
-## v0 Principles
-- Deterministic audit result for equivalent inputs.
-- Schema-first validation.
-- Single-action execution in v0.
-- `local_exec` supported; `container_run` allowed in schema but rejected by audit policy in v0.
+The current runtime architecture is:
 
-## Quick Start
-```bash
-cd hub
-npm install
-npm run build
+- Primary runtime: hub-go
+- Integrity module: rust-audit-core
+- Legacy runtime: .legacy/hub (TypeScript, deprecated and not used)
 
-# validate
-node dist/index.js validate --plan ../constitution/cases/pass/case001.plan.json
+Only hub-go and rust-audit-core are part of the supported execution path.
 
-# run
-node dist/index.js run --plan ../constitution/cases/pass/case001.plan.json --outdir ../out/case001
+The directory .legacy/hub is retained for historical reference and must not be used in development, testing, or quickstart flows.
 
-# audit
-node dist/index.js audit \
-  --plan ../constitution/cases/pass/case001.plan.json \
-  --result ../out/case001/result.json \
-  --evidence ../out/case001/evidence.json \
-  --out ../out/case001/audit.json
-```
+## Architecture Overview
 
-## Security Baseline
-- Do not commit `.env` or secrets.
-- Use `.env.example` as template only.
-- Run with minimum privilege and deterministic evidence output.
+- hub-go
+ - Orchestration
+ - Process control
+ - I/O handling
+ - Schema validation
+
+- rust-audit-core
+ - Canonicalization
+ - SHA-256 hashing
+ - Checksum verification
+ - Deterministic integrity enforcement
+
+hub-go invokes rust-audit-core for integrity-sensitive operations.
+
+## Quickstart
+
+Prerequisites:
+
+- Go (stable)
+- Rust (stable toolchain)
+
+Build and run primary runtime:
+
+- Build Go runtime from hub-go
+- Build Rust integrity module from rust-audit-core
+
+Do not use .legacy/hub for quickstart or execution.
+
+## Determinism
+
+All audit flows must:
+
+- Pass JSON Schema validation
+- Produce deterministic canonical serialization
+- Match SHA-256 checksums for plan/result/evidence
+
+Integrity verification is enforced by rust-audit-core.

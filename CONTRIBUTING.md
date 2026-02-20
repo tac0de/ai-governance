@@ -1,45 +1,41 @@
 # Contributing to ai-governance
 
-## Scope
-This repository contains:
-- `constitution/`: normative source (schemas, reason codes, test vectors)
-- `hub/`: deterministic runtime module (`validate`, `run`, `audit`)
+## Runtime Policy
 
-## Pull Request Policy
-- Create a feature branch for changes.
-- Open a pull request to `main`.
-- Keep changes focused and small.
-- Do not mix unrelated changes in one PR.
+The supported runtime baseline is:
 
-## Commit Message Format
-Use:
+- hub-go (primary runtime)
+- rust-audit-core (integrity module)
 
-```text
-<type>(<scope>): <summary>
-```
+The TypeScript runtime located at .legacy/hub is deprecated and must not be used for new development, testing, or documentation examples.
 
-Examples:
-- `docs(readme): align v0 usage with current layout`
-- `chore(hooks): tighten secret patterns`
-- `fix(hub): enforce deterministic violation ordering`
+All contributions must target the current runtime baseline.
 
-## Local Checks
-Before creating a PR:
+## Development Rules
 
-```bash
-# from repository root
-cd hub
-npm install
-npm run build
-npm test
-```
+- Do not introduce new runtime layers.
+- Do not modify integrity boundaries without explicit design approval.
+- Keep schema enforcement deterministic.
+- Avoid expanding scope beyond the stated task.
 
-## Security Requirements
-- Never commit credentials or tokens.
-- Never stage `.env`.
-- Keep secrets only in local environment.
-- Pre-commit hook (`.githooks/pre-commit`) must pass.
+## Integrity Boundary
 
-## Documentation Rule
-- Keep docs in English and consistent with the current repository layout.
-- Update docs in the same PR when behavior or paths change.
+All hash generation and checksum verification logic must reside in rust-audit-core.
+
+hub-go is responsible for orchestration and invoking the integrity module.
+
+## Pull Request Requirements
+
+- Changes must not reference .legacy/hub in examples or quickstart instructions.
+- Documentation must reflect hub-go as the primary runtime.
+- Integrity-sensitive changes require justification and deterministic test evidence.
+
+## Deterministic Output
+
+All audit-related outputs must:
+
+- Conform to the defined JSON schema
+- Avoid nondeterministic serialization
+- Produce stable SHA-256 checksums
+
+Non-deterministic behavior is considered a violation.
