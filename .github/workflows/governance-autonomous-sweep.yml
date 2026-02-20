@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       secret_tier:
-        description: "none | admin-only | repo-write"
+        description: "Operating profile secret tier (OPM-V1): none | admin-only | repo-write"
         required: false
         default: admin-only
         type: string
