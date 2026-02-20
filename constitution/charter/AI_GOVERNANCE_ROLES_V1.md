@@ -7,6 +7,14 @@ Define a stable role model for the ai-governance system using two operational me
 
 This model is normative and is used for policy enforcement and audit interpretation.
 
+## Constitutional Boundary
+- Internal governance operates under AI Government principles.
+- External execution and delivery operate under AI Enterprise principles.
+- This boundary is mandatory and cannot be bypassed by runtime workflows.
+
+## Charter Version Tag
+- `ROLES_CHARTER_VERSION=v1`
+
 ## Role Set
 
 ### 1) Strategy Board (AI Government: Legislature)

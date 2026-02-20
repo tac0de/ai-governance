@@ -28,6 +28,7 @@ jobs:
       SECRET_TIER_REPO_VAR: ${{ vars.SECRET_TIER }}
       OPENAI_ADMIN_API_KEY: ${{ secrets.OPENAI_ADMIN_API_KEY }}
       REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
+      ROLES_CHARTER_VERSION: v1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -100,5 +101,17 @@ jobs:
           role="${APPROVER_ROLE:-}"
           if [ "$role" != "ControlPlaneOperator" ]; then
             echo "Release blocked: approver role must be ControlPlaneOperator (got: ${role:-<empty>})"
+            exit 1
+          fi
+
+      - name: Verify roles charter version tag
+        run: |
+          set -euo pipefail
+          if [ "${ROLES_CHARTER_VERSION:-}" != "v1" ]; then
+            echo "Release blocked: ROLES_CHARTER_VERSION must be v1"
+            exit 1
+          fi
+          if ! rg -q "ROLES_CHARTER_VERSION=v1" constitution/charter/AI_GOVERNANCE_ROLES_V1.md; then
+            echo "Release blocked: charter tag mismatch"
             exit 1
           fi

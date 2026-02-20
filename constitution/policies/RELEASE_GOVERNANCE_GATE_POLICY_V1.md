@@ -9,6 +9,7 @@ Applies to any release tag creation and release workflow execution.
 ## Mandatory Gate Conditions
 1. Release authority role must be `ControlPlaneOperator`.
 2. Deterministic audit verdict must be `PASS`.
+3. Charter version tag must be `v1` (`ROLES_CHARTER_VERSION`).
 
 ## Enforcement Rule
 If either condition is not met, release tagging/publishing is blocked.
@@ -20,6 +21,7 @@ The workflow gate must execute in this order:
 3. run deterministic audit path
 4. verify `audit.status == PASS`
 5. verify release authority role
+6. verify roles charter version tag
 
 ## Role Source
 - Preferred: workflow dispatch input `approver_role`
