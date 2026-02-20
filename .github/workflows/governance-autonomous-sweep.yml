@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "17 */12 * * *"
   workflow_dispatch:
+    inputs:
+      secret_tier:
+        description: "none | admin-only | repo-write"
+        required: false
+        type: string
 
 permissions: read-all
 
@@ -14,9 +19,43 @@ concurrency:
 jobs:
   sweep:
     runs-on: ubuntu-latest
+    env:
+      SECRET_TIER_INPUT: ${{ github.event.inputs.secret_tier }}
+      SECRET_TIER_REPO_VAR: ${{ vars.SECRET_TIER }}
+      OPENAI_ADMIN_API_KEY: ${{ secrets.OPENAI_ADMIN_API_KEY }}
+      REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Enforce secrets tier gate
+        run: |
+          set -euo pipefail
+          tier="${SECRET_TIER_INPUT:-${SECRET_TIER_REPO_VAR:-none}}"
+          if [ -z "$tier" ]; then
+            tier="none"
+          fi
+          case "$tier" in
+            none)
+              ;;
+            admin-only)
+              if [ -z "${OPENAI_ADMIN_API_KEY:-}" ]; then
+                echo "Missing required secret for tier=admin-only: OPENAI_ADMIN_API_KEY"
+                exit 1
+              fi
+              ;;
+            repo-write)
+              if [ -z "${OPENAI_ADMIN_API_KEY:-}" ] || [ -z "${REPO_ACCESS_TOKEN:-}" ]; then
+                echo "Missing required secrets for tier=repo-write: OPENAI_ADMIN_API_KEY, REPO_ACCESS_TOKEN"
+                exit 1
+              fi
+              ;;
+            *)
+              echo "Invalid SECRET_TIER: $tier"
+              exit 1
+              ;;
+          esac
+          echo "SECRET_TIER=$tier" >> "$GITHUB_ENV"
 
       - name: Setup Go
         uses: actions/setup-go@v5
@@ -86,6 +125,7 @@ PY
 )
           echo "## Autonomous Sweep" >> "$GITHUB_STEP_SUMMARY"
           echo "- checked_at: $checked" >> "$GITHUB_STEP_SUMMARY"
+          echo "- secret_tier: ${SECRET_TIER}" >> "$GITHUB_STEP_SUMMARY"
           echo "- status: $status" >> "$GITHUB_STEP_SUMMARY"
           echo "- reason_code: $reason" >> "$GITHUB_STEP_SUMMARY"
           echo "- issue/comment: none (silent mode)" >> "$GITHUB_STEP_SUMMARY"

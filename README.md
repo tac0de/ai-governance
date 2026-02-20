@@ -53,3 +53,23 @@ All audit flows must:
 - Match SHA-256 checksums for plan/result/evidence
 
 Integrity verification is enforced by audit-core/rust.
+
+## Operations (Single View)
+
+This repository uses a secrets tier model for conservative automation.
+
+- `none`: no secrets required
+- `admin-only`: requires `OPENAI_ADMIN_API_KEY`
+- `repo-write`: requires `OPENAI_ADMIN_API_KEY` and `REPO_ACCESS_TOKEN`
+
+Workflows:
+- `governance-autonomous-sweep`: supports `workflow_dispatch` input `secret_tier`
+- `release-governance-gate`: supports `workflow_dispatch` input `secret_tier`
+
+Resolution order:
+1. `workflow_dispatch` input `secret_tier`
+2. repository variable `SECRET_TIER`
+3. fallback `none`
+
+If required secrets for selected tier are missing, workflow fails immediately.
+Policy source: `constitution/policies/SECRETS_TIERING_POLICY_V1.md`
