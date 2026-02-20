@@ -111,6 +111,7 @@ jobs:
             --out out/autonomous-sweep/audit.json
 
       - name: Write sweep status artifact
+        if: always()
         run: |
           set -euo pipefail
           python3 - <<'PY'
@@ -121,25 +122,49 @@ jobs:
           import os
 
           base = pathlib.Path('out/autonomous-sweep')
-          audit = json.loads((base / 'audit.json').read_text())
+          base.mkdir(parents=True, exist_ok=True)
+
+          audit_path = base / 'audit.json'
+          if audit_path.exists():
+            audit = json.loads(audit_path.read_text())
+            status = audit.get('status')
+            reason_code = audit.get('reason_code')
+            request_id = audit.get('request_id')
+            checksums = audit.get('checksums', {})
+          else:
+            status = 'ERROR'
+            reason_code = None
+            request_id = None
+            checksums = {}
 
           summary = {
-            "checked_at": datetime.datetime.utcnow().replace(microsecond=0).isoformat() + "Z",
-            "status": audit.get("status"),
-            "reason_code": audit.get("reason_code"),
-            "request_id": audit.get("request_id"),
-            "checksums": audit.get("checksums", {}),
-            "mode": "silent-signal-only",
-            "opm_version": os.environ.get("OPM_VERSION", "unknown")
+            'checked_at': datetime.datetime.utcnow().replace(microsecond=0).isoformat() + 'Z',
+            'status': status,
+            'reason_code': reason_code,
+            'request_id': request_id,
+            'checksums': checksums,
+            'mode': 'silent-signal-only',
+            'opm_version': os.environ.get('OPM_VERSION', 'unknown'),
+            'incident_hint': {
+              'template': 'constitution/decision-log/INC-0001-template.md',
+              'required_fields': [
+                'workflow',
+                'run_url',
+                'reason_code',
+                'root_cause',
+                'fix_commit'
+              ]
+            }
           }
 
           payload = json.dumps(summary, sort_keys=True).encode('utf-8')
-          summary["summary_hash"] = hashlib.sha256(payload).hexdigest()
+          summary['summary_hash'] = hashlib.sha256(payload).hexdigest()
 
-          (base / 'status.json').write_text(json.dumps(summary, indent=2) + "\n")
+          (base / 'status.json').write_text(json.dumps(summary, indent=2) + '\n')
           PY
 
       - name: Append step summary
+        if: always()
         run: |
           set -euo pipefail
           status=$(python3 - <<'PY'
@@ -165,13 +190,14 @@ jobs:
           )
           echo "## Autonomous Sweep" >> "$GITHUB_STEP_SUMMARY"
           echo "- checked_at: $checked" >> "$GITHUB_STEP_SUMMARY"
-          echo "- secret_tier: ${SECRET_TIER}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- secret_tier: ${SECRET_TIER:-unknown}" >> "$GITHUB_STEP_SUMMARY"
           echo "- opm_version: $opm" >> "$GITHUB_STEP_SUMMARY"
           echo "- status: $status" >> "$GITHUB_STEP_SUMMARY"
           echo "- reason_code: $reason" >> "$GITHUB_STEP_SUMMARY"
           echo "- issue/comment: none (silent mode)" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload sweep artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: autonomous-sweep-${{ github.run_id }}
