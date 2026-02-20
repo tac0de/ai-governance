@@ -26,6 +26,7 @@ jobs:
       OPENAI_ADMIN_API_KEY: ${{ secrets.OPENAI_ADMIN_API_KEY }}
       REPO_ACCESS_TOKEN: ${{ secrets.REPO_ACCESS_TOKEN }}
       ROLES_CHARTER_VERSION: v1
+      OPM_VERSION: v1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -84,6 +85,19 @@ jobs:
             exit 1
           fi
 
+
+      - name: Verify operating profile version tag
+        run: |
+          set -euo pipefail
+          if [ "${OPM_VERSION:-}" != "v1" ]; then
+            echo "Sweep blocked: OPM_VERSION must be v1"
+            exit 1
+          fi
+          if ! rg -q "OPM_VERSION=v1" constitution/policies/OPERATING_PROFILE_MATRIX_V1.md; then
+            echo "Sweep blocked: operating profile tag mismatch"
+            exit 1
+          fi
+
       - name: Execute deterministic sweep
         run: |
           set -euo pipefail
@@ -104,6 +118,7 @@ jobs:
           import hashlib
           import json
           import pathlib
+          import os
 
           base = pathlib.Path('out/autonomous-sweep')
           audit = json.loads((base / 'audit.json').read_text())
@@ -114,7 +129,8 @@ jobs:
             "reason_code": audit.get("reason_code"),
             "request_id": audit.get("request_id"),
             "checksums": audit.get("checksums", {}),
-            "mode": "silent-signal-only"
+            "mode": "silent-signal-only",
+            "opm_version": os.environ.get("OPM_VERSION", "unknown")
           }
 
           payload = json.dumps(summary, sort_keys=True).encode('utf-8')
@@ -142,9 +158,15 @@ jobs:
           print(json.load(open('out/autonomous-sweep/status.json'))['checked_at'])
           PY
           )
+          opm=$(python3 - <<'PY'
+          import json
+          print(json.load(open('out/autonomous-sweep/status.json'))['opm_version'])
+          PY
+          )
           echo "## Autonomous Sweep" >> "$GITHUB_STEP_SUMMARY"
           echo "- checked_at: $checked" >> "$GITHUB_STEP_SUMMARY"
           echo "- secret_tier: ${SECRET_TIER}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- opm_version: $opm" >> "$GITHUB_STEP_SUMMARY"
           echo "- status: $status" >> "$GITHUB_STEP_SUMMARY"
           echo "- reason_code: $reason" >> "$GITHUB_STEP_SUMMARY"
           echo "- issue/comment: none (silent mode)" >> "$GITHUB_STEP_SUMMARY"

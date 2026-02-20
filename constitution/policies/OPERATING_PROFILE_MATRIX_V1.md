@@ -6,6 +6,10 @@ OPM-V1
 ## Scope
 Defines a single operational profile view across role authority, workflow inputs, secret tiers, and governance gates.
 
+## Profile Version Tag
+- `OPM_VERSION=v1`
+- This tag is the authoritative runtime gate value for operating profile compatibility.
+
 ## Profiles
 
 | Profile | Workflow | Role Input | Secret Tier Input | Default Role | Default Secret Tier | Mandatory Gates |
@@ -31,5 +35,6 @@ Defines a single operational profile view across role authority, workflow inputs
 Any profile change requires:
 1. update this matrix
 2. update referenced policy files
-3. update workflow bindings
-4. record ADR in `constitution/decision-log/`
+3. synchronize workflow gate value (`OPM_VERSION`)
+4. update workflow bindings
+5. record ADR in `constitution/decision-log/`

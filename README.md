@@ -72,6 +72,7 @@ Resolution order:
 3. fallback `admin-only`
 
 If required secrets for selected tier are missing, workflow fails immediately.
+Operating profile version baseline: `OPM_VERSION=v1`.
 Policy source: `constitution/policies/OPERATING_PROFILE_MATRIX_V1.md`
 - role-command policy: `constitution/policies/ROLE_COMMAND_AUTHZ_POLICY_V1.md`
 - release gate policy: `constitution/policies/RELEASE_GOVERNANCE_GATE_POLICY_V1.md`
@@ -81,6 +82,7 @@ Policy source: `constitution/policies/OPERATING_PROFILE_MATRIX_V1.md`
 - `audit.status != PASS`
 - `reason_code != null`
 - `secret tier gate failed`
+- `operating profile version gate failed`
 
 ## Delivery Track (Design -> Build -> Validate)
 
