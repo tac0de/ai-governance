@@ -22,3 +22,8 @@ _artifacts/
 hub/dist/
 hub/.vitest/
 out/
+hub/node_modules/
+hub/dist/
+_artifacts/
+*.log
+.DS_Store
