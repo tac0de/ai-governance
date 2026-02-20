@@ -134,3 +134,102 @@ jobs:
           set -euo pipefail
           echo "Operating profile version: ${OPM_VERSION}"
 
+
+      - name: Write release status artifact
+        if: always()
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import datetime
+          import hashlib
+          import json
+          import pathlib
+          import os
+
+          base = pathlib.Path('out/release-gate')
+          base.mkdir(parents=True, exist_ok=True)
+
+          audit_path = base / 'audit.json'
+          if audit_path.exists():
+            audit = json.loads(audit_path.read_text())
+            status = audit.get('status')
+            reason_code = audit.get('reason_code')
+            request_id = audit.get('request_id')
+            checksums = audit.get('checksums', {})
+          else:
+            status = 'ERROR'
+            reason_code = None
+            request_id = None
+            checksums = {}
+
+          summary = {
+            'checked_at': datetime.datetime.utcnow().replace(microsecond=0).isoformat() + 'Z',
+            'status': status,
+            'reason_code': reason_code,
+            'request_id': request_id,
+            'checksums': checksums,
+            'mode': 'silent-signal-only',
+            'opm_version': os.environ.get('OPM_VERSION', 'unknown'),
+            'incident_hint': {
+              'template': 'constitution/decision-log/INC-0001-template.md',
+              'required_fields': [
+                'workflow',
+                'run_url',
+                'reason_code',
+                'root_cause',
+                'fix_commit'
+              ]
+            }
+          }
+
+          payload = json.dumps(summary, sort_keys=True).encode('utf-8')
+          summary['summary_hash'] = hashlib.sha256(payload).hexdigest()
+
+          (base / 'status.json').write_text(json.dumps(summary, indent=2) + \"\\n\")
+          PY
+
+      - name: Append release summary
+        if: always()
+        run: |
+          set -euo pipefail
+          status=$(python3 - <<'PY'
+          import json
+          print(json.load(open('out/release-gate/status.json'))['status'])
+          PY
+          )
+          reason=$(python3 - <<'PY'
+          import json
+          v = json.load(open('out/release-gate/status.json')).get('reason_code')
+          print(v if v is not None else 'null')
+          PY
+          )
+          checked=$(python3 - <<'PY'
+          import json
+          print(json.load(open('out/release-gate/status.json'))['checked_at'])
+          PY
+          )
+          opm=$(python3 - <<'PY'
+          import json
+          print(json.load(open('out/release-gate/status.json'))['opm_version'])
+          PY
+          )
+          echo "## Release Gate" >> "$GITHUB_STEP_SUMMARY"
+          echo "- checked_at: $checked" >> "$GITHUB_STEP_SUMMARY"
+          echo "- secret_tier: ${SECRET_TIER:-unknown}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- approver_role: ${APPROVER_ROLE:-unknown}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- opm_version: $opm" >> "$GITHUB_STEP_SUMMARY"
+          echo "- status: $status" >> "$GITHUB_STEP_SUMMARY"
+          echo "- reason_code: $reason" >> "$GITHUB_STEP_SUMMARY"
+          echo "- issue/comment: none (silent mode)" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload release artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-gate-${{ github.run_id }}
+          path: |
+            out/release-gate/status.json
+            out/release-gate/audit.json
+            out/release-gate/result.json
+            out/release-gate/evidence.json
+            out/release-gate/logs/
