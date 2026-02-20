@@ -137,10 +137,13 @@ jobs:
             request_id = None
             checksums = {}
 
+          track_state = 'DONE' if (status == 'PASS' and reason_code is None) else 'OPEN'
+
           summary = {
             'checked_at': datetime.datetime.utcnow().replace(microsecond=0).isoformat() + 'Z',
             'status': status,
             'reason_code': reason_code,
+            'track_state': track_state,
             'request_id': request_id,
             'checksums': checksums,
             'mode': 'silent-signal-only',
@@ -188,10 +191,16 @@ jobs:
           print(json.load(open('out/autonomous-sweep/status.json'))['opm_version'])
           PY
           )
+          track=$(python3 - <<'PY'
+          import json
+          print(json.load(open('out/autonomous-sweep/status.json'))['track_state'])
+          PY
+          )
           echo "## Autonomous Sweep" >> "$GITHUB_STEP_SUMMARY"
           echo "- checked_at: $checked" >> "$GITHUB_STEP_SUMMARY"
           echo "- secret_tier: ${SECRET_TIER:-unknown}" >> "$GITHUB_STEP_SUMMARY"
           echo "- opm_version: $opm" >> "$GITHUB_STEP_SUMMARY"
+          echo "- track_state: $track" >> "$GITHUB_STEP_SUMMARY"
           echo "- status: $status" >> "$GITHUB_STEP_SUMMARY"
           echo "- reason_code: $reason" >> "$GITHUB_STEP_SUMMARY"
           echo "- issue/comment: none (silent mode)" >> "$GITHUB_STEP_SUMMARY"
