@@ -31,6 +31,12 @@ const (
 	reasonTimeoutExceeded   = "HUNBUP_TIMEOUT_EXCEEDED"
 	reasonEvidenceMissing   = "HUNBUP_EVIDENCE_MISSING_REQUIRED_FIELD"
 	reasonHashMismatch      = "HUNBUP_HASH_MISMATCH"
+
+	roleStrategyBoard  = "StrategyBoard"
+	rolePolicyOffice   = "PolicyOffice"
+	roleControlPlaneOp = "ControlPlaneOperator"
+	roleAuditCore      = "AuditCore"
+	roleDomainUnit     = "DomainUnit"
 )
 
 type planLocalExecAction struct {
@@ -45,6 +51,7 @@ type planLocalExecAction struct {
 type planFile struct {
 	Version   string                `json:"version"`
 	RequestID string                `json:"request_id"`
+	ActorRole string                `json:"actor_role"`
 	Actions   []planLocalExecAction `json:"actions"`
 }
 
@@ -187,6 +194,10 @@ func handleRun(cmd Command) int {
 
 	resolvedCmd, resolveOK := resolveLocalCommand(action.CommandID, action.Args)
 	if !resolveOK {
+		fmt.Fprintln(os.Stderr, reasonCommandNotAllowed)
+		return 1
+	}
+	if !isCommandAllowedForRole(plan.ActorRole, action.CommandID) {
 		fmt.Fprintln(os.Stderr, reasonCommandNotAllowed)
 		return 1
 	}
@@ -370,6 +381,9 @@ func handleAudit(cmd Command) int {
 	}
 	if _, ok := resolveLocalCommand(action.CommandID, action.Args); !ok {
 		violations = append(violations, auditViolation{Code: reasonCommandNotAllowed, Path: "/actions/0/command_id", Message: "command_id is not allowlisted"})
+	}
+	if !isCommandAllowedForRole(plan.ActorRole, action.CommandID) {
+		violations = append(violations, auditViolation{Code: reasonCommandNotAllowed, Path: "/actor_role", Message: "actor_role is not authorized for command_id"})
 	}
 
 	envKeys := make([]string, 0, len(action.Env))
@@ -648,4 +662,31 @@ func deriveOutputsHash(a resultAction) (string, error) {
 func notImplemented(name string) int {
 	fmt.Fprintln(os.Stderr, name+": not implemented")
 	return 1
+}
+
+func isCommandAllowedForRole(actorRole, commandID string) bool {
+	policy := map[string]map[string]bool{
+		roleStrategyBoard: {
+			"ECHO": true,
+		},
+		rolePolicyOffice: {
+			"ECHO": true,
+		},
+		roleControlPlaneOp: {
+			"ECHO":             true,
+			"RUN_NODE_VERSION": true,
+		},
+		roleAuditCore: {
+			"RUN_NODE_VERSION": true,
+		},
+		roleDomainUnit: {
+			"ECHO": true,
+		},
+	}
+
+	allowed, ok := policy[actorRole]
+	if !ok {
+		return false
+	}
+	return allowed[commandID]
 }
