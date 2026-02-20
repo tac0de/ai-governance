@@ -133,12 +133,13 @@ type auditChecksums struct {
 }
 
 type auditFile struct {
-	Version    string           `json:"version"`
-	RequestID  string           `json:"request_id"`
-	Status     string           `json:"status"`
-	ReasonCode *string          `json:"reason_code"`
-	Violations []auditViolation `json:"violations"`
-	Checksums  auditChecksums   `json:"checksums"`
+	Version           string           `json:"version"`
+	RequestID         string           `json:"request_id"`
+	Status            string           `json:"status"`
+	ReasonCode        *string          `json:"reason_code"`
+	GovernanceCommand *string          `json:"governance_command"`
+	Violations        []auditViolation `json:"violations"`
+	Checksums         auditChecksums   `json:"checksums"`
 }
 
 func Execute(cmd Command) int {
@@ -387,6 +388,7 @@ func handleAudit(cmd Command) int {
 	}
 
 	action := plan.Actions[0]
+	governanceCommand := governanceCommandForRuntime(action.CommandID)
 	resultActionData := result.Actions[0]
 	evidenceActionData := evidence.Actions[0]
 
@@ -445,12 +447,13 @@ func handleAudit(cmd Command) int {
 		sortedViolations := sortViolationsByPriority(violations)
 		reason := sortedViolations[0].Code
 		audit := auditFile{
-			Version:    "1.0",
-			RequestID:  plan.RequestID,
-			Status:     "REJECT",
-			ReasonCode: &reason,
-			Violations: sortedViolations,
-			Checksums:  checksums,
+			Version:           "1.0",
+			RequestID:         plan.RequestID,
+			Status:            "REJECT",
+			ReasonCode:        &reason,
+			GovernanceCommand: governanceCommand,
+			Violations:        sortedViolations,
+			Checksums:         checksums,
 		}
 		if err := writeJSON(cmd.Out, audit); err != nil {
 			fmt.Fprintln(os.Stderr, reasonPlanSchemaInvalid)
@@ -461,12 +464,13 @@ func handleAudit(cmd Command) int {
 	}
 
 	audit := auditFile{
-		Version:    "1.0",
-		RequestID:  plan.RequestID,
-		Status:     "PASS",
-		ReasonCode: nil,
-		Violations: []auditViolation{},
-		Checksums:  checksums,
+		Version:           "1.0",
+		RequestID:         plan.RequestID,
+		Status:            "PASS",
+		ReasonCode:        nil,
+		GovernanceCommand: governanceCommand,
+		Violations:        []auditViolation{},
+		Checksums:         checksums,
 	}
 	if err := writeJSON(cmd.Out, audit); err != nil {
 		fmt.Fprintln(os.Stderr, reasonPlanSchemaInvalid)
@@ -564,12 +568,13 @@ func requestIDFromRaw(raw any) string {
 
 func writeSingleRejectAudit(outPath, requestID string, checksums auditChecksums, code, path, message string) int {
 	audit := auditFile{
-		Version:    "1.0",
-		RequestID:  requestID,
-		Status:     "REJECT",
-		ReasonCode: &code,
-		Violations: []auditViolation{{Code: code, Path: path, Message: message}},
-		Checksums:  checksums,
+		Version:           "1.0",
+		RequestID:         requestID,
+		Status:            "REJECT",
+		ReasonCode:        &code,
+		GovernanceCommand: nil,
+		Violations:        []auditViolation{{Code: code, Path: path, Message: message}},
+		Checksums:         checksums,
 	}
 	if err := writeJSON(outPath, audit); err != nil {
 		fmt.Fprintln(os.Stderr, code)
@@ -597,6 +602,19 @@ func sortViolationsByPriority(vs []auditViolation) []auditViolation {
 		return out[i].Message < out[j].Message
 	})
 	return out
+}
+
+func governanceCommandForRuntime(commandID string) *string {
+	var c string
+	switch commandID {
+	case "ECHO":
+		c = "operate.validate.plan"
+	case "RUN_NODE_VERSION":
+		c = "audit.verify.result"
+	default:
+		return nil
+	}
+	return &c
 }
 
 func resolveLocalCommand(commandID string, args []string) ([]string, bool) {
