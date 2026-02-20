@@ -78,6 +78,7 @@ Policy source: `constitution/policies/OPERATING_PROFILE_MATRIX_V1.md`
 - command binding table: `constitution/contracts/command-binding-table.v1.md`
 - release gate policy: `constitution/policies/RELEASE_GOVERNANCE_GATE_POLICY_V1.md`
 - done gate policy: `constitution/policies/DONE_GATE_POLICY_V1.md`
+- thedivineparadox onboarding: `constitution/charter/THE_DIVINE_PARADOX_ONBOARDING_V1.md`
 
 ### Action Required
 
