@@ -31,6 +31,7 @@ const (
 	reasonTimeoutExceeded   = "HUNBUP_TIMEOUT_EXCEEDED"
 	reasonEvidenceMissing   = "HUNBUP_EVIDENCE_MISSING_REQUIRED_FIELD"
 	reasonHashMismatch      = "HUNBUP_HASH_MISMATCH"
+	reasonNondeterministic  = "HUNBUP_NONDETERMINISTIC_OUTPUT"
 
 	roleStrategyBoard  = "StrategyBoard"
 	rolePolicyOffice   = "PolicyOffice"
@@ -38,6 +39,19 @@ const (
 	roleAuditCore      = "AuditCore"
 	roleDomainUnit     = "DomainUnit"
 )
+
+var reasonPriority = map[string]int{
+	reasonPlanSchemaInvalid: 10,
+	reasonResultSchemaError: 20,
+	reasonEvidenceSchemaErr: 30,
+	reasonActionTypeInvalid: 40,
+	reasonCommandNotAllowed: 50,
+	reasonEnvKeyNotAllowed:  60,
+	reasonTimeoutExceeded:   70,
+	reasonEvidenceMissing:   80,
+	reasonHashMismatch:      90,
+	reasonNondeterministic:  100,
+}
 
 type planLocalExecAction struct {
 	ID         string            `json:"id"`
@@ -428,13 +442,14 @@ func handleAudit(cmd Command) int {
 	}
 
 	if len(violations) > 0 {
-		reason := violations[0].Code
+		sortedViolations := sortViolationsByPriority(violations)
+		reason := sortedViolations[0].Code
 		audit := auditFile{
 			Version:    "1.0",
 			RequestID:  plan.RequestID,
 			Status:     "REJECT",
 			ReasonCode: &reason,
-			Violations: violations,
+			Violations: sortedViolations,
 			Checksums:  checksums,
 		}
 		if err := writeJSON(cmd.Out, audit); err != nil {
@@ -562,6 +577,26 @@ func writeSingleRejectAudit(outPath, requestID string, checksums auditChecksums,
 	}
 	fmt.Fprintln(os.Stderr, "REJECT", code)
 	return 1
+}
+
+func sortViolationsByPriority(vs []auditViolation) []auditViolation {
+	out := make([]auditViolation, len(vs))
+	copy(out, vs)
+	sort.Slice(out, func(i, j int) bool {
+		pi := reasonPriority[out[i].Code]
+		pj := reasonPriority[out[j].Code]
+		if pi != pj {
+			return pi < pj
+		}
+		if out[i].Code != out[j].Code {
+			return out[i].Code < out[j].Code
+		}
+		if out[i].Path != out[j].Path {
+			return out[i].Path < out[j].Path
+		}
+		return out[i].Message < out[j].Message
+	})
+	return out
 }
 
 func resolveLocalCommand(commandID string, args []string) ([]string, bool) {
