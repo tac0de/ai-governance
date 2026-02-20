@@ -9,6 +9,7 @@ on:
       approver_role:
         description: "Release approver role"
         required: false
+        default: ControlPlaneOperator
         type: string
       secret_tier:
         description: "none | admin-only | repo-write"
