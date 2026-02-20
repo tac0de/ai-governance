@@ -72,7 +72,9 @@ Resolution order:
 3. fallback `admin-only`
 
 If required secrets for selected tier are missing, workflow fails immediately.
-Policy source: `constitution/policies/SECRETS_TIERING_POLICY_V1.md`
+Policy source: `constitution/policies/OPERATING_PROFILE_MATRIX_V1.md`
+- role-command policy: `constitution/policies/ROLE_COMMAND_AUTHZ_POLICY_V1.md`
+- release gate policy: `constitution/policies/RELEASE_GOVERNANCE_GATE_POLICY_V1.md`
 
 ### Action Required
 
