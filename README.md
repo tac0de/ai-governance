@@ -69,7 +69,7 @@ Workflows:
 Resolution order:
 1. `workflow_dispatch` input `secret_tier`
 2. repository variable `SECRET_TIER`
-3. fallback `none`
+3. fallback `admin-only`
 
 If required secrets for selected tier are missing, workflow fails immediately.
 Policy source: `constitution/policies/SECRETS_TIERING_POLICY_V1.md`
