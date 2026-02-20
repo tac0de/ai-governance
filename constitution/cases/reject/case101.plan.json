@@ -1,6 +1,7 @@
 {
   "version": "1.0",
   "request_id": "22222222-2222-4222-8222-222222222222",
+  "actor_role": "DomainUnit",
   "actions": [
     {
       "id": "a1",

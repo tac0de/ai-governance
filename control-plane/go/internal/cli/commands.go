@@ -449,8 +449,9 @@ func handleAudit(cmd Command) int {
 
 func resolveSchemaPath(schemaFile string) string {
 	candidates := []string{
-		filepath.Join("constitution", "schemas", schemaFile),
-		filepath.Join("..", "constitution", "schemas", schemaFile),
+		filepath.Join("schemas", "jsonschema", schemaFile),
+		filepath.Join("..", "schemas", "jsonschema", schemaFile),
+		filepath.Join("..", "..", "schemas", "jsonschema", schemaFile),
 	}
 	for _, p := range candidates {
 		if _, err := os.Stat(p); err == nil {

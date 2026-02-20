@@ -1,3 +1,17 @@
+This repository is architecturally governed.
+
+# Architectural Authority
+
+## System Architect (Human)
+
+- The human System Architect has final authority over structural decisions.
+- Architectural boundaries, dependency direction, and governance contracts
+  cannot be modified without explicit approval.
+- Agents operate within defined layers and must not reinterpret architecture.
+
+If conflict occurs between execution efficiency and structural integrity,
+structural integrity prevails.
+
 # Agent Operating Rules (Persistent)
 
 ## Language
@@ -18,4 +32,7 @@
 - Keep changes deterministic, minimal, and maintainable.
 
 ## Cognitive-load policy
-- Default response format: 1) 무엇: 2) 왜 중요: 3) 지금 할 일 1개:
+- Default response format:
+  1) 결정:
+  2) 근거:
+  3) 실행 1개:
