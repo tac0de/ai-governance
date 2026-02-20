@@ -30,6 +30,17 @@ Defines a single operational profile view across role authority, workflow inputs
 1. `audit.status != PASS`
 2. `reason_code != null`
 3. `secret tier gate failed`
+4. `operating profile version gate failed`
+
+
+## Incident Linkage Rule
+- If any Action Required condition is met, create or update an incident record under `constitution/decision-log/INC-*.md`.
+- Incident records must follow `constitution/decision-log/INC-0001-template.md`.
+- Link `reason_code`, workflow run URL, and fix commit hash in the incident record.
+
+## Operator View Rule
+- Operator-facing report remains three-line signal only: status, reason_code, required action.
+- Detailed incident text is for engineering/audit traceability.
 
 ## Change Management
 Any profile change requires:
