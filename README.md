@@ -79,3 +79,18 @@ Policy source: `constitution/policies/SECRETS_TIERING_POLICY_V1.md`
 - `audit.status != PASS`
 - `reason_code != null`
 - `secret tier gate failed`
+
+## Delivery Track (Design -> Build -> Validate)
+
+1. Design Lock
+- Freeze architecture intent, governance boundary, and acceptance criteria.
+- No implementation changes are allowed before design lock.
+
+2. Build
+- Implement only within the locked design scope.
+- Keep runtime behavior deterministic and schema-enforced.
+
+3. Validate
+- Validate API/contract behavior first.
+- Validate UI/UX quality as a separate step when needed.
+- Playwright is a validation tool for this stage, not a design or implementation prerequisite.
