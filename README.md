@@ -76,6 +76,7 @@ Operating profile version baseline: `OPM_VERSION=v1`.
 Policy source: `constitution/policies/OPERATING_PROFILE_MATRIX_V1.md`
 - role-command policy: `constitution/policies/ROLE_COMMAND_AUTHZ_POLICY_V1.md`
 - release gate policy: `constitution/policies/RELEASE_GOVERNANCE_GATE_POLICY_V1.md`
+- done gate policy: `constitution/policies/DONE_GATE_POLICY_V1.md`
 
 ### Action Required
 

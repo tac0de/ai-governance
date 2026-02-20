@@ -26,6 +26,9 @@ Defines a single operational profile view across role authority, workflow inputs
 ## Release Gate Source
 - Use `constitution/policies/RELEASE_GOVERNANCE_GATE_POLICY_V1.md` as the only release gate source.
 
+## Completion Discipline Source
+- Use `constitution/policies/DONE_GATE_POLICY_V1.md` as the completion rule for macro tracks.
+
 ## Action Required Conditions
 1. `audit.status != PASS`
 2. `reason_code != null`
