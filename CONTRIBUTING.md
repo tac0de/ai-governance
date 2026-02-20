@@ -4,8 +4,8 @@
 
 The supported runtime baseline is:
 
-- hub-go (primary runtime)
-- rust-audit-core (integrity module)
+- control-plane-go (primary runtime)
+- audit-core/rust (integrity module)
 
 The TypeScript runtime located at .legacy/hub is deprecated and must not be used for new development, testing, or documentation examples.
 
@@ -20,14 +20,14 @@ All contributions must target the current runtime baseline.
 
 ## Integrity Boundary
 
-All hash generation and checksum verification logic must reside in rust-audit-core.
+All hash generation and checksum verification logic must reside in audit-core/rust.
 
-hub-go is responsible for orchestration and invoking the integrity module.
+control-plane-go is responsible for orchestration and invoking the integrity module.
 
 ## Pull Request Requirements
 
 - Changes must not reference .legacy/hub in examples or quickstart instructions.
-- Documentation must reflect hub-go as the primary runtime.
+- Documentation must reflect control-plane-go as the primary runtime.
 - Integrity-sensitive changes require justification and deterministic test evidence.
 
 ## Deterministic Output

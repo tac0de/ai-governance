@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-governance/schemas/jsonschema/evidence.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "request_id", "actions", "platform"],
+  "properties": {
+    "version": { "const": "1.0" },
+    "request_id": { "type": "string", "format": "uuid" },
+    "actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "executed_at",
+          "runner",
+          "command",
+          "cwd",
+          "uid",
+          "gid",
+          "sanitized_env",
+          "timeout_sec",
+          "exit_code",
+          "stdout_path",
+          "stderr_path",
+          "stdout_hash",
+          "stderr_hash",
+          "inputs_hash",
+          "outputs_hash"
+        ],
+        "properties": {
+          "id": { "type": "string", "minLength": 1 },
+          "executed_at": { "type": "string", "format": "date-time" },
+          "runner": { "type": "string", "minLength": 1 },
+          "command": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string" }
+          },
+          "cwd": { "type": "string", "minLength": 1 },
+          "uid": { "type": ["integer", "null"] },
+          "gid": { "type": ["integer", "null"] },
+          "sanitized_env": {
+            "type": "object",
+            "propertyNames": { "pattern": "^SAFE_[A-Z0-9_]+$" },
+            "additionalProperties": { "type": "string" }
+          },
+          "timeout_sec": { "type": "integer", "minimum": 1, "maximum": 3600 },
+          "exit_code": { "type": "integer" },
+          "stdout_path": { "type": "string", "minLength": 1 },
+          "stderr_path": { "type": "string", "minLength": 1 },
+          "stdout_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "stderr_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "inputs_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "outputs_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+        }
+      }
+    },
+    "platform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["node", "os", "arch"],
+      "properties": {
+        "node": { "type": "string", "minLength": 1 },
+        "os": { "type": "string", "minLength": 1 },
+        "arch": { "type": "string", "minLength": 1 }
+      }
+    }
+  }
+}

@@ -6,29 +6,29 @@ ai-governance is a deterministic, schema-enforced execution and audit framework.
 
 The current runtime architecture is:
 
-- Primary runtime: hub-go
-- Integrity module: rust-audit-core
+- Primary runtime: control-plane-go
+- Integrity module: audit-core/rust
 - Legacy runtime: .legacy/hub (TypeScript, deprecated and not used)
 
-Only hub-go and rust-audit-core are part of the supported execution path.
+Only control-plane-go and audit-core/rust are part of the supported execution path.
 
 The directory .legacy/hub is retained for historical reference and must not be used in development, testing, or quickstart flows.
 
 ## Architecture Overview
 
-- hub-go
+- control-plane-go
  - Orchestration
  - Process control
  - I/O handling
  - Schema validation
 
-- rust-audit-core
+- audit-core/rust
  - Canonicalization
  - SHA-256 hashing
  - Checksum verification
  - Deterministic integrity enforcement
 
-hub-go invokes rust-audit-core for integrity-sensitive operations.
+control-plane-go invokes audit-core/rust for integrity-sensitive operations.
 
 ## Quickstart
 
@@ -39,8 +39,8 @@ Prerequisites:
 
 Build and run primary runtime:
 
-- Build Go runtime from hub-go
-- Build Rust integrity module from rust-audit-core
+- Build Go runtime from control-plane-go
+- Build Rust integrity module from audit-core/rust
 
 Do not use .legacy/hub for quickstart or execution.
 
@@ -52,4 +52,4 @@ All audit flows must:
 - Produce deterministic canonical serialization
 - Match SHA-256 checksums for plan/result/evidence
 
-Integrity verification is enforced by rust-audit-core.
+Integrity verification is enforced by audit-core/rust.

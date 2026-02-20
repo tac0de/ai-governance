@@ -23,3 +23,5 @@ out/
 .archive/
 
 .legacy/
+
+audit-core/rust/target/
