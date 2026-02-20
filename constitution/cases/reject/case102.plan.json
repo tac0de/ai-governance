@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "request_id": "33333333-3333-4333-8333-333333333333",
+  "actions": [
+    {
+      "id": "a1",
+      "type": "local_exec",
+      "command_id": "RUN_TESTS",
+      "args": [],
+      "timeout_sec": 30,
+      "env": {
+        "SAFE_MODE": "true"
+      }
+    }
+  ]
+}

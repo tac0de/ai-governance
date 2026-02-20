@@ -1,0 +1,26 @@
+{
+  "generated_for": "replace-with-your-handle",
+  "updated_at": "",
+  "accounts": {
+    "google": {
+      "passkey_or_security_key": false,
+      "sms_2fa_disabled": false,
+      "backup_codes_stored_offline": false
+    },
+    "github": {
+      "passkey_or_security_key": false,
+      "2fa_enabled": false,
+      "recovery_codes_stored_offline": false
+    },
+    "apple": {
+      "two_factor_enabled": false,
+      "trusted_devices_reviewed": false,
+      "recovery_contact_reviewed": false
+    },
+    "chatgpt_openai": {
+      "mfa_enabled": false,
+      "passkey_or_totp_configured": false,
+      "active_sessions_reviewed": false
+    }
+  }
+}

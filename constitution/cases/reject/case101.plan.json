@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "request_id": "22222222-2222-4222-8222-222222222222",
+  "actions": [
+    {
+      "id": "a1",
+      "type": "local_exec",
+      "command_id": "ECHO",
+      "args": ["bad-schema"],
+      "timeout_sec": 30,
+      "env": {
+        "BAD_ENV": "not-allowed"
+      }
+    }
+  ]
+}

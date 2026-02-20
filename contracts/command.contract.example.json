@@ -1,0 +1,11 @@
+{
+  "version": "1.0.0",
+  "type": "main_hub.command.example",
+  "command": "ANALYZE_ENTITY",
+  "analysis_type": "public_figure_profile",
+  "policy": "neutral_public_info_only",
+  "engine": "analysis_engine_v1",
+  "module": "public_figure_profile",
+  "model_tier": "standard",
+  "audit": true
+}

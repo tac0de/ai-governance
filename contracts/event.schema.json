@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Codex Event",
+  "description": "Canonical event envelope shared between ai-governance, engine, and apps.",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["version", "id", "type", "timestamp", "source", "payload"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "SemVer for this envelope."
+    },
+    "id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique event identifier."
+    },
+    "type": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Domain event type, e.g., run.started."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp when the event occurred."
+    },
+    "source": {
+      "type": "string",
+      "description": "Emitter identifier (service or component name)."
+    },
+    "correlationId": {
+      "type": "string",
+      "description": "Optional correlation or trace id tying related events."
+    },
+    "actor": {
+      "type": "object",
+      "description": "Actor associated with the event (user, agent, system).",
+      "additionalProperties": true
+    },
+    "payload": {
+      "type": "object",
+      "description": "Event-specific body.",
+      "additionalProperties": true
+    },
+    "context": {
+      "type": "object",
+      "description": "Non-identifying contextual data (request ids, locale, experiment tags).",
+      "additionalProperties": true
+    },
+    "labels": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Optional tags used for routing or filtering."
+    }
+  },
+  "additionalProperties": true
+}

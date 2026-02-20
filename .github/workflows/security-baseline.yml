@@ -1,0 +1,134 @@
+name: "main-hub: security baseline"
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+jobs:
+  security-baseline:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install gitleaks
+        run: |
+          set -euo pipefail
+          VERSION="8.24.2"
+          curl -sSL "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz" -o /tmp/gitleaks.tar.gz
+          tar -xzf /tmp/gitleaks.tar.gz -C /tmp
+          sudo mv /tmp/gitleaks /usr/local/bin/gitleaks
+          gitleaks version
+
+      - name: Secret scan
+        run: |
+          set -euo pipefail
+          gitleaks detect --source . --no-git --redact
+
+      - name: Main-hub policy checks
+        run: |
+          set -euo pipefail
+          chmod +x tools/repo_sweep.sh tools/main_hub_final_check.sh
+          bash tools/repo_sweep.sh --strict
+          bash tools/main_hub_final_check.sh
+
+      - name: Create run_result.json
+        if: always()
+        shell: bash
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          set -euo pipefail
+          RESULT_STATUS="failure"
+          if [[ "${JOB_STATUS}" == "success" ]]; then
+            RESULT_STATUS="success"
+          fi
+          CREATED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          cat > run_result.json <<JSON
+          {
+            "run_id": "${{ github.run_id }}-${{ github.run_attempt }}",
+            "repository": "${{ github.repository }}",
+            "ref": "${{ github.ref }}",
+            "status": "${RESULT_STATUS}",
+            "checks": [
+              {
+                "name": "security-baseline",
+                "status": "${RESULT_STATUS}",
+                "note": "Security baseline workflow completed"
+              }
+            ],
+            "summary": "Security baseline workflow finished.",
+            "created_at": "${CREATED_AT}"
+          }
+          JSON
+
+      - name: Create run contract
+        if: always()
+        shell: bash
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          set -euo pipefail
+          mkdir -p .ops
+          RESULT_STATUS="failure"
+          if [[ "${JOB_STATUS}" == "success" ]]; then
+            RESULT_STATUS="success"
+          fi
+          CREATED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          cat > .ops/run_contract.json <<JSON
+          {
+            "run_id": "${{ github.run_id }}-${{ github.run_attempt }}",
+            "risk_level": "low",
+            "human_gate_required": false,
+            "approved_by": "",
+            "artifacts": [
+              "run_result.json",
+              ".ops/run_contract.json"
+            ],
+            "status": "${RESULT_STATUS}",
+            "created_at": "${CREATED_AT}",
+            "source": "security-baseline"
+          }
+          JSON
+
+      - name: Validate run contract
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs = require("fs");
+          const c = JSON.parse(fs.readFileSync(".ops/run_contract.json", "utf8"));
+          const required = ["run_id", "risk_level", "human_gate_required", "artifacts", "status", "created_at", "source"];
+          for (const k of required) {
+            if (!(k in c)) {
+              console.error(`[run-contract] missing key: ${k}`);
+              process.exit(1);
+            }
+          }
+          if (!Array.isArray(c.artifacts) || c.artifacts.length < 2) {
+            console.error("[run-contract] artifacts must include run result and contract");
+            process.exit(1);
+          }
+          console.log("[run-contract] PASS");
+          NODE
+
+      - name: Upload run-result artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: run-result
+          path: run_result.json
+          if-no-files-found: error
+
+      - name: Upload run-contract artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: run-contract
+          path: .ops/run_contract.json
+          if-no-files-found: error

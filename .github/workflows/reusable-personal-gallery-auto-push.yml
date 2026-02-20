@@ -1,0 +1,432 @@
+name: "reusable: personal gallery auto push"
+
+on:
+  workflow_call:
+    inputs:
+      target_owner:
+        required: true
+        type: string
+      target_repo:
+        required: true
+        type: string
+      target_branch:
+        required: false
+        default: main
+        type: string
+      auto_push_daily_limit:
+        required: false
+        default: "2"
+        type: string
+      state_issue_title:
+        required: false
+        default: "[gallery-autopush] personal-art-gallery auto push state"
+        type: string
+    secrets:
+      repo_access_token:
+        required: false
+
+permissions: read-all
+
+concurrency:
+  group: personal-gallery-auto-push
+  cancel-in-progress: false
+
+jobs:
+  auto-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    env:
+      TARGET_OWNER: ${{ inputs.target_owner }}
+      TARGET_REPO: ${{ inputs.target_repo }}
+      TARGET_BRANCH: ${{ inputs.target_branch }}
+      AUTO_PUSH_DAILY_LIMIT: ${{ inputs.auto_push_daily_limit }}
+      STATE_ISSUE_TITLE: ${{ inputs.state_issue_title }}
+    steps:
+      - name: Checkout main-hub
+        uses: actions/checkout@v4
+        with:
+          repository: tac0de/main-hub
+          path: main-hub
+
+      - name: Validate write token
+        shell: bash
+        env:
+          REPO_ACCESS_TOKEN: ${{ secrets.repo_access_token }}
+          GITHUB_TOKEN_FALLBACK: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ACCESS_TOKEN="${REPO_ACCESS_TOKEN:-${GITHUB_TOKEN_FALLBACK:-}}"
+          if [[ -z "${ACCESS_TOKEN}" ]]; then
+            echo "Missing repo access token (repo_access_token or github.token)"
+            exit 1
+          fi
+
+      - name: Read daily budget state
+        id: state
+        uses: actions/github-script@v7
+        env:
+          STATE_ISSUE_TITLE: ${{ env.STATE_ISSUE_TITLE }}
+          AUTO_PUSH_DAILY_LIMIT: ${{ env.AUTO_PUSH_DAILY_LIMIT }}
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issueTitle = process.env.STATE_ISSUE_TITLE;
+            const dailyLimit = Math.max(1, Number.parseInt(process.env.AUTO_PUSH_DAILY_LIMIT || "2", 10));
+
+            function parseMarker(body, key) {
+              const regex = new RegExp(`<!--\\s*${key}:([^>]+)\\s*-->`, "i");
+              const match = String(body || "").match(regex);
+              return match ? match[1].trim() : "";
+            }
+
+            function parseNumberMarker(body, key, defaultValue = 0) {
+              const value = Number.parseInt(parseMarker(body, key), 10);
+              return Number.isFinite(value) ? value : defaultValue;
+            }
+
+            const today = new Date().toISOString().slice(0, 10);
+            const openIssues = await github.rest.issues.listForRepo({ owner, repo, state: "open", per_page: 100 });
+            const stateIssues = openIssues.data
+              .filter((item) => !item.pull_request && item.title === issueTitle)
+              .sort((a, b) => a.number - b.number);
+            let stateIssue = stateIssues[0];
+
+            if (!stateIssue) {
+              stateIssue = (
+                await github.rest.issues.create({
+                  owner,
+                  repo,
+                  title: issueTitle,
+                  body: [
+                    "Personal gallery auto-push state tracker.",
+                    "",
+                    `- auto_push_daily_limit: ${dailyLimit}`,
+                    `- auto_push_day: ${today}`,
+                    "- auto_push_today: 0",
+                    `- auto_push_remaining: ${dailyLimit}`,
+                    "- last_push_sha: n/a",
+                    "- last_push_at: n/a",
+                    "- last_budget_alert_day: n/a",
+                    "- last_run_result: initialized",
+                    "",
+                    "This issue is managed automatically by workflow `Personal Gallery Auto Push`.",
+                    `<!-- auto_push_day:${today} -->`,
+                    "<!-- auto_push_count:0 -->",
+                    "<!-- last_push_sha: -->",
+                    "<!-- last_push_at: -->",
+                    "<!-- last_budget_alert_day: -->",
+                    `<!-- auto_push_daily_limit:${dailyLimit} -->`,
+                  ].join("\n"),
+                })
+              ).data;
+            }
+
+            const existingBody = stateIssue.body || "";
+            const bodyDay = parseMarker(existingBody, "auto_push_day") || today;
+            let bodyCount = parseNumberMarker(existingBody, "auto_push_count", 0);
+            if (bodyDay !== today) bodyCount = 0;
+
+            const canPush = bodyCount < dailyLimit;
+            const remaining = Math.max(0, dailyLimit - bodyCount);
+
+            core.setOutput("issue_number", String(stateIssue.number));
+            core.setOutput("today", today);
+            core.setOutput("daily_limit", String(dailyLimit));
+            core.setOutput("push_count_today", String(bodyCount));
+            core.setOutput("remaining", String(remaining));
+            core.setOutput("can_push", canPush ? "true" : "false");
+            core.setOutput("state_issue_number", String(stateIssue.number));
+
+      - name: Clone target and apply low-risk autofix
+        id: autopush
+        if: steps.state.outputs.can_push == 'true'
+        shell: bash
+        env:
+          REPO_ACCESS_TOKEN: ${{ secrets.repo_access_token }}
+          GITHUB_TOKEN_FALLBACK: ${{ github.token }}
+          TARGET_OWNER: ${{ env.TARGET_OWNER }}
+          TARGET_REPO: ${{ env.TARGET_REPO }}
+          TARGET_BRANCH: ${{ env.TARGET_BRANCH }}
+        run: |
+          set -euo pipefail
+          mkdir -p .ops
+          rm -rf target-repo
+          ACCESS_TOKEN="${REPO_ACCESS_TOKEN:-${GITHUB_TOKEN_FALLBACK:-}}"
+          if [[ -z "${ACCESS_TOKEN}" ]]; then
+            echo "Missing repo access token (repo_access_token or github.token)"
+            exit 1
+          fi
+
+          git clone --depth 1 "https://x-access-token:${ACCESS_TOKEN}@github.com/${TARGET_OWNER}/${TARGET_REPO}.git" target-repo
+          node main-hub/tools/personal_gallery_autofix.js --repo target-repo --out-json .ops/personal_gallery_autofix_result.json > .ops/personal_gallery_autofix_stdout.json
+
+          if git -C target-repo diff --quiet; then
+            echo "patch_changed=false" >> "${GITHUB_OUTPUT}"
+            echo "pushed=false" >> "${GITHUB_OUTPUT}"
+            echo "push_sha=" >> "${GITHUB_OUTPUT}"
+            echo "push_error=" >> "${GITHUB_OUTPUT}"
+            exit 0
+          fi
+
+          git -C target-repo config user.name "github-actions[bot]"
+          git -C target-repo config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git -C target-repo add -A
+          git -C target-repo commit -m "chore(auto): apply low-risk seo and accessibility hardening"
+
+          PUSH_SHA="$(git -C target-repo rev-parse HEAD)"
+          set +e
+          PUSH_OUTPUT="$(git -C target-repo push origin HEAD:${TARGET_BRANCH} 2>&1)"
+          PUSH_CODE=$?
+          set -e
+
+          echo "patch_changed=true" >> "${GITHUB_OUTPUT}"
+          if [[ "${PUSH_CODE}" -eq 0 ]]; then
+            echo "pushed=true" >> "${GITHUB_OUTPUT}"
+            echo "push_sha=${PUSH_SHA}" >> "${GITHUB_OUTPUT}"
+            echo "push_error=" >> "${GITHUB_OUTPUT}"
+          else
+            PUSH_ERROR="$(echo "${PUSH_OUTPUT}" | tr '\n' ' ' | sed 's/[[:space:]]\+/ /g' | cut -c1-500)"
+            echo "pushed=false" >> "${GITHUB_OUTPUT}"
+            echo "push_sha=" >> "${GITHUB_OUTPUT}"
+            echo "push_error=${PUSH_ERROR}" >> "${GITHUB_OUTPUT}"
+          fi
+
+      - name: Update state issue and publish status
+        id: report
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          STATE_ISSUE_TITLE: ${{ env.STATE_ISSUE_TITLE }}
+          AUTO_PUSH_DAILY_LIMIT: ${{ env.AUTO_PUSH_DAILY_LIMIT }}
+          TARGET_OWNER: ${{ env.TARGET_OWNER }}
+          TARGET_REPO: ${{ env.TARGET_REPO }}
+          STATE_ISSUE_NUMBER: ${{ steps.state.outputs.state_issue_number }}
+          CAN_PUSH: ${{ steps.state.outputs.can_push }}
+          PREV_PUSH_COUNT: ${{ steps.state.outputs.push_count_today }}
+          AUTO_PUSHED: ${{ steps.autopush.outputs.pushed }}
+          PATCH_CHANGED: ${{ steps.autopush.outputs.patch_changed }}
+          PUSH_SHA: ${{ steps.autopush.outputs.push_sha }}
+          PUSH_ERROR: ${{ steps.autopush.outputs.push_error }}
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const fs = require("fs");
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const issueTitle = process.env.STATE_ISSUE_TITLE;
+            const targetRepo = `${process.env.TARGET_OWNER}/${process.env.TARGET_REPO}`;
+            const dailyLimit = Math.max(1, Number.parseInt(process.env.AUTO_PUSH_DAILY_LIMIT || "2", 10));
+            const preferredIssueNumber = Number.parseInt(process.env.STATE_ISSUE_NUMBER || "", 10);
+            const nowIso = new Date().toISOString();
+            const today = nowIso.slice(0, 10);
+
+            function parseMarker(body, key) {
+              const regex = new RegExp(`<!--\\s*${key}:([^>]+)\\s*-->`, "i");
+              const match = String(body || "").match(regex);
+              return match ? match[1].trim() : "";
+            }
+
+            function parseNumberMarker(body, key, defaultValue = 0) {
+              const value = Number.parseInt(parseMarker(body, key), 10);
+              return Number.isFinite(value) ? value : defaultValue;
+            }
+
+            function upsertMarker(body, key, value) {
+              const line = `<!-- ${key}:${value} -->`;
+              const regex = new RegExp(`<!--\\s*${key}:[^>]*-->`, "i");
+              if (regex.test(body)) return body.replace(regex, line);
+              return `${body}\n${line}`;
+            }
+
+            const openIssues = await github.rest.issues.listForRepo({ owner, repo, state: "open", per_page: 100 });
+            const stateIssues = openIssues.data
+              .filter((item) => !item.pull_request && item.title === issueTitle)
+              .sort((a, b) => a.number - b.number);
+
+            let stateIssue = null;
+            if (Number.isFinite(preferredIssueNumber) && preferredIssueNumber > 0) {
+              stateIssue = stateIssues.find((item) => item.number === preferredIssueNumber) || null;
+              if (!stateIssue) {
+                try {
+                  const fetched = await github.rest.issues.get({
+                    owner,
+                    repo,
+                    issue_number: preferredIssueNumber,
+                  });
+                  if (!fetched.data.pull_request && fetched.data.title === issueTitle && fetched.data.state === "open") {
+                    stateIssue = fetched.data;
+                  }
+                } catch (error) {
+                  core.warning(`Preferred state issue lookup failed: ${error.message}`);
+                }
+              }
+            }
+
+            if (!stateIssue) stateIssue = stateIssues[0] || null;
+            if (!stateIssue) {
+              stateIssue = (
+                await github.rest.issues.create({
+                  owner,
+                  repo,
+                  title: issueTitle,
+                  body: "State issue was recreated automatically.",
+                })
+              ).data;
+            }
+
+            for (const duplicate of stateIssues) {
+              if (duplicate.number === stateIssue.number) continue;
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: duplicate.number,
+                body: `Closing duplicate state issue. Canonical issue: #${stateIssue.number}.`,
+              });
+              await github.rest.issues.update({
+                owner,
+                repo,
+                issue_number: duplicate.number,
+                state: "closed",
+              });
+            }
+
+            const existingBody = stateIssue.body || "";
+            const bodyDay = parseMarker(existingBody, "auto_push_day") || today;
+            let pushCount = parseNumberMarker(existingBody, "auto_push_count", 0);
+            if (bodyDay !== today) pushCount = 0;
+
+            const pushed = String(process.env.AUTO_PUSHED || "").toLowerCase() === "true";
+            const patchChanged = String(process.env.PATCH_CHANGED || "").toLowerCase() === "true";
+            const pushSha = String(process.env.PUSH_SHA || "").trim();
+            const pushError = String(process.env.PUSH_ERROR || "").trim();
+            const canPushPre = String(process.env.CAN_PUSH || "").toLowerCase() === "true";
+
+            if (pushed) pushCount += 1;
+
+            let macroDirection = [
+              "Freeze auto-push for the rest of UTC day and collect user behavior signals.",
+              "Pick one UX flow to validate tomorrow (navigation, locale switch, mission loop).",
+              "Queue only low-risk hardening patches for the next window.",
+            ];
+            try {
+              const resultPath = ".ops/personal_gallery_autofix_result.json";
+              if (fs.existsSync(resultPath)) {
+                const parsed = JSON.parse(fs.readFileSync(resultPath, "utf8"));
+                if (Array.isArray(parsed.macro_direction_if_budget_exhausted) && parsed.macro_direction_if_budget_exhausted.length) {
+                  macroDirection = parsed.macro_direction_if_budget_exhausted.slice(0, 3);
+                }
+              }
+            } catch (error) {
+              core.warning(`Failed to read autofix result: ${error.message}`);
+            }
+
+            const remaining = Math.max(0, dailyLimit - pushCount);
+            const budgetReached = pushCount >= dailyLimit;
+            const lastBudgetAlertDay = parseMarker(existingBody, "last_budget_alert_day");
+            const shouldPostBudgetAlert = budgetReached && lastBudgetAlertDay !== today;
+
+            const runUrl = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`;
+            const runResult = pushed
+              ? "pushed"
+              : patchChanged
+                ? `push_failed: ${pushError || "unknown"}`
+                : canPushPre
+                  ? "no_patch_change"
+                  : "daily_budget_exhausted";
+
+            if (pushed) {
+              const commentBody = [
+                "## Personal Gallery Auto Push Applied",
+                "",
+                `- checked_at: ${nowIso}`,
+                `- target_repo: \`${targetRepo}\``,
+                `- pushed_sha: \`${pushSha.slice(0, 7)}\``,
+                `- push_count_today: ${pushCount}/${dailyLimit}`,
+                `- remaining_today: ${remaining}`,
+                `- workflow_run: ${runUrl}`,
+              ].join("\n");
+
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: stateIssue.number,
+                body: commentBody,
+              });
+            }
+
+            if (shouldPostBudgetAlert) {
+              const budgetBody = [
+                "## Personal Gallery Auto Push Budget Reached",
+                "",
+                `- checked_at: ${nowIso}`,
+                `- target_repo: \`${targetRepo}\``,
+                `- push_count_today: ${pushCount}/${dailyLimit}`,
+                `- workflow_run: ${runUrl}`,
+                "",
+                "### Next macro direction",
+                `- ${macroDirection[0]}`,
+                `- ${macroDirection[1]}`,
+                `- ${macroDirection[2]}`,
+              ].join("\n");
+
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: stateIssue.number,
+                body: budgetBody,
+              });
+            }
+
+            const issueBody = [
+              `Personal gallery auto-push state for \`${targetRepo}\`.`,
+              "",
+              `- auto_push_daily_limit: ${dailyLimit}`,
+              `- auto_push_day: ${today}`,
+              `- auto_push_today: ${pushCount}`,
+              `- auto_push_remaining: ${remaining}`,
+              `- budget_reached: ${budgetReached ? "yes" : "no"}`,
+              `- last_push_sha: ${pushSha ? `\`${pushSha.slice(0, 7)}\`` : "n/a"}`,
+              `- last_push_at: ${pushed ? nowIso : parseMarker(existingBody, "last_push_at") || "n/a"}`,
+              `- last_run_result: ${runResult}`,
+              "",
+              "This issue is managed automatically by workflow `Personal Gallery Auto Push`.",
+              `<!-- auto_push_day:${today} -->`,
+              `<!-- auto_push_count:${pushCount} -->`,
+              `<!-- last_push_sha:${pushSha || parseMarker(existingBody, "last_push_sha") || ""} -->`,
+              `<!-- last_push_at:${pushed ? nowIso : parseMarker(existingBody, "last_push_at") || ""} -->`,
+              `<!-- last_budget_alert_day:${shouldPostBudgetAlert ? today : lastBudgetAlertDay || ""} -->`,
+              `<!-- auto_push_daily_limit:${dailyLimit} -->`,
+              `<!-- last_checked_at:${nowIso} -->`,
+            ].join("\n");
+
+            await github.rest.issues.update({
+              owner,
+              repo,
+              issue_number: stateIssue.number,
+              body: issueBody,
+            });
+
+            core.setOutput("issue_number", String(stateIssue.number));
+            core.setOutput("push_count_today", String(pushCount));
+            core.setOutput("remaining", String(remaining));
+            core.setOutput("budget_reached", budgetReached ? "true" : "false");
+            core.setOutput("run_result", runResult);
+
+      - name: Job summary
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "## Personal Gallery Auto Push" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- issue_number: #${{ steps.report.outputs.issue_number }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- can_push_before_run: ${{ steps.state.outputs.can_push }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- patch_changed: ${{ steps.autopush.outputs.patch_changed }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- pushed: ${{ steps.autopush.outputs.pushed }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- push_count_today: ${{ steps.report.outputs.push_count_today }}/${{ steps.state.outputs.daily_limit }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- remaining_today: ${{ steps.report.outputs.remaining }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- budget_reached: ${{ steps.report.outputs.budget_reached }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- run_result: ${{ steps.report.outputs.run_result }}" >> "${GITHUB_STEP_SUMMARY}"

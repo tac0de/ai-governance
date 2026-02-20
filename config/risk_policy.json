@@ -1,0 +1,7 @@
+{
+  "max_tokens_per_call": 2000,
+  "max_iterations": 5,
+  "max_cost_per_day": 5,
+  "high_risk_actions": [],
+  "requires_manual_approval": []
+}

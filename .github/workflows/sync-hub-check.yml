@@ -1,0 +1,26 @@
+name: "main-hub: sync hub check"
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+  push:
+    branches: [main]
+
+concurrency:
+  group: sync-hub-check-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sync-hub-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate main-hub constitution scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x tools/repo_sweep.sh tools/main_hub_final_check.sh
+          bash tools/main_hub_final_check.sh

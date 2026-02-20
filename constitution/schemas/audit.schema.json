@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ai-governance/constitution/schemas/audit.schema.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "request_id", "status", "reason_code", "violations", "checksums"],
+  "properties": {
+    "version": { "const": "1.0" },
+    "request_id": { "type": "string", "format": "uuid" },
+    "status": { "type": "string", "enum": ["PASS", "REJECT"] },
+    "reason_code": {
+      "type": ["string", "null"],
+      "enum": [
+        null,
+        "HUNBUP_PLAN_SCHEMA_INVALID",
+        "HUNBUP_RESULT_SCHEMA_INVALID",
+        "HUNBUP_EVIDENCE_SCHEMA_INVALID",
+        "HUNBUP_ACTION_TYPE_NOT_ALLOWED",
+        "HUNBUP_COMMAND_ID_NOT_ALLOWED",
+        "HUNBUP_ENV_KEY_NOT_ALLOWED",
+        "HUNBUP_TIMEOUT_EXCEEDED",
+        "HUNBUP_EVIDENCE_MISSING_REQUIRED_FIELD",
+        "HUNBUP_HASH_MISMATCH",
+        "HUNBUP_NONDETERMINISTIC_OUTPUT"
+      ]
+    },
+    "violations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["code", "path", "message"],
+        "properties": {
+          "code": { "type": "string", "minLength": 1 },
+          "path": { "type": "string" },
+          "message": { "type": "string" }
+        }
+      }
+    },
+    "checksums": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["plan", "result", "evidence"],
+      "properties": {
+        "plan": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "result": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+        "evidence": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      }
+    }
+  }
+}

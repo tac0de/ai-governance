@@ -1,0 +1,776 @@
+name: "reusable: personal gallery change report"
+
+on:
+  workflow_call:
+    inputs:
+      target_owner:
+        required: true
+        type: string
+      target_repo:
+        required: true
+        type: string
+      monitor_issue_title:
+        required: false
+        default: "[gallery-monitor] personal-art-gallery change status"
+        type: string
+      stale_alert_days:
+        required: false
+        default: "2"
+        type: string
+      max_monitor_comments:
+        required: false
+        default: "90"
+        type: string
+      manual_proposals_default:
+        required: false
+        default: "off"
+        type: string
+    secrets:
+      repo_access_token:
+        required: false
+
+permissions: read-all
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    env:
+      TARGET_OWNER: ${{ inputs.target_owner }}
+      TARGET_REPO: ${{ inputs.target_repo }}
+      MONITOR_ISSUE_TITLE: ${{ inputs.monitor_issue_title }}
+      STALE_ALERT_DAYS: ${{ inputs.stale_alert_days }}
+      MAX_MONITOR_COMMENTS: ${{ inputs.max_monitor_comments }}
+      MANUAL_PROPOSALS_DEFAULT: ${{ inputs.manual_proposals_default }}
+    steps:
+      - name: Validate monitor token
+        shell: bash
+        env:
+          REPO_ACCESS_TOKEN: ${{ secrets.repo_access_token }}
+          GITHUB_TOKEN_FALLBACK: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          ACCESS_TOKEN="${REPO_ACCESS_TOKEN:-${GITHUB_TOKEN_FALLBACK:-}}"
+          if [[ -z "${ACCESS_TOKEN}" ]]; then
+            echo "Missing repo access token (repo_access_token or github.token)"
+            exit 1
+          fi
+
+      - name: Build and publish change report
+        id: report
+        uses: actions/github-script@v7
+        env:
+          REPO_ACCESS_TOKEN: ${{ secrets.repo_access_token }}
+          GITHUB_TOKEN_FALLBACK: ${{ github.token }}
+          TARGET_OWNER: ${{ env.TARGET_OWNER }}
+          TARGET_REPO: ${{ env.TARGET_REPO }}
+          MONITOR_ISSUE_TITLE: ${{ env.MONITOR_ISSUE_TITLE }}
+          STALE_ALERT_DAYS: ${{ env.STALE_ALERT_DAYS }}
+          MAX_MONITOR_COMMENTS: ${{ env.MAX_MONITOR_COMMENTS }}
+          MANUAL_PROPOSALS_DEFAULT: ${{ env.MANUAL_PROPOSALS_DEFAULT }}
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const targetOwner = process.env.TARGET_OWNER;
+            const targetRepo = process.env.TARGET_REPO;
+            const configuredIssueTitle = String(process.env.MONITOR_ISSUE_TITLE || "").trim();
+            const baseIssueTitle = configuredIssueTitle.replace(/\s+v\d+$/i, "").trim() || configuredIssueTitle;
+            const readerToken = process.env.REPO_ACCESS_TOKEN || process.env.GITHUB_TOKEN_FALLBACK || "";
+            const apiBase = "https://api.github.com";
+            const readerHeaders = {
+              Accept: "application/vnd.github+json",
+              Authorization: `Bearer ${readerToken}`,
+              "X-GitHub-Api-Version": "2022-11-28",
+              "User-Agent": "main-hub-personal-gallery-monitor",
+            };
+
+            async function readApi(path) {
+              const res = await fetch(`${apiBase}${path}`, { headers: readerHeaders });
+              if (!res.ok) {
+                const text = await res.text();
+                throw new Error(`reader ${res.status} ${path}: ${text}`);
+              }
+              return res.json();
+            }
+
+            function firstLine(text) {
+              return String(text || "").split("\n")[0].trim();
+            }
+
+            function parseMarker(body, key) {
+              const regex = new RegExp(`<!--\\s*${key}:([^>]+)\\s*-->`, "i");
+              const match = String(body || "").match(regex);
+              return match ? match[1].trim() : "";
+            }
+
+            function parseBoolean(value, defaultValue = false) {
+              const normalized = String(value || "").trim().toLowerCase();
+              if (!normalized) return defaultValue;
+              if (["1", "true", "yes", "on", "enabled"].includes(normalized)) return true;
+              if (["0", "false", "no", "off", "disabled"].includes(normalized)) return false;
+              return defaultValue;
+            }
+
+            function escapeRegExp(text) {
+              return String(text || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            }
+
+            function monitorIssueVersion(title, baseTitle) {
+              const normalizedTitle = String(title || "").trim();
+              if (!normalizedTitle || !baseTitle) return 0;
+              if (normalizedTitle === baseTitle) return 1;
+              const match = normalizedTitle.match(new RegExp(`^${escapeRegExp(baseTitle)} v(\\d+)$`, "i"));
+              if (!match) return 0;
+              const parsed = Number.parseInt(match[1], 10);
+              return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+            }
+
+            function isMonitorIssueTitle(title, baseTitle) {
+              return monitorIssueVersion(title, baseTitle) > 0;
+            }
+
+            function nextMonitorIssueTitle(currentTitle, baseTitle) {
+              const currentVersion = monitorIssueVersion(currentTitle, baseTitle);
+              const nextVersion = currentVersion >= 1 ? currentVersion + 1 : 2;
+              return `${baseTitle} v${nextVersion}`;
+            }
+
+            function formatDate(iso) {
+              if (!iso) return "n/a";
+              const d = new Date(iso);
+              return Number.isNaN(d.getTime()) ? iso : d.toISOString();
+            }
+
+            function classifySurface(filePath) {
+              const p = String(filePath || "").toLowerCase();
+              const uiPattern =
+                /(^|\/)(app|pages|components|ui|styles?|theme|layout|public|assets)(\/|$)|\.(css|scss|sass|less|svg|png|jpg|jpeg|webp)$/i;
+              const uxPattern =
+                /(^|\/)(routes?|navigation|nav|flow|state|hooks?|forms?|auth|checkout|onboarding|interaction|a11y|accessibility|api|services?)(\/|$)/i;
+              return {
+                ui: uiPattern.test(p),
+                ux: uxPattern.test(p),
+              };
+            }
+
+            function buildRecommendations(uiChanged, uxChanged) {
+              const options = [
+                {
+                  code: "A",
+                  title: "Quick monitor mode",
+                  description: "Keep release as-is and monitor next 24h feedback only.",
+                },
+                {
+                  code: "B",
+                  title: "UI visual check",
+                  description: "Run screenshot diff and adjust layout/visual hierarchy if drift exists.",
+                },
+                {
+                  code: "C",
+                  title: "UX flow review",
+                  description: "Review key task flow before next publish (navigation/form/interaction).",
+                },
+              ];
+
+              let recommended = "A";
+              if (uxChanged) recommended = "C";
+              else if (uiChanged) recommended = "B";
+              return { options, recommended };
+            }
+
+            async function readLatestChoice(issueNumber) {
+              const comments = await github.paginate(github.rest.issues.listComments, {
+                owner,
+                repo,
+                issue_number: issueNumber,
+                per_page: 100,
+              });
+
+              for (let i = comments.length - 1; i >= 0; i -= 1) {
+                const comment = comments[i];
+                const author = String(comment?.user?.login || "");
+                if (author.endsWith("[bot]")) continue;
+                const body = String(comment?.body || "");
+                const lines = body
+                  .split("\n")
+                  .map((line) => line.trim())
+                  .filter(Boolean);
+                const commandLine = lines.find((line) => /^\/gallery-choice\s+([ABC])\b/i.test(line));
+                if (!commandLine) continue;
+                const match = commandLine.match(/^\/gallery-choice\s+([ABC])\b/i);
+                if (!match) continue;
+                return {
+                  choice: String(match[1]).toUpperCase(),
+                  user: comment?.user?.login || "unknown",
+                  at: comment?.created_at || "",
+                };
+              }
+              return null;
+            }
+
+            async function readLatestManualProposalsToggle(issueNumber) {
+              const comments = await github.paginate(github.rest.issues.listComments, {
+                owner,
+                repo,
+                issue_number: issueNumber,
+                per_page: 100,
+              });
+
+              for (let i = comments.length - 1; i >= 0; i -= 1) {
+                const comment = comments[i];
+                const author = String(comment?.user?.login || "");
+                if (author.endsWith("[bot]")) continue;
+                const body = String(comment?.body || "");
+                const lines = body
+                  .split("\n")
+                  .map((line) => line.trim())
+                  .filter(Boolean);
+                const commandLine = lines.find((line) => /^\/manual-proposals?\s+(on|off)\b/i.test(line));
+                if (!commandLine) continue;
+                const match = commandLine.match(/^\/manual-proposals?\s+(on|off)\b/i);
+                if (!match) continue;
+                return {
+                  enabled: String(match[1]).toLowerCase() === "on",
+                  user: comment?.user?.login || "unknown",
+                  at: comment?.created_at || "",
+                };
+              }
+              return null;
+            }
+
+            const openIssues = await github.rest.issues.listForRepo({
+              owner,
+              repo,
+              state: "open",
+              per_page: 100,
+            });
+            const monitorCandidates = openIssues.data
+              .filter((item) => !item.pull_request && isMonitorIssueTitle(item.title, baseIssueTitle))
+              .sort((a, b) => {
+                const versionDiff =
+                  monitorIssueVersion(b.title, baseIssueTitle) - monitorIssueVersion(a.title, baseIssueTitle);
+                if (versionDiff !== 0) return versionDiff;
+                return Number(b.number) - Number(a.number);
+              });
+            let monitorIssue = monitorCandidates[0];
+
+            if (monitorCandidates.length > 1 && monitorIssue) {
+              for (const duplicate of monitorCandidates.slice(1)) {
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: duplicate.number,
+                  body: `Closing duplicate monitor issue. Canonical issue: #${monitorIssue.number}.`,
+                });
+                await github.rest.issues.update({
+                  owner,
+                  repo,
+                  issue_number: duplicate.number,
+                  state: "closed",
+                });
+              }
+            }
+
+            if (!monitorIssue) {
+              const manualDefault = parseBoolean(process.env.MANUAL_PROPOSALS_DEFAULT, false);
+              monitorIssue = (
+                await github.rest.issues.create({
+                  owner,
+                  repo,
+                  title: baseIssueTitle,
+                  body: [
+                    `Personal gallery monitor for \`${targetOwner}/${targetRepo}\`.`,
+                    "",
+                    `- operator_mode: ${manualDefault ? "MANUAL_PROPOSALS" : "AUTO"}`,
+                    "- comment `/manual-proposals on` to receive manual suggestion options",
+                    "- comment `/manual-proposals off` to keep AUTO mode signal-only reporting",
+                    "- AUTO mode posts issue comments only on change detection or action-required risk",
+                    "",
+                    "This issue is managed automatically.",
+                    `<!-- monitor_repo:${targetOwner}/${targetRepo} -->`,
+                    "<!-- last_seen_sha: -->",
+                    "<!-- last_seen_at: -->",
+                    "<!-- last_checked_at: -->",
+                    "<!-- last_stale_alert_at: -->",
+                    `<!-- manual_proposals_enabled:${manualDefault ? "true" : "false"} -->`,
+                  ].join("\n"),
+                })
+              ).data;
+            }
+
+            const existingBody = monitorIssue.body || "";
+            const manualDefault = parseBoolean(process.env.MANUAL_PROPOSALS_DEFAULT, false);
+            const manualMarker = parseMarker(existingBody, "manual_proposals_enabled");
+            const manualFromMarker = parseBoolean(manualMarker, manualDefault);
+            const manualToggle = await readLatestManualProposalsToggle(monitorIssue.number);
+            const manualProposalsEnabled = manualToggle ? manualToggle.enabled : manualFromMarker;
+            const operatorMode = manualProposalsEnabled ? "MANUAL_PROPOSALS" : "AUTO";
+            const lastSeenSha = parseMarker(existingBody, "last_seen_sha");
+            const lastSeenAt = parseMarker(existingBody, "last_seen_at");
+            const nowIso = new Date().toISOString();
+            const latestCommit = await readApi(`/repos/${targetOwner}/${targetRepo}/commits/main`);
+            const latestSha = String(latestCommit.sha || "");
+            const latestCommitDate = latestCommit?.commit?.author?.date || latestCommit?.commit?.committer?.date || "";
+            const latestCommitLine = firstLine(latestCommit?.commit?.message);
+            const staleAlertDays = Number.parseInt(process.env.STALE_ALERT_DAYS || "2", 10);
+            const maxMonitorComments = Number.parseInt(process.env.MAX_MONITOR_COMMENTS || "90", 10);
+
+            if (!latestSha) {
+              throw new Error("Failed to read latest commit SHA from target repo.");
+            }
+
+            const changed = lastSeenSha !== latestSha;
+            const lastStaleAlertAt = parseMarker(existingBody, "last_stale_alert_at");
+            const nowMs = Date.now();
+            const latestCommitMs = latestCommitDate ? new Date(latestCommitDate).getTime() : NaN;
+            const latestCommitAgeHours = Number.isFinite(latestCommitMs)
+              ? Math.max(0, Math.floor((nowMs - latestCommitMs) / (1000 * 60 * 60)))
+              : -1;
+            const latestCommitAgeDays = latestCommitAgeHours >= 0 ? Math.floor(latestCommitAgeHours / 24) : -1;
+            let commits = [];
+            let changedFiles = [];
+            let detectionMode = "list";
+
+            if (changed && lastSeenSha) {
+              try {
+                const compare = await readApi(`/repos/${targetOwner}/${targetRepo}/compare/${lastSeenSha}...${latestSha}`);
+                commits = Array.isArray(compare?.commits) ? compare.commits : [];
+                changedFiles = Array.isArray(compare?.files) ? compare.files : [];
+                detectionMode = "compare";
+              } catch (error) {
+                core.warning(`compare fallback: ${error.message}`);
+              }
+            }
+
+            if (changed && commits.length === 0) {
+              const listed = await readApi(`/repos/${targetOwner}/${targetRepo}/commits?sha=main&per_page=10`);
+              commits = Array.isArray(listed) ? listed : [];
+            }
+
+            if (changed && changedFiles.length === 0) {
+              try {
+                const latestDetail = await readApi(`/repos/${targetOwner}/${targetRepo}/commits/${latestSha}`);
+                changedFiles = Array.isArray(latestDetail?.files) ? latestDetail.files : [];
+                if (detectionMode !== "compare") detectionMode = "single_commit_files";
+              } catch (error) {
+                core.warning(`file list fallback: ${error.message}`);
+              }
+            }
+
+            const normalizedFiles = changedFiles.map((f) => ({
+              path: String(f?.filename || ""),
+              status: String(f?.status || "modified"),
+              additions: Number(f?.additions || 0),
+              deletions: Number(f?.deletions || 0),
+            }));
+
+            let uiTouches = 0;
+            let uxTouches = 0;
+            for (const file of normalizedFiles) {
+              const c = classifySurface(file.path);
+              if (c.ui) uiTouches += 1;
+              if (c.ux) uxTouches += 1;
+            }
+
+            const uiChanged = uiTouches > 0;
+            const uxChanged = uxTouches > 0;
+            const choice = manualProposalsEnabled ? await readLatestChoice(monitorIssue.number) : null;
+            const choiceLabel = manualProposalsEnabled
+              ? choice
+                ? `${choice.choice} by @${choice.user} at ${formatDate(choice.at)}`
+                : "none"
+              : "disabled in AUTO mode";
+            const manualModeLabel = manualToggle
+              ? `${manualProposalsEnabled ? "enabled" : "disabled"} by @${manualToggle.user} at ${formatDate(
+                  manualToggle.at
+                )}`
+              : `${manualProposalsEnabled ? "enabled" : "disabled"} (default/marker)`;
+
+            const { options, recommended } = buildRecommendations(uiChanged, uxChanged);
+            const lastStaleAlertMs = lastStaleAlertAt ? new Date(lastStaleAlertAt).getTime() : NaN;
+            const staleAlertIntervalMs = 24 * 60 * 60 * 1000;
+            const staleDetected = latestCommitAgeDays >= Math.max(1, staleAlertDays);
+            const shouldPostStaleAlert =
+              !changed &&
+              staleDetected &&
+              (!Number.isFinite(lastStaleAlertMs) || nowMs - lastStaleAlertMs >= staleAlertIntervalMs);
+
+            const sinceIso = lastSeenAt || new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+            let mergedPrs = [];
+            try {
+              const closedPrs = await readApi(
+                `/repos/${targetOwner}/${targetRepo}/pulls?state=closed&sort=updated&direction=desc&per_page=30`
+              );
+              mergedPrs = (Array.isArray(closedPrs) ? closedPrs : [])
+                .filter((pr) => pr.merged_at && pr.merged_at >= sinceIso)
+                .slice(0, 10);
+            } catch (error) {
+              core.warning(`pulls fallback: ${error.message}`);
+            }
+
+            if (changed) {
+              const commitLines = commits.slice(0, 10).map((commit) => {
+                const sha = String(commit.sha || "").slice(0, 7) || "unknown";
+                const message = firstLine(commit?.commit?.message);
+                const author = commit?.author?.login || commit?.commit?.author?.name || "unknown";
+                const date = formatDate(commit?.commit?.author?.date || commit?.commit?.committer?.date);
+                return `- \`${sha}\` ${message} (${author}, ${date})`;
+              });
+
+              const prLines = mergedPrs.length
+                ? mergedPrs.map((pr) => `- #${pr.number} ${pr.title} (merged at ${formatDate(pr.merged_at)})`)
+                : ["- none"];
+
+              const fileLines = normalizedFiles.length
+                ? normalizedFiles
+                    .slice(0, 20)
+                    .map((f) => `- \`${f.path}\` (${f.status}, +${f.additions}/-${f.deletions})`)
+                : ["- none"];
+
+              const recommendationLines = options.map((option) => {
+                const marker = option.code === recommended ? " (recommended)" : "";
+                return `- ${option.code}${marker}: ${option.title} - ${option.description}`;
+              });
+              const recommendationBlock = manualProposalsEnabled
+                ? [
+                    "### Recommended next action (choose one)",
+                    ...recommendationLines,
+                    "- how_to_choose: comment `/gallery-choice A` (or B/C) on this issue",
+                  ]
+                : [
+                    "### Mode",
+                    "- manual proposals: off (AUTO mode)",
+                    "- to request options: comment `/manual-proposals on`",
+                  ];
+
+              const reportBody = [
+                "## Personal Gallery Change Report",
+                "",
+                `- checked_at: ${nowIso}`,
+                `- target_repo: \`${targetOwner}/${targetRepo}\``,
+                `- latest_commit: \`${latestSha.slice(0, 7)}\``,
+                `- latest_commit_date: ${formatDate(latestCommitDate)}`,
+                `- latest_commit_message: ${latestCommitLine || "n/a"}`,
+                `- detection_mode: ${detectionMode}`,
+                `- workflow_run: ${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`,
+                "",
+                "### UI/UX change summary",
+                `- ui_change_detected: ${uiChanged ? "yes" : "no"} (${uiTouches} file touches)`,
+                `- ux_flow_change_detected: ${uxChanged ? "yes" : "no"} (${uxTouches} file touches)`,
+                `- operator_mode: ${operatorMode}`,
+                `- manual_proposals: ${manualModeLabel}`,
+                `- operator_choice: ${choiceLabel}`,
+                "",
+                "### Changed files",
+                ...fileLines,
+                "",
+                ...recommendationBlock,
+                "",
+                "### Recent commits",
+                ...(commitLines.length ? commitLines : ["- none"]),
+                "",
+                `### Merged PRs since ${formatDate(sinceIso)}`,
+                ...prLines,
+              ].join("\n");
+
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: monitorIssue.number,
+                body: reportBody,
+              });
+            }
+
+            if (!changed && shouldPostStaleAlert) {
+              const recommendationLines = options.map((option) => {
+                const marker = option.code === recommended ? " (recommended)" : "";
+                return `- ${option.code}${marker}: ${option.title} - ${option.description}`;
+              });
+              const recommendationBlock = manualProposalsEnabled
+                ? [
+                    "### Recommended next action (choose one)",
+                    ...recommendationLines,
+                    "- how_to_choose: comment `/gallery-choice A` (or B/C) on this issue",
+                  ]
+                : [
+                    "### Mode",
+                    "- manual proposals: off (AUTO mode)",
+                    "- to request options: comment `/manual-proposals on`",
+                  ];
+              const overrideStatus = manualProposalsEnabled
+                ? choice && choice.choice !== recommended
+                  ? `operator override active (\`${choice.choice}\` vs recommended \`${recommended}\`)`
+                  : "operator choice aligned or not set"
+                : "manual proposals disabled (AUTO mode)";
+              const staleAlertBody = [
+                "## Action Required: Personal Gallery Stale Risk",
+                "",
+                `- checked_at: ${nowIso}`,
+                `- target_repo: \`${targetOwner}/${targetRepo}\``,
+                `- latest_commit: \`${latestSha.slice(0, 7)}\``,
+                `- latest_commit_date: ${formatDate(latestCommitDate)}`,
+                `- latest_commit_age_hours: ${latestCommitAgeHours >= 0 ? latestCommitAgeHours : "n/a"}`,
+                `- latest_commit_age_days: ${latestCommitAgeDays >= 0 ? latestCommitAgeDays : "n/a"}`,
+                `- stale_detected: ${staleDetected ? "yes" : "no"} (threshold: ${staleAlertDays} days)`,
+                `- operator_mode: ${operatorMode}`,
+                `- manual_proposals: ${manualModeLabel}`,
+                `- operator_choice: ${choiceLabel}`,
+                `- recommendation_alignment: ${overrideStatus}`,
+                `- workflow_run: ${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`,
+                "",
+                "No new commits passed the stale threshold. Please decide the next action.",
+                "",
+                ...recommendationBlock,
+              ].join("\n");
+
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: monitorIssue.number,
+                body: staleAlertBody,
+              });
+            }
+
+            const finalSeenSha = changed ? latestSha : lastSeenSha;
+            const finalSeenAt = changed ? latestCommitDate : lastSeenAt;
+            const finalStaleAlertAt = !changed && shouldPostStaleAlert ? nowIso : lastStaleAlertAt;
+            const signalType = changed ? "change_report" : shouldPostStaleAlert ? "action_required_stale_risk" : "none";
+            const instructionLines = manualProposalsEnabled
+              ? [
+                  "Use `/gallery-choice A|B|C` in a comment to select the next action.",
+                  "Comment `/manual-proposals off` to hide manual suggestions and keep AUTO mode.",
+                ]
+              : [
+                  "Comment `/manual-proposals on` when you want manual suggestion options.",
+                  "AUTO mode is silent when no change/risk signal exists.",
+                ];
+            const issueBody = [
+              `Personal gallery monitor for \`${targetOwner}/${targetRepo}\`.`,
+              "",
+              `- last_checked_at: ${nowIso}`,
+              `- last_signal: ${signalType}`,
+              `- last_change_detected: ${changed ? "yes" : "no"}`,
+              `- last_seen_commit: ${finalSeenSha ? `\`${finalSeenSha.slice(0, 7)}\`` : "n/a"}`,
+              `- last_seen_commit_date: ${finalSeenAt ? formatDate(finalSeenAt) : "n/a"}`,
+              `- latest_commit_age_hours: ${latestCommitAgeHours >= 0 ? latestCommitAgeHours : "n/a"}`,
+              `- latest_commit_age_days: ${latestCommitAgeDays >= 0 ? latestCommitAgeDays : "n/a"}`,
+              `- stale_detected: ${staleDetected ? "yes" : "no"} (threshold: ${staleAlertDays} days)`,
+              `- operator_mode: ${operatorMode}`,
+              `- manual_proposals: ${manualModeLabel}`,
+              `- current_operator_choice: ${choiceLabel}`,
+              "",
+              ...instructionLines,
+              "",
+              "This issue is managed automatically by workflow `Personal Gallery Change Report`.",
+              `<!-- monitor_repo:${targetOwner}/${targetRepo} -->`,
+              `<!-- last_seen_sha:${finalSeenSha || ""} -->`,
+              `<!-- last_seen_at:${finalSeenAt || ""} -->`,
+              `<!-- last_checked_at:${nowIso} -->`,
+              `<!-- last_stale_alert_at:${finalStaleAlertAt || ""} -->`,
+              `<!-- manual_proposals_enabled:${manualProposalsEnabled ? "true" : "false"} -->`,
+            ].join("\n");
+
+            await github.rest.issues.update({
+              owner,
+              repo,
+              issue_number: monitorIssue.number,
+              body: issueBody,
+            });
+
+            let commentCountAfterUpdate = 0;
+            let rolledIssue = false;
+            let rolledIssueFrom = "";
+            let rolledIssueTo = "";
+
+            if (Number.isFinite(maxMonitorComments) && maxMonitorComments > 0) {
+              const commentsAfterUpdate = await github.paginate(github.rest.issues.listComments, {
+                owner,
+                repo,
+                issue_number: monitorIssue.number,
+                per_page: 100,
+              });
+              commentCountAfterUpdate = commentsAfterUpdate.length;
+
+              if (commentCountAfterUpdate >= maxMonitorComments) {
+                const rolloverIssueBody = [
+                  `Personal gallery monitor for \`${targetOwner}/${targetRepo}\`.`,
+                  "",
+                  `- rollover_from_issue: #${monitorIssue.number}`,
+                  `- rollover_reason: comment_limit_reached (${commentCountAfterUpdate}/${maxMonitorComments})`,
+                  `- last_checked_at: ${nowIso}`,
+                  `- last_signal: ${signalType}`,
+                  `- last_change_detected: ${changed ? "yes" : "no"}`,
+                  `- last_seen_commit: ${finalSeenSha ? `\`${finalSeenSha.slice(0, 7)}\`` : "n/a"}`,
+                  `- last_seen_commit_date: ${finalSeenAt ? formatDate(finalSeenAt) : "n/a"}`,
+                  `- latest_commit_age_days: ${latestCommitAgeDays >= 0 ? latestCommitAgeDays : "n/a"}`,
+                  `- stale_detected: ${staleDetected ? "yes" : "no"} (threshold: ${staleAlertDays} days)`,
+                  `- operator_mode: ${operatorMode}`,
+                  `- manual_proposals: ${manualModeLabel}`,
+                  `- current_operator_choice: ${choiceLabel}`,
+                  "",
+                  ...instructionLines,
+                  "",
+                  "This issue is managed automatically by workflow `Personal Gallery Change Report`.",
+                  `<!-- monitor_repo:${targetOwner}/${targetRepo} -->`,
+                  `<!-- rollover_from_issue:${monitorIssue.number} -->`,
+                  `<!-- last_seen_sha:${finalSeenSha || ""} -->`,
+                  `<!-- last_seen_at:${finalSeenAt || ""} -->`,
+                  `<!-- last_checked_at:${nowIso} -->`,
+                  `<!-- last_stale_alert_at:${finalStaleAlertAt || ""} -->`,
+                  `<!-- manual_proposals_enabled:${manualProposalsEnabled ? "true" : "false"} -->`,
+                ].join("\n");
+
+                const nextIssue = (
+                  await github.rest.issues.create({
+                    owner,
+                    repo,
+                    title: nextMonitorIssueTitle(monitorIssue.title || baseIssueTitle, baseIssueTitle),
+                    body: rolloverIssueBody,
+                  })
+                ).data;
+
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: monitorIssue.number,
+                  body: [
+                    "## Monitor Issue Rolled Over",
+                    "",
+                    `- checked_at: ${nowIso}`,
+                    `- reason: comment_limit_reached (${commentCountAfterUpdate}/${maxMonitorComments})`,
+                    `- next_issue: #${nextIssue.number}`,
+                  ].join("\n"),
+                });
+
+                await github.rest.issues.update({
+                  owner,
+                  repo,
+                  issue_number: monitorIssue.number,
+                  state: "closed",
+                });
+
+                rolledIssue = true;
+                rolledIssueFrom = String(monitorIssue.number);
+                rolledIssueTo = String(nextIssue.number);
+                monitorIssue = nextIssue;
+              }
+            }
+
+            const signalCommentPosted = changed || shouldPostStaleAlert;
+            core.setOutput("changed", String(changed));
+            core.setOutput("issue_number", String(monitorIssue.number));
+            core.setOutput("latest_sha", latestSha);
+            core.setOutput("latest_commit_date", latestCommitDate || "");
+            core.setOutput("recommended_option", recommended);
+            core.setOutput("current_operator_choice", choice?.choice || "");
+            core.setOutput("manual_proposals_enabled", manualProposalsEnabled ? "true" : "false");
+            core.setOutput("operator_mode", operatorMode);
+            core.setOutput("checked_at", nowIso);
+            core.setOutput("signal_type", signalType);
+            core.setOutput("signal_comment_posted", signalCommentPosted ? "true" : "false");
+            core.setOutput("latest_commit_age_days", latestCommitAgeDays >= 0 ? String(latestCommitAgeDays) : "");
+            core.setOutput("stale_detected", staleDetected ? "true" : "false");
+            core.setOutput("posted_stale_alert", shouldPostStaleAlert ? "true" : "false");
+            core.setOutput("max_monitor_comments", Number.isFinite(maxMonitorComments) ? String(maxMonitorComments) : "");
+            core.setOutput("monitor_comment_count", String(commentCountAfterUpdate));
+            core.setOutput("rolled_issue", rolledIssue ? "true" : "false");
+            core.setOutput("rolled_issue_from", rolledIssueFrom);
+            core.setOutput("rolled_issue_to", rolledIssueTo);
+
+      - name: Write status artifact
+        if: always()
+        shell: bash
+        env:
+          CHECKED_AT: ${{ steps.report.outputs.checked_at }}
+          CHANGED: ${{ steps.report.outputs.changed }}
+          SIGNAL_TYPE: ${{ steps.report.outputs.signal_type }}
+          SIGNAL_COMMENT_POSTED: ${{ steps.report.outputs.signal_comment_posted }}
+          ISSUE_NUMBER: ${{ steps.report.outputs.issue_number }}
+          LATEST_SHA: ${{ steps.report.outputs.latest_sha }}
+          LATEST_COMMIT_DATE: ${{ steps.report.outputs.latest_commit_date }}
+          LATEST_COMMIT_AGE_DAYS: ${{ steps.report.outputs.latest_commit_age_days }}
+          STALE_DETECTED: ${{ steps.report.outputs.stale_detected }}
+          POSTED_STALE_ALERT: ${{ steps.report.outputs.posted_stale_alert }}
+          OPERATOR_MODE: ${{ steps.report.outputs.operator_mode }}
+          MANUAL_PROPOSALS_ENABLED: ${{ steps.report.outputs.manual_proposals_enabled }}
+          CURRENT_OPERATOR_CHOICE: ${{ steps.report.outputs.current_operator_choice }}
+          RECOMMENDED_OPTION: ${{ steps.report.outputs.recommended_option }}
+          MAX_MONITOR_COMMENTS: ${{ steps.report.outputs.max_monitor_comments }}
+          MONITOR_COMMENT_COUNT: ${{ steps.report.outputs.monitor_comment_count }}
+          ROLLED_ISSUE: ${{ steps.report.outputs.rolled_issue }}
+          ROLLED_ISSUE_FROM: ${{ steps.report.outputs.rolled_issue_from }}
+          ROLLED_ISSUE_TO: ${{ steps.report.outputs.rolled_issue_to }}
+          WORKFLOW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          mkdir -p .ops
+          node - <<'NODE'
+          const fs = require("fs");
+
+          function toBool(v) {
+            return String(v || "").toLowerCase() === "true";
+          }
+
+          const out = {
+            checked_at: process.env.CHECKED_AT || "",
+            changed: toBool(process.env.CHANGED),
+            signal_type: process.env.SIGNAL_TYPE || "",
+            signal_comment_posted: toBool(process.env.SIGNAL_COMMENT_POSTED),
+            issue_number: process.env.ISSUE_NUMBER || "",
+            latest_sha: process.env.LATEST_SHA || "",
+            latest_commit_date: process.env.LATEST_COMMIT_DATE || "",
+            latest_commit_age_days: process.env.LATEST_COMMIT_AGE_DAYS || "",
+            stale_detected: toBool(process.env.STALE_DETECTED),
+            posted_stale_alert: toBool(process.env.POSTED_STALE_ALERT),
+            operator_mode: process.env.OPERATOR_MODE || "",
+            manual_proposals_enabled: toBool(process.env.MANUAL_PROPOSALS_ENABLED),
+            current_operator_choice: process.env.CURRENT_OPERATOR_CHOICE || "",
+            recommended_option: process.env.RECOMMENDED_OPTION || "",
+            max_monitor_comments: process.env.MAX_MONITOR_COMMENTS || "",
+            monitor_comment_count: process.env.MONITOR_COMMENT_COUNT || "",
+            rolled_issue: toBool(process.env.ROLLED_ISSUE),
+            rolled_issue_from: process.env.ROLLED_ISSUE_FROM || "",
+            rolled_issue_to: process.env.ROLLED_ISSUE_TO || "",
+            workflow_run_url: process.env.WORKFLOW_RUN_URL || "",
+          };
+
+          fs.writeFileSync(".ops/personal_gallery_change_report_status.json", `${JSON.stringify(out, null, 2)}\n`);
+          NODE
+
+      - name: Upload status artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: personal-gallery-change-report-status
+          path: .ops/personal_gallery_change_report_status.json
+          if-no-files-found: error
+
+      - name: Job summary
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "## Personal Gallery Change Report" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- checked_at: ${{ steps.report.outputs.checked_at }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- changed: ${{ steps.report.outputs.changed }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- signal_type: ${{ steps.report.outputs.signal_type }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- signal_comment_posted: ${{ steps.report.outputs.signal_comment_posted }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- issue_number: #${{ steps.report.outputs.issue_number }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- latest_sha: ${{ steps.report.outputs.latest_sha }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- latest_commit_date: ${{ steps.report.outputs.latest_commit_date }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- latest_commit_age_days: ${{ steps.report.outputs.latest_commit_age_days }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- stale_detected: ${{ steps.report.outputs.stale_detected }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- posted_stale_alert: ${{ steps.report.outputs.posted_stale_alert }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- operator_mode: ${{ steps.report.outputs.operator_mode }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- manual_proposals_enabled: ${{ steps.report.outputs.manual_proposals_enabled }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- current_operator_choice: ${{ steps.report.outputs.current_operator_choice }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- recommended_option: ${{ steps.report.outputs.recommended_option }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- monitor_comment_count: ${{ steps.report.outputs.monitor_comment_count }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- max_monitor_comments: ${{ steps.report.outputs.max_monitor_comments }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- rolled_issue: ${{ steps.report.outputs.rolled_issue }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- rolled_issue_from: ${{ steps.report.outputs.rolled_issue_from }}" >> "${GITHUB_STEP_SUMMARY}"
+          echo "- rolled_issue_to: ${{ steps.report.outputs.rolled_issue_to }}" >> "${GITHUB_STEP_SUMMARY}"

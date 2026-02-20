@@ -1,0 +1,16 @@
+{
+  "version": "1.0",
+  "request_id": "11111111-1111-4111-8111-111111111111",
+  "actions": [
+    {
+      "id": "a1",
+      "type": "local_exec",
+      "command_id": "ECHO",
+      "args": ["hello-v0"],
+      "timeout_sec": 30,
+      "env": {
+        "SAFE_MODE": "true"
+      }
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "files.exclude": {
+    "_artifacts": true,
+    ".archive": true,
+    ".ops": true
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "version": "1.0",
+  "codes": [
+    {
+      "code": "HUNBUP_PLAN_SCHEMA_INVALID",
+      "severity": "error",
+      "description": "Plan JSON does not satisfy plan.schema.json"
+    },
+    {
+      "code": "HUNBUP_RESULT_SCHEMA_INVALID",
+      "severity": "error",
+      "description": "Result JSON does not satisfy result.schema.json"
+    },
+    {
+      "code": "HUNBUP_EVIDENCE_SCHEMA_INVALID",
+      "severity": "error",
+      "description": "Evidence JSON does not satisfy evidence.schema.json"
+    },
+    {
+      "code": "HUNBUP_ACTION_TYPE_NOT_ALLOWED",
+      "severity": "error",
+      "description": "Action type is not allowed by runtime policy"
+    },
+    {
+      "code": "HUNBUP_COMMAND_ID_NOT_ALLOWED",
+      "severity": "error",
+      "description": "Command ID is not allowlisted"
+    },
+    {
+      "code": "HUNBUP_ENV_KEY_NOT_ALLOWED",
+      "severity": "error",
+      "description": "Environment key is not allowlisted"
+    },
+    {
+      "code": "HUNBUP_TIMEOUT_EXCEEDED",
+      "severity": "error",
+      "description": "Action execution exceeded timeout"
+    },
+    {
+      "code": "HUNBUP_EVIDENCE_MISSING_REQUIRED_FIELD",
+      "severity": "error",
+      "description": "Evidence is structurally valid but missing required runtime semantics"
+    },
+    {
+      "code": "HUNBUP_HASH_MISMATCH",
+      "severity": "error",
+      "description": "Checksums or derived hashes are inconsistent"
+    },
+    {
+      "code": "HUNBUP_NONDETERMINISTIC_OUTPUT",
+      "severity": "error",
+      "description": "Reproduced audit result differs under equivalent inputs"
+    }
+  ]
+}

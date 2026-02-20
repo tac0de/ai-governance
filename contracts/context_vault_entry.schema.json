@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Context Vault Entry",
+  "description": "Append-only context memory entry for cross-session continuity.",
+  "type": "object",
+  "required": [
+    "version",
+    "id",
+    "timestamp",
+    "project",
+    "session_id",
+    "source",
+    "type",
+    "summary",
+    "importance"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 8,
+      "maxLength": 128
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "project": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 128
+    },
+    "session_id": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 128
+    },
+    "source": {
+      "type": "string",
+      "enum": ["operator", "assistant", "system"]
+    },
+    "type": {
+      "type": "string",
+      "enum": ["decision", "task", "insight", "bug", "metric", "note"]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 4,
+      "maxLength": 400
+    },
+    "details": {
+      "type": "string",
+      "maxLength": 4000
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64
+      },
+      "maxItems": 20
+    },
+    "related_paths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 300
+      },
+      "maxItems": 30
+    },
+    "trace_id": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "importance": {
+      "type": "string",
+      "enum": ["low", "medium", "high"]
+    },
+    "prev_hash": {
+      "type": "string",
+      "maxLength": 128
+    },
+    "record_hash": {
+      "type": "string",
+      "maxLength": 128
+    }
+  },
+  "additionalProperties": false
+}

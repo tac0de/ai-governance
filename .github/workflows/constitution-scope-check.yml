@@ -1,0 +1,49 @@
+name: "main-hub: constitution scope check"
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  constitution-scope-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Enforce control-plane path policy in main-hub
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PUSH_BEFORE_SHA: ${{ github.event.before }}
+          PUSH_AFTER_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+
+          if [[ "${EVENT_NAME}" == "pull_request" ]]; then
+            BASE="${PR_BASE_SHA}"
+            HEAD="${PR_HEAD_SHA}"
+          else
+            BASE="${PUSH_BEFORE_SHA}"
+            HEAD="${PUSH_AFTER_SHA}"
+          fi
+
+          if [[ -z "${BASE}" || "${BASE}" == "0000000000000000000000000000000000000000" ]]; then
+            BASE=""
+          fi
+
+          chmod +x tools/control_plane_guard.sh
+          bash tools/control_plane_guard.sh "${BASE}" "${HEAD}"
+
+      - name: Validate ENV fuse policy
+        shell: bash
+        run: |
+          set -euo pipefail
+          chmod +x tools/validate_env_fuse.sh
+          bash tools/validate_env_fuse.sh config/env_fuse_policy.example.json

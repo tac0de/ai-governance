@@ -1,0 +1,59 @@
+name: "org: openai admin audit"
+
+on:
+  schedule:
+    - cron: "23 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate admin key secret
+        shell: bash
+        env:
+          OPENAI_ADMIN_API_KEY: ${{ secrets.OPENAI_ADMIN_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [[ -z "${OPENAI_ADMIN_API_KEY}" ]]; then
+            echo "Missing secret OPENAI_ADMIN_API_KEY"
+            exit 1
+          fi
+
+      - name: Run read-only admin audit
+        shell: bash
+        env:
+          OPENAI_ADMIN_API_KEY: ${{ secrets.OPENAI_ADMIN_API_KEY }}
+          OPENAI_ADMIN_AUDIT_STRICT: "false"
+        run: |
+          set -euo pipefail
+          node tools/openai_admin_audit.js \
+            --out-json .ops/openai_admin_audit_report.json \
+            --out-md .ops/openai_admin_audit_report.md
+
+      - name: Upload audit artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: openai-admin-audit
+          path: |
+            .ops/openai_admin_audit_report.json
+            .ops/openai_admin_audit_report.md
+
+      - name: Job summary
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo "## OpenAI Admin Audit" >> "${GITHUB_STEP_SUMMARY}"
+          if [[ -f .ops/openai_admin_audit_report.md ]]; then
+            sed -n '1,120p' .ops/openai_admin_audit_report.md >> "${GITHUB_STEP_SUMMARY}"
+          else
+            echo "- report not generated" >> "${GITHUB_STEP_SUMMARY}"
+          fi

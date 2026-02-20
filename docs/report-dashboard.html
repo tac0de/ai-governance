@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Service Report Dashboard</title>
+    <style>
+      :root {
+        --bg: #f4f7f3;
+        --panel: #ffffff;
+        --text: #102215;
+        --muted: #5a6b5e;
+        --line: #d9e2d9;
+        --accent: #116d3b;
+        --active: #0d7b43;
+        --planned: #8e6d08;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Space Grotesk", "IBM Plex Sans KR", "Noto Sans", sans-serif;
+        background:
+          radial-gradient(circle at 20% 0%, #d6efdd 0, transparent 34%),
+          radial-gradient(circle at 88% 15%, #ffe8c2 0, transparent 24%),
+          var(--bg);
+        color: var(--text);
+      }
+
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 32px 20px 44px;
+      }
+
+      .hero {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        padding: 22px 24px;
+      }
+
+      .title {
+        margin: 0 0 6px;
+        font-size: 30px;
+        letter-spacing: -0.02em;
+      }
+
+      .subtitle {
+        margin: 0;
+        color: var(--muted);
+        font-size: 15px;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .card {
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: #fbfcfb;
+        padding: 12px 14px;
+      }
+
+      .card h3 {
+        margin: 0 0 4px;
+        font-size: 12px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .card strong {
+        font-size: 24px;
+      }
+
+      table {
+        width: 100%;
+        margin-top: 16px;
+        border-collapse: collapse;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        overflow: hidden;
+      }
+
+      th,
+      td {
+        text-align: left;
+        padding: 12px 10px;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+        font-size: 14px;
+      }
+
+      th {
+        background: #f8faf8;
+        color: #2a3c2d;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      .chip {
+        display: inline-block;
+        border-radius: 999px;
+        padding: 3px 9px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .chip.active {
+        background: #d8f2e2;
+        color: var(--active);
+      }
+
+      .chip.planned {
+        background: #fceecb;
+        color: var(--planned);
+      }
+
+      .footer {
+        margin-top: 14px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <section class="hero">
+        <h1 class="title">Kernel Service Report Dashboard</h1>
+        <p class="subtitle">
+          Service-level reporting view for executive monitoring (not feature-level detail).
+        </p>
+        <div class="stats">
+          <div class="card">
+            <h3>Total Services</h3>
+            <strong>7</strong>
+          </div>
+          <div class="card">
+            <h3>Active</h3>
+            <strong>5</strong>
+          </div>
+          <div class="card">
+            <h3>Planned</h3>
+            <strong>2</strong>
+          </div>
+          <div class="card">
+            <h3>Review Trigger</h3>
+            <strong>New MCP / Status Change</strong>
+          </div>
+        </div>
+      </section>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Layer</th>
+            <th>Status</th>
+            <th>Owner</th>
+            <th>Primary KPI</th>
+            <th>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Kernel Core Runtime</td>
+            <td>Engine</td>
+            <td><span class="chip active">Active</span></td>
+            <td>AI Operator (President)</td>
+            <td>Runtime health pass rate</td>
+            <td>Core execution and storage runtime for platform logic.</td>
+          </tr>
+          <tr>
+            <td>Local Runner Service</td>
+            <td>Engine</td>
+            <td><span class="chip active">Active</span></td>
+            <td>AI Operator (President)</td>
+            <td>Deterministic replay pass rate</td>
+            <td>Deterministic local doctor/gate/report execution flow.</td>
+          </tr>
+          <tr>
+            <td>Obsidian MCP Service</td>
+            <td>Integration</td>
+            <td><span class="chip active">Active</span></td>
+            <td>MCP Sub-agent (Integration)</td>
+            <td>MCP success request ratio</td>
+            <td>Vault note bridge for listing/reading/change workflows.</td>
+          </tr>
+          <tr>
+            <td>Workflow MCP Service</td>
+            <td>Integration</td>
+            <td><span class="chip active">Active</span></td>
+            <td>MCP Sub-agent (Integration)</td>
+            <td>MCP tool-call success ratio</td>
+            <td>Workflow utility tools for orchestration support.</td>
+          </tr>
+          <tr>
+            <td>Usage Bridge Service</td>
+            <td>Integration</td>
+            <td><span class="chip planned">Planned</span></td>
+            <td>MCP Sub-agent (Planned)</td>
+            <td>Telemetry capture completeness</td>
+            <td>Usage and telemetry bridge layer for runtime insight.</td>
+          </tr>
+          <tr>
+            <td>Trends MCP Service</td>
+            <td>Integration</td>
+            <td><span class="chip planned">Planned</span></td>
+            <td>MCP Sub-agent (Planned)</td>
+            <td>Source freshness coverage</td>
+            <td>Trend and data connector slot for future integrations.</td>
+          </tr>
+          <tr>
+            <td>Ops Automation Service</td>
+            <td>Engine Tools</td>
+            <td><span class="chip active">Active</span></td>
+            <td>AI Operator (President)</td>
+            <td>Guard check pass rate</td>
+            <td>Operational automation, validation, and guard routines.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="footer">
+        Source: <code>docs/57_SERVICE_REPORT_SHEET.md</code> | Keep this dashboard updated when service status changes.
+      </p>
+    </main>
+  </body>
+</html>

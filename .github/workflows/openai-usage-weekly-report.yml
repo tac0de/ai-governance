@@ -1,0 +1,72 @@
+name: "org: openai usage weekly report"
+
+on:
+  schedule:
+    - cron: "17 4 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  usage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build usage snapshot
+        id: usage
+        env:
+          OPENAI_ADMIN_API_KEY: ${{ secrets.OPENAI_ADMIN_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -euo pipefail
+          mkdir -p .ops
+          node tools/openai_usage_snapshot.js --window-days 7 1> .ops/openai_usage_weekly.json 2> .ops/openai_usage_weekly.md
+          echo "ok=true" >> "$GITHUB_OUTPUT"
+
+      - name: Upload usage artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: openai-usage-weekly
+          path: |
+            .ops/openai_usage_weekly.json
+            .ops/openai_usage_weekly.md
+
+      - name: Create weekly issue report
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require("fs");
+            let body = "Usage snapshot was not generated.";
+            if (fs.existsSync(".ops/openai_usage_weekly.md")) {
+              body = fs.readFileSync(".ops/openai_usage_weekly.md", "utf8");
+            }
+            const today = new Date().toISOString().slice(0, 10);
+            const title = `[AUTO] OpenAI Usage Weekly - ${today}`;
+            const listed = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              per_page: 100
+            });
+            const existing = listed.data.find((i) => i.title === title);
+            if (existing) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body
+              });
+            }
