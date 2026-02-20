@@ -8,6 +8,7 @@ on:
       secret_tier:
         description: "none | admin-only | repo-write"
         required: false
+        default: admin-only
         type: string
 
 permissions: read-all
@@ -31,9 +32,9 @@ jobs:
       - name: Enforce secrets tier gate
         run: |
           set -euo pipefail
-          tier="${SECRET_TIER_INPUT:-${SECRET_TIER_REPO_VAR:-none}}"
+          tier="${SECRET_TIER_INPUT:-${SECRET_TIER_REPO_VAR:-admin-only}}"
           if [ -z "$tier" ]; then
-            tier="none"
+            tier="admin-only"
           fi
           case "$tier" in
             none)
