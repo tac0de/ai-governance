@@ -16,3 +16,6 @@
 ## Execution
 - Prefer direct action over discussion for low-risk tasks.
 - Keep changes deterministic, minimal, and maintainable.
+
+## Cognitive-load policy
+- Default response format: 1) 무엇: 2) 왜 중요: 3) 지금 할 일 1개:
