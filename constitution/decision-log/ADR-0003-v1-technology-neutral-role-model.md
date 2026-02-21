@@ -3,6 +3,9 @@
 ## Status
 Accepted
 
+## Related ADR
+- Supplemental operational binding: `ADR-0006-hybrid-mcp-governance-binding.md`
+
 ## Context
 The v1 role model separates AI Government and AI Enterprise responsibilities.
 There is a risk of coupling governance roles to implementation protocols (for example MCP),

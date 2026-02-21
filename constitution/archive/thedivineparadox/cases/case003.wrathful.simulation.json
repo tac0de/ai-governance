@@ -1,0 +1,21 @@
+{
+  "version": "0.1",
+  "case_id": "thedivineparadox-case003-wrathful",
+  "window_size": 1000,
+  "inputs": {
+    "cooperation_ratio": 0.20,
+    "greed_ratio": 0.35,
+    "abuse_ratio": 0.45
+  },
+  "formula": "S=(1.2*C)-(1.0*G)-(1.5*A)",
+  "computed": {
+    "score": -0.785,
+    "rounded_score_3dp": -0.785
+  },
+  "expected": {
+    "mood": "WRATHFUL",
+    "reward_probability": 0.05,
+    "track": "local-simulation"
+  },
+  "notes": "Abuse-dominant global state"
+}

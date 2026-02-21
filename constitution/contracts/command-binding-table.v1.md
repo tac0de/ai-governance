@@ -6,6 +6,7 @@ Provide a deterministic mapping between governance command identifiers (`command
 ## Source of Truth
 - Runtime implementation: `control-plane/go/internal/cli/commands.go`
 - Governance command taxonomy: `constitution/contracts/command-system.v1.md`
+- MCP authority segmentation: `constitution/contracts/mcp-authority-unit-table.v1.md`
 
 ## Binding Matrix
 

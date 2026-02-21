@@ -1,107 +1,28 @@
 # ai-governance
 
-ai-governance is a deterministic, schema-enforced execution and audit framework.
+ai-governance is a human-led governance repository.
 
-## Runtime Baseline
+## Human Governance First
 
-The current runtime architecture is:
+- Primary output is governance decisions and contracts.
+- Internal layer is government authority (boundary, policy, audit).
+- External layer is enterprise delivery (market fit, growth, revenue).
+- Internal and external authority must remain separated.
 
-- Primary runtime: control-plane-go
-- Integrity module: audit-core/rust
-- Legacy runtime: .legacy/hub (TypeScript, deprecated and not used)
+## What You Should Read First
 
-Only control-plane-go and audit-core/rust are part of the supported execution path.
+1. `constitution/HUMAN_GOVERNANCE_BRIEF_V1.md`
+2. `constitution/charter/AI_GOVERNANCE_ROLES_V1.md`
+3. `constitution/contracts/trace-protocol.v1.md`
+4. `constitution/policies/RELEASE_GOVERNANCE_GATE_POLICY_V1.md`
 
-The directory .legacy/hub is retained for historical reference and must not be used in development, testing, or quickstart flows.
+## Decision Baseline
 
-## Architecture Overview
+- Role model remains protocol-agnostic at constitutional level.
+- Operational execution uses jurisdiction-scoped ministry contracts.
+- All change delivery is PR-gated with deterministic evidence.
 
-- control-plane-go
- - Orchestration
- - Process control
- - I/O handling
- - Schema validation
+## Technical Appendix
 
-- audit-core/rust
- - Canonicalization
- - SHA-256 hashing
- - Checksum verification
- - Deterministic integrity enforcement
-
-control-plane-go invokes audit-core/rust for integrity-sensitive operations.
-
-## Quickstart
-
-Prerequisites:
-
-- Go (stable)
-- Rust (stable toolchain)
-
-Build and run primary runtime:
-
-- Build Go runtime from control-plane-go
-- Build Rust integrity module from audit-core/rust
-
-Do not use .legacy/hub for quickstart or execution.
-
-## Determinism
-
-All audit flows must:
-
-- Pass JSON Schema validation
-- Produce deterministic canonical serialization
-- Match SHA-256 checksums for plan/result/evidence
-
-Integrity verification is enforced by audit-core/rust.
-
-## Operations (Single View)
-
-This repository uses a secrets tier model for conservative automation.
-
-- `none`: no secrets required
-- `admin-only`: requires `OPENAI_ADMIN_API_KEY`
-- `repo-write`: requires `OPENAI_ADMIN_API_KEY` and `REPO_ACCESS_TOKEN`
-
-Workflows:
-- `governance-autonomous-sweep`: supports `workflow_dispatch` input `secret_tier`
-- `release-governance-gate`: supports `workflow_dispatch` input `secret_tier`
-
-Resolution order:
-1. `workflow_dispatch` input `secret_tier`
-2. repository variable `SECRET_TIER`
-3. fallback `admin-only`
-
-If required secrets for selected tier are missing, workflow fails immediately.
-Operating profile version baseline: `OPM_VERSION=v1`.
-Policy source: `constitution/policies/OPERATING_PROFILE_MATRIX_V1.md`
-- role-command policy: `constitution/policies/ROLE_COMMAND_AUTHZ_POLICY_V1.md`
-- command binding table: `constitution/contracts/command-binding-table.v1.md`
-- release gate policy: `constitution/policies/RELEASE_GOVERNANCE_GATE_POLICY_V1.md`
-- done gate policy: `constitution/policies/DONE_GATE_POLICY_V1.md`
-- thedivineparadox onboarding: `constitution/charter/THE_DIVINE_PARADOX_ONBOARDING_V1.md`
-- thedivineparadox bootstrap ADR: `constitution/decision-log/ADR-0005-thedivineparadox-bootstrap-v1.md`
-- thedivineparadox MVP spec: `constitution/contracts/THE_DIVINE_PARADOX_MVP_SPEC_V0_1.md`
-- game level design department: `constitution/charter/GAME_LEVEL_DESIGN_DEPARTMENT_V1.md`
-- game UI department: `constitution/charter/GAME_UI_DEPARTMENT_V1.md`
-
-### Action Required
-
-- `audit.status != PASS`
-- `reason_code != null`
-- `secret tier gate failed`
-- `operating profile version gate failed`
-
-## Delivery Track (Design -> Build -> Validate)
-
-1. Design Lock
-- Freeze architecture intent, governance boundary, and acceptance criteria.
-- No implementation changes are allowed before design lock.
-
-2. Build
-- Implement only within the locked design scope.
-- Keep runtime behavior deterministic and schema-enforced.
-
-3. Validate
-- Validate API/contract behavior first.
-- Validate UI/UX quality as a separate step when needed.
-- Playwright is a validation tool for this stage, not a design or implementation prerequisite.
+Technical implementation details are intentionally moved out of the main view.
+Use `constitution/TECHNICAL_APPENDIX_V1.md` only when runtime-level verification is required.

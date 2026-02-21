@@ -24,6 +24,7 @@ This model is normative and is used for policy enforcement and audit interpretat
 - The role model is protocol-agnostic and implementation-agnostic.
 - MCP is an optional integration mechanism, not a governance role.
 - No policy or audit decision may depend on a specific protocol name.
+- Operational protocol requirements are defined outside this charter by contract/policy documents.
 
 ## Role Set
 
@@ -61,7 +62,28 @@ This model is normative and is used for policy enforcement and audit interpretat
 - Converts level-state and policy constraints into readable UX.
 - Must preserve governance-critical visibility and accessibility baselines.
 
+### 8) Game Engine Department (AI Enterprise: Platform Department)
+- Owns runtime rendering and deterministic animation contracts.
+- Converts UI/level requirements into stable engine behavior across device profiles.
+- Must preserve fallback-safe runtime behavior under constrained clients.
+
+### 9) Webgame Reference Intelligence Department (AI Enterprise: Intelligence Department)
+- Owns benchmark-grade reference acquisition and provenance.
+- Converts benchmark questions into traceable reference artifacts.
+- Must preserve source traceability and release-linked evidence quality.
+
 ## Separation of Duties
 - Planning, execution, and audit must remain separate.
 - No single role can self-authorize and self-audit the same action.
 - Role conflicts must be recorded in decision-log before rollout.
+
+## Market Layer Overlay (Enterprise View)
+
+This overlay is descriptive for enterprise accountability and does not replace constitutional roles.
+
+| Market Layer Role | Constitutional Mapping | Constraint |
+|---|---|---|
+| `CEO (strategy)` | `StrategyBoard` | strategy authority only, no direct runtime execution |
+| `CTO (execution integrity)` | `ControlPlaneOperator` + `AuditCore` integrity ownership | execution must remain policy-bound and auditable |
+| `Head of Product (market fit)` | `DomainUnit` | policy-constrained planning only |
+| `Head of Revenue (distribution)` | `DomainUnit` | distribution authority cannot override governance boundary |

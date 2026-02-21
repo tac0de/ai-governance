@@ -19,6 +19,7 @@ _artifacts/
 hub/dist/
 hub/.vitest/
 out/
+.vscode/
 
 .archive/
 

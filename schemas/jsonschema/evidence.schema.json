@@ -5,8 +5,12 @@
   "additionalProperties": false,
   "required": ["version", "request_id", "actions", "platform"],
   "properties": {
-    "version": { "const": "1.0" },
+    "version": { "type": "string", "enum": ["1.0", "1.1"] },
     "request_id": { "type": "string", "format": "uuid" },
+    "plan_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "result_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "artifact_manifest_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "repro_run_id": { "type": "string", "format": "uuid" },
     "actions": {
       "type": "array",
       "minItems": 1,
@@ -69,5 +73,35 @@
         "arch": { "type": "string", "minLength": 1 }
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "version": { "const": "1.1" }
+        },
+        "required": ["version"]
+      },
+      "then": {
+        "required": [
+          "plan_hash",
+          "result_hash",
+          "artifact_manifest_hash",
+          "repro_run_id"
+        ],
+        "properties": {
+          "actions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "runner": { "const": "bash" }
+              },
+              "required": ["runner"]
+            }
+          }
+        }
+      }
+    }
+  ]
 }

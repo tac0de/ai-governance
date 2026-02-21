@@ -5,7 +5,7 @@
   "additionalProperties": false,
   "required": ["version", "request_id", "actor_role", "actions"],
   "properties": {
-    "version": { "const": "1.0" },
+    "version": { "type": "string", "enum": ["1.0", "1.1"] },
     "request_id": { "type": "string", "format": "uuid" },
     "actor_role": {
       "type": "string",
@@ -15,6 +15,24 @@
         "ControlPlaneOperator",
         "AuditCore",
         "DomainUnit"
+      ]
+    },
+    "governance_layer": {
+      "type": "string",
+      "enum": ["internal_government", "external_enterprise"]
+    },
+    "ministry_id": { "type": "string", "minLength": 1 },
+    "jurisdiction": { "type": "string", "minLength": 1 },
+    "pr_ref": { "type": "string", "minLength": 1 },
+    "toolchain": {
+      "type": "array",
+      "minItems": 3,
+      "uniqueItems": true,
+      "items": { "type": "string", "enum": ["bash", "git", "gh"] },
+      "contains": { "const": "bash" },
+      "allOf": [
+        { "contains": { "const": "git" } },
+        { "contains": { "const": "gh" } }
       ]
     },
     "actions": {
@@ -74,5 +92,24 @@
         ]
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "version": { "const": "1.1" }
+        },
+        "required": ["version"]
+      },
+      "then": {
+        "required": [
+          "governance_layer",
+          "ministry_id",
+          "jurisdiction",
+          "pr_ref",
+          "toolchain"
+        ]
+      }
+    }
+  ]
 }
