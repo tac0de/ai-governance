@@ -1,0 +1,15 @@
+AI Governance Architecture v0.1
+(Deterministic Trace 기반 중앙 거버넌스 체계)
+
+핵심 목표:
+- 재현 가능한 의사결정 구조
+- 토큰 비용 최소화
+- 증거 기반 판단
+- 감사 가능한 Trace
+- 실행 수단과의 분리
+
+핵심 원칙:
+- 중앙은 실행자가 아니라 판정자다.
+- 상태는 설명하지 않고 ref(hash)로 관리한다.
+- 모든 행동은 opcode로 고정한다.
+- 모든 판단은 evidence 기반이다.

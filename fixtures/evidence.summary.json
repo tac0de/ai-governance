@@ -1,0 +1,10 @@
+{
+  "source": "github",
+  "timestamp": "2026-02-21T00:00:00Z",
+  "query": "baseline-governance-check",
+  "content_ref": "b4d921f38f6e2f4868cf8ef6f2331a4116f5429f8f1d2219c35e3ab07262d4d6",
+  "confidence": 0.93,
+  "access_level": "internal",
+  "sections": ["summary", "analysis", "risk"],
+  "hallucination_score": 0.04
+}

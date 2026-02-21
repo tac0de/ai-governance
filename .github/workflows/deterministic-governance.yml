@@ -1,0 +1,30 @@
+name: deterministic-governance
+
+on:
+  pull_request:
+  push:
+    branches: [ main, rebuild/architecture-v0.1 ]
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  validate-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install jq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+
+      - name: Validate fixtures and schemas
+        run: bash scripts/validate_all.sh
+
+      - name: Run deterministic intent flow
+        run: bash scripts/run_intent.sh fixtures/intent.envelope.json traces/ci-run
+
+      - name: Determinism regression test
+        run: bash scripts/test_determinism.sh

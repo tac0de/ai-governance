@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Evidence",
+  "type": "object",
+  "required": ["source", "timestamp", "query", "content_ref", "confidence", "access_level", "sections", "hallucination_score"],
+  "properties": {
+    "source": { "type": "string", "enum": ["jira", "github", "web", "db"] },
+    "timestamp": { "type": "string", "minLength": 1 },
+    "query": { "type": "string", "minLength": 1 },
+    "content_ref": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+    "access_level": { "type": "string", "enum": ["internal", "public"] },
+    "sections": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "hallucination_score": { "type": "number", "minimum": 0, "maximum": 1 }
+  },
+  "additionalProperties": false
+}

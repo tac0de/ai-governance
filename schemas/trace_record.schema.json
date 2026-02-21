@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TraceRecord",
+  "type": "object",
+  "required": ["prev_hash", "opcode", "args_hash", "output_hash", "evidence_refs", "cost", "verdict", "record_hash"],
+  "properties": {
+    "prev_hash": { "type": "string", "minLength": 1 },
+    "opcode": { "type": "string" },
+    "args_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "output_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "evidence_refs": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+    },
+    "cost": {
+      "type": "object",
+      "required": ["tokens_used"],
+      "properties": {
+        "tokens_used": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "verdict": { "type": "string", "enum": ["approved", "rejected", "retry"] },
+    "record_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  },
+  "additionalProperties": false
+}
