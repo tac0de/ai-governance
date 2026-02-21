@@ -11,10 +11,11 @@ ai-governance is a human-led governance repository.
 
 ## What You Should Read First
 
-1. `constitution/HUMAN_GOVERNANCE_BRIEF_V1.md`
-2. `constitution/charter/AI_GOVERNANCE_ROLES_V1.md`
-3. `constitution/contracts/trace-protocol.v1.md`
-4. `constitution/policies/RELEASE_GOVERNANCE_GATE_POLICY_V1.md`
+1. `constitution/VERY_SIMPLE_KO_BRIEF_V1.md`
+2. `constitution/HUMAN_GOVERNANCE_BRIEF_V1.md`
+3. `constitution/charter/AI_GOVERNANCE_ROLES_V1.md`
+4. `constitution/contracts/trace-protocol.v1.md`
+5. `constitution/policies/RELEASE_GOVERNANCE_GATE_POLICY_V1.md`
 
 ## Decision Baseline
 

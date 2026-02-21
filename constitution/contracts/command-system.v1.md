@@ -59,9 +59,11 @@ Each command invocation must be representable with this deterministic envelope.
 |---|---|---|
 | StrategyBoard | `govern/*` (intent approval only) | Requires PolicyOffice implementation |
 | PolicyOffice | `govern/*` | Must record ADR for boundary changes |
-| ControlPlaneOperator | `operate/*`, `release/*` | Release requires `audit.status == PASS` |
 | AuditCore | `audit/*` | No runtime mutation authority |
-| DomainUnit | request-only (no direct execution authority) | Must route through ControlPlaneOperator |
+| CEO (Human+AI co-owned) | strategy approval scope only | Final approval is Human CEO only |
+| CTO | `operate/*`, `release/*` | Release requires `audit.status == PASS` |
+| HeadOfProduct | request-only (no direct execution authority) | Must route through CTO |
+| HeadOfRevenue | request-only (no direct execution authority) | Must route through CTO |
 
 ## Execution Grammar
 Canonical command statement:
@@ -82,6 +84,7 @@ Example:
 - This contract is additive over v1 policies.
 - Existing workflow gates (`ROLES_CHARTER_VERSION`, `OPM_VERSION`, `secret_tier`) remain authoritative.
 - Runtime command binding table: `constitution/contracts/command-binding-table.v1.md`.
+- Runtime alias note: legacy runtime actor `ControlPlaneOperator` is treated as CTO execution alias until runtime enum closure is completed.
 
 ## Change Management
 Any command-system change requires:

@@ -9,9 +9,11 @@ Applies to all `validate`, `run`, and `audit` flows in ai-governance.
 ## Rules
 1. Strategy Board defines constitutional direction only.
 2. Policy Office defines executable constraints only.
-3. Control Plane Operator executes plans only after policy validation.
-4. Audit Core is authoritative for integrity verdicts.
-5. Domain Unit can request execution but cannot override policy/audit outcomes.
+3. Audit Core is authoritative for integrity verdicts.
+4. CEO role is co-owned (Human CEO + AI CEO), but final decision authority remains with Human CEO.
+5. CTO executes plans only after policy validation and subject to audit outcomes.
+6. Head of Product can propose and prioritize, but cannot execute boundary overrides.
+7. Head of Revenue can drive distribution, but cannot bypass policy/audit outcomes.
 
 ## Enforcement Mapping
 - Policy reject before run: action is blocked.
@@ -22,6 +24,14 @@ Applies to all `validate`, `run`, and `audit` flows in ai-governance.
 No runtime path may bypass both:
 - policy evaluation
 - audit verification
+
+## Enterprise Role Lock
+- Enterprise layer is fixed to exactly four roles:
+  - `CEO`
+  - `CTO`
+  - `HeadOfProduct`
+  - `HeadOfRevenue`
+- Any additional enterprise role requires explicit architecture approval.
 
 ## Change Management
 Any change to role boundaries requires:

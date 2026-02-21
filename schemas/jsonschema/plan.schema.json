@@ -12,9 +12,12 @@
       "enum": [
         "StrategyBoard",
         "PolicyOffice",
-        "ControlPlaneOperator",
         "AuditCore",
-        "DomainUnit"
+        "CEO",
+        "CTO",
+        "HeadOfProduct",
+        "HeadOfRevenue",
+        "ControlPlaneOperator"
       ]
     },
     "governance_layer": {

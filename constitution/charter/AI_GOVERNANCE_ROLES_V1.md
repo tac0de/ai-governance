@@ -1,9 +1,9 @@
 # AI Governance Roles v1
 
 ## Purpose
-Define a stable role model for the ai-governance system using two operational metaphors:
-- AI Enterprise
-- AI Government
+Define a fixed role model for ai-governance using two layers:
+- Internal Government Layer (human-society metaphor)
+- External Enterprise Layer (delivery metaphor)
 
 This model is normative and is used for policy enforcement and audit interpretation.
 
@@ -19,6 +19,7 @@ This model is normative and is used for policy enforcement and audit interpretat
 
 ## Charter Version Tag
 - `ROLES_CHARTER_VERSION=v1`
+- `ROLE_CLOSURE_STATUS=locked`
 
 ## Technology Neutrality
 - The role model is protocol-agnostic and implementation-agnostic.
@@ -26,64 +27,50 @@ This model is normative and is used for policy enforcement and audit interpretat
 - No policy or audit decision may depend on a specific protocol name.
 - Operational protocol requirements are defined outside this charter by contract/policy documents.
 
-## Role Set
+## Fixed Role Set
 
-### 1) Strategy Board (AI Government: Legislature)
+### Internal Government Layer (Human Society Metaphor)
+
+#### 1) Strategy Board (Legislative Analogy)
 - Owns constitutional intent and long-term direction.
-- Approves role definitions and cross-domain constraints.
+- Approves structural boundaries.
 - Cannot execute runtime actions directly.
 
-### 2) Policy Office (AI Government: Executive Policy)
-- Translates charter intent into enforceable policies.
-- Owns allowlist/denylist and safety constraints.
+#### 2) Policy Office (Executive Policy Analogy)
+- Converts constitutional intent into enforceable policy.
+- Owns allowlist/denylist and guardrails.
 - Can reject plans before execution.
 
-### 3) Control Plane Operator (AI Enterprise: COO)
-- Orchestrates runtime commands (`validate`, `run`, `audit`).
-- Manages execution flow and incident response.
-- Must follow policy outputs from Policy Office.
-
-### 4) Audit Core (AI Government: Inspector General)
-- Performs deterministic evidence and checksum verification.
+#### 3) Audit Core (Judicial/Inspector Analogy)
+- Owns deterministic integrity verification.
 - Produces PASS/REJECT with fixed reason codes.
-- Must remain pure and minimal in scope.
+- Cannot execute business delivery actions.
 
-### 5) Domain Unit (AI Enterprise: Business Unit)
-- Proposes domain plans and desired outcomes.
-- Cannot bypass policy or audit decisions.
+### External Enterprise Layer (Exactly Four Roles)
 
-### 6) Game Level Design Department (AI Enterprise: Domain Department)
-- Owns level-system design and state-reactive gameplay parameters.
-- Converts domain intent into deterministic level definitions.
-- Must operate within policy-approved ranges and release gates.
+#### 4) CEO (Strategy Owner)
+- Co-owned role between Human CEO and AI CEO.
+- Final sovereignty and final approval always belong to Human CEO.
+- AI CEO may propose and co-steer, but cannot override human final decision.
 
-### 7) Game UI Department (AI Enterprise: Domain Department)
-- Owns player-facing interface language and mood-reactive presentation.
-- Converts level-state and policy constraints into readable UX.
-- Must preserve governance-critical visibility and accessibility baselines.
+#### 5) CTO (Execution Integrity Owner)
+- Owns execution integrity and technical closure.
+- Owns runtime execution orchestration responsibility.
+- Must obey government-layer policy and audit outcomes.
 
-### 8) Game Engine Department (AI Enterprise: Platform Department)
-- Owns runtime rendering and deterministic animation contracts.
-- Converts UI/level requirements into stable engine behavior across device profiles.
-- Must preserve fallback-safe runtime behavior under constrained clients.
+#### 6) Head of Product (Market Fit Owner)
+- Owns product direction and user-value hypotheses.
+- Cannot bypass policy, audit, or boundary rules.
 
-### 9) Webgame Reference Intelligence Department (AI Enterprise: Intelligence Department)
-- Owns benchmark-grade reference acquisition and provenance.
-- Converts benchmark questions into traceable reference artifacts.
-- Must preserve source traceability and release-linked evidence quality.
+#### 7) Head of Revenue (Distribution Owner)
+- Owns growth/distribution/revenue operations.
+- Cannot override governance boundary or compliance constraints.
 
 ## Separation of Duties
 - Planning, execution, and audit must remain separate.
 - No single role can self-authorize and self-audit the same action.
 - Role conflicts must be recorded in decision-log before rollout.
 
-## Market Layer Overlay (Enterprise View)
-
-This overlay is descriptive for enterprise accountability and does not replace constitutional roles.
-
-| Market Layer Role | Constitutional Mapping | Constraint |
-|---|---|---|
-| `CEO (strategy)` | `StrategyBoard` | strategy authority only, no direct runtime execution |
-| `CTO (execution integrity)` | `ControlPlaneOperator` + `AuditCore` integrity ownership | execution must remain policy-bound and auditable |
-| `Head of Product (market fit)` | `DomainUnit` | policy-constrained planning only |
-| `Head of Revenue (distribution)` | `DomainUnit` | distribution authority cannot override governance boundary |
+## Expansion Freeze
+- No additional roles are allowed unless explicitly approved by System Architect.
+- Department-style role expansion is frozen in v1.

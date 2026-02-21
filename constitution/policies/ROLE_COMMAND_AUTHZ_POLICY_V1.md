@@ -11,11 +11,15 @@ Applies to `local_exec` command authorization in `control-plane/go` runtime.
   - Allowed: `ECHO`
 - `PolicyOffice`
   - Allowed: `ECHO`
-- `ControlPlaneOperator`
+- `CTO`
   - Allowed: `ECHO`, `RUN_NODE_VERSION`
 - `AuditCore`
   - Allowed: `RUN_NODE_VERSION`
-- `DomainUnit`
+- `HeadOfProduct`
+  - Allowed: `ECHO`
+- `HeadOfRevenue`
+  - Allowed: `ECHO`
+- `CEO`
   - Allowed: `ECHO`
 
 ## Enforcement
@@ -27,6 +31,7 @@ Applies to `local_exec` command authorization in `control-plane/go` runtime.
 - Re-validated in `audit` as deterministic policy check.
 - Runtime/governance mapping source: `constitution/contracts/command-binding-table.v1.md`.
 - MCP authority unit source: `constitution/contracts/mcp-authority-unit-table.v1.md`.
+- Runtime alias note: `ControlPlaneOperator` is treated as `CTO` execution alias for compatibility.
 
 ## Change Management
 Any matrix change requires:
