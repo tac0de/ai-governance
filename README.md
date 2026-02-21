@@ -1,29 +1,32 @@
-# ai-governance
+# ai-governance v0.1
 
-ai-governance is a human-led governance repository.
+Deterministic Trace 기반 중앙 거버넌스 코어 저장소.
 
-## Human Governance First
+## Scope
 
-- Primary output is governance decisions and contracts.
-- Internal layer is government authority (boundary, policy, audit).
-- External layer is enterprise delivery (market fit, growth, revenue).
-- Internal and external authority must remain separated.
+- 중앙은 실행자가 아니라 판정자 역할만 수행
+- 모든 상태/증거/계획은 hash ref로 참조
+- 모든 행동은 고정 opcode 집합으로 실행
+- 판정은 evidence + acceptance 기준으로 결정
 
-## What You Should Read First
+## Repository Layout
 
-1. `constitution/VERY_SIMPLE_KO_BRIEF_V1.md`
-2. `constitution/HUMAN_GOVERNANCE_BRIEF_V1.md`
-3. `constitution/charter/AI_GOVERNANCE_ROLES_V1.md`
-4. `constitution/contracts/trace-protocol.v1.md`
-5. `constitution/policies/RELEASE_GOVERNANCE_GATE_POLICY_V1.md`
+- `schemas/`: envelope/trace/evidence/acceptance schema
+- `specs/`: opcode set, trace rules
+- `policies/`: policy profile and budget rules
+- `fixtures/`: deterministic sample intent/evidence/acceptance/state
+- `scripts/`: validator, dispatcher, trace runner, deterministic tests
+- `traces/`: generated append-only trace artifacts
 
-## Decision Baseline
+## Quick Start
 
-- Role model remains protocol-agnostic at constitutional level.
-- Operational execution uses jurisdiction-scoped ministry contracts.
-- All change delivery is PR-gated with deterministic evidence.
+```bash
+bash scripts/validate_all.sh
+bash scripts/run_intent.sh fixtures/intent.envelope.json traces/run1
+bash scripts/test_determinism.sh
+```
 
-## Technical Appendix
+## Legacy Archive
 
-Technical implementation details are intentionally moved out of the main view.
-Use `constitution/TECHNICAL_APPENDIX_V1.md` only when runtime-level verification is required.
+Current pre-rebuild implementation is archived in branch:
+- `legacy/archive-2026-02-21`

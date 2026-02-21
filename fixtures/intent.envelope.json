@@ -1,0 +1,11 @@
+{
+  "intent_id": "intent-0001",
+  "policy_profile": "balanced",
+  "state_ref": "bc98605d6117a45646b2e71774b5032fbf627119e9e34fbf37808ae923268eea",
+  "plan_ref": null,
+  "budget": {
+    "max_tokens": 4000,
+    "max_steps": 8
+  },
+  "acceptance_tests_ref": "9adb30b6d8ae7be47b85f063f09c1a5611b1271e2d50a80dd6ef8e36fc512a3a"
+}
