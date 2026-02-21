@@ -41,4 +41,12 @@ jq -e '
   (.tiers.high.approval_mode=="mandatory_human_gate")
 ' "$ROOT_DIR/policies/approval_tier_policy.v0.1.json" >/dev/null
 
+jq -e '
+  .version=="v0.1" and
+  (.kpi_thresholds.min_acceptance_pass_rate>=0 and .kpi_thresholds.min_acceptance_pass_rate<=1) and
+  (.kpi_thresholds.min_cache_hit_rate>=0 and .kpi_thresholds.min_cache_hit_rate<=1) and
+  (.kpi_thresholds.max_fallback_rate>=0 and .kpi_thresholds.max_fallback_rate<=1) and
+  (.kpi_thresholds.min_cost_reduction_vs_baseline>=0)
+' "$ROOT_DIR/benchmark/efficiency_benchmark_spec.v0.1.json" >/dev/null
+
 echo "VALIDATION_PASS"

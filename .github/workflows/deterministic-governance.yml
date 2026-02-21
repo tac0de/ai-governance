@@ -28,3 +28,6 @@ jobs:
 
       - name: Determinism regression test
         run: bash scripts/test_determinism.sh
+
+      - name: Benchmark gate test
+        run: bash scripts/benchmark_gate.sh

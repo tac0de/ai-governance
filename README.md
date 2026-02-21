@@ -14,6 +14,7 @@ Deterministic Trace 기반 중앙 거버넌스 코어 저장소.
 - `schemas/`: envelope/trace/evidence/acceptance schema
 - `specs/`: opcode set, trace rules
 - `policies/`: policy profile, budget rules, and approval tier policy
+- `benchmark/`: efficiency benchmark spec for market validation
 - `fixtures/`: deterministic sample intent/evidence/acceptance/state
 - `scripts/`: validator, dispatcher, trace runner, deterministic tests
 - `traces/`: generated append-only trace artifacts
@@ -33,6 +34,7 @@ Policy file:
 bash scripts/validate_all.sh
 bash scripts/run_intent.sh fixtures/intent.envelope.json traces/run1
 bash scripts/test_determinism.sh
+bash scripts/benchmark_gate.sh
 ```
 
 ## Legacy Archive
