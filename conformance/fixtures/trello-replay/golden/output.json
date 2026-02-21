@@ -1,0 +1,9 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "[{\"id\":\"board-001\",\"name\":\"governance-board\",\"url\":\"https://trello.example/board-001\",\"closed\":false}]"
+    }
+  ],
+  "isError": false
+}

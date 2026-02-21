@@ -12,7 +12,7 @@ Provide a deterministic mapping between governance command identifiers (`command
 
 | Runtime `command_id` | Governance Command | Command Group | Primary Actor Role | Runtime Entry |
 |---|---|---|---|---|
-| `ECHO` | `operate.validate.plan` | `operate/*` | `ControlPlaneOperator` | `run` path (`commandFor`) |
+| `ECHO` | `operate.validate.plan` | `operate/*` | `CTO` | `run` path (`commandFor`) |
 | `RUN_NODE_VERSION` | `audit.verify.result` | `audit/*` | `AuditCore` | `run` path (`commandFor`) |
 
 ## Authorization Overlay

@@ -8,17 +8,7 @@
     "version": { "type": "string", "enum": ["1.0", "1.1"] },
     "request_id": { "type": "string", "format": "uuid" },
     "actor_role": {
-      "type": "string",
-      "enum": [
-        "StrategyBoard",
-        "PolicyOffice",
-        "AuditCore",
-        "CEO",
-        "CTO",
-        "HeadOfProduct",
-        "HeadOfRevenue",
-        "ControlPlaneOperator"
-      ]
+      "type": "string"
     },
     "governance_layer": {
       "type": "string",
@@ -100,11 +90,48 @@
     {
       "if": {
         "properties": {
-          "version": { "const": "1.1" }
+          "version": { "const": "1.0" }
         },
-        "required": ["version"]
+        "required": ["version", "actor_role"]
       },
       "then": {
+        "properties": {
+          "actor_role": {
+            "enum": [
+              "StrategyBoard",
+              "PolicyOffice",
+              "AuditCore",
+              "CEO",
+              "CTO",
+              "HeadOfProduct",
+              "HeadOfRevenue",
+              "ControlPlaneOperator"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "version": { "const": "1.1" }
+        },
+        "required": ["version", "actor_role"]
+      },
+      "then": {
+        "properties": {
+          "actor_role": {
+            "enum": [
+              "StrategyBoard",
+              "PolicyOffice",
+              "AuditCore",
+              "CEO",
+              "CTO",
+              "HeadOfProduct",
+              "HeadOfRevenue"
+            ]
+          }
+        },
         "required": [
           "governance_layer",
           "ministry_id",

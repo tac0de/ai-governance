@@ -7,7 +7,7 @@ RGGP-V1
 Applies to any release tag creation and release workflow execution.
 
 ## Mandatory Gate Conditions
-1. Release authority role must be `ControlPlaneOperator`.
+1. Release authority role must be `CTO`.
 2. Deterministic audit verdict must be `PASS`.
 3. Charter version tag must be `v1` (`ROLES_CHARTER_VERSION`).
 4. PR evidence must be present (`pr_ref` in governed artifacts).
@@ -30,6 +30,10 @@ The workflow gate must execute in this order:
 ## Role Source
 - Preferred: workflow dispatch input `approver_role`
 - Fallback: repository variable `RELEASE_APPROVER_ROLE`
+
+## Legacy Compatibility
+- Historical `v1.0` evidence may contain `ControlPlaneOperator` alias.
+- New governed write path (`v1.1`) must use `CTO`.
 
 ## Policy Dependency
 - `constitution/policies/OPS_TOOLCHAIN_POLICY_V1.md`

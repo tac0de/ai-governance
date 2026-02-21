@@ -1,41 +1,42 @@
 # Contributing to ai-governance
 
-## Runtime Policy
+## Governance-First Policy
 
-The supported runtime baseline is:
+This repository is governance-first.
 
-- control-plane-go (primary runtime)
-- audit-core/rust (integrity module)
+- Primary contribution surface is constitution/policy/schema documentation.
+- Runtime adapters are frozen and treated as compatibility-only surfaces.
+- Do not expand runtime implementation scope unless explicitly approved.
 
-The TypeScript runtime located at .legacy/hub is deprecated and must not be used for new development, testing, or documentation examples.
+## Scope of Changes
 
-All contributions must target the current runtime baseline.
+Allowed by default:
+- role model closure
+- policy/contract matrix alignment
+- schema determinism and evidence contract updates
+- human-readable governance documentation
+
+Not allowed by default:
+- adding new runtime layers
+- major runtime refactor
+- adapter migration work (Go/Rust/legacy) without explicit architecture approval
 
 ## Development Rules
 
-- Do not introduce new runtime layers.
-- Do not modify integrity boundaries without explicit design approval.
-- Keep schema enforcement deterministic.
-- Avoid expanding scope beyond the stated task.
-
-## Integrity Boundary
-
-All hash generation and checksum verification logic must reside in audit-core/rust.
-
-control-plane-go is responsible for orchestration and invoking the integrity module.
+- Keep changes minimal and deterministic.
+- Lock role set before adding anything new.
+- Preserve internal-government vs external-enterprise boundary.
+- Keep final human sovereignty language explicit.
 
 ## Pull Request Requirements
 
-- Changes must not reference .legacy/hub in examples or quickstart instructions.
-- Documentation must reflect control-plane-go as the primary runtime.
-- Integrity-sensitive changes require justification and deterministic test evidence.
+- Changes must align charter, policy, and schema in the same PR.
+- PR must include deterministic evidence references (`plan/result/evidence` linkage).
+- Human-facing docs should remain short and concrete.
 
 ## Deterministic Output
 
-All audit-related outputs must:
-
-- Conform to the defined JSON schema
-- Avoid nondeterministic serialization
-- Produce stable SHA-256 checksums
-
-Non-deterministic behavior is considered a violation.
+All governance artifacts must:
+- conform to defined JSON schemas
+- avoid nondeterministic serialization
+- produce stable verification checksums

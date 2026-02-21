@@ -18,7 +18,7 @@ Define a deterministic command system for ai-governance that binds role authorit
 - Examples:
   - `operate.validate.plan`
   - `operate.run.plan`
-- Default actor: `ControlPlaneOperator`
+- Default actor: `CTO`
 
 ### 3) `audit/*`
 - Scope: evidence and integrity verification.
@@ -33,7 +33,7 @@ Define a deterministic command system for ai-governance that binds role authorit
 - Examples:
   - `release.gate.evaluate`
   - `release.tag.publish`
-- Default actor: `ControlPlaneOperator`
+- Default actor: `CTO`
 
 ## Command Contract
 Each command invocation must be representable with this deterministic envelope.
@@ -42,7 +42,7 @@ Each command invocation must be representable with this deterministic envelope.
 {
   "command": "operate.run.plan",
   "request_id": "uuid",
-  "actor_role": "ControlPlaneOperator",
+  "actor_role": "CTO",
   "inputs": {},
   "gates": {
     "roles_charter_version": "v1",
@@ -72,7 +72,7 @@ Canonical command statement:
 
 Example:
 
-`ControlPlaneOperator executes operate.run.plan with {roles_charter_version=v1, opm_version=v1, secret_tier=admin-only} and emits {result.json,evidence.json,audit.json}`
+`CTO executes operate.run.plan with {roles_charter_version=v1, opm_version=v1, secret_tier=admin-only} and emits {result.json,evidence.json,audit.json}`
 
 ## Failure Mapping
 - Gate mismatch -> `REJECT` with policy-aligned reason_code.
@@ -84,7 +84,7 @@ Example:
 - This contract is additive over v1 policies.
 - Existing workflow gates (`ROLES_CHARTER_VERSION`, `OPM_VERSION`, `secret_tier`) remain authoritative.
 - Runtime command binding table: `constitution/contracts/command-binding-table.v1.md`.
-- Runtime alias note: legacy runtime actor `ControlPlaneOperator` is treated as CTO execution alias until runtime enum closure is completed.
+- Legacy compatibility note: runtime artifacts from schema `v1.0` may include `ControlPlaneOperator` alias.
 
 ## Change Management
 Any command-system change requires:

@@ -1,0 +1,47 @@
+name: "governance: trust-boundary core gate"
+
+on:
+  pull_request:
+    paths:
+      - "control-plane/go/**"
+      - "audit-core/rust/**"
+      - "constitution/policies/**"
+      - "constitution/contracts/**"
+      - "constitution/cases/**"
+      - "schemas/**"
+      - "scripts/core_boundary_gate.sh"
+      - ".github/workflows/trust-boundary-core-gate.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "control-plane/go/**"
+      - "audit-core/rust/**"
+      - "constitution/policies/**"
+      - "constitution/contracts/**"
+      - "constitution/cases/**"
+      - "schemas/**"
+      - "scripts/core_boundary_gate.sh"
+      - ".github/workflows/trust-boundary-core-gate.yml"
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  core-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.26.x"
+          cache-dependency-path: control-plane/go/go.sum
+
+      - name: Run trust-boundary core gate
+        run: |
+          set -euo pipefail
+          chmod +x scripts/core_boundary_gate.sh
+          scripts/core_boundary_gate.sh

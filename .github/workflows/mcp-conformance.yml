@@ -1,0 +1,35 @@
+name: "governance: mcp conformance"
+
+on:
+  pull_request:
+    paths:
+      - "conformance/**"
+      - "scripts/conformance_run.sh"
+      - "packages/mcps/**"
+      - ".github/workflows/mcp-conformance.yml"
+  push:
+    branches:
+      - main
+    paths:
+      - "conformance/**"
+      - "scripts/conformance_run.sh"
+      - "packages/mcps/**"
+      - ".github/workflows/mcp-conformance.yml"
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  conformance:
+    runs-on: ubuntu-latest
+    env:
+      NO_NETWORK: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run replay-only conformance
+        run: |
+          set -euo pipefail
+          chmod +x scripts/conformance_run.sh
+          scripts/conformance_run.sh

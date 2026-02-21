@@ -31,7 +31,7 @@ Applies to `local_exec` command authorization in `control-plane/go` runtime.
 - Re-validated in `audit` as deterministic policy check.
 - Runtime/governance mapping source: `constitution/contracts/command-binding-table.v1.md`.
 - MCP authority unit source: `constitution/contracts/mcp-authority-unit-table.v1.md`.
-- Runtime alias note: `ControlPlaneOperator` is treated as `CTO` execution alias for compatibility.
+- Legacy compatibility note: `ControlPlaneOperator` may appear only in historical `v1.0` artifacts.
 
 ## Change Management
 Any matrix change requires:

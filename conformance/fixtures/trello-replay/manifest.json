@@ -1,0 +1,8 @@
+{
+  "fixture_id": "trello-replay-001",
+  "mode": "replay",
+  "allow_network": false,
+  "input_file": "golden/input.json",
+  "output_file": "golden/output.json",
+  "expected_output_sha256_file": "golden/output.sha256"
+}

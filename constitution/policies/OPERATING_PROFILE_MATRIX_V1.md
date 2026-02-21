@@ -15,7 +15,7 @@ Defines a single operational profile view across role authority, workflow inputs
 | Profile | Workflow | Role Input | Secret Tier Input | Default Role | Default Secret Tier | Mandatory Gates |
 |---|---|---|---|---|---|---|
 | Autonomous Sweep | `governance-autonomous-sweep` | N/A | `secret_tier` | N/A | `admin-only` | `ROLES_CHARTER_VERSION=v1`, deterministic audit path |
-| Release Gate | `release-governance-gate` | `approver_role` | `secret_tier` | `ControlPlaneOperator` | `admin-only` | `audit.status == PASS`, `approver_role == ControlPlaneOperator`, `ROLES_CHARTER_VERSION=v1` |
+| Release Gate | `release-governance-gate` | `approver_role` | `secret_tier` | `CTO` | `admin-only` | `audit.status == PASS`, `approver_role == CTO`, `ROLES_CHARTER_VERSION=v1` |
 
 ## Role-to-Command Source
 - Use `constitution/policies/ROLE_COMMAND_AUTHZ_POLICY_V1.md` as the only role-command authorization source.

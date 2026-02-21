@@ -14,9 +14,9 @@ This brief is the human-facing default for governance decisions in this reposito
 
 ## Market Layer Roles
 - `CEO (strategy)` maps to `StrategyBoard`.
-- `CTO (execution integrity)` maps to `ControlPlaneOperator` with `AuditCore` integrity ownership.
-- `Head of Product (market fit)` maps to `DomainUnit` under policy constraints.
-- `Head of Revenue (distribution)` maps to `DomainUnit` and cannot override governance boundary.
+- `CTO (execution integrity)` owns execution under policy/audit gates and pairs with `AuditCore` integrity ownership.
+- `Head of Product (market fit)` operates only within policy constraints.
+- `Head of Revenue (distribution)` operates only within policy constraints and cannot override boundary.
 
 ## Required Operational Discipline
 - All change delivery is PR-gated.

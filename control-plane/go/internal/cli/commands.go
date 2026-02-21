@@ -33,11 +33,13 @@ const (
 	reasonHashMismatch      = "HUNBUP_HASH_MISMATCH"
 	reasonNondeterministic  = "HUNBUP_NONDETERMINISTIC_OUTPUT"
 
-	roleStrategyBoard  = "StrategyBoard"
-	rolePolicyOffice   = "PolicyOffice"
-	roleControlPlaneOp = "ControlPlaneOperator"
-	roleAuditCore      = "AuditCore"
-	roleDomainUnit     = "DomainUnit"
+	roleStrategyBoard = "StrategyBoard"
+	rolePolicyOffice  = "PolicyOffice"
+	roleAuditCore     = "AuditCore"
+	roleCEO           = "CEO"
+	roleCTO           = "CTO"
+	roleHeadOfProduct = "HeadOfProduct"
+	roleHeadOfRevenue = "HeadOfRevenue"
 )
 
 var reasonPriority = map[string]int{
@@ -725,14 +727,20 @@ func isCommandAllowedForRole(actorRole, commandID string) bool {
 		rolePolicyOffice: {
 			"ECHO": true,
 		},
-		roleControlPlaneOp: {
+		roleCTO: {
 			"ECHO":             true,
 			"RUN_NODE_VERSION": true,
 		},
 		roleAuditCore: {
 			"RUN_NODE_VERSION": true,
 		},
-		roleDomainUnit: {
+		roleHeadOfProduct: {
+			"ECHO": true,
+		},
+		roleHeadOfRevenue: {
+			"ECHO": true,
+		},
+		roleCEO: {
 			"ECHO": true,
 		},
 	}

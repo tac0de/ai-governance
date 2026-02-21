@@ -1,0 +1,30 @@
+{
+  "mcp_unit_id": "trello-remote-example",
+  "jurisdiction": "external_enterprise",
+  "unit_role": "HeadOfProduct",
+  "allowed_actions": [
+    "read_board_metadata"
+  ],
+  "forbidden_actions": [
+    "release_publish",
+    "infrastructure_mutation",
+    "secret_exfiltration"
+  ],
+  "audit_points": [
+    "source_provenance",
+    "request_trace",
+    "output_hash"
+  ],
+  "approval_model": "single-step-read-only",
+  "risk_tier": "low",
+  "required_trace_fields": [
+    "request_id",
+    "caller_role",
+    "governance_layer",
+    "ministry_id",
+    "jurisdiction",
+    "tool_name",
+    "timestamp",
+    "pr_ref"
+  ]
+}
