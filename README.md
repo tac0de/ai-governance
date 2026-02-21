@@ -41,3 +41,7 @@ bash scripts/benchmark_gate.sh
 
 Current pre-rebuild implementation is archived in branch:
 - `legacy/archive-2026-02-21`
+
+## Overnight Automation
+
+- Hourly governance progress workflow: `.github/workflows/overnight-governance-progress.yml`
