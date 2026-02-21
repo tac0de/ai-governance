@@ -34,4 +34,11 @@ jq -e '
   (.hallucination_score|type=="number" and .>=0 and .<=1)
 ' "$ROOT_DIR/fixtures/evidence.summary.json" >/dev/null
 
+jq -e '
+  .version=="v0.1" and
+  (.tiers.low.approval_mode=="auto") and
+  (.tiers.medium.approval_mode=="policy_plus_owner") and
+  (.tiers.high.approval_mode=="mandatory_human_gate")
+' "$ROOT_DIR/policies/approval_tier_policy.v0.1.json" >/dev/null
+
 echo "VALIDATION_PASS"

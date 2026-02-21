@@ -13,10 +13,19 @@ Deterministic Trace 기반 중앙 거버넌스 코어 저장소.
 
 - `schemas/`: envelope/trace/evidence/acceptance schema
 - `specs/`: opcode set, trace rules
-- `policies/`: policy profile and budget rules
+- `policies/`: policy profile, budget rules, and approval tier policy
 - `fixtures/`: deterministic sample intent/evidence/acceptance/state
 - `scripts/`: validator, dispatcher, trace runner, deterministic tests
 - `traces/`: generated append-only trace artifacts
+
+## Approval Tier Automation
+
+- `low`: auto approval when required checks pass
+- `medium`: policy review + human owner approval
+- `high`: mandatory human gate
+
+Policy file:
+- `policies/approval_tier_policy.v0.1.json`
 
 ## Quick Start
 
