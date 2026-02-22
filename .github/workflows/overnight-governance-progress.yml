@@ -20,6 +20,9 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y jq
 
+      - name: Validate governance contracts
+        run: bash scripts/validate_all.sh
+
       - name: Run governance overnight report
         run: bash scripts/overnight_governance_report.sh
 

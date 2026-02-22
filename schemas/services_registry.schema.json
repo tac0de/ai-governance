@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ServicePortfolioRegistry",
+  "type": "object",
+  "required": ["version", "services"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "v0.1"
+    },
+    "services": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "owner",
+          "dept",
+          "ministry",
+          "repo_path",
+          "policy_profile_ref",
+          "mcp_allowlist_path",
+          "docs_path"
+        ],
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+          "name": { "type": "string", "minLength": 1 },
+          "owner": { "type": "string", "minLength": 1 },
+          "dept": { "type": "string", "minLength": 1 },
+          "ministry": { "type": "string", "minLength": 1 },
+          "repo_path": { "type": "string", "minLength": 1 },
+          "policy_profile_ref": { "type": "string", "minLength": 1 },
+          "mcp_allowlist_path": { "type": "string", "minLength": 1 },
+          "docs_path": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

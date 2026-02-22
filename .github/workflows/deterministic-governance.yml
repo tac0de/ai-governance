@@ -20,14 +20,14 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y jq
 
-      - name: Validate fixtures and schemas
+      - name: Validate governance contracts
         run: bash scripts/validate_all.sh
 
       - name: Run deterministic intent flow
         run: bash scripts/run_intent.sh fixtures/intent.envelope.json traces/ci-run
 
-      - name: Determinism regression test
+      - name: Run determinism regression gate
         run: bash scripts/test_determinism.sh
 
-      - name: Benchmark gate test
+      - name: Run benchmark gate
         run: bash scripts/benchmark_gate.sh

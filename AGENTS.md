@@ -1,9 +1,9 @@
 This repository is architecturally governed.
 
-# Local Scope
+# Scope
 
-- This file is repository-local and overrides project behavior only for `ai-governance`.
-- Global rules in `$CODEX_HOME/AGENTS.md` remain unchanged and still apply.
+- This file defines repository governance for `ai-governance`.
+- These rules are model-agnostic and apply to any agent used in this repository.
 
 # Trust Boundary
 
@@ -22,6 +22,21 @@ This repository is architecturally governed.
 - Prefer versioned closure over open-ended expansion.
 - Freeze opcode and schema versions for each release line.
 - New capabilities must be adapterized outside core and integrated through conformance artifacts.
+
+# Repository Shape Freeze
+
+- Keep the root top-level directory set stable.
+- Do not add, remove, or rename root-level directories without explicit human architect approval.
+- Place new artifacts under existing roots first; prefer `control/`, `services/`, `mcps/`, `policies/`, `schemas/`, and `scripts/`.
+- Treat root-level structure changes as high-risk governance changes.
+
+# AGENTS Hierarchy
+
+- Policy precedence is strict: repository root `AGENTS.md` > `services/<service>/AGENTS.md`.
+- A service-level `AGENTS.md` is optional and may only narrow scope for that service.
+- Service-level rules must not broaden tool access, approval tiers, or evidence/trace obligations defined at root.
+- Any conflict is resolved by root `AGENTS.md`.
+- Human override authority remains centralized at root governance policy.
 
 # Execution Guardrails
 

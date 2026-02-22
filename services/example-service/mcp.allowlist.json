@@ -1,0 +1,12 @@
+{
+  "service_id": "example-service",
+  "allowed_mcps": [
+    {
+      "mcp_id": "example-mcp",
+      "capabilities": [
+        "search",
+        "fetch_document"
+      ]
+    }
+  ]
+}

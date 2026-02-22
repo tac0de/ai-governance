@@ -2,31 +2,34 @@
 
 Deterministic Trace 기반 중앙 거버넌스 코어 저장소.
 
-## Scope
+## Start Here (Core 4)
 
-- 중앙은 실행자가 아니라 판정자 역할만 수행
-- 모든 상태/증거/계획은 hash ref로 참조
-- 모든 행동은 고정 opcode 집합으로 실행
-- 판정은 evidence + acceptance 기준으로 결정
+1. `control/registry/`
+- 조직/서비스/MCP의 단일 진실 소스.
 
-## Repository Layout
+2. `schemas/` (특히 중앙 통제 스키마 5개)
+- `org.schema.json`
+- `services_registry.schema.json`
+- `mcps_registry.schema.json`
+- `mcp_allowlist.schema.json`
+- `mcp_manifest.schema.json`
 
-- `schemas/`: envelope/trace/evidence/acceptance schema
-- `specs/`: opcode set, trace rules
-- `policies/`: policy profile, budget rules, and approval tier policy
-- `benchmark/`: efficiency benchmark spec for market validation
-- `fixtures/`: deterministic sample intent/evidence/acceptance/state
-- `scripts/`: validator, dispatcher, trace runner, deterministic tests
-- `traces/`: generated append-only trace artifacts
+3. `scripts/validate_all.sh`
+- 중앙 설계 강제 지점.
+- 고정 문서 세트, 레지스트리 정합성, 정책 프로파일, MCP allowlist/manifest를 검증.
 
-## Approval Tier Automation
+4. `.github/workflows/deterministic-governance.yml`
+- CI에서 `validate_all.sh` + 결정성/벤치마크 게이트를 실행.
 
-- `low`: auto approval when required checks pass
-- `medium`: policy review + human owner approval
-- `high`: mandatory human gate
+## One-Line Architecture
 
-Policy file:
-- `policies/approval_tier_policy.v0.1.json`
+`control/registry` -> `scripts/validate_all.sh` -> CI workflow -> `traces`
+
+## Central Control Room
+
+- Government: `policies/`, `schemas/`, `traces/`
+- Company: `control/registry/org.v0.1.json`, `control/registry/services.v0.1.json`, `services/`
+- Execution: `control/registry/mcps.v0.1.json`, `mcps/`
 
 ## Quick Start
 
@@ -36,6 +39,15 @@ bash scripts/run_intent.sh fixtures/intent.envelope.json traces/run1
 bash scripts/test_determinism.sh
 bash scripts/benchmark_gate.sh
 ```
+
+## Appendix (Secondary Paths)
+
+- `control/templates/`: service/MCP fixed-doc templates
+- `control/playbooks/`: incident/change/onboarding guides
+- `specs/`: opcode set, trace rules
+- `fixtures/`: deterministic sample inputs
+- `benchmark/`: efficiency benchmark spec
+- `docs/`: archived or supporting docs
 
 ## Legacy Archive
 

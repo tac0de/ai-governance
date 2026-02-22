@@ -1,0 +1,30 @@
+{
+  "version": "v0.1",
+  "company_departments": [
+    {
+      "name": "Platform Operations",
+      "owner": "platform-ops-owner",
+      "portfolio_services": [
+        "example-service"
+      ]
+    }
+  ],
+  "government_ministries": [
+    {
+      "name": "Ministry of Governance and Compliance",
+      "mandate": "Own policy enforcement and deterministic validation rules.",
+      "policy_scopes": [
+        "approval_tiers",
+        "policy_profiles",
+        "evidence_validation"
+      ]
+    }
+  ],
+  "mappings": [
+    {
+      "company_department": "Platform Operations",
+      "government_ministry": "Ministry of Governance and Compliance",
+      "notes": "Operations owns runtime portfolio; ministry defines guardrails and approval policy."
+    }
+  ]
+}

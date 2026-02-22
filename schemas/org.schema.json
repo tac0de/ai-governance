@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CentralOrganizationRegistry",
+  "type": "object",
+  "required": [
+    "version",
+    "company_departments",
+    "government_ministries",
+    "mappings"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "v0.1"
+    },
+    "company_departments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "owner", "portfolio_services"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "owner": { "type": "string", "minLength": 1 },
+          "portfolio_services": {
+            "type": "array",
+            "items": { "type": "string", "minLength": 1 }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "government_ministries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["name", "mandate", "policy_scopes"],
+        "properties": {
+          "name": { "type": "string", "minLength": 1 },
+          "mandate": { "type": "string", "minLength": 1 },
+          "policy_scopes": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "mappings": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["company_department", "government_ministry", "notes"],
+        "properties": {
+          "company_department": { "type": "string", "minLength": 1 },
+          "government_ministry": { "type": "string", "minLength": 1 },
+          "notes": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

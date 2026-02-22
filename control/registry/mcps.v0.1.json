@@ -1,0 +1,18 @@
+{
+  "version": "v0.1",
+  "mcps": [
+    {
+      "id": "example-mcp",
+      "name": "Example MCP",
+      "root_path": "mcps/example-mcp",
+      "version": "0.1.0",
+      "capabilities": [
+        "search",
+        "fetch_document"
+      ],
+      "risk_level": "medium",
+      "required_approval_tier": "medium",
+      "pinned_ref_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  ]
+}
