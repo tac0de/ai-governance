@@ -158,6 +158,7 @@ for schema_rel in \
   schemas/acceptance.schema.json \
   schemas/evidence.schema.json \
   schemas/benchmark_kpi.schema.json \
+  schemas/bridge_intent.schema.json \
   schemas/org.schema.json \
   schemas/services_registry.schema.json \
   schemas/mcps_registry.schema.json \
@@ -196,6 +197,20 @@ validate_jq_contract "fixtures/acceptance.tests.json" "schemas/acceptance.schema
   (.must_include_sources | type=="boolean") and
   (.max_hallucination_score | type=="number" and .>=0 and .<=1) and
   (.required_sections | type=="array" and length>0)
+'
+
+validate_jq_contract "fixtures/bridge/pm_intent.sample.json" "schemas/bridge_intent.schema.json" '
+  (.intent_id|type=="string" and test("^[a-zA-Z0-9][a-zA-Z0-9._-]*$")) and
+  (.objective|type=="string" and length>0) and
+  (.constraints|type=="array" and length>0 and all(.[]; type=="string" and length>0)) and
+  (.approval_tier=="low" or .approval_tier=="medium" or .approval_tier=="high") and
+  (.human_gate_required|type=="boolean") and
+  (.target_executor=="codex" or .target_executor=="other-agent") and
+  (.evidence_refs|type=="array") and
+  (all(.evidence_refs[]?;
+    (.path|type=="string" and length>0) and
+    (.sha256|type=="string" and test("^[a-f0-9]{64}$"))
+  ))
 '
 
 validate_jq_contract "fixtures/evidence.summary.json" "schemas/evidence.schema.json" '

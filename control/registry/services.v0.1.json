@@ -11,6 +11,17 @@
       "policy_profile_ref": "services/example-service/policy.profile.json",
       "mcp_allowlist_path": "services/example-service/mcp.allowlist.json",
       "docs_path": "services/example-service/docs"
+    },
+    {
+      "id": "thedivineparadox",
+      "name": "TheDivineParadox",
+      "owner": "platform-ops-owner",
+      "dept": "Platform Operations",
+      "ministry": "Ministry of Governance and Compliance",
+      "repo_path": "services/thedivineparadox",
+      "policy_profile_ref": "services/thedivineparadox/policy.profile.json",
+      "mcp_allowlist_path": "services/thedivineparadox/mcp.allowlist.json",
+      "docs_path": "services/thedivineparadox/docs"
     }
   ]
 }

@@ -1,0 +1,18 @@
+{
+  "intent_id": "phase2-backend-fastify-ts",
+  "objective": "Migrate backend runtime to Fastify + TypeScript strict with deterministic parity.",
+  "constraints": [
+    "no rule formula changes",
+    "fallback must remain mandatory",
+    "trace prompt hash must be preserved"
+  ],
+  "approval_tier": "medium",
+  "human_gate_required": false,
+  "target_executor": "codex",
+  "evidence_refs": [
+    {
+      "path": "reports/governance/phase2-pm-request-20260222.md",
+      "sha256": "2a7f8960a72f65ff64d7390a37e9d5d9ccf8d750db7fb87f2d0fd3f9329f2d56"
+    }
+  ]
+}

@@ -40,6 +40,38 @@ bash scripts/test_determinism.sh
 bash scripts/benchmark_gate.sh
 ```
 
+## PM <-> Executor Bridge (Deterministic Queue)
+
+```bash
+# 1) PM intent submit
+bash scripts/bridge_submit.sh fixtures/bridge/pm_intent.sample.json
+
+# 2) Optional human gate (required when status=awaiting_human_gate)
+bash scripts/bridge_human_gate.sh phase2-backend-fastify-ts approve architect-owner
+
+# 3) Dispatch ready intents to executor packets
+bash scripts/bridge_dispatch.sh
+
+# 4) Consume dispatched packets into executor task queue (service repo)
+bash scripts/bridge_consume.sh
+```
+
+## Local Codex PM Integration (No External API)
+
+```bash
+# 1) Prepare objective text (free-form)
+cat > tmp/pm_objective.txt <<'TXT'
+Plan and package a high-tier backend architecture migration with deterministic safeguards.
+TXT
+
+# 2) Generate PM intent JSON locally and auto-submit/dispatch
+bash scripts/bridge_local_pm.sh tdp.phase2.backend_fastify_ts_strict tmp/pm_objective.txt tmp/pm_intent.local.json high true --auto
+```
+
+Notes:
+- If generated intent is `high` tier or `human_gate_required=true`, dispatch is held (`awaiting_human_gate`) until:
+  - `bash scripts/bridge_human_gate.sh <intent_id> approve <actor>`
+
 ## Appendix (Secondary Paths)
 
 - `control/templates/`: service/MCP fixed-doc templates

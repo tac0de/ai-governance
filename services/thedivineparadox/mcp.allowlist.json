@@ -1,0 +1,12 @@
+{
+  "service_id": "thedivineparadox",
+  "allowed_mcps": [
+    {
+      "mcp_id": "example-mcp",
+      "capabilities": [
+        "search",
+        "fetch_document"
+      ]
+    }
+  ]
+}
