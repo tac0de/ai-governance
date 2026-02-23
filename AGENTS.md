@@ -59,3 +59,16 @@ This repository is architecturally governed.
 - Allow exceptions only for clearly exceptional cases.
 - Maintain partial autonomy while still preferring this format by default.
 - Prefer this exact numbered order unless an exceptional case is explicitly stated.
+
+# Planning Gate and Autopilot
+
+- Prefer a single macro planning gate over repeated micro-approvals.
+- Planning gate must capture: objective, scope, forbidden actions, risk tier, completion criteria, and rollback condition.
+- After planning approval, agents should execute in autopilot mode within approved scope.
+- Do not require extra human approval for routine steps that stay in approved scope.
+- Trigger interrupt-and-ask only when one of the following occurs:
+- Scope deviation is required.
+- Risk tier increases beyond approved level.
+- Critical validation fails or rollback condition is hit.
+- In autopilot mode, keep human updates concise and decision-focused.
+- End each execution cycle with one final report using the default reporting format.
