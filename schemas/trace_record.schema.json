@@ -20,6 +20,20 @@
       },
       "additionalProperties": false
     },
+    "measured_usage": {
+      "type": "object",
+      "required": ["provider", "model", "tokens_prompt", "tokens_completion", "tokens_total", "source_ref"],
+      "properties": {
+        "provider": { "type": "string", "minLength": 1 },
+        "model": { "type": "string", "minLength": 1 },
+        "request_id": { "type": "string", "minLength": 1 },
+        "tokens_prompt": { "type": "integer", "minimum": 0 },
+        "tokens_completion": { "type": "integer", "minimum": 0 },
+        "tokens_total": { "type": "integer", "minimum": 0 },
+        "source_ref": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+      },
+      "additionalProperties": false
+    },
     "verdict": { "type": "string", "enum": ["approved", "rejected", "retry"] },
     "record_hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
   },

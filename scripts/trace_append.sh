@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -ne 9 ]]; then
-  echo "Usage: $0 <trace_file> <prev_hash> <opcode> <args_hash> <output_hash> <evidence_refs_json> <tokens_used> <verdict> <record_hash_out>" >&2
+if [[ $# -lt 9 || $# -gt 10 ]]; then
+  echo "Usage: $0 <trace_file> <prev_hash> <opcode> <args_hash> <output_hash> <evidence_refs_json> <tokens_used> <verdict> <record_hash_out> [measured_usage_json]" >&2
   exit 1
 fi
 
@@ -15,6 +15,7 @@ evidence_refs_json="$6"
 tokens_used="$7"
 verdict="$8"
 record_hash_out="$9"
+measured_usage_json="${10:-null}"
 
 record_nohash="$(jq -cn \
   --arg prev_hash "$prev_hash" \
@@ -23,8 +24,10 @@ record_nohash="$(jq -cn \
   --arg output_hash "$output_hash" \
   --argjson evidence_refs "$evidence_refs_json" \
   --argjson tokens_used "$tokens_used" \
+  --argjson measured_usage "$measured_usage_json" \
   --arg verdict "$verdict" \
-  '{prev_hash:$prev_hash, opcode:$opcode, args_hash:$args_hash, output_hash:$output_hash, evidence_refs:$evidence_refs, cost:{tokens_used:$tokens_used}, verdict:$verdict}'
+  '{prev_hash:$prev_hash, opcode:$opcode, args_hash:$args_hash, output_hash:$output_hash, evidence_refs:$evidence_refs, cost:{tokens_used:$tokens_used}, verdict:$verdict}
+   + (if $measured_usage == null then {} else {measured_usage:$measured_usage} end)'
 )"
 
 if command -v sha256sum >/dev/null 2>&1; then
