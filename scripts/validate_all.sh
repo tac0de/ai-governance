@@ -178,6 +178,7 @@ for schema_rel in \
   schemas/bridge_intent.schema.json \
   schemas/org.schema.json \
   schemas/services_registry.schema.json \
+  schemas/service_slo_contract.schema.json \
   schemas/mcps_registry.schema.json \
   schemas/mcp_allowlist.schema.json \
   schemas/mcp_manifest.schema.json
@@ -301,7 +302,8 @@ validate_jq_contract "$SERVICES_REG_REL" "schemas/services_registry.schema.json"
     (.repo_path|type=="string" and length>0) and
     (.policy_profile_ref|type=="string" and length>0) and
     (.mcp_allowlist_path|type=="string" and length>0) and
-    (.docs_path|type=="string" and length>0)
+    (.docs_path|type=="string" and length>0) and
+    (.slo_contract_ref|type=="string" and length>0)
   )) and
   ([.services[].id] | length==(unique|length)) and
   ([.services[].repo_path] | length==(unique|length))
@@ -356,20 +358,22 @@ fi
 
 # Validate each service contract package.
 if json_ready "$SERVICES_REG_REL"; then
-  while IFS=$'\t' read -r service_id repo_path policy_profile_ref mcp_allowlist_path docs_path; do
+  while IFS=$'\t' read -r service_id repo_path policy_profile_ref mcp_allowlist_path docs_path slo_contract_ref; do
     [[ -n "$service_id" ]] || continue
 
     check_dir "$repo_path"
     check_file "$policy_profile_ref"
     check_file "$mcp_allowlist_path"
     check_dir "$docs_path"
+    check_file "$slo_contract_ref"
 
     check_exact_files_in_dir "$docs_path" "${SERVICE_DOCS_FIXED[@]}"
 
     if check_json "$policy_profile_ref"; then
       if ! jq -e '
         (.policy_profile_file|type=="string" and length>0) and
-        (.policy_profile|type=="string" and length>0)
+        (.policy_profile|type=="string" and length>0) and
+        (.governance_path=="mandatory_bridge")
       ' "$ROOT_DIR/$policy_profile_ref" >/dev/null 2>&1; then
         fail "$policy_profile_ref" "invalid policy profile contract"
       else
@@ -420,7 +424,23 @@ if json_ready "$SERVICES_REG_REL"; then
         done < <(jq -r '.allowed_mcps[]? | .mcp_id as $mcp_id | .capabilities[]? | [$mcp_id, .] | @tsv' "$ROOT_DIR/$mcp_allowlist_path")
       fi
     fi
-  done < <(jq -r '.services[] | [.id, .repo_path, .policy_profile_ref, .mcp_allowlist_path, .docs_path] | @tsv' "$ROOT_DIR/$SERVICES_REG_REL")
+    if check_json "$slo_contract_ref"; then
+      if ! jq -e '
+        .version=="v0.1" and
+        .common_kpi_set=="governance-core-v1" and
+        (.kpis|type=="array" and length>=7) and
+        ([.kpis[].id] | index("explainability_coverage") != null) and
+        ([.kpis[].id] | index("validation_reliability") != null) and
+        ([.kpis[].id] | index("operational_latency_p95_ms") != null) and
+        ([.kpis[].id] | index("d1_return_rate") != null) and
+        ([.kpis[].id] | index("vote_completion_rate") != null) and
+        ([.kpis[].id] | index("post_vote_result_open_rate") != null) and
+        ([.kpis[].id] | index("llm_fallback_rate") != null)
+      ' "$ROOT_DIR/$slo_contract_ref" >/dev/null 2>&1; then
+        fail "$slo_contract_ref" "schema validation failed (schemas/service_slo_contract.schema.json)"
+      fi
+    fi
+  done < <(jq -r '.services[] | [.id, .repo_path, .policy_profile_ref, .mcp_allowlist_path, .docs_path, .slo_contract_ref] | @tsv' "$ROOT_DIR/$SERVICES_REG_REL")
 fi
 
 # Every services/* directory must be in central services registry.

@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ServiceSLOContract",
+  "type": "object",
+  "required": ["version", "common_kpi_set", "kpis"],
+  "properties": {
+    "version": { "type": "string", "const": "v0.1" },
+    "common_kpi_set": { "type": "string", "const": "governance-core-v1" },
+    "kpis": {
+      "type": "array",
+      "minItems": 7,
+      "items": {
+        "type": "object",
+        "required": ["id", "enabled", "comparison", "target", "alert_threshold", "window", "notes"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "explainability_coverage",
+              "validation_reliability",
+              "operational_latency_p95_ms",
+              "d1_return_rate",
+              "vote_completion_rate",
+              "post_vote_result_open_rate",
+              "llm_fallback_rate"
+            ]
+          },
+          "enabled": { "type": "boolean" },
+          "comparison": { "type": "string", "enum": ["gte", "lte", "n/a"] },
+          "target": { "type": ["number", "null"] },
+          "alert_threshold": { "type": ["number", "null"] },
+          "window": { "type": "string", "minLength": 1 },
+          "notes": { "type": "string" }
+        },
+        "allOf": [
+          {
+            "if": {
+              "properties": { "enabled": { "const": true } },
+              "required": ["enabled"]
+            },
+            "then": {
+              "properties": {
+                "comparison": { "enum": ["gte", "lte"] },
+                "target": { "type": "number" },
+                "alert_threshold": { "type": "number" }
+              }
+            }
+          },
+          {
+            "if": {
+              "properties": { "enabled": { "const": false } },
+              "required": ["enabled"]
+            },
+            "then": {
+              "properties": {
+                "comparison": { "const": "n/a" },
+                "target": { "type": "null" },
+                "alert_threshold": { "type": "null" }
+              }
+            }
+          }
+        ],
+        "additionalProperties": false
+      },
+      "allOf": [
+        { "contains": { "type": "object", "properties": { "id": { "const": "explainability_coverage" } }, "required": ["id"] } },
+        { "contains": { "type": "object", "properties": { "id": { "const": "validation_reliability" } }, "required": ["id"] } },
+        { "contains": { "type": "object", "properties": { "id": { "const": "operational_latency_p95_ms" } }, "required": ["id"] } },
+        { "contains": { "type": "object", "properties": { "id": { "const": "d1_return_rate" } }, "required": ["id"] } },
+        { "contains": { "type": "object", "properties": { "id": { "const": "vote_completion_rate" } }, "required": ["id"] } },
+        { "contains": { "type": "object", "properties": { "id": { "const": "post_vote_result_open_rate" } }, "required": ["id"] } },
+        { "contains": { "type": "object", "properties": { "id": { "const": "llm_fallback_rate" } }, "required": ["id"] } }
+      ]
+    }
+  },
+  "additionalProperties": false
+}

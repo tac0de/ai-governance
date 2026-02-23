@@ -10,7 +10,8 @@
       "repo_path": "services/example-service",
       "policy_profile_ref": "services/example-service/policy.profile.json",
       "mcp_allowlist_path": "services/example-service/mcp.allowlist.json",
-      "docs_path": "services/example-service/docs"
+      "docs_path": "services/example-service/docs",
+      "slo_contract_ref": "services/example-service/slo.contract.v0.1.json"
     },
     {
       "id": "thedivineparadox",
@@ -21,7 +22,8 @@
       "repo_path": "services/thedivineparadox",
       "policy_profile_ref": "services/thedivineparadox/policy.profile.json",
       "mcp_allowlist_path": "services/thedivineparadox/mcp.allowlist.json",
-      "docs_path": "services/thedivineparadox/docs"
+      "docs_path": "services/thedivineparadox/docs",
+      "slo_contract_ref": "services/thedivineparadox/slo.contract.v0.1.json"
     }
   ]
 }

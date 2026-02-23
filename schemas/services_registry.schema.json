@@ -22,7 +22,8 @@
           "repo_path",
           "policy_profile_ref",
           "mcp_allowlist_path",
-          "docs_path"
+          "docs_path",
+          "slo_contract_ref"
         ],
         "properties": {
           "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
@@ -33,7 +34,8 @@
           "repo_path": { "type": "string", "minLength": 1 },
           "policy_profile_ref": { "type": "string", "minLength": 1 },
           "mcp_allowlist_path": { "type": "string", "minLength": 1 },
-          "docs_path": { "type": "string", "minLength": 1 }
+          "docs_path": { "type": "string", "minLength": 1 },
+          "slo_contract_ref": { "type": "string", "minLength": 1 }
         },
         "additionalProperties": false
       }

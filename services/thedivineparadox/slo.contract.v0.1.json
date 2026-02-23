@@ -1,0 +1,69 @@
+{
+  "version": "v0.1",
+  "common_kpi_set": "governance-core-v1",
+  "kpis": [
+    {
+      "id": "explainability_coverage",
+      "enabled": true,
+      "comparison": "gte",
+      "target": 1.0,
+      "alert_threshold": 1.0,
+      "window": "release-candidate",
+      "notes": "Evidence and trace refs are mandatory for every shipped change."
+    },
+    {
+      "id": "validation_reliability",
+      "enabled": true,
+      "comparison": "gte",
+      "target": 0.99,
+      "alert_threshold": 0.99,
+      "window": "7d",
+      "notes": "Governance validation pass ratio."
+    },
+    {
+      "id": "operational_latency_p95_ms",
+      "enabled": true,
+      "comparison": "lte",
+      "target": 1200,
+      "alert_threshold": 1200,
+      "window": "rolling benchmark window",
+      "notes": "Candidate profile path latency p95."
+    },
+    {
+      "id": "d1_return_rate",
+      "enabled": true,
+      "comparison": "gte",
+      "target": 0.22,
+      "alert_threshold": 0.18,
+      "window": "7d",
+      "notes": "Share of users returning on next UTC day."
+    },
+    {
+      "id": "vote_completion_rate",
+      "enabled": true,
+      "comparison": "gte",
+      "target": 0.7,
+      "alert_threshold": 0.6,
+      "window": "3d",
+      "notes": "Share of sessions that complete a valid vote."
+    },
+    {
+      "id": "post_vote_result_open_rate",
+      "enabled": true,
+      "comparison": "gte",
+      "target": 0.45,
+      "alert_threshold": 0.35,
+      "window": "3d",
+      "notes": "Share of successful vote sessions opening result view."
+    },
+    {
+      "id": "llm_fallback_rate",
+      "enabled": true,
+      "comparison": "lte",
+      "target": 0.08,
+      "alert_threshold": 0.12,
+      "window": "24h",
+      "notes": "Share of recompute events with degraded LLM status."
+    }
+  ]
+}
