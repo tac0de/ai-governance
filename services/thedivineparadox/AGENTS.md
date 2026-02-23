@@ -10,10 +10,20 @@ This service is governed by repository root `AGENTS.md`.
 - Use one macro planning gate before execution whenever feasible.
 - Planning gate must define: objective, scope, forbidden actions, risk tier, completion criteria, and rollback condition.
 - After planning approval, run in autopilot mode inside approved scope.
+- Switch from direct execution to macro planning when one or more conditions are met:
+- More than one repository/service boundary is affected.
+- External infra changes are required (cloud, secrets, DB, DNS, CI/CD).
+- Rollback is non-trivial or data-impacting.
+- Ambiguity remains after initial context collection.
 - Ask for human input only on interrupt conditions:
 - Scope deviation is required.
 - Risk tier exceeds approved level.
 - Critical validation fails or rollback condition is triggered.
+- Interrupt scenario examples:
+- Production deploy target or region differs from approved plan.
+- Secret source or runtime credential path differs from approved contract.
+- Deterministic test or trace hash verification fails.
+- Data migration requires destructive or irreversible action.
 
 # Service Reporting
 
