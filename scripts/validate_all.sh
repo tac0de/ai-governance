@@ -96,6 +96,23 @@ check_allowed_entries_in_dir() {
   done < <(find "$ROOT_DIR/$rel_dir" -mindepth 1 -maxdepth 1 | sort)
 }
 
+check_services_have_agents() {
+  local services_root="services"
+  local service_path
+  local service_name
+
+  if ! check_dir "$services_root"; then
+    return
+  fi
+
+  while IFS= read -r service_path; do
+    service_name="$(basename "$service_path")"
+    if [[ ! -f "$service_path/AGENTS.md" ]]; then
+      fail "$services_root/$service_name/AGENTS.md" "missing service-level AGENTS.md"
+    fi
+  done < <(find "$ROOT_DIR/$services_root" -mindepth 1 -maxdepth 1 -type d | sort)
+}
+
 check_json() {
   local rel_path="$1"
   if ! check_file "$rel_path"; then
@@ -306,6 +323,9 @@ validate_jq_contract "$MCPS_REG_REL" "schemas/mcps_registry.schema.json" '
   ([.mcps[].id] | length==(unique|length)) and
   ([.mcps[].root_path] | length==(unique|length))
 '
+
+# Ensure every service has a service-level AGENTS policy narrowing file.
+check_services_have_agents
 
 if [[ -d "$ROOT_DIR/packages/mcps" ]]; then
   fail "packages/mcps" "unsupported MCP root; use mcps/<mcp-name>"
