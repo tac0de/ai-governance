@@ -72,3 +72,11 @@ This repository is architecturally governed.
 - Critical validation fails or rollback condition is hit.
 - In autopilot mode, keep human updates concise and decision-focused.
 - End each execution cycle with one final report using the default reporting format.
+
+# Mandatory Governance Path
+
+- All work must follow governance-enforced routing by default.
+- Direct service-side execution without governance contract linkage is not allowed.
+- Every execution unit must be trace-linked to intent, policy, and evidence references.
+- Service repositories may implement details, but must not bypass central governance gates.
+- Exceptions require explicit human architect override and must be recorded in trace artifacts.

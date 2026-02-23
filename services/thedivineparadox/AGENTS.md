@@ -39,3 +39,4 @@ This service is governed by repository root `AGENTS.md`.
 - Keep changes deterministic and evidence-linked.
 - Prefer API/shell-verifiable outcomes over UI-only claims.
 - Do not change service policy files or schema contracts without explicit human architect approval.
+- Do not execute direct service changes outside governance-linked intent and trace flow.
