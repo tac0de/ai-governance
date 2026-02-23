@@ -13,10 +13,12 @@ validate_out="$(bash "$ROOT_DIR/scripts/validate_all.sh")"
 determinism_out="$(bash "$ROOT_DIR/scripts/test_determinism.sh")"
 benchmark_out="$(bash "$ROOT_DIR/scripts/benchmark_gate.sh")"
 
-cat > "$report_path" <<REPORT
+render_report() {
+  local checked_at_input="$1"
+  cat <<REPORT
 # Governance Overnight Progress
 
-- checked_at_utc: ${checked_at}
+- checked_at_utc: ${checked_at_input}
 - validate: ${validate_out}
 - determinism: ${determinism_out}
 - benchmark: ${benchmark_out}
@@ -27,5 +29,23 @@ cat > "$report_path" <<REPORT
 - benchmark_track_status: pass
 - release_readiness: eligible_if_service_kpi_submission_present
 REPORT
+}
 
+normalize_report() {
+  sed '/^- checked_at_utc:/d' "$1"
+}
+
+tmp_report="$(mktemp)"
+render_report "$checked_at" > "$tmp_report"
+
+latest_report="$(ls -1t "$REPORT_DIR"/progress-*.md 2>/dev/null | head -n 1 || true)"
+if [[ -n "$latest_report" ]]; then
+  if diff -q <(normalize_report "$latest_report") <(normalize_report "$tmp_report") >/dev/null; then
+    rm -f "$tmp_report"
+    echo "SKIPPED_DUPLICATE $latest_report"
+    exit 0
+  fi
+fi
+
+mv "$tmp_report" "$report_path"
 echo "$report_path"
