@@ -43,3 +43,19 @@ This repository is architecturally governed.
 - Keep changes minimal, deterministic, and testable via shell scripts.
 - Prioritize API-level verification; use UI-level checks only when explicitly required.
 - For high-risk boundary changes, require explicit human architect approval.
+
+# Default Reporting Format
+
+- Use the following report format as the default response structure, even when context changes:
+- `1. WHAT I DID`
+- `2. WHERE IT IS RUNNING`
+- `3. HUMAN REQUIRED (links + paths)`
+- `4. RISK / UNKNOWN`
+- Korean aliases are allowed and recommended in parallel:
+- `1. WHAT I DID (무엇을 했는가)`
+- `2. WHERE IT IS RUNNING (어디서 실행되는가)`
+- `3. HUMAN REQUIRED (links + paths) (사람 확인 필요: 링크 + 경로)`
+- `4. RISK / UNKNOWN (위험 / 미확정)`
+- Allow exceptions only for clearly exceptional cases.
+- Maintain partial autonomy while still preferring this format by default.
+- Prefer this exact numbered order unless an exceptional case is explicitly stated.

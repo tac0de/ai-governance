@@ -54,6 +54,9 @@ bash scripts/bridge_dispatch.sh
 
 # 4) Consume dispatched packets into executor task queue (service repo)
 bash scripts/bridge_consume.sh
+
+# 5) One-shot minimal-token mode (local PM + bridge pipeline)
+bash scripts/bridge_one_shot_local.sh tdp.phase2.ops_hardening tmp/pm_objective_ops_hardening.txt high true architect-owner
 ```
 
 ## Local Codex PM Integration (No External API)

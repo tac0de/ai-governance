@@ -8,7 +8,19 @@ fi
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 bridge_dir="${1:-$ROOT_DIR/traces/bridge}"
-executor_out_dir="${2:-$HOME/thedivineparadox/reports/overnight}"
+
+default_executor_out_dir="$HOME/projects/thedivineparadox/reports/overnight"
+if [[ -d "$HOME/projects/governed-services/thedivineparadox/reports/overnight" ]]; then
+  default_executor_out_dir="$HOME/projects/governed-services/thedivineparadox/reports/overnight"
+fi
+if [[ -d "$HOME/thedivineparadox/reports/overnight" ]]; then
+  default_executor_out_dir="$HOME/thedivineparadox/reports/overnight"
+fi
+if [[ -d "$HOME/the-divine-paradox/reports/overnight" ]]; then
+  default_executor_out_dir="$HOME/the-divine-paradox/reports/overnight"
+fi
+
+executor_out_dir="${2:-$default_executor_out_dir}"
 
 action_ts="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
