@@ -159,6 +159,10 @@ ol {
   background: linear-gradient(180deg, #fff 0%, #fbfdff 100%);
 }
 
+.demo-card.flash {
+  animation: cardPulse 360ms ease;
+}
+
 .demo-head {
   display: flex;
   justify-content: space-between;
@@ -197,6 +201,146 @@ ol {
 
 .decision-line strong {
   color: var(--ink);
+}
+
+.cockpit {
+  margin-top: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+  background: #fcfdff;
+}
+
+.cockpit-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.cockpit h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.verdict-pill {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.verdict-pill.proceed {
+  background: #e9f7ef;
+  color: #137333;
+  border-color: #c3e8d0;
+}
+
+.verdict-pill.await_human_approval {
+  background: #fff7e8;
+  color: #b06000;
+  border-color: #f2d5a4;
+}
+
+.verdict-pill.block {
+  background: #fdecec;
+  color: #b3261e;
+  border-color: #f3b9b5;
+}
+
+.meter-wrap {
+  margin-top: 10px;
+}
+
+.meter-label {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.risk-meter {
+  margin-top: 6px;
+  height: 10px;
+  border-radius: 999px;
+  background: #eef2f8;
+  overflow: hidden;
+}
+
+.risk-meter-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #20a464 0%, #f9ab00 58%, #d93025 100%);
+  transition: width 280ms ease;
+}
+
+.cockpit-grid {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.cockpit-grid h4 {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+}
+
+.status-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.status-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+  font-size: 0.84rem;
+  color: #3f454b;
+}
+
+.status-tag {
+  border-radius: 999px;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.status-tag.pass,
+.status-tag.done {
+  color: #137333;
+  background: #e9f7ef;
+  border-color: #c3e8d0;
+}
+
+.status-tag.warn,
+.status-tag.current {
+  color: #b06000;
+  background: #fff7e8;
+  border-color: #f2d5a4;
+}
+
+.status-tag.fail,
+.status-tag.blocked {
+  color: #b3261e;
+  background: #fdecec;
+  border-color: #f3b9b5;
+}
+
+.status-tag.pending {
+  color: #5f6368;
+  background: #f2f4f8;
 }
 
 pre {
@@ -264,7 +408,8 @@ footer {
 
 @media (max-width: 960px) {
   .grid-3,
-  .sim-grid {
+  .sim-grid,
+  .cockpit-grid {
     grid-template-columns: 1fr;
   }
 }
@@ -287,4 +432,10 @@ footer {
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+@keyframes cardPulse {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.008); }
+  100% { transform: scale(1); }
 }

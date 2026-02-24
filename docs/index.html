@@ -97,6 +97,32 @@
         </label>
       </div>
 
+      <section class="cockpit" aria-live="polite">
+        <div class="cockpit-head">
+          <h3 data-i18n="cockpitTitle"></h3>
+          <span id="verdict-pill" class="verdict-pill"></span>
+        </div>
+        <div class="meter-wrap">
+          <div class="meter-label">
+            <strong data-i18n="riskMeterLabel"></strong>
+            <span id="risk-meter-value"></span>
+          </div>
+          <div class="risk-meter">
+            <div id="risk-meter-fill" class="risk-meter-fill"></div>
+          </div>
+        </div>
+        <div class="cockpit-grid">
+          <article>
+            <h4 data-i18n="gateTitle"></h4>
+            <ul id="gate-list" class="status-list"></ul>
+          </article>
+          <article>
+            <h4 data-i18n="checksTitle"></h4>
+            <ul id="checks-list" class="status-list"></ul>
+          </article>
+        </div>
+      </section>
+
       <p class="decision-line"><strong data-i18n="decisionLabel"></strong> <span id="decision-summary"></span></p>
       <pre id="demo-output" aria-live="polite"></pre>
     </section>

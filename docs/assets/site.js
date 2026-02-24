@@ -32,6 +32,10 @@ const copy = {
     demoTitle: "Interactive Governance Simulator",
     demoButton: "Evaluate Decision",
     demoNote: "Change inputs and run. You can see how risk, determinism, and external dependency change the governance verdict.",
+    cockpitTitle: "Decision Cockpit",
+    riskMeterLabel: "Risk Exposure",
+    gateTitle: "Governance Gates",
+    checksTitle: "Contract Checks",
     inputScenario: "Scenario",
     inputRisk: "Declared Risk Tier",
     inputPii: "Contains sensitive user data",
@@ -49,8 +53,8 @@ const copy = {
         body: "AI teams are moving fast, but speed without boundaries causes quality drift. Your model keeps speed while preserving control by separating proposal power (agent) from release power (human)."
       },
       {
-        title: "How To Read The Codebase",
-        body: "Start from control/registry for allowed topology, then schemas/ for contracts, then scripts/validate_all.sh for enforcement logic, then services/* and mcps/* for concrete artifacts."
+        title: "How To Understand The Operating Model",
+        body: "You do not need code access to read the logic. Follow this order: proposal comes in, governance checks contracts, risk tier decides approval mode, then human gate closes high-risk releases."
       }
     ],
     contactTitle: "Contact",
@@ -90,6 +94,10 @@ const copy = {
     demoTitle: "거버넌스 시뮬레이터",
     demoButton: "판정 실행",
     demoNote: "입력을 바꾸고 실행하면 리스크, 결정성, 외부 의존성에 따라 판정이 어떻게 달라지는지 볼 수 있습니다.",
+    cockpitTitle: "Decision Cockpit",
+    riskMeterLabel: "리스크 노출도",
+    gateTitle: "거버넌스 게이트",
+    checksTitle: "계약 검증 상태",
     inputScenario: "시나리오",
     inputRisk: "선언 리스크 등급",
     inputPii: "민감 사용자 데이터 포함",
@@ -107,8 +115,8 @@ const copy = {
         body: "AI 개발은 빠르지만 경계가 없으면 품질이 무너집니다. 이 모델은 속도를 유지하면서 권한을 분리합니다. 에이전트는 제안하고 인간은 릴리스를 승인합니다."
       },
       {
-        title: "코드를 읽는 순서",
-        body: "control/registry에서 전체 토폴로지, schemas/에서 계약, scripts/validate_all.sh에서 강제 로직을 먼저 보고, 그 다음 services/*, mcps/*를 보면 구조가 바로 잡힙니다."
+        title: "코드 없이 이해하는 운영 흐름",
+        body: "코드 열람이 없어도 의사결정 흐름은 읽을 수 있습니다. 제안 입력 -> 거버넌스 계약 검증 -> 리스크 등급 판정 -> 고위험 인간 승인 순서로 보면 됩니다."
       }
     ],
     contactTitle: "연락",
@@ -131,6 +139,10 @@ const copy = {
     demoTitle: "ガバナンスシミュレーター",
     demoButton: "判定を実行",
     demoNote: "入力条件を変えて判定結果の変化を確認できます。",
+    cockpitTitle: "Decision Cockpit",
+    riskMeterLabel: "Risk Exposure",
+    gateTitle: "Governance Gates",
+    checksTitle: "Contract Checks",
     inputScenario: "シナリオ",
     inputRisk: "宣言リスク",
     inputPii: "機微データを含む",
@@ -163,6 +175,10 @@ const copy = {
     demoTitle: "治理模拟器",
     demoButton: "执行判定",
     demoNote: "修改输入后可观察治理结论如何变化。",
+    cockpitTitle: "Decision Cockpit",
+    riskMeterLabel: "Risk Exposure",
+    gateTitle: "Governance Gates",
+    checksTitle: "Contract Checks",
     inputScenario: "场景",
     inputRisk: "声明风险等级",
     inputPii: "包含敏感数据",
@@ -302,6 +318,94 @@ function summarizeDecision(lang, result) {
   return "Proceed: within auto-approval boundary";
 }
 
+function riskScore(state, result) {
+  const base = state.risk === "low" ? 26 : state.risk === "medium" ? 54 : 80;
+  const pii = state.pii ? 14 : 0;
+  const ext = state.external ? 10 : 0;
+  const det = state.deterministic ? 0 : 22;
+  const high = result.approvalTier === "high" ? 6 : 0;
+  return Math.max(0, Math.min(100, base + pii + ext + det + high));
+}
+
+function renderStatusList(targetId, rows) {
+  const list = document.getElementById(targetId);
+  if (!list) return;
+  list.innerHTML = "";
+
+  rows.forEach((row) => {
+    const li = document.createElement("li");
+    li.className = "status-item";
+
+    const label = document.createElement("span");
+    label.textContent = row.label;
+
+    const tag = document.createElement("span");
+    tag.className = `status-tag ${row.status}`;
+    tag.textContent = row.status;
+
+    li.appendChild(label);
+    li.appendChild(tag);
+    list.appendChild(li);
+  });
+}
+
+function renderCockpit(lang, state, result) {
+  const score = riskScore(state, result);
+  const fill = document.getElementById("risk-meter-fill");
+  const meterValue = document.getElementById("risk-meter-value");
+  if (fill) fill.style.width = `${score}%`;
+  if (meterValue) meterValue.textContent = `${score}%`;
+
+  const pill = document.getElementById("verdict-pill");
+  if (pill) {
+    pill.className = `verdict-pill ${result.decision}`;
+    if (lang === "ko") {
+      pill.textContent = result.decision === "block"
+        ? "BLOCK"
+        : result.decision === "await_human_approval"
+          ? "HUMAN GATE"
+          : "PROCEED";
+    } else {
+      pill.textContent = result.decision === "block"
+        ? "BLOCK"
+        : result.decision === "await_human_approval"
+          ? "HUMAN GATE"
+          : "PROCEED";
+    }
+  }
+
+  const gateRows = [
+    { label: "intake", status: "done" },
+    { label: "policy-schema", status: "done" },
+    { label: "scope-gate", status: "done" },
+    { label: "human-gate", status: result.humanGateRequired ? "current" : "pending" },
+    { label: "release", status: result.decision === "block" ? "blocked" : "pending" }
+  ];
+  if (result.decision === "proceed") {
+    gateRows[3].status = "pending";
+    gateRows[4].status = "current";
+  }
+  if (result.decision === "await_human_approval") {
+    gateRows[4].status = "pending";
+  }
+
+  const checkRows = result.checks.map((c) => ({
+    label: c.name,
+    status: c.status
+  }));
+
+  renderStatusList("gate-list", gateRows);
+  renderStatusList("checks-list", checkRows);
+}
+
+function pulseDemoCard() {
+  const card = document.querySelector(".demo-card");
+  if (!card) return;
+  card.classList.remove("flash");
+  void card.offsetWidth;
+  card.classList.add("flash");
+}
+
 async function runDemo(lang) {
   const state = {
     scenario: document.getElementById("scenario-input").value,
@@ -330,6 +434,8 @@ async function runDemo(lang) {
 
   const summary = document.getElementById("decision-summary");
   if (summary) summary.textContent = summarizeDecision(lang, result);
+  renderCockpit(lang, state, result);
+  pulseDemoCard();
 
   const output = document.getElementById("demo-output");
   if (output) output.textContent = JSON.stringify(payload, null, 2);
