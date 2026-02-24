@@ -61,6 +61,15 @@
       </div>
       <p data-i18n="demoNote"></p>
 
+      <div class="preset-row">
+        <span data-i18n="presetLabel"></span>
+        <div class="preset-buttons">
+          <button type="button" class="preset-btn" data-preset="safe" data-i18n="presetSafe"></button>
+          <button type="button" class="preset-btn" data-preset="balanced" data-i18n="presetBalanced"></button>
+          <button type="button" class="preset-btn" data-preset="risky" data-i18n="presetRisky"></button>
+        </div>
+      </div>
+
       <div class="sim-grid">
         <label>
           <span data-i18n="inputScenario"></span>
@@ -124,6 +133,8 @@
       </section>
 
       <p class="decision-line"><strong data-i18n="decisionLabel"></strong> <span id="decision-summary"></span></p>
+      <p id="recommendation-line" class="recommendation-line"></p>
+      <p id="delta-line" class="delta-line"></p>
       <p class="eval-meta">
         <strong data-i18n="evaluatedLabel"></strong>
         <span id="evaluated-at">-</span>

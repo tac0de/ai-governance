@@ -170,6 +170,35 @@ ol {
   gap: 12px;
 }
 
+.preset-row {
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.preset-buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.preset-btn {
+  background: #fff;
+  color: #35507d;
+  border-color: #cfe0ff;
+  padding: 8px 12px;
+}
+
+.preset-btn.active {
+  background: #174ea6;
+  color: #fff;
+  border-color: #174ea6;
+}
+
 .sim-grid {
   margin-top: 12px;
   display: grid;
@@ -201,6 +230,22 @@ ol {
 
 .decision-line strong {
   color: var(--ink);
+}
+
+.recommendation-line {
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #f8fbff;
+  color: #2f3d52;
+  font-size: 0.88rem;
+}
+
+.delta-line {
+  margin: 8px 0 0;
+  color: #5f6368;
+  font-size: 0.8rem;
 }
 
 .eval-meta {

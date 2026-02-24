@@ -32,6 +32,10 @@ const copy = {
     demoTitle: "Interactive Governance Simulator",
     demoButton: "Evaluate Decision",
     demoNote: "Change inputs and run. You can see how risk, determinism, and external dependency change the governance verdict.",
+    presetLabel: "Quick Presets",
+    presetSafe: "Safe Launch",
+    presetBalanced: "Balanced",
+    presetRisky: "Risky Push",
     cockpitTitle: "Decision Cockpit",
     riskMeterLabel: "Risk Exposure",
     gateTitle: "Governance Gates",
@@ -44,6 +48,11 @@ const copy = {
     inputExternal: "Depends on external runtime",
     inputDeterministic: "Deterministic trace path maintained",
     decisionLabel: "Decision:",
+    recommendationProceed: "Recommendation: release can proceed under automated gate. Keep trace attached.",
+    recommendationHuman: "Recommendation: pause and request human approval with evidence summary.",
+    recommendationBlock: "Recommendation: block release now. Fix deterministic path before retry.",
+    deltaPrefix: "Compared with previous run:",
+    deltaNone: "no meaningful change",
     blogTitle: "Short Essays",
     blogs: [
       {
@@ -96,6 +105,10 @@ const copy = {
     demoTitle: "거버넌스 시뮬레이터",
     demoButton: "판정 실행",
     demoNote: "입력을 바꾸고 실행하면 리스크, 결정성, 외부 의존성에 따라 판정이 어떻게 달라지는지 볼 수 있습니다.",
+    presetLabel: "빠른 프리셋",
+    presetSafe: "안전 배포",
+    presetBalanced: "균형",
+    presetRisky: "고위험 푸시",
     cockpitTitle: "Decision Cockpit",
     riskMeterLabel: "리스크 노출도",
     gateTitle: "거버넌스 게이트",
@@ -108,6 +121,11 @@ const copy = {
     inputExternal: "외부 런타임 의존",
     inputDeterministic: "결정적 트레이스 경로 유지",
     decisionLabel: "판정:",
+    recommendationProceed: "권고: 자동 승인 범위이므로 진행 가능합니다. 트레이스 연결은 유지하세요.",
+    recommendationHuman: "권고: 증거 요약과 함께 인간 승인 요청 후 진행하세요.",
+    recommendationBlock: "권고: 지금은 배포 차단. 결정성 경로부터 복구 후 재평가하세요.",
+    deltaPrefix: "직전 실행 대비:",
+    deltaNone: "의미 있는 변화 없음",
     blogTitle: "짧은 설명 글",
     blogs: [
       {
@@ -143,6 +161,10 @@ const copy = {
     demoTitle: "ガバナンスシミュレーター",
     demoButton: "判定を実行",
     demoNote: "入力条件を変えて判定結果の変化を確認できます。",
+    presetLabel: "Quick Presets",
+    presetSafe: "Safe Launch",
+    presetBalanced: "Balanced",
+    presetRisky: "Risky Push",
     cockpitTitle: "Decision Cockpit",
     riskMeterLabel: "Risk Exposure",
     gateTitle: "Governance Gates",
@@ -155,6 +177,11 @@ const copy = {
     inputExternal: "外部ランタイム依存",
     inputDeterministic: "決定論的トレース維持",
     decisionLabel: "判定:",
+    recommendationProceed: "Recommendation: release can proceed under automated gate. Keep trace attached.",
+    recommendationHuman: "Recommendation: pause and request human approval with evidence summary.",
+    recommendationBlock: "Recommendation: block release now. Fix deterministic path before retry.",
+    deltaPrefix: "Compared with previous run:",
+    deltaNone: "no meaningful change",
     blogTitle: "短い解説",
     blogs: [
       { title: "この設計の本質", body: "文書ではなく意思決定OSです。" },
@@ -181,6 +208,10 @@ const copy = {
     demoTitle: "治理模拟器",
     demoButton: "执行判定",
     demoNote: "修改输入后可观察治理结论如何变化。",
+    presetLabel: "Quick Presets",
+    presetSafe: "Safe Launch",
+    presetBalanced: "Balanced",
+    presetRisky: "Risky Push",
     cockpitTitle: "Decision Cockpit",
     riskMeterLabel: "Risk Exposure",
     gateTitle: "Governance Gates",
@@ -193,6 +224,11 @@ const copy = {
     inputExternal: "依赖外部运行时",
     inputDeterministic: "保持确定性追踪",
     decisionLabel: "结论:",
+    recommendationProceed: "Recommendation: release can proceed under automated gate. Keep trace attached.",
+    recommendationHuman: "Recommendation: pause and request human approval with evidence summary.",
+    recommendationBlock: "Recommendation: block release now. Fix deterministic path before retry.",
+    deltaPrefix: "Compared with previous run:",
+    deltaNone: "no meaningful change",
     blogTitle: "短文",
     blogs: [
       { title: "设计本质", body: "这不是文档，而是决策操作系统。" },
@@ -212,7 +248,32 @@ const scenarioLabel = {
   policy_change: "policy_change"
 };
 
+const presets = {
+  safe: {
+    scenario: "ui_copy",
+    risk: "low",
+    pii: false,
+    external: false,
+    deterministic: true
+  },
+  balanced: {
+    scenario: "new_mcp",
+    risk: "medium",
+    pii: false,
+    external: true,
+    deterministic: true
+  },
+  risky: {
+    scenario: "policy_change",
+    risk: "high",
+    pii: true,
+    external: true,
+    deterministic: false
+  }
+};
+
 let evaluationCount = 0;
+let previousSnapshot = null;
 
 function detectDefaultLanguage() {
   const supported = ["en", "ko", "ja", "zh"];
@@ -328,6 +389,57 @@ function summarizeDecision(lang, result) {
   return "Proceed: within auto-approval boundary";
 }
 
+function recommendationText(lang, decision) {
+  const selected = copy[lang] || copy.en;
+  if (decision === "block") return selected.recommendationBlock;
+  if (decision === "await_human_approval") return selected.recommendationHuman;
+  return selected.recommendationProceed;
+}
+
+function collectState() {
+  return {
+    scenario: document.getElementById("scenario-input").value,
+    risk: document.getElementById("risk-input").value,
+    pii: document.getElementById("pii-input").checked,
+    external: document.getElementById("external-input").checked,
+    deterministic: document.getElementById("deterministic-input").checked
+  };
+}
+
+function applyPreset(name) {
+  const preset = presets[name];
+  if (!preset) return;
+  document.getElementById("scenario-input").value = preset.scenario;
+  document.getElementById("risk-input").value = preset.risk;
+  document.getElementById("pii-input").checked = preset.pii;
+  document.getElementById("external-input").checked = preset.external;
+  document.getElementById("deterministic-input").checked = preset.deterministic;
+}
+
+function setPresetActive(name) {
+  document.querySelectorAll(".preset-btn").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.preset === name);
+  });
+}
+
+function describeDelta(lang, current, previous) {
+  const selected = copy[lang] || copy.en;
+  if (!previous) return `${selected.deltaPrefix} ${selected.deltaNone}`;
+
+  const changes = [];
+  if (previous.decision !== current.decision) {
+    changes.push(`decision ${previous.decision} -> ${current.decision}`);
+  }
+  if (previous.approval_tier !== current.approval_tier) {
+    changes.push(`tier ${previous.approval_tier} -> ${current.approval_tier}`);
+  }
+  if (previous.human_gate_required !== current.human_gate_required) {
+    changes.push(`human_gate ${previous.human_gate_required} -> ${current.human_gate_required}`);
+  }
+  if (changes.length === 0) return `${selected.deltaPrefix} ${selected.deltaNone}`;
+  return `${selected.deltaPrefix} ${changes.join(" | ")}`;
+}
+
 function riskScore(state, result) {
   const base = state.risk === "low" ? 26 : state.risk === "medium" ? 54 : 80;
   const pii = state.pii ? 14 : 0;
@@ -438,14 +550,23 @@ function updateEvaluationMeta(nowIso) {
   }
 }
 
+function presetNameFromState(state) {
+  for (const [name, preset] of Object.entries(presets)) {
+    if (
+      preset.scenario === state.scenario &&
+      preset.risk === state.risk &&
+      preset.pii === state.pii &&
+      preset.external === state.external &&
+      preset.deterministic === state.deterministic
+    ) {
+      return name;
+    }
+  }
+  return "";
+}
+
 async function runDemo(lang) {
-  const state = {
-    scenario: document.getElementById("scenario-input").value,
-    risk: document.getElementById("risk-input").value,
-    pii: document.getElementById("pii-input").checked,
-    external: document.getElementById("external-input").checked,
-    deterministic: document.getElementById("deterministic-input").checked
-  };
+  const state = collectState();
 
   const result = buildDecision(state);
   const payload = {
@@ -466,13 +587,19 @@ async function runDemo(lang) {
 
   const summary = document.getElementById("decision-summary");
   if (summary) summary.textContent = summarizeDecision(lang, result);
+  const recommendation = document.getElementById("recommendation-line");
+  if (recommendation) recommendation.textContent = recommendationText(lang, result.decision);
+  const delta = document.getElementById("delta-line");
+  if (delta) delta.textContent = describeDelta(lang, payload, previousSnapshot);
   renderCockpit(lang, state, result);
+  setPresetActive(presetNameFromState(state));
   pulseDemoCard();
   updateEvaluationMeta(payload.checked_at_utc);
 
   const output = document.getElementById("demo-output");
   if (output) output.textContent = JSON.stringify(payload, null, 2);
   pulseOutput();
+  previousSnapshot = payload;
 }
 
 (function init() {
@@ -481,6 +608,8 @@ async function runDemo(lang) {
   if (select) select.value = selected;
 
   setText(selected);
+  applyPreset("balanced");
+  setPresetActive("balanced");
   runDemo(selected);
 
   if (select) {
@@ -504,6 +633,14 @@ async function runDemo(lang) {
     const node = document.getElementById(id);
     if (!node) return;
     node.addEventListener("change", () => {
+      const lang = select ? select.value : selected;
+      runDemo(lang);
+    });
+  });
+
+  document.querySelectorAll(".preset-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      applyPreset(btn.dataset.preset);
       const lang = select ? select.value : selected;
       runDemo(lang);
     });
