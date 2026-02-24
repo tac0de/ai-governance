@@ -528,20 +528,34 @@ pre.flash {
 
 .arcade-controls {
   justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(3, 72px);
+  grid-template-rows: repeat(3, 56px);
+  gap: 6px;
+  margin-inline: auto;
+  width: max-content;
 }
 
 .arcade-move {
-  min-width: 52px;
+  min-width: 72px;
+  min-height: 56px;
+  font-size: 1.2rem;
   background: #fff;
   color: #1f3f76;
   border-color: #bfd5fb;
   transition: transform 130ms ease, box-shadow 180ms ease;
+  touch-action: manipulation;
 }
 
 .arcade-move:hover {
   transform: translateY(-1px);
   box-shadow: 0 8px 16px rgba(26, 115, 232, 0.2);
 }
+
+.arcade-move.up { grid-column: 2; grid-row: 1; }
+.arcade-move.left { grid-column: 1; grid-row: 2; }
+.arcade-move.down { grid-column: 2; grid-row: 2; }
+.arcade-move.right { grid-column: 3; grid-row: 2; }
 
 .game-feedback {
   margin: 10px 0 0;
@@ -730,6 +744,15 @@ footer {
   .demo-head {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  #game-canvas {
+    max-width: 100%;
+  }
+
+  .arcade-controls {
+    grid-template-columns: repeat(3, 64px);
+    grid-template-rows: repeat(3, 52px);
   }
 }
 

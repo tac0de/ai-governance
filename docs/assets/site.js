@@ -49,7 +49,7 @@ const copy = {
       "Risk tier outputs: auto / policy+owner / mandatory human gate"
     ],
     gameTitle: "Governance Maze (Endless)",
-    gameNote: "Pacman-style endless mode. Collect evidence nodes, avoid risk agents, and keep climbing your governance level.",
+    gameNote: "Pacman-style endless mode. Move with Arrow/WASD or swipe. Collect evidence nodes and avoid risk agents.",
     gameReset: "Start Over",
     gameScoreLabel: "Score",
     gameBestLabel: "Best",
@@ -63,8 +63,8 @@ const copy = {
     gameBadgeKeeper: "Gate Keeper",
     gameBadgeOracle: "Policy Oracle",
     gameBadgePerfect: "Perfect Day",
-    gameFeedbackIdle: "Move with arrow keys or the pad below.",
-    gameFeedbackHit: "Risk collision. Score penalty applied.",
+    gameFeedbackIdle: "Use Arrow/WASD or swipe on the maze.",
+    gameFeedbackHit: "Risk collision. Brief shield activated.",
     gameFeedbackLevelUp: "Level up. Risk speed increased.",
     demoTitle: "Interactive Governance Simulator",
     demoButton: "Refresh",
@@ -171,7 +171,7 @@ const copy = {
       "리스크 계층 결과 출력: 자동 / 정책+오너 / 인간 필수"
     ],
     gameTitle: "거버넌스 미로 (무한모드)",
-    gameNote: "팩맨 스타일 무한모드입니다. 증거 노드를 모으고 리스크 에이전트를 피하면서 레벨을 올리세요.",
+    gameNote: "팩맨 스타일 무한모드입니다. 방향키/WASD 또는 스와이프로 이동하세요.",
     gameReset: "처음부터",
     gameScoreLabel: "점수",
     gameBestLabel: "최고 연속",
@@ -185,8 +185,8 @@ const copy = {
     gameBadgeKeeper: "게이트 키퍼",
     gameBadgeOracle: "정책 오라클",
     gameBadgePerfect: "퍼펙트 데이",
-    gameFeedbackIdle: "키보드 화살표 또는 아래 패드로 이동하세요.",
-    gameFeedbackHit: "리스크 충돌. 점수가 감점되었습니다.",
+    gameFeedbackIdle: "방향키/WASD 또는 미로 스와이프로 이동하세요.",
+    gameFeedbackHit: "리스크 충돌. 잠시 보호막이 적용됩니다.",
     gameFeedbackLevelUp: "레벨업. 리스크 속도가 증가합니다.",
     demoTitle: "거버넌스 시뮬레이터",
     demoButton: "새로고침",
@@ -300,11 +300,12 @@ const MAZE_TEMPLATE = [
 ];
 const gameState = {
   score: 0,
-  speed: 140,
+  speed: 210,
   running: false,
   loopHandle: null,
   pendingDir: "left",
   currentDir: "left",
+  invulnerableUntil: 0,
   map: [],
   pelletsTotal: 0,
   pelletsLeft: 0,
@@ -675,7 +676,7 @@ function addXp(amount) {
     leveled = true;
     gameState.progress.level += 1;
     gameState.progress.xp -= 100;
-    gameState.speed = Math.max(70, gameState.speed - 4);
+    gameState.speed = Math.max(125, gameState.speed - 3);
   }
   return leveled;
 }
@@ -698,9 +699,11 @@ function buildMazeState() {
   gameState.player = { ...spawn };
   gameState.ghosts = [
     { x: 9, y: 7, dir: "left", color: "#ef4444" },
-    { x: 10, y: 7, dir: "right", color: "#22d3ee" },
-    { x: 9, y: 8, dir: "up", color: "#f472b6" }
+    { x: 10, y: 7, dir: "right", color: "#22d3ee" }
   ];
+  if (gameState.progress.level >= 3) {
+    gameState.ghosts.push({ x: 9, y: 8, dir: "up", color: "#f472b6" });
+  }
 }
 
 function canMove(x, y) {
@@ -730,7 +733,7 @@ function chooseGhostDir(ghost) {
     const db = Math.abs((ghost.x + DIRS[b].x) - gameState.player.x) + Math.abs((ghost.y + DIRS[b].y) - gameState.player.y);
     return da - db;
   });
-  if (Math.random() < 0.7) return best[0];
+  if (Math.random() < 0.45) return best[0];
   return valid[Math.floor(Math.random() * valid.length)];
 }
 
@@ -743,14 +746,19 @@ function setFeedback(lang, key) {
 }
 
 function handleCollision(lang) {
+  const now = Date.now();
+  if (now < gameState.invulnerableUntil) return;
+  gameState.invulnerableUntil = now + 1600;
   gameState.progress.collisions += 1;
-  gameState.score = Math.max(0, gameState.score - 25);
+  gameState.score = Math.max(0, gameState.score - 10);
   gameState.player = { x: 1, y: 8 };
   gameState.ghosts = [
     { x: 9, y: 7, dir: "left", color: "#ef4444" },
-    { x: 10, y: 7, dir: "right", color: "#22d3ee" },
-    { x: 9, y: 8, dir: "up", color: "#f472b6" }
+    { x: 10, y: 7, dir: "right", color: "#22d3ee" }
   ];
+  if (gameState.progress.level >= 3) {
+    gameState.ghosts.push({ x: 9, y: 8, dir: "up", color: "#f472b6" });
+  }
   setFeedback(lang, "hit");
 }
 
@@ -785,6 +793,14 @@ function drawGame() {
   ctx.beginPath();
   ctx.arc(gameState.player.x * TILE + TILE / 2, gameState.player.y * TILE + TILE / 2, TILE * 0.36, 0, Math.PI * 2);
   ctx.fill();
+
+  if (Date.now() < gameState.invulnerableUntil) {
+    ctx.strokeStyle = "#fde68a";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(gameState.player.x * TILE + TILE / 2, gameState.player.y * TILE + TILE / 2, TILE * 0.42, 0, Math.PI * 2);
+    ctx.stroke();
+  }
 
   gameState.ghosts.forEach((ghost) => {
     ctx.fillStyle = ghost.color;
@@ -831,7 +847,7 @@ function updateArcade(lang) {
   if (gameState.pelletsLeft <= 0) {
     buildMazeState();
     gameState.progress.level += 1;
-    gameState.speed = Math.max(65, gameState.speed - 5);
+    gameState.speed = Math.max(120, gameState.speed - 3);
     addXp(25);
     setFeedback(lang, "levelup");
     runArcadeLoop(lang);
@@ -899,9 +915,10 @@ function renderGame(lang) {
 
 function resetGame(lang) {
   gameState.score = 0;
-  gameState.speed = 140;
+  gameState.speed = 210;
   gameState.pendingDir = "left";
   gameState.currentDir = "left";
+  gameState.invulnerableUntil = 0;
   gameState.running = true;
   buildMazeState();
   const feedback = document.getElementById("game-feedback");
@@ -1009,13 +1026,43 @@ async function runDemo(lang) {
       ArrowUp: "up",
       ArrowDown: "down",
       ArrowLeft: "left",
-      ArrowRight: "right"
+      ArrowRight: "right",
+      w: "up",
+      a: "left",
+      s: "down",
+      d: "right",
+      W: "up",
+      A: "left",
+      S: "down",
+      D: "right"
     };
     const dir = keyMap[e.key];
     if (!dir) return;
     e.preventDefault();
     gameState.pendingDir = dir;
   });
+
+  const canvas = document.getElementById("game-canvas");
+  if (canvas instanceof HTMLCanvasElement) {
+    let touchStart = null;
+    canvas.addEventListener("touchstart", (e) => {
+      const t = e.touches[0];
+      touchStart = { x: t.clientX, y: t.clientY };
+    }, { passive: true });
+    canvas.addEventListener("touchend", (e) => {
+      if (!touchStart) return;
+      const t = e.changedTouches[0];
+      const dx = t.clientX - touchStart.x;
+      const dy = t.clientY - touchStart.y;
+      touchStart = null;
+      if (Math.abs(dx) < 16 && Math.abs(dy) < 16) return;
+      if (Math.abs(dx) > Math.abs(dy)) {
+        gameState.pendingDir = dx > 0 ? "right" : "left";
+      } else {
+        gameState.pendingDir = dy > 0 ? "down" : "up";
+      }
+    }, { passive: true });
+  }
 
   const runButton = document.getElementById("run-demo");
   if (runButton) {
