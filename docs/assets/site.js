@@ -36,6 +36,8 @@ const copy = {
     riskMeterLabel: "Risk Exposure",
     gateTitle: "Governance Gates",
     checksTitle: "Contract Checks",
+    evaluatedLabel: "Last Evaluated:",
+    runCountLabel: "Runs:",
     inputScenario: "Scenario",
     inputRisk: "Declared Risk Tier",
     inputPii: "Contains sensitive user data",
@@ -98,6 +100,8 @@ const copy = {
     riskMeterLabel: "리스크 노출도",
     gateTitle: "거버넌스 게이트",
     checksTitle: "계약 검증 상태",
+    evaluatedLabel: "최근 평가:",
+    runCountLabel: "실행 횟수:",
     inputScenario: "시나리오",
     inputRisk: "선언 리스크 등급",
     inputPii: "민감 사용자 데이터 포함",
@@ -143,6 +147,8 @@ const copy = {
     riskMeterLabel: "Risk Exposure",
     gateTitle: "Governance Gates",
     checksTitle: "Contract Checks",
+    evaluatedLabel: "Last Evaluated:",
+    runCountLabel: "Runs:",
     inputScenario: "シナリオ",
     inputRisk: "宣言リスク",
     inputPii: "機微データを含む",
@@ -179,6 +185,8 @@ const copy = {
     riskMeterLabel: "Risk Exposure",
     gateTitle: "Governance Gates",
     checksTitle: "Contract Checks",
+    evaluatedLabel: "Last Evaluated:",
+    runCountLabel: "Runs:",
     inputScenario: "场景",
     inputRisk: "声明风险等级",
     inputPii: "包含敏感数据",
@@ -203,6 +211,8 @@ const scenarioLabel = {
   prod_secret: "prod_secret",
   policy_change: "policy_change"
 };
+
+let evaluationCount = 0;
 
 function detectDefaultLanguage() {
   const supported = ["en", "ko", "ja", "zh"];
@@ -406,6 +416,28 @@ function pulseDemoCard() {
   card.classList.add("flash");
 }
 
+function pulseOutput() {
+  const output = document.getElementById("demo-output");
+  if (!output) return;
+  output.classList.remove("flash");
+  void output.offsetWidth;
+  output.classList.add("flash");
+}
+
+function updateEvaluationMeta(nowIso) {
+  evaluationCount += 1;
+  const at = document.getElementById("evaluated-at");
+  const count = document.getElementById("run-count");
+  const meta = document.querySelector(".eval-meta");
+  if (at) at.textContent = nowIso;
+  if (count) count.textContent = String(evaluationCount);
+  if (meta) {
+    meta.classList.remove("flash");
+    void meta.offsetWidth;
+    meta.classList.add("flash");
+  }
+}
+
 async function runDemo(lang) {
   const state = {
     scenario: document.getElementById("scenario-input").value,
@@ -436,9 +468,11 @@ async function runDemo(lang) {
   if (summary) summary.textContent = summarizeDecision(lang, result);
   renderCockpit(lang, state, result);
   pulseDemoCard();
+  updateEvaluationMeta(payload.checked_at_utc);
 
   const output = document.getElementById("demo-output");
   if (output) output.textContent = JSON.stringify(payload, null, 2);
+  pulseOutput();
 }
 
 (function init() {

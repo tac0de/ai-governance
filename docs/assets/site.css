@@ -203,6 +203,20 @@ ol {
   color: var(--ink);
 }
 
+.eval-meta {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.eval-meta .dot {
+  margin: 0 6px;
+}
+
+.eval-meta.flash {
+  animation: fadePulse 420ms ease;
+}
+
 .cockpit {
   margin-top: 12px;
   border: 1px solid var(--line);
@@ -357,6 +371,10 @@ pre {
   font-size: 0.86rem;
 }
 
+pre.flash {
+  animation: outputPulse 420ms ease;
+}
+
 .blog-list {
   display: grid;
   gap: 10px;
@@ -438,4 +456,15 @@ footer {
   0% { transform: scale(1); }
   45% { transform: scale(1.008); }
   100% { transform: scale(1); }
+}
+
+@keyframes outputPulse {
+  0% { box-shadow: 0 0 0 rgba(26, 115, 232, 0); }
+  45% { box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.25); }
+  100% { box-shadow: 0 0 0 rgba(26, 115, 232, 0); }
+}
+
+@keyframes fadePulse {
+  0% { opacity: 0.55; }
+  100% { opacity: 1; }
 }
