@@ -323,9 +323,9 @@ validate_jq_contract "$MCPS_REG_REL" "schemas/mcps_registry.schema.json" '
   .version=="v0.1" and
   (.mcps | type=="array" and length>0) and
   (all(.mcps[];
-    (.id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+    (.id|type=="string" and test("^core-[a-z0-9][a-z0-9-]*$")) and
     (.name|type=="string" and length>0) and
-    (.root_path|type=="string" and test("^mcps/[a-z0-9][a-z0-9-]*$")) and
+    (.root_path|type=="string" and test("^mcps/core-[a-z0-9][a-z0-9-]*$")) and
     (.version|type=="string" and test("^[0-9]+\\.[0-9]+\\.[0-9]+$")) and
     (.capabilities|type=="array" and length>0 and length==(unique|length) and all(.[]; type=="string" and length>0)) and
     (.risk_level=="low" or .risk_level=="medium" or .risk_level=="high") and
@@ -404,7 +404,7 @@ if json_ready "$SERVICES_REG_REL"; then
         (.service_id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
         (.allowed_mcps|type=="array") and
         (all(.allowed_mcps[]?;
-          (.mcp_id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+          (.mcp_id|type=="string" and test("^core-[a-z0-9][a-z0-9-]*$")) and
           (.capabilities|type=="array" and length>0 and length==(unique|length) and all(.[]; type=="string" and length>0))
         ))
       ' "$ROOT_DIR/$mcp_allowlist_path" >/dev/null 2>&1; then
@@ -522,6 +522,13 @@ if json_ready "$MCPS_REG_REL"; then
       fi
       if [[ "$registry_pinned_hash" != "$expected_pinned_hash" ]]; then
         fail "$MCPS_REG_REL" "registry pinned_ref_hash for MCP '$mcp_id' must equal runtime binding hash (${expected_pinned_hash})"
+      fi
+
+      if json_ready "$SERVICES_REG_REL"; then
+        runtime_owner_service="$(jq -r '.runtime_owner_service // ""' "$ROOT_DIR/$runtime_binding_rel")"
+        if ! jq -e --arg service_id "$runtime_owner_service" '.services | any(.id==$service_id)' "$ROOT_DIR/$SERVICES_REG_REL" >/dev/null 2>&1; then
+          fail "$runtime_binding_rel" "runtime_owner_service '$runtime_owner_service' is not registered in ${SERVICES_REG_REL}"
+        fi
       fi
     fi
   done < <(jq -r '.mcps[] | [.id, .root_path, .version, .required_approval_tier, .pinned_ref_hash] | @tsv' "$ROOT_DIR/$MCPS_REG_REL")
