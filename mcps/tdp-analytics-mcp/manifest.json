@@ -1,0 +1,15 @@
+{
+  "id": "tdp-analytics-mcp",
+  "version": "0.1.0",
+  "capabilities": [
+    "aggregate_events",
+    "compute_kpi_summary",
+    "detect_anomaly"
+  ],
+  "required_approval_tier": "medium",
+  "pinned_ref_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "refs": {
+    "service": "services/thedivineparadox",
+    "schema": "schemas/trace_record.schema.json"
+  }
+}

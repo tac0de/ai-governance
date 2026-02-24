@@ -1,0 +1,15 @@
+{
+  "id": "tdp-experiment-mcp",
+  "version": "0.1.0",
+  "capabilities": [
+    "assign_cohort",
+    "resolve_flag",
+    "kill_switch"
+  ],
+  "required_approval_tier": "high",
+  "pinned_ref_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "refs": {
+    "service": "services/thedivineparadox",
+    "policy": "policies/approval_tier_policy.v0.1.json"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "tdp-safety-fallback-mcp",
+  "version": "0.1.0",
+  "capabilities": [
+    "classify_llm_error",
+    "select_fallback_policy",
+    "emit_degrade_notice"
+  ],
+  "required_approval_tier": "medium",
+  "pinned_ref_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333",
+  "refs": {
+    "service": "services/thedivineparadox",
+    "slo": "services/thedivineparadox/slo.contract.v0.1.json"
+  }
+}

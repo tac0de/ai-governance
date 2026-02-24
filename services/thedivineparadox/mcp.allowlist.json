@@ -2,10 +2,27 @@
   "service_id": "thedivineparadox",
   "allowed_mcps": [
     {
-      "mcp_id": "example-mcp",
+      "mcp_id": "tdp-analytics-mcp",
       "capabilities": [
-        "search",
-        "fetch_document"
+        "aggregate_events",
+        "compute_kpi_summary",
+        "detect_anomaly"
+      ]
+    },
+    {
+      "mcp_id": "tdp-experiment-mcp",
+      "capabilities": [
+        "assign_cohort",
+        "resolve_flag",
+        "kill_switch"
+      ]
+    },
+    {
+      "mcp_id": "tdp-safety-fallback-mcp",
+      "capabilities": [
+        "classify_llm_error",
+        "select_fallback_policy",
+        "emit_degrade_notice"
       ]
     }
   ]

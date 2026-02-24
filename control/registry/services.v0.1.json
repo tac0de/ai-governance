@@ -2,18 +2,6 @@
   "version": "v0.1",
   "services": [
     {
-      "id": "example-service",
-      "name": "Example Service",
-      "owner": "platform-ops-owner",
-      "dept": "Platform Operations",
-      "ministry": "Ministry of Governance and Compliance",
-      "repo_path": "services/example-service",
-      "policy_profile_ref": "services/example-service/policy.profile.json",
-      "mcp_allowlist_path": "services/example-service/mcp.allowlist.json",
-      "docs_path": "services/example-service/docs",
-      "slo_contract_ref": "services/example-service/slo.contract.v0.1.json"
-    },
-    {
       "id": "thedivineparadox",
       "name": "TheDivineParadox",
       "owner": "platform-ops-owner",
