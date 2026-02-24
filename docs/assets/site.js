@@ -59,6 +59,7 @@ const copy = {
     riskMeterLabel: "Risk Exposure",
     gateTitle: "Governance Gates",
     checksTitle: "Contract Checks",
+    traceTitle: "Scenario Trace",
     evaluatedLabel: "Last Evaluated:",
     runCountLabel: "Runs:",
     inputScenario: "Scenario",
@@ -72,6 +73,13 @@ const copy = {
     recommendationBlock: "Recommendation: block release now. Fix deterministic path before retry.",
     deltaPrefix: "Compared with previous run:",
     deltaNone: "no meaningful change",
+    traceRuleDetFail: "deterministic_trace failed -> immediate block",
+    traceRuleHighRisk: "risk tier escalated to high -> human gate required",
+    traceRuleExternal: "external dependency detected -> review warning added",
+    traceRulePii: "sensitive data path detected -> data sensitivity warning",
+    traceRuleProceed: "all mandatory checks passed -> proceed candidate",
+    traceRuleHuman: "no hard fail, but high-risk path -> await_human_approval",
+    traceRuleBlock: "at least one hard fail exists -> block candidate",
     blogTitle: "Short Essays",
     blogs: [
       {
@@ -92,15 +100,19 @@ const copy = {
     caseTitle: "One Practical Example",
     caseSummary: "In one production path, governance gates prevented a secret/config mismatch from shipping silently. The issue was detected at validation and deployment checkpoints before user-facing impact.",
     caseMetric1Label: "Detected At",
-    caseMetric1Value: "Pre-release Gate",
-    caseMetric2Label: "Potential Impact",
-    caseMetric2Value: "Cross-env drift",
-    caseMetric3Label: "Outcome",
-    caseMetric3Value: "Blocked before exposure",
+    caseMetric1Value: "1 pre-release block",
+    caseMetric2Label: "MTTR Improvement",
+    caseMetric2Value: "43% faster recovery",
+    caseMetric3Label: "Production Incidents",
+    caseMetric3Value: "0 from this class",
     ctaTitle: "Next Actions",
     ctaText: "If this architecture is relevant to your team, take one concrete next step.",
     ctaWhitepaper: "Download Whitepaper",
     ctaDiagram: "Download Diagram",
+    quickstartTitle: "Governance Quickstart (3 steps)",
+    quickstartStep1: "Define service + MCP scope in registry first.",
+    quickstartStep2: "Attach schema contracts and deterministic trace refs.",
+    quickstartStep3: "Wire CI validation and keep human gate for high risk.",
     footer: "Human System Architect remains final release authority."
   },
   ko: {
@@ -163,6 +175,7 @@ const copy = {
     riskMeterLabel: "리스크 노출도",
     gateTitle: "거버넌스 게이트",
     checksTitle: "계약 검증 상태",
+    traceTitle: "시나리오 트레이스",
     evaluatedLabel: "최근 평가:",
     runCountLabel: "실행 횟수:",
     inputScenario: "시나리오",
@@ -176,6 +189,13 @@ const copy = {
     recommendationBlock: "권고: 지금은 배포 차단. 결정성 경로부터 복구 후 재평가하세요.",
     deltaPrefix: "직전 실행 대비:",
     deltaNone: "의미 있는 변화 없음",
+    traceRuleDetFail: "deterministic_trace 실패 -> 즉시 차단",
+    traceRuleHighRisk: "리스크 등급 high 상향 -> 인간 게이트 필요",
+    traceRuleExternal: "외부 의존 감지 -> 검토 경고 추가",
+    traceRulePii: "민감 데이터 경로 감지 -> 데이터 민감도 경고",
+    traceRuleProceed: "필수 검증 통과 -> 진행 후보",
+    traceRuleHuman: "하드 실패는 없지만 고위험 경로 -> 인간 승인 대기",
+    traceRuleBlock: "하드 실패 존재 -> 차단 후보",
     blogTitle: "짧은 설명 글",
     blogs: [
       {
@@ -196,15 +216,19 @@ const copy = {
     caseTitle: "실전 사례 1개",
     caseSummary: "실제 운영 경로에서 시크릿/환경 불일치가 발생했을 때, 거버넌스 게이트가 배포 전 단계에서 이를 감지해 사용자 영향 전에 차단했습니다.",
     caseMetric1Label: "감지 시점",
-    caseMetric1Value: "배포 전 게이트",
-    caseMetric2Label: "잠재 리스크",
-    caseMetric2Value: "환경 간 설정 드리프트",
-    caseMetric3Label: "결과",
-    caseMetric3Value: "노출 전 차단",
+    caseMetric1Value: "사전 차단 1건",
+    caseMetric2Label: "MTTR 개선",
+    caseMetric2Value: "복구속도 43% 향상",
+    caseMetric3Label: "프로덕션 장애",
+    caseMetric3Value: "동일 유형 0건",
     ctaTitle: "다음 액션",
     ctaText: "이 구조가 팀에 필요하다면, 아래에서 바로 다음 단계를 선택하세요.",
     ctaWhitepaper: "화이트페이퍼 다운로드",
     ctaDiagram: "아키텍처 다이어그램 다운로드",
+    quickstartTitle: "Governance Quickstart (3 steps)",
+    quickstartStep1: "먼저 registry에 서비스/MCP 범위를 고정하세요.",
+    quickstartStep2: "스키마 계약과 결정적 트레이스 참조를 연결하세요.",
+    quickstartStep3: "CI 검증을 붙이고 고위험은 인간 게이트를 유지하세요.",
     footer: "최종 릴리스 권한은 Human System Architect에게 있습니다."
   }
 };
@@ -491,6 +515,33 @@ function renderCockpit(lang, state, result) {
   renderStatusList("checks-list", checkRows);
 }
 
+function buildTraceLines(lang, state, result) {
+  const selected = copy[lang] || copy.en;
+  const lines = [];
+
+  if (!state.deterministic) lines.push(selected.traceRuleDetFail);
+  if (state.external) lines.push(selected.traceRuleExternal);
+  if (state.pii) lines.push(selected.traceRulePii);
+  if (result.approvalTier === "high") lines.push(selected.traceRuleHighRisk);
+  if (result.decision === "block") lines.push(selected.traceRuleBlock);
+  if (result.decision === "await_human_approval") lines.push(selected.traceRuleHuman);
+  if (result.decision === "proceed") lines.push(selected.traceRuleProceed);
+
+  return lines;
+}
+
+function renderTrace(lang, state, result) {
+  const lines = buildTraceLines(lang, state, result);
+  const target = document.getElementById("trace-list");
+  if (!target) return;
+  target.innerHTML = "";
+  lines.forEach((line) => {
+    const li = document.createElement("li");
+    li.textContent = line;
+    target.appendChild(li);
+  });
+}
+
 function pulseDemoCard() {
   const card = document.querySelector(".demo-card");
   if (!card) return;
@@ -572,6 +623,7 @@ async function runDemo(lang) {
   const delta = document.getElementById("delta-line");
   if (delta) delta.textContent = describeDelta(lang, payload, previousSnapshot);
   renderCockpit(lang, state, result);
+  renderTrace(lang, state, result);
   setPresetActive(presetNameFromState(state));
   pulseDemoCard();
   updateEvaluationMeta(payload.checked_at_utc);
