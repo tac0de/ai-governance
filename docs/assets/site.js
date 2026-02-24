@@ -48,30 +48,24 @@ const copy = {
       "Registry/allowlist gates evaluate service and MCP scope",
       "Risk tier outputs: auto / policy+owner / mandatory human gate"
     ],
-    gameTitle: "Governance Gate Game",
-    gameNote: "Choose the right gate for each change card. Score rises only when your decision matches governance policy.",
+    gameTitle: "Governance Maze (Endless)",
+    gameNote: "Pacman-style endless mode. Collect evidence nodes, avoid risk agents, and keep climbing your governance level.",
     gameReset: "Start Over",
     gameScoreLabel: "Score",
-    gameStreakLabel: "Streak",
     gameBestLabel: "Best",
     gameAccuracyLabel: "Accuracy",
     gameLevelLabel: "Level",
     gameXpLabel: "XP",
     gameDailyLabel: "Daily Challenge",
-    gameDailyMission: "Get 5 correct answers today",
+    gameDailyMission: "Collect 120 evidence nodes today",
     gameBadgeLabel: "Badges",
     gameBadgeNovice: "Novice",
     gameBadgeKeeper: "Gate Keeper",
     gameBadgeOracle: "Policy Oracle",
     gameBadgePerfect: "Perfect Day",
-    gameRoundLabel: "Round",
-    gameChoiceProceed: "PROCEED",
-    gameChoiceHuman: "HUMAN GATE",
-    gameChoiceBlock: "BLOCK",
-    gameFeedbackIdle: "Pick a gate to begin.",
-    gameFeedbackCorrect: "Correct. Policy verdict matched.",
-    gameFeedbackWrong: "Missed. Expected gate:",
-    gameExpectedLabel: "Expected",
+    gameFeedbackIdle: "Move with arrow keys or the pad below.",
+    gameFeedbackHit: "Risk collision. Score penalty applied.",
+    gameFeedbackLevelUp: "Level up. Risk speed increased.",
     demoTitle: "Interactive Governance Simulator",
     demoButton: "Refresh",
     demoNote: "Change inputs to experiment. Press Refresh to reset the run state and start the simulation loop from baseline.",
@@ -176,30 +170,24 @@ const copy = {
       "레지스트리/allowlist 게이트로 범위 판정",
       "리스크 계층 결과 출력: 자동 / 정책+오너 / 인간 필수"
     ],
-    gameTitle: "거버넌스 게이트 게임",
-    gameNote: "변경 카드마다 맞는 게이트를 고르세요. 정책 판정과 일치할 때만 점수가 오릅니다.",
+    gameTitle: "거버넌스 미로 (무한모드)",
+    gameNote: "팩맨 스타일 무한모드입니다. 증거 노드를 모으고 리스크 에이전트를 피하면서 레벨을 올리세요.",
     gameReset: "처음부터",
     gameScoreLabel: "점수",
-    gameStreakLabel: "연속 정답",
     gameBestLabel: "최고 연속",
     gameAccuracyLabel: "정확도",
     gameLevelLabel: "레벨",
     gameXpLabel: "XP",
     gameDailyLabel: "오늘의 미션",
-    gameDailyMission: "오늘 정답 5회 달성",
+    gameDailyMission: "오늘 증거 노드 120개 수집",
     gameBadgeLabel: "배지",
     gameBadgeNovice: "입문자",
     gameBadgeKeeper: "게이트 키퍼",
     gameBadgeOracle: "정책 오라클",
     gameBadgePerfect: "퍼펙트 데이",
-    gameRoundLabel: "라운드",
-    gameChoiceProceed: "진행",
-    gameChoiceHuman: "인간 승인",
-    gameChoiceBlock: "차단",
-    gameFeedbackIdle: "게이트를 선택해 시작하세요.",
-    gameFeedbackCorrect: "정답입니다. 정책 판정과 일치했습니다.",
-    gameFeedbackWrong: "틀렸습니다. 기대 게이트:",
-    gameExpectedLabel: "기대값",
+    gameFeedbackIdle: "키보드 화살표 또는 아래 패드로 이동하세요.",
+    gameFeedbackHit: "리스크 충돌. 점수가 감점되었습니다.",
+    gameFeedbackLevelUp: "레벨업. 리스크 속도가 증가합니다.",
     demoTitle: "거버넌스 시뮬레이터",
     demoButton: "새로고침",
     demoNote: "입력을 바꿔 실험하고, 새로고침 버튼으로 런 상태를 초기화해 기준점부터 다시 시작할 수 있습니다.",
@@ -291,19 +279,52 @@ const presets = {
 let evaluationCount = 0;
 let previousSnapshot = null;
 const GAME_STORE_KEY = "governance_gate_game_v1";
+const TILE = 21;
+const MAZE_TEMPLATE = [
+  "####################",
+  "#........##........#",
+  "#.####.#.##.#.####.#",
+  "#o####.#.##.#.####o#",
+  "#..................#",
+  "#.####.######.####.#",
+  "#......##..##......#",
+  "######.##..##.######",
+  "#........P.........#",
+  "######.##..##.######",
+  "#......##..##......#",
+  "#.####.######.####.#",
+  "#..................#",
+  "#o####.#.##.#.####o#",
+  "#........##........#",
+  "####################"
+];
 const gameState = {
-  round: 0,
   score: 0,
-  streak: 0,
+  speed: 140,
+  running: false,
+  loopHandle: null,
+  pendingDir: "left",
+  currentDir: "left",
+  map: [],
+  pelletsTotal: 0,
+  pelletsLeft: 0,
+  player: { x: 1, y: 1 },
+  ghosts: [],
   progress: {
-    totalAnswers: 0,
-    correctAnswers: 0,
-    bestStreak: 0,
+    bestScore: 0,
+    collisions: 0,
+    pelletsCollected: 0,
     level: 1,
     xp: 0,
     dailyDate: "",
-    dailyCorrect: 0
+    dailyCollected: 0
   }
+};
+const DIRS = {
+  up: { x: 0, y: -1 },
+  down: { x: 0, y: 1 },
+  left: { x: -1, y: 0 },
+  right: { x: 1, y: 0 }
 };
 
 function todayUtcKey() {
@@ -314,7 +335,7 @@ function resetDailyIfNeeded() {
   const today = todayUtcKey();
   if (gameState.progress.dailyDate !== today) {
     gameState.progress.dailyDate = today;
-    gameState.progress.dailyCorrect = 0;
+    gameState.progress.dailyCollected = 0;
   }
 }
 
@@ -324,13 +345,13 @@ function loadGameProgress() {
     if (!raw) return;
     const parsed = JSON.parse(raw);
     if (!parsed || typeof parsed !== "object") return;
-    gameState.progress.totalAnswers = Number(parsed.totalAnswers || 0);
-    gameState.progress.correctAnswers = Number(parsed.correctAnswers || 0);
-    gameState.progress.bestStreak = Number(parsed.bestStreak || 0);
+    gameState.progress.bestScore = Math.max(0, Number(parsed.bestScore || 0));
+    gameState.progress.collisions = Math.max(0, Number(parsed.collisions || 0));
+    gameState.progress.pelletsCollected = Math.max(0, Number(parsed.pelletsCollected || 0));
     gameState.progress.level = Math.max(1, Number(parsed.level || 1));
     gameState.progress.xp = Math.max(0, Number(parsed.xp || 0));
     gameState.progress.dailyDate = String(parsed.dailyDate || "");
-    gameState.progress.dailyCorrect = Math.max(0, Number(parsed.dailyCorrect || 0));
+    gameState.progress.dailyCollected = Math.max(0, Number(parsed.dailyCollected || 0));
   } catch {
     // ignore broken local storage
   }
@@ -338,13 +359,13 @@ function loadGameProgress() {
 
 function saveGameProgress() {
   const payload = {
-    totalAnswers: gameState.progress.totalAnswers,
-    correctAnswers: gameState.progress.correctAnswers,
-    bestStreak: gameState.progress.bestStreak,
+    bestScore: gameState.progress.bestScore,
+    collisions: gameState.progress.collisions,
+    pelletsCollected: gameState.progress.pelletsCollected,
     level: gameState.progress.level,
     xp: gameState.progress.xp,
     dailyDate: gameState.progress.dailyDate,
-    dailyCorrect: gameState.progress.dailyCorrect
+    dailyCollected: gameState.progress.dailyCollected
   };
   localStorage.setItem(GAME_STORE_KEY, JSON.stringify(payload));
 }
@@ -352,37 +373,11 @@ function saveGameProgress() {
 function gameBadges(lang) {
   const selected = copy[lang] || copy.en;
   const out = [];
-  if (gameState.progress.totalAnswers >= 10) out.push(selected.gameBadgeNovice);
-  if (gameState.progress.bestStreak >= 5) out.push(selected.gameBadgeKeeper);
+  if (gameState.progress.pelletsCollected >= 300) out.push(selected.gameBadgeNovice);
+  if (gameState.progress.bestScore >= 600) out.push(selected.gameBadgeKeeper);
   if (gameState.progress.level >= 4) out.push(selected.gameBadgeOracle);
-  if (gameState.progress.dailyCorrect >= 5) out.push(selected.gameBadgePerfect);
+  if (gameState.progress.dailyCollected >= 120) out.push(selected.gameBadgePerfect);
   return out;
-}
-
-function gateLabel(lang, decision) {
-  const selected = copy[lang] || copy.en;
-  if (decision === "block") return selected.gameChoiceBlock;
-  if (decision === "await_human_approval") return selected.gameChoiceHuman;
-  return selected.gameChoiceProceed;
-}
-
-function gameDeck(lang) {
-  if (lang === "ko") {
-    return [
-      { title: "UI 문구 수정", detail: "민감정보 없음, 외부 의존 없음, 결정적 경로 유지", answer: "proceed" },
-      { title: "신규 MCP 추가", detail: "외부 런타임 의존, 스키마는 유효, 결정적 경로 유지", answer: "await_human_approval" },
-      { title: "정책 행렬 수정", detail: "고위험 변경, 인간 릴리스 권한 대상", answer: "await_human_approval" },
-      { title: "운영 시크릿 변경", detail: "prod secret 경로 변경", answer: "await_human_approval" },
-      { title: "비결정성 로직 포함", detail: "결정적 트레이스 경로가 깨짐", answer: "block" }
-    ];
-  }
-  return [
-    { title: "UI Copy Update", detail: "No sensitive data, no external dependency, deterministic path maintained", answer: "proceed" },
-    { title: "New MCP Capability", detail: "External runtime dependency, schema valid, deterministic path maintained", answer: "await_human_approval" },
-    { title: "Policy Matrix Change", detail: "High-risk governance path with human release authority", answer: "await_human_approval" },
-    { title: "Production Secret Rotation", detail: "prod secret path changed", answer: "await_human_approval" },
-    { title: "Non-deterministic Logic Added", detail: "Deterministic trace path is broken", answer: "block" }
-  ];
 }
 
 function detectDefaultLanguage() {
@@ -673,17 +668,187 @@ function resetRunState() {
   if (at) at.textContent = "-";
 }
 
+function addXp(amount) {
+  let leveled = false;
+  gameState.progress.xp += amount;
+  while (gameState.progress.xp >= 100) {
+    leveled = true;
+    gameState.progress.level += 1;
+    gameState.progress.xp -= 100;
+    gameState.speed = Math.max(70, gameState.speed - 4);
+  }
+  return leveled;
+}
+
+function buildMazeState() {
+  const map = [];
+  let pellets = 0;
+  let spawn = { x: 1, y: 1 };
+  MAZE_TEMPLATE.forEach((row, y) => {
+    const cells = row.split("");
+    cells.forEach((cell, x) => {
+      if (cell === "." || cell === "o") pellets += 1;
+      if (cell === "P") spawn = { x, y };
+    });
+    map.push(cells);
+  });
+  gameState.map = map;
+  gameState.pelletsTotal = pellets;
+  gameState.pelletsLeft = pellets;
+  gameState.player = { ...spawn };
+  gameState.ghosts = [
+    { x: 9, y: 7, dir: "left", color: "#ef4444" },
+    { x: 10, y: 7, dir: "right", color: "#22d3ee" },
+    { x: 9, y: 8, dir: "up", color: "#f472b6" }
+  ];
+}
+
+function canMove(x, y) {
+  const row = gameState.map[y];
+  if (!row) return false;
+  const cell = row[x];
+  return cell !== "#" && cell !== undefined;
+}
+
+function tryMove(entity, dir) {
+  const delta = DIRS[dir];
+  if (!delta) return false;
+  const nx = entity.x + delta.x;
+  const ny = entity.y + delta.y;
+  if (!canMove(nx, ny)) return false;
+  entity.x = nx;
+  entity.y = ny;
+  return true;
+}
+
+function chooseGhostDir(ghost) {
+  const dirs = ["up", "down", "left", "right"];
+  const valid = dirs.filter((dir) => canMove(ghost.x + DIRS[dir].x, ghost.y + DIRS[dir].y));
+  if (valid.length === 0) return ghost.dir;
+  const best = valid.sort((a, b) => {
+    const da = Math.abs((ghost.x + DIRS[a].x) - gameState.player.x) + Math.abs((ghost.y + DIRS[a].y) - gameState.player.y);
+    const db = Math.abs((ghost.x + DIRS[b].x) - gameState.player.x) + Math.abs((ghost.y + DIRS[b].y) - gameState.player.y);
+    return da - db;
+  });
+  if (Math.random() < 0.7) return best[0];
+  return valid[Math.floor(Math.random() * valid.length)];
+}
+
+function setFeedback(lang, key) {
+  const selected = copy[lang] || copy.en;
+  const feedback = document.getElementById("game-feedback");
+  if (!feedback) return;
+  feedback.className = key === "hit" ? "game-feedback wrong" : "game-feedback correct";
+  feedback.textContent = key === "hit" ? selected.gameFeedbackHit : selected.gameFeedbackLevelUp;
+}
+
+function handleCollision(lang) {
+  gameState.progress.collisions += 1;
+  gameState.score = Math.max(0, gameState.score - 25);
+  gameState.player = { x: 1, y: 8 };
+  gameState.ghosts = [
+    { x: 9, y: 7, dir: "left", color: "#ef4444" },
+    { x: 10, y: 7, dir: "right", color: "#22d3ee" },
+    { x: 9, y: 8, dir: "up", color: "#f472b6" }
+  ];
+  setFeedback(lang, "hit");
+}
+
+function drawGame() {
+  const canvas = document.getElementById("game-canvas");
+  if (!(canvas instanceof HTMLCanvasElement)) return;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  ctx.fillStyle = "#0b1020";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  for (let y = 0; y < gameState.map.length; y += 1) {
+    for (let x = 0; x < gameState.map[y].length; x += 1) {
+      const c = gameState.map[y][x];
+      const px = x * TILE;
+      const py = y * TILE;
+      if (c === "#") {
+        ctx.fillStyle = "#1f4fa8";
+        ctx.fillRect(px, py, TILE, TILE);
+      } else if (c === "." || c === "o") {
+        ctx.fillStyle = c === "o" ? "#fde047" : "#bfdbfe";
+        const r = c === "o" ? 4 : 2;
+        ctx.beginPath();
+        ctx.arc(px + TILE / 2, py + TILE / 2, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+  }
+
+  ctx.fillStyle = "#facc15";
+  ctx.beginPath();
+  ctx.arc(gameState.player.x * TILE + TILE / 2, gameState.player.y * TILE + TILE / 2, TILE * 0.36, 0, Math.PI * 2);
+  ctx.fill();
+
+  gameState.ghosts.forEach((ghost) => {
+    ctx.fillStyle = ghost.color;
+    ctx.beginPath();
+    ctx.arc(ghost.x * TILE + TILE / 2, ghost.y * TILE + TILE / 2, TILE * 0.33, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+function updateArcade(lang) {
+  if (!gameState.running) return;
+
+  if (gameState.pendingDir && tryMove(gameState.player, gameState.pendingDir)) {
+    gameState.currentDir = gameState.pendingDir;
+  } else {
+    tryMove(gameState.player, gameState.currentDir);
+  }
+
+  const cell = gameState.map[gameState.player.y][gameState.player.x];
+  if (cell === "." || cell === "o") {
+    gameState.map[gameState.player.y][gameState.player.x] = " ";
+    gameState.pelletsLeft -= 1;
+    const gain = cell === "o" ? 20 : 8;
+    gameState.score += gain;
+    gameState.progress.pelletsCollected += 1;
+    gameState.progress.dailyCollected += 1;
+    const leveled = addXp(cell === "o" ? 8 : 3);
+    if (leveled) {
+      runArcadeLoop(lang);
+      setFeedback(lang, "levelup");
+    }
+    gameState.progress.bestScore = Math.max(gameState.progress.bestScore, gameState.score);
+  }
+
+  gameState.ghosts.forEach((ghost) => {
+    const dir = chooseGhostDir(ghost);
+    ghost.dir = dir;
+    tryMove(ghost, dir);
+  });
+
+  const hit = gameState.ghosts.some((ghost) => ghost.x === gameState.player.x && ghost.y === gameState.player.y);
+  if (hit) handleCollision(lang);
+
+  if (gameState.pelletsLeft <= 0) {
+    buildMazeState();
+    gameState.progress.level += 1;
+    gameState.speed = Math.max(65, gameState.speed - 5);
+    addXp(25);
+    setFeedback(lang, "levelup");
+    runArcadeLoop(lang);
+  }
+
+  saveGameProgress();
+  renderGame(lang);
+}
+
+function runArcadeLoop(lang) {
+  if (gameState.loopHandle) clearInterval(gameState.loopHandle);
+  gameState.loopHandle = setInterval(() => updateArcade(lang), gameState.speed);
+}
+
 function renderGame(lang) {
   const selected = copy[lang] || copy.en;
-  const deck = gameDeck(lang);
-  const indexShift = gameState.progress.totalAnswers % deck.length;
-  const current = deck[(gameState.round + indexShift) % deck.length];
-
-  const round = document.getElementById("game-round");
-  const title = document.getElementById("game-scenario-title");
-  const detail = document.getElementById("game-scenario-detail");
   const score = document.getElementById("game-score");
-  const streak = document.getElementById("game-streak");
   const best = document.getElementById("game-best");
   const accuracy = document.getElementById("game-accuracy");
   const level = document.getElementById("game-level");
@@ -693,23 +858,21 @@ function renderGame(lang) {
   const dailyText = document.getElementById("game-daily-text");
   const badgeList = document.getElementById("game-badges-list");
   const feedback = document.getElementById("game-feedback");
-  const accuracyValue = gameState.progress.totalAnswers > 0
-    ? Math.round((gameState.progress.correctAnswers / gameState.progress.totalAnswers) * 100)
-    : 0;
-  const dailyPct = Math.min(100, Math.round((gameState.progress.dailyCorrect / 5) * 100));
 
-  if (round) round.textContent = `${selected.gameRoundLabel} ${gameState.round + 1}/${deck.length}`;
-  if (title) title.textContent = current.title;
-  if (detail) detail.textContent = current.detail;
+  const stable = gameState.progress.pelletsCollected + gameState.progress.collisions * 8;
+  const accuracyValue = stable > 0
+    ? Math.round((gameState.progress.pelletsCollected / stable) * 100)
+    : 0;
+  const dailyPct = Math.min(100, Math.round((gameState.progress.dailyCollected / 120) * 100));
+
   if (score) score.textContent = String(gameState.score);
-  if (streak) streak.textContent = String(gameState.streak);
-  if (best) best.textContent = String(gameState.progress.bestStreak);
+  if (best) best.textContent = String(gameState.progress.bestScore);
   if (accuracy) accuracy.textContent = `${accuracyValue}%`;
   if (level) level.textContent = String(gameState.progress.level);
   if (xp) xp.textContent = `${gameState.progress.xp}/100`;
   if (progressFill) progressFill.style.width = `${Math.min(100, gameState.progress.xp)}%`;
   if (dailyFill) dailyFill.style.width = `${dailyPct}%`;
-  if (dailyText) dailyText.textContent = `${selected.gameDailyMission} (${gameState.progress.dailyCorrect}/5)`;
+  if (dailyText) dailyText.textContent = `${selected.gameDailyMission} (${gameState.progress.dailyCollected}/120)`;
   if (badgeList) {
     badgeList.innerHTML = "";
     const badges = gameBadges(lang);
@@ -727,57 +890,26 @@ function renderGame(lang) {
       });
     }
   }
-  if (feedback && !feedback.textContent) feedback.textContent = selected.gameFeedbackIdle;
+  if (feedback && !feedback.textContent) {
+    feedback.className = "game-feedback";
+    feedback.textContent = selected.gameFeedbackIdle;
+  }
+  drawGame();
 }
 
 function resetGame(lang) {
-  gameState.round = 0;
   gameState.score = 0;
-  gameState.streak = 0;
+  gameState.speed = 140;
+  gameState.pendingDir = "left";
+  gameState.currentDir = "left";
+  gameState.running = true;
+  buildMazeState();
   const feedback = document.getElementById("game-feedback");
   if (feedback) {
     feedback.className = "game-feedback";
     feedback.textContent = "";
   }
-  renderGame(lang);
-}
-
-function answerGame(lang, answer) {
-  const selected = copy[lang] || copy.en;
-  const deck = gameDeck(lang);
-  const indexShift = gameState.progress.totalAnswers % deck.length;
-  const current = deck[(gameState.round + indexShift) % deck.length];
-  const feedback = document.getElementById("game-feedback");
-
-  gameState.progress.totalAnswers += 1;
-  const correct = current.answer === answer;
-  if (correct) {
-    const gain = 10 + Math.min(20, gameState.streak * 2);
-    gameState.score += gain;
-    gameState.streak += 1;
-    gameState.progress.correctAnswers += 1;
-    gameState.progress.dailyCorrect += 1;
-    gameState.progress.bestStreak = Math.max(gameState.progress.bestStreak, gameState.streak);
-    gameState.progress.xp += gain;
-    while (gameState.progress.xp >= 100) {
-      gameState.progress.level += 1;
-      gameState.progress.xp -= 100;
-    }
-    if (feedback) {
-      feedback.className = "game-feedback correct";
-      feedback.textContent = `${selected.gameFeedbackCorrect} +${gain} XP`;
-    }
-  } else {
-    gameState.score = Math.max(0, gameState.score - 4);
-    gameState.streak = 0;
-    if (feedback) {
-      feedback.className = "game-feedback wrong";
-      feedback.textContent = `${selected.gameFeedbackWrong} ${gateLabel(lang, current.answer)}`;
-    }
-  }
-
-  gameState.round = (gameState.round + 1) % deck.length;
-  saveGameProgress();
+  runArcadeLoop(lang);
   renderGame(lang);
 }
 
@@ -852,6 +984,7 @@ async function runDemo(lang) {
       const lang = e.target.value;
       localStorage.setItem("showcase_lang", lang);
       setText(lang);
+      runArcadeLoop(lang);
       runDemo(lang);
     });
   }
@@ -864,11 +997,24 @@ async function runDemo(lang) {
     });
   }
 
-  document.querySelectorAll(".game-choice").forEach((btn) => {
+  document.querySelectorAll(".arcade-move").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const lang = select ? select.value : selected;
-      answerGame(lang, btn.dataset.answer);
+      const dir = btn.dataset.dir;
+      if (dir && DIRS[dir]) gameState.pendingDir = dir;
     });
+  });
+
+  window.addEventListener("keydown", (e) => {
+    const keyMap = {
+      ArrowUp: "up",
+      ArrowDown: "down",
+      ArrowLeft: "left",
+      ArrowRight: "right"
+    };
+    const dir = keyMap[e.key];
+    if (!dir) return;
+    e.preventDefault();
+    gameState.pendingDir = dir;
   });
 
   const runButton = document.getElementById("run-demo");

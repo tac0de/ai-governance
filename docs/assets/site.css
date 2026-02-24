@@ -502,30 +502,21 @@ pre.flash {
   background: linear-gradient(90deg, #16a34a 0%, #3ddc84 100%);
 }
 
-.game-question {
+.game-arena {
   margin-top: 10px;
   border: 1px solid var(--line);
   border-radius: 12px;
-  background: #fcfdff;
-  padding: 12px;
+  background: #0b1020;
+  padding: 8px;
+  overflow: hidden;
 }
 
-.game-question p {
-  margin: 0;
-  color: var(--muted);
-}
-
-#game-round {
-  font-size: 0.82rem;
-  color: #35507d;
-}
-
-#game-scenario-title {
-  margin: 8px 0 6px;
-}
-
-#game-scenario-detail {
-  line-height: 1.6;
+#game-canvas {
+  display: block;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  border-radius: 10px;
 }
 
 .game-actions {
@@ -535,14 +526,19 @@ pre.flash {
   flex-wrap: wrap;
 }
 
-.game-choice {
+.arcade-controls {
+  justify-content: center;
+}
+
+.arcade-move {
+  min-width: 52px;
   background: #fff;
   color: #1f3f76;
   border-color: #bfd5fb;
   transition: transform 130ms ease, box-shadow 180ms ease;
 }
 
-.game-choice:hover {
+.arcade-move:hover {
   transform: translateY(-1px);
   box-shadow: 0 8px 16px rgba(26, 115, 232, 0.2);
 }
