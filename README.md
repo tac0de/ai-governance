@@ -92,3 +92,9 @@ Current pre-rebuild implementation is archived in branch:
 ## Overnight Automation
 
 - Hourly governance progress workflow: `.github/workflows/overnight-governance-progress.yml`
+
+## GitHub Pages Showcase
+
+- Multilingual showcase site source: `docs/index.html`
+- Assets: `docs/assets/site.css`, `docs/assets/site.js`
+- Deploy workflow: `.github/workflows/github-pages-showcase.yml`
