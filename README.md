@@ -97,4 +97,7 @@ Current pre-rebuild implementation is archived in branch:
 
 - Multilingual showcase site source: `docs/index.html`
 - Assets: `docs/assets/site.css`, `docs/assets/site.js`
+- Favicon: `docs/favicon.ico`
+- Default language: browser locale auto-detect (`navigator.languages`/`navigator.language`), then stored preference
+- Public contact: `wonyoungchoiseoul@gmail.com`
 - Deploy workflow: `.github/workflows/github-pages-showcase.yml`

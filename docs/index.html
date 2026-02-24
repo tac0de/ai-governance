@@ -3,21 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="AI Governance Central Control Room showcase and demo.">
-  <title>AI Governance Central Control Room</title>
+  <meta name="description" content="AI governance architecture explained for developers and non-developers.">
+  <title>AI Governance Architecture</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <header class="hero">
-    <div class="noise"></div>
-    <div class="hero-inner">
-      <p class="eyebrow" data-i18n="eyebrow"></p>
-      <h1 data-i18n="title"></h1>
-      <p class="subtitle" data-i18n="subtitle"></p>
-      <div class="topbar">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <strong class="brand">AI Governance</strong>
+      <div class="lang-wrap">
         <label for="lang-select" data-i18n="languageLabel"></label>
         <select id="lang-select" aria-label="Language selector">
           <option value="en">English</option>
@@ -29,44 +27,46 @@
     </div>
   </header>
 
-  <main>
-    <section class="grid-section">
-      <article class="panel">
-        <h2 data-i18n="pillarsTitle"></h2>
-        <ul id="pillars-list"></ul>
+  <main class="container">
+    <section class="hero card">
+      <p class="eyebrow" data-i18n="eyebrow"></p>
+      <h1 data-i18n="title"></h1>
+      <p class="subtitle" data-i18n="subtitle"></p>
+    </section>
+
+    <section class="grid-3">
+      <article class="card">
+        <h2 data-i18n="whatTitle"></h2>
+        <ul id="what-list"></ul>
       </article>
-      <article class="panel">
-        <h2 data-i18n="rolesTitle"></h2>
-        <ul id="roles-list"></ul>
+      <article class="card">
+        <h2 data-i18n="howTitle"></h2>
+        <ul id="how-list"></ul>
       </article>
-      <article class="panel">
-        <h2 data-i18n="automationTitle"></h2>
-        <ul id="automation-list"></ul>
+      <article class="card">
+        <h2 data-i18n="whyTitle"></h2>
+        <ul id="why-list"></ul>
       </article>
     </section>
 
-    <section class="panel demo-panel">
+    <section class="card">
+      <h2 data-i18n="flowTitle"></h2>
+      <ol id="flow-list" class="flow-list"></ol>
+    </section>
+
+    <section class="card demo-card">
       <div class="demo-head">
         <h2 data-i18n="demoTitle"></h2>
         <button id="run-demo" type="button" data-i18n="demoButton"></button>
       </div>
-      <p class="demo-note" data-i18n="demoNote"></p>
+      <p data-i18n="demoNote"></p>
       <pre id="demo-output" aria-live="polite"></pre>
     </section>
 
-    <section class="panel">
-      <h2 data-i18n="blogTitle"></h2>
-      <div id="blog-list" class="blog-list"></div>
-    </section>
-
-    <section class="panel cta">
-      <h2 data-i18n="nextTitle"></h2>
-      <p data-i18n="nextText"></p>
-      <div class="cta-links">
-        <a id="readme-link" href="#" data-i18n="readmeLink"></a>
-        <a id="services-registry-link" href="#" data-i18n="servicesRegistryLink"></a>
-        <a id="mcps-registry-link" href="#" data-i18n="mcpsRegistryLink"></a>
-      </div>
+    <section class="card contact-card">
+      <h2 data-i18n="contactTitle"></h2>
+      <p data-i18n="contactText"></p>
+      <p class="email">wonyoungchoiseoul@gmail.com</p>
     </section>
   </main>
 
