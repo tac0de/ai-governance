@@ -170,6 +170,16 @@
       <div class="game-meta">
         <span><strong data-i18n="gameScoreLabel"></strong> <em id="game-score">0</em></span>
         <span><strong data-i18n="gameStreakLabel"></strong> <em id="game-streak">0</em></span>
+        <span><strong data-i18n="gameBestLabel"></strong> <em id="game-best">0</em></span>
+        <span><strong data-i18n="gameAccuracyLabel"></strong> <em id="game-accuracy">0%</em></span>
+      </div>
+      <div class="game-progress-wrap">
+        <p><strong data-i18n="gameLevelLabel"></strong> <em id="game-level">1</em> · <strong data-i18n="gameXpLabel"></strong> <em id="game-xp">0/100</em></p>
+        <div class="game-progress"><div id="game-progress-fill" class="game-progress-fill"></div></div>
+      </div>
+      <div class="game-daily">
+        <p><strong data-i18n="gameDailyLabel"></strong> <span id="game-daily-text"></span></p>
+        <div class="game-progress"><div id="game-daily-fill" class="game-daily-fill"></div></div>
       </div>
       <article class="game-question">
         <p id="game-round"></p>
@@ -182,6 +192,10 @@
         <button type="button" class="game-choice" data-answer="block" data-i18n="gameChoiceBlock"></button>
       </div>
       <p id="game-feedback" class="game-feedback"></p>
+      <div class="game-badges">
+        <strong data-i18n="gameBadgeLabel"></strong>
+        <div id="game-badges-list" class="game-badges-list"></div>
+      </div>
     </section>
 
     <section class="card">

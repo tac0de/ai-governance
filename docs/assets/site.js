@@ -53,6 +53,17 @@ const copy = {
     gameReset: "Start Over",
     gameScoreLabel: "Score",
     gameStreakLabel: "Streak",
+    gameBestLabel: "Best",
+    gameAccuracyLabel: "Accuracy",
+    gameLevelLabel: "Level",
+    gameXpLabel: "XP",
+    gameDailyLabel: "Daily Challenge",
+    gameDailyMission: "Get 5 correct answers today",
+    gameBadgeLabel: "Badges",
+    gameBadgeNovice: "Novice",
+    gameBadgeKeeper: "Gate Keeper",
+    gameBadgeOracle: "Policy Oracle",
+    gameBadgePerfect: "Perfect Day",
     gameRoundLabel: "Round",
     gameChoiceProceed: "PROCEED",
     gameChoiceHuman: "HUMAN GATE",
@@ -170,6 +181,17 @@ const copy = {
     gameReset: "처음부터",
     gameScoreLabel: "점수",
     gameStreakLabel: "연속 정답",
+    gameBestLabel: "최고 연속",
+    gameAccuracyLabel: "정확도",
+    gameLevelLabel: "레벨",
+    gameXpLabel: "XP",
+    gameDailyLabel: "오늘의 미션",
+    gameDailyMission: "오늘 정답 5회 달성",
+    gameBadgeLabel: "배지",
+    gameBadgeNovice: "입문자",
+    gameBadgeKeeper: "게이트 키퍼",
+    gameBadgeOracle: "정책 오라클",
+    gameBadgePerfect: "퍼펙트 데이",
     gameRoundLabel: "라운드",
     gameChoiceProceed: "진행",
     gameChoiceHuman: "인간 승인",
@@ -268,11 +290,74 @@ const presets = {
 
 let evaluationCount = 0;
 let previousSnapshot = null;
+const GAME_STORE_KEY = "governance_gate_game_v1";
 const gameState = {
   round: 0,
   score: 0,
-  streak: 0
+  streak: 0,
+  progress: {
+    totalAnswers: 0,
+    correctAnswers: 0,
+    bestStreak: 0,
+    level: 1,
+    xp: 0,
+    dailyDate: "",
+    dailyCorrect: 0
+  }
 };
+
+function todayUtcKey() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function resetDailyIfNeeded() {
+  const today = todayUtcKey();
+  if (gameState.progress.dailyDate !== today) {
+    gameState.progress.dailyDate = today;
+    gameState.progress.dailyCorrect = 0;
+  }
+}
+
+function loadGameProgress() {
+  try {
+    const raw = localStorage.getItem(GAME_STORE_KEY);
+    if (!raw) return;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return;
+    gameState.progress.totalAnswers = Number(parsed.totalAnswers || 0);
+    gameState.progress.correctAnswers = Number(parsed.correctAnswers || 0);
+    gameState.progress.bestStreak = Number(parsed.bestStreak || 0);
+    gameState.progress.level = Math.max(1, Number(parsed.level || 1));
+    gameState.progress.xp = Math.max(0, Number(parsed.xp || 0));
+    gameState.progress.dailyDate = String(parsed.dailyDate || "");
+    gameState.progress.dailyCorrect = Math.max(0, Number(parsed.dailyCorrect || 0));
+  } catch {
+    // ignore broken local storage
+  }
+}
+
+function saveGameProgress() {
+  const payload = {
+    totalAnswers: gameState.progress.totalAnswers,
+    correctAnswers: gameState.progress.correctAnswers,
+    bestStreak: gameState.progress.bestStreak,
+    level: gameState.progress.level,
+    xp: gameState.progress.xp,
+    dailyDate: gameState.progress.dailyDate,
+    dailyCorrect: gameState.progress.dailyCorrect
+  };
+  localStorage.setItem(GAME_STORE_KEY, JSON.stringify(payload));
+}
+
+function gameBadges(lang) {
+  const selected = copy[lang] || copy.en;
+  const out = [];
+  if (gameState.progress.totalAnswers >= 10) out.push(selected.gameBadgeNovice);
+  if (gameState.progress.bestStreak >= 5) out.push(selected.gameBadgeKeeper);
+  if (gameState.progress.level >= 4) out.push(selected.gameBadgeOracle);
+  if (gameState.progress.dailyCorrect >= 5) out.push(selected.gameBadgePerfect);
+  return out;
+}
 
 function gateLabel(lang, decision) {
   const selected = copy[lang] || copy.en;
@@ -591,20 +676,57 @@ function resetRunState() {
 function renderGame(lang) {
   const selected = copy[lang] || copy.en;
   const deck = gameDeck(lang);
-  const current = deck[gameState.round % deck.length];
+  const indexShift = gameState.progress.totalAnswers % deck.length;
+  const current = deck[(gameState.round + indexShift) % deck.length];
 
   const round = document.getElementById("game-round");
   const title = document.getElementById("game-scenario-title");
   const detail = document.getElementById("game-scenario-detail");
   const score = document.getElementById("game-score");
   const streak = document.getElementById("game-streak");
+  const best = document.getElementById("game-best");
+  const accuracy = document.getElementById("game-accuracy");
+  const level = document.getElementById("game-level");
+  const xp = document.getElementById("game-xp");
+  const progressFill = document.getElementById("game-progress-fill");
+  const dailyFill = document.getElementById("game-daily-fill");
+  const dailyText = document.getElementById("game-daily-text");
+  const badgeList = document.getElementById("game-badges-list");
   const feedback = document.getElementById("game-feedback");
+  const accuracyValue = gameState.progress.totalAnswers > 0
+    ? Math.round((gameState.progress.correctAnswers / gameState.progress.totalAnswers) * 100)
+    : 0;
+  const dailyPct = Math.min(100, Math.round((gameState.progress.dailyCorrect / 5) * 100));
 
   if (round) round.textContent = `${selected.gameRoundLabel} ${gameState.round + 1}/${deck.length}`;
   if (title) title.textContent = current.title;
   if (detail) detail.textContent = current.detail;
   if (score) score.textContent = String(gameState.score);
   if (streak) streak.textContent = String(gameState.streak);
+  if (best) best.textContent = String(gameState.progress.bestStreak);
+  if (accuracy) accuracy.textContent = `${accuracyValue}%`;
+  if (level) level.textContent = String(gameState.progress.level);
+  if (xp) xp.textContent = `${gameState.progress.xp}/100`;
+  if (progressFill) progressFill.style.width = `${Math.min(100, gameState.progress.xp)}%`;
+  if (dailyFill) dailyFill.style.width = `${dailyPct}%`;
+  if (dailyText) dailyText.textContent = `${selected.gameDailyMission} (${gameState.progress.dailyCorrect}/5)`;
+  if (badgeList) {
+    badgeList.innerHTML = "";
+    const badges = gameBadges(lang);
+    if (badges.length === 0) {
+      const empty = document.createElement("span");
+      empty.className = "game-badge empty";
+      empty.textContent = "-";
+      badgeList.appendChild(empty);
+    } else {
+      badges.forEach((name) => {
+        const chip = document.createElement("span");
+        chip.className = "game-badge";
+        chip.textContent = name;
+        badgeList.appendChild(chip);
+      });
+    }
+  }
   if (feedback && !feedback.textContent) feedback.textContent = selected.gameFeedbackIdle;
 }
 
@@ -623,18 +745,30 @@ function resetGame(lang) {
 function answerGame(lang, answer) {
   const selected = copy[lang] || copy.en;
   const deck = gameDeck(lang);
-  const current = deck[gameState.round % deck.length];
+  const indexShift = gameState.progress.totalAnswers % deck.length;
+  const current = deck[(gameState.round + indexShift) % deck.length];
   const feedback = document.getElementById("game-feedback");
 
+  gameState.progress.totalAnswers += 1;
   const correct = current.answer === answer;
   if (correct) {
-    gameState.score += 1;
+    const gain = 10 + Math.min(20, gameState.streak * 2);
+    gameState.score += gain;
     gameState.streak += 1;
+    gameState.progress.correctAnswers += 1;
+    gameState.progress.dailyCorrect += 1;
+    gameState.progress.bestStreak = Math.max(gameState.progress.bestStreak, gameState.streak);
+    gameState.progress.xp += gain;
+    while (gameState.progress.xp >= 100) {
+      gameState.progress.level += 1;
+      gameState.progress.xp -= 100;
+    }
     if (feedback) {
       feedback.className = "game-feedback correct";
-      feedback.textContent = selected.gameFeedbackCorrect;
+      feedback.textContent = `${selected.gameFeedbackCorrect} +${gain} XP`;
     }
   } else {
+    gameState.score = Math.max(0, gameState.score - 4);
     gameState.streak = 0;
     if (feedback) {
       feedback.className = "game-feedback wrong";
@@ -643,6 +777,7 @@ function answerGame(lang, answer) {
   }
 
   gameState.round = (gameState.round + 1) % deck.length;
+  saveGameProgress();
   renderGame(lang);
 }
 
@@ -703,6 +838,9 @@ async function runDemo(lang) {
   const select = document.getElementById("lang-select");
   if (select) select.value = selected;
 
+  loadGameProgress();
+  resetDailyIfNeeded();
+  saveGameProgress();
   setText(selected);
   resetGame(selected);
   applyPreset("balanced");
