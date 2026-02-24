@@ -30,8 +30,8 @@ const copy = {
       "4) Risk tier outputs: auto / policy+owner / mandatory human gate"
     ],
     demoTitle: "Interactive Governance Simulator",
-    demoButton: "Evaluate Decision",
-    demoNote: "Change inputs and run. You can see how risk, determinism, and external dependency change the governance verdict.",
+    demoButton: "Refresh",
+    demoNote: "Change inputs to experiment. Press Refresh to reset the run state and start the simulation loop from baseline.",
     presetLabel: "Quick Presets",
     presetSafe: "Safe Launch",
     presetBalanced: "Balanced",
@@ -103,8 +103,8 @@ const copy = {
       "4) 리스크 계층 결과 출력: 자동 / 정책+오너 / 인간 필수"
     ],
     demoTitle: "거버넌스 시뮬레이터",
-    demoButton: "판정 실행",
-    demoNote: "입력을 바꾸고 실행하면 리스크, 결정성, 외부 의존성에 따라 판정이 어떻게 달라지는지 볼 수 있습니다.",
+    demoButton: "새로고침",
+    demoNote: "입력을 바꿔 실험하고, 새로고침 버튼으로 런 상태를 초기화해 기준점부터 다시 시작할 수 있습니다.",
     presetLabel: "빠른 프리셋",
     presetSafe: "안전 배포",
     presetBalanced: "균형",
@@ -159,8 +159,8 @@ const copy = {
     flowTitle: "コードフロー概要",
     flow: ["1) intent入力", "2) 契約検証", "3) 範囲ゲート判定", "4) 承認方式出力"],
     demoTitle: "ガバナンスシミュレーター",
-    demoButton: "判定を実行",
-    demoNote: "入力条件を変えて判定結果の変化を確認できます。",
+    demoButton: "Refresh",
+    demoNote: "入力を変えて試し、Refreshで実行状態を初期化して基準点から再開できます。",
     presetLabel: "Quick Presets",
     presetSafe: "Safe Launch",
     presetBalanced: "Balanced",
@@ -206,8 +206,8 @@ const copy = {
     flowTitle: "代码流程概览",
     flow: ["1) 输入intent", "2) 契约校验", "3) 范围门禁", "4) 输出审批模式"],
     demoTitle: "治理模拟器",
-    demoButton: "执行判定",
-    demoNote: "修改输入后可观察治理结论如何变化。",
+    demoButton: "Refresh",
+    demoNote: "可先调整输入实验；点击 Refresh 会重置运行状态并从基线重新开始。",
     presetLabel: "Quick Presets",
     presetSafe: "Safe Launch",
     presetBalanced: "Balanced",
@@ -550,6 +550,15 @@ function updateEvaluationMeta(nowIso) {
   }
 }
 
+function resetRunState() {
+  evaluationCount = 0;
+  previousSnapshot = null;
+  const count = document.getElementById("run-count");
+  const at = document.getElementById("evaluated-at");
+  if (count) count.textContent = "0";
+  if (at) at.textContent = "-";
+}
+
 function presetNameFromState(state) {
   for (const [name, preset] of Object.entries(presets)) {
     if (
@@ -625,6 +634,9 @@ async function runDemo(lang) {
   if (runButton) {
     runButton.addEventListener("click", () => {
       const lang = select ? select.value : selected;
+      resetRunState();
+      applyPreset("balanced");
+      setPresetActive("balanced");
       runDemo(lang);
     });
   }
