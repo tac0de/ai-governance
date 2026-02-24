@@ -191,7 +191,8 @@ for schema_rel in \
   schemas/mcps_registry.schema.json \
   schemas/mcp_allowlist.schema.json \
   schemas/mcp_manifest.schema.json \
-  schemas/mcp_runtime_binding.schema.json
+  schemas/mcp_runtime_binding.schema.json \
+  schemas/mcp_change_request.schema.json
   do
   check_json "$schema_rel"
 done
@@ -264,6 +265,49 @@ validate_jq_contract "benchmark/efficiency_benchmark_spec.v0.1.json" "schemas/be
   (.kpi_thresholds.max_fallback_rate>=0 and .kpi_thresholds.max_fallback_rate<=1) and
   (.kpi_thresholds.min_cost_reduction_vs_baseline>=0)
 '
+
+# Validate MCP change request artifacts.
+if [[ -d "$ROOT_DIR/reports/governance" ]]; then
+  while IFS= read -r request_path; do
+    request_rel="${request_path#$ROOT_DIR/}"
+    validate_jq_contract "$request_rel" "schemas/mcp_change_request.schema.json" '
+      .version=="v0.1" and
+      (.request_id|type=="string" and length>0) and
+      (.service_id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+      (.requested_at|type=="string" and length>0) and
+      (.risk_tier==null or .risk_tier=="low" or .risk_tier=="medium" or .risk_tier=="high") and
+      (.status=="proposed" or .status=="requested" or .status=="approved" or .status=="rejected" or .status=="implemented" or .status=="deferred") and
+      (
+        (
+          ((.request_type // "capability_expansion") != "new_mcp_registration") and
+          (.approval_tier=="low" or .approval_tier=="medium" or .approval_tier=="high") and
+          (.human_gate_required|type=="boolean") and
+          (.title|type=="string" and length>0) and
+          (.objective|type=="string" and length>0) and
+          (.required_capabilities|type=="array" and length>0 and all(.[]; type=="string" and length>0)) and
+          (.constraints|type=="array" and length>0 and all(.[]; type=="string" and length>0)) and
+          (.evidence_refs|type=="array" and length>0 and all(.[]; (.path|type=="string" and length>0) and (.sha256|type=="string" and test("^[a-f0-9]{64}$")))) and
+          (.target_core_mcp_id==null or (.target_core_mcp_id|type=="string" and test("^core-[a-z0-9][a-z0-9-]*$")))
+        )
+        or
+        (
+          .request_type=="new_mcp_registration" and
+          .approval_tier=="high" and
+          .human_gate_required==true and
+          (.mcp_candidate.id|type=="string" and test("^core-[a-z0-9][a-z0-9-]*$")) and
+          (.mcp_candidate.proposed_root_path|type=="string" and test("^mcps/core-[a-z0-9][a-z0-9-]*$")) and
+          (.mcp_candidate.capabilities|type=="array" and length>0 and all(.[]; type=="string" and length>0)) and
+          (.mcp_candidate.required_approval_tier=="high") and
+          (.mcp_candidate.risk_level=="high") and
+          (.governance_rationale.need|type=="string" and length>0) and
+          (.governance_rationale.boundary|type=="string" and length>0) and
+          (.governance_rationale.controls|type=="array" and length>0 and all(.[]; type=="string" and length>0)) and
+          (.expected_artifacts|type=="array" and length>0 and all(.[]; type=="string" and length>0))
+        )
+      )
+    '
+  done < <(find "$ROOT_DIR/reports/governance" -maxdepth 1 -type f -name 'mcp-request-*.json' | sort)
+fi
 
 # Central control room registry validation contracts.
 validate_jq_contract "$ORG_REG_REL" "schemas/org.schema.json" '

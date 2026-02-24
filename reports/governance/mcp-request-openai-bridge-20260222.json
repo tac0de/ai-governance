@@ -3,11 +3,13 @@
   "request_id": "mcp-request-openai-bridge-20260222",
   "service_id": "thedivineparadox",
   "requested_at": "2026-02-22T13:05:00Z",
+  "approval_tier": "high",
+  "human_gate_required": true,
   "request_type": "new_mcp_registration",
   "mcp_candidate": {
-    "id": "openai-bridge-mcp",
+    "id": "core-openai-bridge-mcp",
     "name": "OpenAI Bridge MCP",
-    "proposed_root_path": "mcps/openai-bridge-mcp",
+    "proposed_root_path": "mcps/core-openai-bridge-mcp",
     "capabilities": [
       "generate_intent_json",
       "schema_validate_intent",
@@ -26,10 +28,10 @@
     ]
   },
   "expected_artifacts": [
-    "mcps/openai-bridge-mcp/manifest.json",
-    "mcps/openai-bridge-mcp/docs/MCP.md",
-    "mcps/openai-bridge-mcp/docs/CAPABILITIES.md",
-    "mcps/openai-bridge-mcp/docs/SECURITY.md",
+    "mcps/core-openai-bridge-mcp/manifest.json",
+    "mcps/core-openai-bridge-mcp/docs/MCP.md",
+    "mcps/core-openai-bridge-mcp/docs/CAPABILITIES.md",
+    "mcps/core-openai-bridge-mcp/docs/SECURITY.md",
     "control/registry/mcps.v0.1.json update"
   ],
   "status": "proposed"
