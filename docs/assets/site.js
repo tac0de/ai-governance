@@ -2,151 +2,190 @@ const copy = {
   en: {
     eyebrow: "Governance Architecture",
     title: "One Control Layer for Multi-Agent AI Systems",
-    subtitle: "This site explains the architecture in plain language. Policy, approval, trace, and service boundaries are controlled by one deterministic governance core.",
+    subtitle: "This explains your architecture in plain language: agents can execute, but governance defines boundaries, and humans keep final authority.",
     languageLabel: "Language",
     whatTitle: "What It Is",
     what: [
-      "A central rule system that all services must follow",
-      "A structure for both developers and non-developers to make safe decisions",
-      "A way to keep AI execution reproducible, reviewable, and auditable"
+      "A central governance core shared across all services",
+      "A deterministic validation path for policy, schema, and trace",
+      "A human-gated operating model for high-risk changes"
     ],
     howTitle: "How It Works",
     how: [
-      "Policies and schemas define what is allowed",
-      "Services and MCPs are registered and validated by CI",
-      "High-risk changes require explicit human approval"
+      "Registries define allowed services and MCPs",
+      "Validation scripts enforce repository contracts in CI",
+      "Risk tier decides whether mandatory human approval is required"
     ],
-    whyTitle: "Why It Matters",
+    whyTitle: "Why It Is Innovative",
     why: [
-      "Prevents hidden behavior drift between services",
-      "Keeps authority clear: AI proposes, human approves",
-      "Makes incident response faster with deterministic traces"
+      "Agent-vendor independent: governance survives model/tool replacement",
+      "Deterministic-by-design: same evidence, same verdict",
+      "Scales trust: non-developers can inspect decision logic"
     ],
-    flowTitle: "4-Step Operating Flow",
+    flowTitle: "Code Flow Overview",
     flow: [
-      "1) Agent proposes change with evidence",
-      "2) Governance validates policy and schema contracts",
-      "3) Risk tier determines whether human gate is mandatory",
-      "4) Approved change is deployed with trace linkage"
+      "1) Input arrives as intent + evidence refs",
+      "2) Schema and policy contracts are validated by scripts",
+      "3) Registry/allowlist gates evaluate service and MCP scope",
+      "4) Risk tier outputs: auto / policy+owner / mandatory human gate"
     ],
-    demoTitle: "Live Demo: Decision Preview",
-    demoButton: "Generate Preview",
-    demoNote: "Creates a simple governance decision preview so anyone can understand what is checked before release.",
+    demoTitle: "Interactive Governance Simulator",
+    demoButton: "Evaluate Decision",
+    demoNote: "Change inputs and run. You can see how risk, determinism, and external dependency change the governance verdict.",
+    inputScenario: "Scenario",
+    inputRisk: "Declared Risk Tier",
+    inputPii: "Contains sensitive user data",
+    inputExternal: "Depends on external runtime",
+    inputDeterministic: "Deterministic trace path maintained",
+    decisionLabel: "Decision:",
+    blogTitle: "Short Essays",
+    blogs: [
+      {
+        title: "What This Design Actually Is",
+        body: "This is not just documentation. It is an operating system for decisions. Every service and MCP must pass the same contract checks, so architecture intent stays enforceable, not aspirational."
+      },
+      {
+        title: "Why This Matters Now",
+        body: "AI teams are moving fast, but speed without boundaries causes quality drift. Your model keeps speed while preserving control by separating proposal power (agent) from release power (human)."
+      },
+      {
+        title: "How To Read The Codebase",
+        body: "Start from control/registry for allowed topology, then schemas/ for contracts, then scripts/validate_all.sh for enforcement logic, then services/* and mcps/* for concrete artifacts."
+      }
+    ],
     contactTitle: "Contact",
-    contactText: "For collaboration, reach out by email.",
+    contactText: "If you want to collaborate on this governance architecture, email directly.",
     footer: "Human System Architect remains final release authority."
   },
   ko: {
     eyebrow: "거버넌스 아키텍처",
     title: "멀티 에이전트 AI를 위한 단일 통제 계층",
-    subtitle: "이 사이트는 아키텍처를 쉬운 언어로 설명합니다. 정책, 승인, 트레이스, 서비스 경계는 하나의 결정적 거버넌스 코어로 통제됩니다.",
+    subtitle: "에이전트는 실행할 수 있지만, 거버넌스가 경계를 정하고 최종 권한은 인간이 유지한다는 구조를 쉬운 언어로 설명합니다.",
     languageLabel: "언어",
     whatTitle: "무엇인가",
     what: [
-      "모든 서비스가 반드시 따르는 중앙 규칙 체계",
-      "개발자/비개발자 모두가 안전하게 의사결정하도록 돕는 구조",
-      "AI 실행을 재현 가능·검토 가능·감사 가능하게 만드는 방식"
+      "모든 서비스가 공유하는 중앙 거버넌스 코어",
+      "정책/스키마/트레이스를 결정적으로 검증하는 경로",
+      "고위험 변경에 대해 인간 게이트를 강제하는 운영 모델"
     ],
     howTitle: "어떻게 동작하나",
     how: [
-      "정책과 스키마가 허용 범위를 정의",
-      "서비스와 MCP를 레지스트리에 등록하고 CI에서 검증",
-      "고위험 변경은 명시적 인간 승인 필수"
+      "레지스트리로 허용 서비스/MCP 범위를 정의",
+      "검증 스크립트가 CI에서 저장소 계약을 강제",
+      "리스크 등급이 인간 승인 의무 여부를 결정"
     ],
-    whyTitle: "왜 중요한가",
+    whyTitle: "무엇이 혁신적인가",
     why: [
-      "서비스 간 숨은 동작 드리프트를 방지",
-      "권한 구조를 명확화: AI는 제안, 인간은 승인",
-      "결정적 트레이스로 장애 대응 속도 향상"
+      "에이전트 벤더 독립성: 모델/툴 교체에도 거버넌스 유지",
+      "결정성 중심 설계: 같은 증거면 같은 판정",
+      "신뢰 확장: 비개발자도 의사결정 로직을 해석 가능"
     ],
-    flowTitle: "운영 4단계",
+    flowTitle: "코드 플로우 개요",
     flow: [
-      "1) 에이전트가 증거와 함께 변경 제안",
-      "2) 거버넌스가 정책/스키마 계약 검증",
-      "3) 리스크 등급으로 인간 게이트 필요 여부 결정",
-      "4) 승인 후 트레이스 연계 배포"
+      "1) intent + evidence refs 입력",
+      "2) 스키마/정책 계약을 스크립트로 검증",
+      "3) 레지스트리/allowlist 게이트로 범위 판정",
+      "4) 리스크 계층 결과 출력: 자동 / 정책+오너 / 인간 필수"
     ],
-    demoTitle: "라이브 데모: 의사결정 미리보기",
-    demoButton: "미리보기 생성",
-    demoNote: "릴리스 전에 무엇을 검증하는지 누구나 이해할 수 있도록 간단한 거버넌스 결정을 생성합니다.",
+    demoTitle: "거버넌스 시뮬레이터",
+    demoButton: "판정 실행",
+    demoNote: "입력을 바꾸고 실행하면 리스크, 결정성, 외부 의존성에 따라 판정이 어떻게 달라지는지 볼 수 있습니다.",
+    inputScenario: "시나리오",
+    inputRisk: "선언 리스크 등급",
+    inputPii: "민감 사용자 데이터 포함",
+    inputExternal: "외부 런타임 의존",
+    inputDeterministic: "결정적 트레이스 경로 유지",
+    decisionLabel: "판정:",
+    blogTitle: "짧은 설명 글",
+    blogs: [
+      {
+        title: "이 설계의 본질",
+        body: "이 구조는 단순 문서가 아니라 의사결정 운영체계입니다. 모든 서비스와 MCP가 동일 계약 검증을 통과해야 하므로, 아키텍처 의도가 실제로 강제됩니다."
+      },
+      {
+        title: "지금 왜 필요한가",
+        body: "AI 개발은 빠르지만 경계가 없으면 품질이 무너집니다. 이 모델은 속도를 유지하면서 권한을 분리합니다. 에이전트는 제안하고 인간은 릴리스를 승인합니다."
+      },
+      {
+        title: "코드를 읽는 순서",
+        body: "control/registry에서 전체 토폴로지, schemas/에서 계약, scripts/validate_all.sh에서 강제 로직을 먼저 보고, 그 다음 services/*, mcps/*를 보면 구조가 바로 잡힙니다."
+      }
+    ],
     contactTitle: "연락",
-    contactText: "협업 문의는 이메일로 연락주세요.",
+    contactText: "이 거버넌스 아키텍처 협업은 이메일로 직접 연락주세요.",
     footer: "최종 릴리스 권한은 Human System Architect에게 있습니다."
   },
   ja: {
     eyebrow: "ガバナンスアーキテクチャ",
-    title: "マルチエージェントAIのための単一統制レイヤー",
-    subtitle: "このサイトはアーキテクチャを平易な言葉で説明します。ポリシー、承認、トレース、サービス境界は1つの決定論的ガバナンスコアで統制されます。",
+    title: "マルチエージェントAIの単一統制レイヤー",
+    subtitle: "エージェントは実行できても、境界はガバナンスが定義し、最終権限は人間が持つという設計を平易に説明します。",
     languageLabel: "言語",
     whatTitle: "これは何か",
-    what: [
-      "すべてのサービスが従う中央ルール体系",
-      "開発者/非開発者の双方が安全に判断できる運用構造",
-      "AI実行を再現可能・検証可能・監査可能にする仕組み"
-    ],
+    what: ["中央ガバナンスコア", "決定論的検証パス", "高リスク変更の人間ゲート"],
     howTitle: "どう動くか",
-    how: [
-      "ポリシーとスキーマが許可範囲を定義",
-      "サービスとMCPをレジストリ登録しCIで検証",
-      "高リスク変更は明示的な人間承認が必須"
+    how: ["レジストリで範囲定義", "CIで契約検証", "リスク階層で承認方式決定"],
+    whyTitle: "なぜ革新的か",
+    why: ["ベンダー非依存", "同一証拠なら同一判定", "非開発者にも説明可能"],
+    flowTitle: "コードフロー概要",
+    flow: ["1) intent入力", "2) 契約検証", "3) 範囲ゲート判定", "4) 承認方式出力"],
+    demoTitle: "ガバナンスシミュレーター",
+    demoButton: "判定を実行",
+    demoNote: "入力条件を変えて判定結果の変化を確認できます。",
+    inputScenario: "シナリオ",
+    inputRisk: "宣言リスク",
+    inputPii: "機微データを含む",
+    inputExternal: "外部ランタイム依存",
+    inputDeterministic: "決定論的トレース維持",
+    decisionLabel: "判定:",
+    blogTitle: "短い解説",
+    blogs: [
+      { title: "この設計の本質", body: "文書ではなく意思決定OSです。" },
+      { title: "今なぜ必要か", body: "速度と統制を両立するためです。" },
+      { title: "コードの読み方", body: "registry → schema → validateスクリプト → service/mcp の順で読むと把握しやすいです。" }
     ],
-    whyTitle: "なぜ重要か",
-    why: [
-      "サービス間の隠れた挙動ドリフトを防止",
-      "権限を明確化: AIは提案、人間は承認",
-      "決定論的トレースでインシデント対応を高速化"
-    ],
-    flowTitle: "運用フロー（4ステップ）",
-    flow: [
-      "1) エージェントが証拠付きで変更提案",
-      "2) ガバナンスがポリシー/スキーマ契約を検証",
-      "3) リスク階層で人間ゲート必須かを判定",
-      "4) 承認後、トレース連携でデプロイ"
-    ],
-    demoTitle: "ライブデモ: 判定プレビュー",
-    demoButton: "プレビュー生成",
-    demoNote: "リリース前に何を検証するかを誰でも理解できるよう、簡易ガバナンス判定を生成します。",
-    contactTitle: "連絡先",
-    contactText: "協業の連絡はメールでお願いします。",
+    contactTitle: "連絡",
+    contactText: "協業はメールでご連絡ください。",
     footer: "最終リリース権限はHuman System Architectにあります。"
   },
   zh: {
     eyebrow: "治理架构",
-    title: "面向多智能体AI的统一控制层",
-    subtitle: "本网站用通俗语言解释该架构。策略、审批、追踪和服务边界由同一个确定性治理核心统一控制。",
+    title: "多智能体AI的统一控制层",
+    subtitle: "本页用通俗语言说明：智能体可以执行，但边界由治理定义，最终权力在人工。",
     languageLabel: "语言",
     whatTitle: "它是什么",
-    what: [
-      "所有服务必须遵循的中央规则系统",
-      "让开发者与非开发者都能安全决策的结构",
-      "使AI执行可复现、可审查、可审计的方法"
-    ],
+    what: ["中央治理核心", "确定性验证路径", "高风险人工闸门"],
     howTitle: "如何运作",
-    how: [
-      "策略与Schema定义允许范围",
-      "服务与MCP进入注册表并由CI验证",
-      "高风险变更必须经过明确人工审批"
+    how: ["注册表定义范围", "CI执行契约校验", "风险等级决定审批方式"],
+    whyTitle: "创新点",
+    why: ["供应商无关", "同证据同结论", "非开发者也能理解"],
+    flowTitle: "代码流程概览",
+    flow: ["1) 输入intent", "2) 契约校验", "3) 范围门禁", "4) 输出审批模式"],
+    demoTitle: "治理模拟器",
+    demoButton: "执行判定",
+    demoNote: "修改输入后可观察治理结论如何变化。",
+    inputScenario: "场景",
+    inputRisk: "声明风险等级",
+    inputPii: "包含敏感数据",
+    inputExternal: "依赖外部运行时",
+    inputDeterministic: "保持确定性追踪",
+    decisionLabel: "结论:",
+    blogTitle: "短文",
+    blogs: [
+      { title: "设计本质", body: "这不是文档，而是决策操作系统。" },
+      { title: "为什么需要", body: "要在速度与控制之间取得平衡。" },
+      { title: "如何读代码", body: "建议顺序：registry → schema → validate脚本 → service/mcp。" }
     ],
-    whyTitle: "为什么重要",
-    why: [
-      "防止服务间隐藏行为漂移",
-      "明确权限关系：AI提议，人类批准",
-      "借助确定性追踪加速故障响应"
-    ],
-    flowTitle: "4步运行流程",
-    flow: [
-      "1) 智能体提交带证据的变更提议",
-      "2) 治理层校验策略/Schema契约",
-      "3) 根据风险等级判断是否必须人工闸门",
-      "4) 批准后按追踪链路发布"
-    ],
-    demoTitle: "实时演示：决策预览",
-    demoButton: "生成预览",
-    demoNote: "生成简化治理决策预览，让任何人都能理解发布前检查项。",
     contactTitle: "联系",
-    contactText: "合作沟通请通过邮箱联系。",
+    contactText: "欢迎通过邮箱直接联系协作。",
     footer: "最终发布权限由 Human System Architect 持有。"
   }
+};
+
+const scenarioLabel = {
+  ui_copy: "ui_copy",
+  new_mcp: "new_mcp",
+  prod_secret: "prod_secret",
+  policy_change: "policy_change"
 };
 
 function detectDefaultLanguage() {
@@ -154,20 +193,15 @@ function detectDefaultLanguage() {
   const stored = localStorage.getItem("showcase_lang");
   if (stored && supported.includes(stored)) return stored;
 
-  const browserCandidates = [
-    ...(navigator.languages || []),
-    navigator.language || "en"
-  ];
-
-  for (const code of browserCandidates) {
-    const normalized = String(code).slice(0, 2).toLowerCase();
-    if (supported.includes(normalized)) return normalized;
+  const candidates = [...(navigator.languages || []), navigator.language || "en"];
+  for (const code of candidates) {
+    const norm = String(code).slice(0, 2).toLowerCase();
+    if (supported.includes(norm)) return norm;
   }
-
   return "en";
 }
 
-function fillList(id, values, ordered = false) {
+function fillList(id, values) {
   const list = document.getElementById(id);
   if (!list) return;
   list.innerHTML = "";
@@ -176,10 +210,27 @@ function fillList(id, values, ordered = false) {
     li.textContent = item;
     list.appendChild(li);
   });
+}
 
-  if (ordered) {
-    list.setAttribute("role", "list");
-  }
+function fillBlog(lang) {
+  const selected = copy[lang] || copy.en;
+  const list = document.getElementById("blog-list");
+  if (!list) return;
+  list.innerHTML = "";
+
+  selected.blogs.forEach((entry) => {
+    const item = document.createElement("article");
+    item.className = "blog-item";
+
+    const title = document.createElement("h3");
+    title.textContent = entry.title;
+    const body = document.createElement("p");
+    body.textContent = entry.body;
+
+    item.appendChild(title);
+    item.appendChild(body);
+    list.appendChild(item);
+  });
 }
 
 function setText(lang) {
@@ -195,7 +246,8 @@ function setText(lang) {
   fillList("what-list", selected.what);
   fillList("how-list", selected.how);
   fillList("why-list", selected.why);
-  fillList("flow-list", selected.flow, true);
+  fillList("flow-list", selected.flow);
+  fillBlog(lang);
 }
 
 async function sha256(text) {
@@ -204,31 +256,83 @@ async function sha256(text) {
   return [...new Uint8Array(hash)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+function buildDecision(state) {
+  const checks = [];
+  checks.push({ name: "policy_contract", status: "pass" });
+  checks.push({ name: "schema_contract", status: "pass" });
+
+  if (!state.deterministic) {
+    checks.push({ name: "deterministic_trace", status: "fail" });
+  } else {
+    checks.push({ name: "deterministic_trace", status: "pass" });
+  }
+
+  if (state.external) {
+    checks.push({ name: "external_dependency_review", status: "warn" });
+  }
+
+  if (state.pii) {
+    checks.push({ name: "data_sensitivity_gate", status: "warn" });
+  }
+
+  let approvalTier = state.risk;
+  let humanGateRequired = state.risk === "high";
+
+  if (state.pii || state.scenario === "prod_secret" || state.scenario === "policy_change") {
+    approvalTier = "high";
+    humanGateRequired = true;
+  }
+
+  const hasFail = checks.some((c) => c.status === "fail");
+  let decision = "proceed";
+  if (hasFail) decision = "block";
+  else if (humanGateRequired) decision = "await_human_approval";
+
+  return { checks, approvalTier, humanGateRequired, decision };
+}
+
+function summarizeDecision(lang, result) {
+  if (lang === "ko") {
+    if (result.decision === "block") return "차단: 결정성 경로 위반";
+    if (result.decision === "await_human_approval") return "인간 승인 대기: 고위험 변경";
+    return "진행 가능: 자동 승인 범위";
+  }
+  if (result.decision === "block") return "Blocked: deterministic contract failed";
+  if (result.decision === "await_human_approval") return "Waiting for human approval: high-risk path";
+  return "Proceed: within auto-approval boundary";
+}
+
 async function runDemo(lang) {
-  const now = new Date().toISOString();
+  const state = {
+    scenario: document.getElementById("scenario-input").value,
+    risk: document.getElementById("risk-input").value,
+    pii: document.getElementById("pii-input").checked,
+    external: document.getElementById("external-input").checked,
+    deterministic: document.getElementById("deterministic-input").checked
+  };
+
+  const result = buildDecision(state);
   const payload = {
-    version: "v0.1",
-    checked_at_utc: now,
-    context: "public-architecture-explainer",
+    version: "v0.2",
+    checked_at_utc: new Date().toISOString(),
     governance_path: "mandatory_bridge",
-    human_gate_required: true,
-    approval_tier: "high",
-    decision_candidate: "await_human_approval",
-    checks: [
-      { name: "policy_contract", status: "pass" },
-      { name: "schema_contract", status: "pass" },
-      { name: "trace_determinism", status: "pass" }
-    ],
-    owner: "Human System Architect",
-    preview_language: lang,
+    scenario: scenarioLabel[state.scenario] || state.scenario,
+    input: state,
+    approval_tier: result.approvalTier,
+    human_gate_required: result.humanGateRequired,
+    decision_candidate: result.decision,
+    checks: result.checks,
     evidence_refs: []
   };
 
   const digest = await sha256(JSON.stringify(payload));
-  payload.evidence_refs.push({ path: "docs/index.html", sha256: digest });
+  payload.evidence_refs.push({ path: "docs/assets/site.js", sha256: digest });
+
+  const summary = document.getElementById("decision-summary");
+  if (summary) summary.textContent = summarizeDecision(lang, result);
 
   const output = document.getElementById("demo-output");
-  output.textContent = JSON.stringify(payload, null, 2);
+  if (output) output.textContent = JSON.stringify(payload, null, 2);
 }
 
 (function init() {
@@ -255,4 +359,13 @@ async function runDemo(lang) {
       runDemo(lang);
     });
   }
+
+  ["scenario-input", "risk-input", "pii-input", "external-input", "deterministic-input"].forEach((id) => {
+    const node = document.getElementById(id);
+    if (!node) return;
+    node.addEventListener("change", () => {
+      const lang = select ? select.value : selected;
+      runDemo(lang);
+    });
+  });
 })();

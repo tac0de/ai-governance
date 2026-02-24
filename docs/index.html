@@ -60,13 +60,56 @@
         <button id="run-demo" type="button" data-i18n="demoButton"></button>
       </div>
       <p data-i18n="demoNote"></p>
+
+      <div class="sim-grid">
+        <label>
+          <span data-i18n="inputScenario"></span>
+          <select id="scenario-input">
+            <option value="ui_copy">UI Copy Update</option>
+            <option value="new_mcp">New MCP Capability</option>
+            <option value="prod_secret">Production Secret Rotation</option>
+            <option value="policy_change">Policy Matrix Change</option>
+          </select>
+        </label>
+
+        <label>
+          <span data-i18n="inputRisk"></span>
+          <select id="risk-input">
+            <option value="low">low</option>
+            <option value="medium" selected>medium</option>
+            <option value="high">high</option>
+          </select>
+        </label>
+
+        <label class="toggle">
+          <input id="pii-input" type="checkbox">
+          <span data-i18n="inputPii"></span>
+        </label>
+
+        <label class="toggle">
+          <input id="external-input" type="checkbox">
+          <span data-i18n="inputExternal"></span>
+        </label>
+
+        <label class="toggle">
+          <input id="deterministic-input" type="checkbox" checked>
+          <span data-i18n="inputDeterministic"></span>
+        </label>
+      </div>
+
+      <p class="decision-line"><strong data-i18n="decisionLabel"></strong> <span id="decision-summary"></span></p>
       <pre id="demo-output" aria-live="polite"></pre>
+    </section>
+
+    <section class="card">
+      <h2 data-i18n="blogTitle"></h2>
+      <div id="blog-list" class="blog-list"></div>
     </section>
 
     <section class="card contact-card">
       <h2 data-i18n="contactTitle"></h2>
       <p data-i18n="contactText"></p>
-      <p class="email">wonyoungchoiseoul@gmail.com</p>
+      <a class="email" href="mailto:wonyoungchoiseoul@gmail.com">wonyoungchoiseoul@gmail.com</a>
     </section>
   </main>
 
