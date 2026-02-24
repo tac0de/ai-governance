@@ -1,0 +1,13 @@
+{
+  "version": "v0.1",
+  "runtime_owner_service": "thedivineparadox",
+  "runtime_repo_path": "apps/backend/src/mcp_bridge.ts",
+  "invocation_surface": "POST /mcp/invoke",
+  "sdk_package": "@modelcontextprotocol/sdk",
+  "validation_package": "zod",
+  "tool_names": [
+    "safety.classify_llm_error",
+    "safety.select_fallback_policy",
+    "safety.emit_degrade_notice"
+  ]
+}

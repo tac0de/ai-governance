@@ -1,4 +1,4 @@
-# TDP Narrative Safety Fallback MCP
+# Core Safety Fallback MCP
 
 Purpose: normalize LLM failure handling and fallback policy selection.
 

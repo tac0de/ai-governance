@@ -1,0 +1,14 @@
+{
+  "version": "v0.1",
+  "runtime_owner_service": "thedivineparadox",
+  "runtime_repo_path": "apps/backend/src/mcp_bridge.ts",
+  "invocation_surface": "POST /mcp/invoke",
+  "sdk_package": "@modelcontextprotocol/sdk",
+  "validation_package": "zod",
+  "tool_names": [
+    "analytics.aggregate_events",
+    "analytics.compute_kpi_summary",
+    "analytics.detect_anomaly",
+    "analytics.propose_learning_actions"
+  ]
+}

@@ -2,9 +2,9 @@
   "version": "v0.1",
   "mcps": [
     {
-      "id": "tdp-analytics-mcp",
-      "name": "TDP Analytics MCP",
-      "root_path": "mcps/tdp-analytics-mcp",
+      "id": "core-analytics-mcp",
+      "name": "Core Analytics MCP",
+      "root_path": "mcps/core-analytics-mcp",
       "version": "0.1.0",
       "capabilities": [
         "aggregate_events",
@@ -13,12 +13,12 @@
       ],
       "risk_level": "medium",
       "required_approval_tier": "medium",
-      "pinned_ref_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111"
+      "pinned_ref_hash": "sha256:4beef6495e284d7806929eb884202284cd01ffd4f3bfcbe19a2f1e3b047aad27"
     },
     {
-      "id": "tdp-experiment-mcp",
-      "name": "TDP Experiment Orchestrator MCP",
-      "root_path": "mcps/tdp-experiment-mcp",
+      "id": "core-experiment-mcp",
+      "name": "Core Experiment Orchestrator MCP",
+      "root_path": "mcps/core-experiment-mcp",
       "version": "0.1.0",
       "capabilities": [
         "assign_cohort",
@@ -27,12 +27,12 @@
       ],
       "risk_level": "high",
       "required_approval_tier": "high",
-      "pinned_ref_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222"
+      "pinned_ref_hash": "sha256:45c9b0e09bd0025a3e2a9e0151bd097219a83d8a1403ccc850c48205eb8557ad"
     },
     {
-      "id": "tdp-safety-fallback-mcp",
-      "name": "TDP Narrative Safety Fallback MCP",
-      "root_path": "mcps/tdp-safety-fallback-mcp",
+      "id": "core-safety-fallback-mcp",
+      "name": "Core Safety Fallback MCP",
+      "root_path": "mcps/core-safety-fallback-mcp",
       "version": "0.1.0",
       "capabilities": [
         "classify_llm_error",
@@ -41,7 +41,7 @@
       ],
       "risk_level": "medium",
       "required_approval_tier": "medium",
-      "pinned_ref_hash": "sha256:3333333333333333333333333333333333333333333333333333333333333333"
+      "pinned_ref_hash": "sha256:a467f9bf4b7e5c525ac89e39212e7902ab8cdc2dd26723ae70e89164c71405af"
     }
   ]
 }

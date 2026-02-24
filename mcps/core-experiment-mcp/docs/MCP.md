@@ -1,4 +1,4 @@
-# TDP Experiment Orchestrator MCP
+# Core Experiment Orchestrator MCP
 
 Purpose: controlled experiment routing with deterministic assignment and rollback controls.
 

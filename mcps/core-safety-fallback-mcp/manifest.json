@@ -1,0 +1,15 @@
+{
+  "id": "core-safety-fallback-mcp",
+  "version": "0.1.0",
+  "capabilities": [
+    "classify_llm_error",
+    "select_fallback_policy",
+    "emit_degrade_notice"
+  ],
+  "required_approval_tier": "medium",
+  "pinned_ref_hash": "sha256:a467f9bf4b7e5c525ac89e39212e7902ab8cdc2dd26723ae70e89164c71405af",
+  "refs": {
+    "runtime_binding": "mcps/core-safety-fallback-mcp/versions/runtime.binding.v0.1.json",
+    "slo_schema": "schemas/service_slo_contract.schema.json"
+  }
+}

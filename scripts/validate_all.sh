@@ -125,6 +125,15 @@ check_json() {
   return 0
 }
 
+sha256_file() {
+  local target="$1"
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$target" | awk '{print $1}'
+  else
+    shasum -a 256 "$target" | awk '{print $1}'
+  fi
+}
+
 json_ready() {
   local rel_path="$1"
   [[ -f "$ROOT_DIR/$rel_path" ]] && jq -e . "$ROOT_DIR/$rel_path" >/dev/null 2>&1
@@ -181,7 +190,8 @@ for schema_rel in \
   schemas/service_slo_contract.schema.json \
   schemas/mcps_registry.schema.json \
   schemas/mcp_allowlist.schema.json \
-  schemas/mcp_manifest.schema.json
+  schemas/mcp_manifest.schema.json \
+  schemas/mcp_runtime_binding.schema.json
   do
   check_json "$schema_rel"
 done
@@ -455,7 +465,7 @@ fi
 
 # Validate each MCP package contract.
 if json_ready "$MCPS_REG_REL"; then
-  while IFS=$'\t' read -r mcp_id root_path mcp_version required_tier; do
+  while IFS=$'\t' read -r mcp_id root_path mcp_version required_tier registry_pinned_hash; do
     [[ -n "$mcp_id" ]] || continue
 
     manifest_rel="$root_path/manifest.json"
@@ -463,6 +473,22 @@ if json_ready "$MCPS_REG_REL"; then
     check_file "$manifest_rel"
     check_allowed_entries_in_dir "$root_path" "manifest.json" "docs" "versions"
     check_exact_files_in_dir "$root_path/docs" "${MCP_DOCS_FIXED[@]}"
+    runtime_binding_rel="$root_path/versions/runtime.binding.v0.1.json"
+    check_file "$runtime_binding_rel"
+    check_json "$runtime_binding_rel"
+    if check_json "$runtime_binding_rel"; then
+      if ! jq -e '
+        .version=="v0.1" and
+        (.runtime_owner_service|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+        (.runtime_repo_path|type=="string" and length>0) and
+        (.invocation_surface|type=="string" and length>0) and
+        (.sdk_package|type=="string" and length>0) and
+        (.validation_package|type=="string" and length>0) and
+        (.tool_names|type=="array" and length>0 and length==(unique|length) and all(.[]; type=="string" and test("^[a-z0-9][a-z0-9._-]*$")))
+      ' "$ROOT_DIR/$runtime_binding_rel" >/dev/null 2>&1; then
+        fail "$runtime_binding_rel" "schema validation failed (schemas/mcp_runtime_binding.schema.json)"
+      fi
+    fi
 
     if check_json "$manifest_rel"; then
       if ! jq -e '
@@ -488,8 +514,17 @@ if json_ready "$MCPS_REG_REL"; then
         ' "$ROOT_DIR/$manifest_rel" >/dev/null 2>&1; then
         fail "$manifest_rel" "manifest capabilities do not match ${MCPS_REG_REL} for MCP '$mcp_id'"
       fi
+
+      manifest_pinned_hash="$(jq -r '.pinned_ref_hash // ""' "$ROOT_DIR/$manifest_rel")"
+      expected_pinned_hash="sha256:$(sha256_file "$ROOT_DIR/$runtime_binding_rel")"
+      if [[ "$manifest_pinned_hash" != "$expected_pinned_hash" ]]; then
+        fail "$manifest_rel" "manifest pinned_ref_hash must equal runtime binding hash (${expected_pinned_hash})"
+      fi
+      if [[ "$registry_pinned_hash" != "$expected_pinned_hash" ]]; then
+        fail "$MCPS_REG_REL" "registry pinned_ref_hash for MCP '$mcp_id' must equal runtime binding hash (${expected_pinned_hash})"
+      fi
     fi
-  done < <(jq -r '.mcps[] | [.id, .root_path, .version, .required_approval_tier] | @tsv' "$ROOT_DIR/$MCPS_REG_REL")
+  done < <(jq -r '.mcps[] | [.id, .root_path, .version, .required_approval_tier, .pinned_ref_hash] | @tsv' "$ROOT_DIR/$MCPS_REG_REL")
 fi
 
 # Every mcps/* directory must be in central MCP registry.

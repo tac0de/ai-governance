@@ -1,5 +1,5 @@
 {
-  "id": "tdp-analytics-mcp",
+  "id": "core-analytics-mcp",
   "version": "0.1.0",
   "capabilities": [
     "aggregate_events",
@@ -7,9 +7,9 @@
     "detect_anomaly"
   ],
   "required_approval_tier": "medium",
-  "pinned_ref_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "pinned_ref_hash": "sha256:4beef6495e284d7806929eb884202284cd01ffd4f3bfcbe19a2f1e3b047aad27",
   "refs": {
-    "service": "services/thedivineparadox",
+    "runtime_binding": "mcps/core-analytics-mcp/versions/runtime.binding.v0.1.json",
     "schema": "schemas/trace_record.schema.json"
   }
 }

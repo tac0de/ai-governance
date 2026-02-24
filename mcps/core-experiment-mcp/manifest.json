@@ -1,5 +1,5 @@
 {
-  "id": "tdp-experiment-mcp",
+  "id": "core-experiment-mcp",
   "version": "0.1.0",
   "capabilities": [
     "assign_cohort",
@@ -7,9 +7,9 @@
     "kill_switch"
   ],
   "required_approval_tier": "high",
-  "pinned_ref_hash": "sha256:2222222222222222222222222222222222222222222222222222222222222222",
+  "pinned_ref_hash": "sha256:45c9b0e09bd0025a3e2a9e0151bd097219a83d8a1403ccc850c48205eb8557ad",
   "refs": {
-    "service": "services/thedivineparadox",
+    "runtime_binding": "mcps/core-experiment-mcp/versions/runtime.binding.v0.1.json",
     "policy": "policies/approval_tier_policy.v0.1.json"
   }
 }

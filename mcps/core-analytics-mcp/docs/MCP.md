@@ -1,4 +1,4 @@
-# TDP Analytics MCP
+# Core Analytics MCP
 
 Purpose: deterministic analytics contract for event aggregation and KPI summary support.
 
