@@ -19,7 +19,7 @@ body {
     radial-gradient(circle at 8% -8%, #edf3ff 0%, transparent 42%),
     radial-gradient(circle at 100% 0%, #f3f7ff 0%, transparent 38%),
     var(--bg);
-  font-family: "Manrope", "Noto Sans KR", "Noto Sans JP", "Noto Sans SC", sans-serif;
+  font-family: "Manrope", "Noto Sans KR", sans-serif;
 }
 
 .topbar {
@@ -441,6 +441,85 @@ pre.flash {
 .blog-list {
   display: grid;
   gap: 10px;
+}
+
+.game-card {
+  background: linear-gradient(180deg, #fff 0%, #f8fbff 100%);
+}
+
+.game-meta {
+  display: flex;
+  gap: 16px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.game-meta em {
+  font-style: normal;
+  font-weight: 800;
+  color: #174ea6;
+}
+
+.game-question {
+  margin-top: 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fcfdff;
+  padding: 12px;
+}
+
+.game-question p {
+  margin: 0;
+  color: var(--muted);
+}
+
+#game-round {
+  font-size: 0.82rem;
+  color: #35507d;
+}
+
+#game-scenario-title {
+  margin: 8px 0 6px;
+}
+
+#game-scenario-detail {
+  line-height: 1.6;
+}
+
+.game-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.game-choice {
+  background: #fff;
+  color: #1f3f76;
+  border-color: #bfd5fb;
+}
+
+.game-feedback {
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #f8fbff;
+  color: #475569;
+  font-size: 0.86rem;
+}
+
+.game-feedback.correct {
+  border-color: #c3e8d0;
+  background: #eef9f2;
+  color: #137333;
+}
+
+.game-feedback.wrong {
+  border-color: #f3b9b5;
+  background: #fff2f2;
+  color: #b3261e;
 }
 
 .blog-item {

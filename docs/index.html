@@ -161,6 +161,29 @@
       <pre id="demo-output" aria-live="polite"></pre>
     </section>
 
+    <section class="card game-card">
+      <div class="demo-head">
+        <h2 data-i18n="gameTitle"></h2>
+        <button id="game-reset" type="button" data-i18n="gameReset"></button>
+      </div>
+      <p data-i18n="gameNote"></p>
+      <div class="game-meta">
+        <span><strong data-i18n="gameScoreLabel"></strong> <em id="game-score">0</em></span>
+        <span><strong data-i18n="gameStreakLabel"></strong> <em id="game-streak">0</em></span>
+      </div>
+      <article class="game-question">
+        <p id="game-round"></p>
+        <h3 id="game-scenario-title"></h3>
+        <p id="game-scenario-detail"></p>
+      </article>
+      <div class="game-actions">
+        <button type="button" class="game-choice" data-answer="proceed" data-i18n="gameChoiceProceed"></button>
+        <button type="button" class="game-choice" data-answer="await_human_approval" data-i18n="gameChoiceHuman"></button>
+        <button type="button" class="game-choice" data-answer="block" data-i18n="gameChoiceBlock"></button>
+      </div>
+      <p id="game-feedback" class="game-feedback"></p>
+    </section>
+
     <section class="card">
       <h2 data-i18n="blogTitle"></h2>
       <div id="blog-list" class="blog-list"></div>

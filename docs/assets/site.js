@@ -43,11 +43,24 @@ const copy = {
     ],
     flowTitle: "Code Flow Overview",
     flow: [
-      "1) Input arrives as intent + evidence refs",
-      "2) Schema and policy contracts are validated by scripts",
-      "3) Registry/allowlist gates evaluate service and MCP scope",
-      "4) Risk tier outputs: auto / policy+owner / mandatory human gate"
+      "Input arrives as intent + evidence refs",
+      "Schema and policy contracts are validated by scripts",
+      "Registry/allowlist gates evaluate service and MCP scope",
+      "Risk tier outputs: auto / policy+owner / mandatory human gate"
     ],
+    gameTitle: "Governance Gate Game",
+    gameNote: "Choose the right gate for each change card. Score rises only when your decision matches governance policy.",
+    gameReset: "Start Over",
+    gameScoreLabel: "Score",
+    gameStreakLabel: "Streak",
+    gameRoundLabel: "Round",
+    gameChoiceProceed: "PROCEED",
+    gameChoiceHuman: "HUMAN GATE",
+    gameChoiceBlock: "BLOCK",
+    gameFeedbackIdle: "Pick a gate to begin.",
+    gameFeedbackCorrect: "Correct. Policy verdict matched.",
+    gameFeedbackWrong: "Missed. Expected gate:",
+    gameExpectedLabel: "Expected",
     demoTitle: "Interactive Governance Simulator",
     demoButton: "Refresh",
     demoNote: "Change inputs to experiment. Press Refresh to reset the run state and start the simulation loop from baseline.",
@@ -147,11 +160,24 @@ const copy = {
     ],
     flowTitle: "코드 플로우 개요",
     flow: [
-      "1) intent + evidence refs 입력",
-      "2) 스키마/정책 계약을 스크립트로 검증",
-      "3) 레지스트리/allowlist 게이트로 범위 판정",
-      "4) 리스크 계층 결과 출력: 자동 / 정책+오너 / 인간 필수"
+      "intent + evidence refs 입력",
+      "스키마/정책 계약을 스크립트로 검증",
+      "레지스트리/allowlist 게이트로 범위 판정",
+      "리스크 계층 결과 출력: 자동 / 정책+오너 / 인간 필수"
     ],
+    gameTitle: "거버넌스 게이트 게임",
+    gameNote: "변경 카드마다 맞는 게이트를 고르세요. 정책 판정과 일치할 때만 점수가 오릅니다.",
+    gameReset: "처음부터",
+    gameScoreLabel: "점수",
+    gameStreakLabel: "연속 정답",
+    gameRoundLabel: "라운드",
+    gameChoiceProceed: "진행",
+    gameChoiceHuman: "인간 승인",
+    gameChoiceBlock: "차단",
+    gameFeedbackIdle: "게이트를 선택해 시작하세요.",
+    gameFeedbackCorrect: "정답입니다. 정책 판정과 일치했습니다.",
+    gameFeedbackWrong: "틀렸습니다. 기대 게이트:",
+    gameExpectedLabel: "기대값",
     demoTitle: "거버넌스 시뮬레이터",
     demoButton: "새로고침",
     demoNote: "입력을 바꿔 실험하고, 새로고침 버튼으로 런 상태를 초기화해 기준점부터 다시 시작할 수 있습니다.",
@@ -242,6 +268,37 @@ const presets = {
 
 let evaluationCount = 0;
 let previousSnapshot = null;
+const gameState = {
+  round: 0,
+  score: 0,
+  streak: 0
+};
+
+function gateLabel(lang, decision) {
+  const selected = copy[lang] || copy.en;
+  if (decision === "block") return selected.gameChoiceBlock;
+  if (decision === "await_human_approval") return selected.gameChoiceHuman;
+  return selected.gameChoiceProceed;
+}
+
+function gameDeck(lang) {
+  if (lang === "ko") {
+    return [
+      { title: "UI 문구 수정", detail: "민감정보 없음, 외부 의존 없음, 결정적 경로 유지", answer: "proceed" },
+      { title: "신규 MCP 추가", detail: "외부 런타임 의존, 스키마는 유효, 결정적 경로 유지", answer: "await_human_approval" },
+      { title: "정책 행렬 수정", detail: "고위험 변경, 인간 릴리스 권한 대상", answer: "await_human_approval" },
+      { title: "운영 시크릿 변경", detail: "prod secret 경로 변경", answer: "await_human_approval" },
+      { title: "비결정성 로직 포함", detail: "결정적 트레이스 경로가 깨짐", answer: "block" }
+    ];
+  }
+  return [
+    { title: "UI Copy Update", detail: "No sensitive data, no external dependency, deterministic path maintained", answer: "proceed" },
+    { title: "New MCP Capability", detail: "External runtime dependency, schema valid, deterministic path maintained", answer: "await_human_approval" },
+    { title: "Policy Matrix Change", detail: "High-risk governance path with human release authority", answer: "await_human_approval" },
+    { title: "Production Secret Rotation", detail: "prod secret path changed", answer: "await_human_approval" },
+    { title: "Non-deterministic Logic Added", detail: "Deterministic trace path is broken", answer: "block" }
+  ];
+}
 
 function detectDefaultLanguage() {
   const supported = ["en", "ko"];
@@ -306,6 +363,7 @@ function setText(lang) {
   fillList("hierarchy-sub-list", selected.hierarchySub);
   fillList("hierarchy-flow-list", selected.hierarchyFlow);
   fillBlog(lang);
+  renderGame(lang);
 }
 
 async function sha256(text) {
@@ -530,6 +588,64 @@ function resetRunState() {
   if (at) at.textContent = "-";
 }
 
+function renderGame(lang) {
+  const selected = copy[lang] || copy.en;
+  const deck = gameDeck(lang);
+  const current = deck[gameState.round % deck.length];
+
+  const round = document.getElementById("game-round");
+  const title = document.getElementById("game-scenario-title");
+  const detail = document.getElementById("game-scenario-detail");
+  const score = document.getElementById("game-score");
+  const streak = document.getElementById("game-streak");
+  const feedback = document.getElementById("game-feedback");
+
+  if (round) round.textContent = `${selected.gameRoundLabel} ${gameState.round + 1}/${deck.length}`;
+  if (title) title.textContent = current.title;
+  if (detail) detail.textContent = current.detail;
+  if (score) score.textContent = String(gameState.score);
+  if (streak) streak.textContent = String(gameState.streak);
+  if (feedback && !feedback.textContent) feedback.textContent = selected.gameFeedbackIdle;
+}
+
+function resetGame(lang) {
+  gameState.round = 0;
+  gameState.score = 0;
+  gameState.streak = 0;
+  const feedback = document.getElementById("game-feedback");
+  if (feedback) {
+    feedback.className = "game-feedback";
+    feedback.textContent = "";
+  }
+  renderGame(lang);
+}
+
+function answerGame(lang, answer) {
+  const selected = copy[lang] || copy.en;
+  const deck = gameDeck(lang);
+  const current = deck[gameState.round % deck.length];
+  const feedback = document.getElementById("game-feedback");
+
+  const correct = current.answer === answer;
+  if (correct) {
+    gameState.score += 1;
+    gameState.streak += 1;
+    if (feedback) {
+      feedback.className = "game-feedback correct";
+      feedback.textContent = selected.gameFeedbackCorrect;
+    }
+  } else {
+    gameState.streak = 0;
+    if (feedback) {
+      feedback.className = "game-feedback wrong";
+      feedback.textContent = `${selected.gameFeedbackWrong} ${gateLabel(lang, current.answer)}`;
+    }
+  }
+
+  gameState.round = (gameState.round + 1) % deck.length;
+  renderGame(lang);
+}
+
 function presetNameFromState(state) {
   for (const [name, preset] of Object.entries(presets)) {
     if (
@@ -588,6 +704,7 @@ async function runDemo(lang) {
   if (select) select.value = selected;
 
   setText(selected);
+  resetGame(selected);
   applyPreset("balanced");
   setPresetActive("balanced");
   runDemo(selected);
@@ -600,6 +717,21 @@ async function runDemo(lang) {
       runDemo(lang);
     });
   }
+
+  const gameReset = document.getElementById("game-reset");
+  if (gameReset) {
+    gameReset.addEventListener("click", () => {
+      const lang = select ? select.value : selected;
+      resetGame(lang);
+    });
+  }
+
+  document.querySelectorAll(".game-choice").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const lang = select ? select.value : selected;
+      answerGame(lang, btn.dataset.answer);
+    });
+  });
 
   const runButton = document.getElementById("run-demo");
   if (runButton) {
