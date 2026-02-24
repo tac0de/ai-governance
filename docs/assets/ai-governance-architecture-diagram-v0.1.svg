@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700" viewBox="0 0 1200 700" role="img" aria-label="AI Governance Architecture Diagram v0.1">
+  <defs>
+    <style>
+      .bg{fill:#f7f9fc}
+      .card{fill:#ffffff;stroke:#d9e1ec;stroke-width:2}
+      .title{font:700 30px 'Segoe UI',sans-serif;fill:#111827}
+      .h{font:700 20px 'Segoe UI',sans-serif;fill:#0f172a}
+      .t{font:500 16px 'Segoe UI',sans-serif;fill:#334155}
+      .arrow{stroke:#2563eb;stroke-width:3;fill:none;marker-end:url(#m)}
+    </style>
+    <marker id="m" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="1200" height="700"/>
+  <text class="title" x="50" y="60">AI Governance Architecture v0.1</text>
+
+  <rect class="card" x="60" y="120" width="320" height="210" rx="14"/>
+  <text class="h" x="85" y="160">1) Input Layer</text>
+  <text class="t" x="85" y="195">- Agent intent</text>
+  <text class="t" x="85" y="222">- Evidence references</text>
+  <text class="t" x="85" y="249">- Proposed service/MCP scope</text>
+
+  <rect class="card" x="440" y="120" width="320" height="280" rx="14"/>
+  <text class="h" x="465" y="160">2) Governance Core</text>
+  <text class="t" x="465" y="195">- Registry contract gate</text>
+  <text class="t" x="465" y="222">- Schema validation gate</text>
+  <text class="t" x="465" y="249">- Policy/risk tier gate</text>
+  <text class="t" x="465" y="276">- Deterministic trace writer</text>
+  <text class="t" x="465" y="303">- Hash-linked evidence</text>
+
+  <rect class="card" x="820" y="120" width="320" height="240" rx="14"/>
+  <text class="h" x="845" y="160">3) Decision Layer</text>
+  <text class="t" x="845" y="195">- Auto proceed</text>
+  <text class="t" x="845" y="222">- Policy + owner gate</text>
+  <text class="t" x="845" y="249">- Mandatory human approval</text>
+
+  <rect class="card" x="440" y="450" width="700" height="170" rx="14"/>
+  <text class="h" x="465" y="490">Outcome</text>
+  <text class="t" x="465" y="525">Same input + same evidence => same verdict</text>
+  <text class="t" x="465" y="552">High-risk changes always preserve human release authority</text>
+  <text class="t" x="465" y="579">Architecture stays portable across agent/vendor replacement</text>
+
+  <path class="arrow" d="M380 225 C410 225,420 225,440 225"/>
+  <path class="arrow" d="M760 225 C790 225,800 225,820 225"/>
+  <path class="arrow" d="M980 360 C980 410,820 430,760 450"/>
+</svg>

@@ -3,6 +3,25 @@ const copy = {
     eyebrow: "Governance Architecture",
     title: "One Control Layer for Multi-Agent AI Systems",
     subtitle: "This explains your architecture in plain language: agents can execute, but governance defines boundaries, and humans keep final authority.",
+    hierarchyTitle: "Architecture In 3 Layers",
+    hierarchyCoreTitle: "1) Core Concept",
+    hierarchyCore: [
+      "Single governance core for all services",
+      "Deterministic verdict path",
+      "Human override authority is explicit"
+    ],
+    hierarchySubTitle: "2) Sub Components",
+    hierarchySub: [
+      "Registry: allowed service/MCP topology",
+      "Schema: contract validity and structure",
+      "Policy: risk tiers and approval modes"
+    ],
+    hierarchyFlowTitle: "3) Real Application Flow",
+    hierarchyFlow: [
+      "Agent proposes with evidence refs",
+      "Governance validates policy + schema + scope",
+      "Output is auto proceed or human-gated release"
+    ],
     languageLabel: "Language",
     whatTitle: "What It Is",
     what: [
@@ -70,12 +89,44 @@ const copy = {
     ],
     contactTitle: "Contact",
     contactText: "If you want to collaborate on this governance architecture, email directly.",
+    caseTitle: "One Practical Example",
+    caseSummary: "In one production path, governance gates prevented a secret/config mismatch from shipping silently. The issue was detected at validation and deployment checkpoints before user-facing impact.",
+    caseMetric1Label: "Detected At",
+    caseMetric1Value: "Pre-release Gate",
+    caseMetric2Label: "Potential Impact",
+    caseMetric2Value: "Cross-env drift",
+    caseMetric3Label: "Outcome",
+    caseMetric3Value: "Blocked before exposure",
+    ctaTitle: "Next Actions",
+    ctaText: "If this architecture is relevant to your team, take one concrete next step.",
+    ctaContact: "Contact",
+    ctaWhitepaper: "Download Whitepaper",
+    ctaDiagram: "Download Diagram",
     footer: "Human System Architect remains final release authority."
   },
   ko: {
     eyebrow: "거버넌스 아키텍처",
     title: "멀티 에이전트 AI를 위한 단일 통제 계층",
     subtitle: "에이전트는 실행할 수 있지만, 거버넌스가 경계를 정하고 최종 권한은 인간이 유지한다는 구조를 쉬운 언어로 설명합니다.",
+    hierarchyTitle: "3단 구조로 보는 아키텍처",
+    hierarchyCoreTitle: "1) 핵심 개념",
+    hierarchyCore: [
+      "모든 서비스를 관통하는 단일 거버넌스 코어",
+      "결정적 판정 경로(같은 증거=같은 결과)",
+      "인간 오버라이드 권한을 명시적으로 유지"
+    ],
+    hierarchySubTitle: "2) 하위 구성요소",
+    hierarchySub: [
+      "Registry: 허용 서비스/MCP 토폴로지",
+      "Schema: 계약 구조와 유효성",
+      "Policy: 리스크 등급과 승인 방식"
+    ],
+    hierarchyFlowTitle: "3) 실제 적용 흐름",
+    hierarchyFlow: [
+      "에이전트가 증거 참조와 함께 변경 제안",
+      "거버넌스가 정책+스키마+범위를 검증",
+      "자동 진행 또는 인간 승인 대기 판정 출력"
+    ],
     languageLabel: "언어",
     whatTitle: "무엇인가",
     what: [
@@ -143,12 +194,32 @@ const copy = {
     ],
     contactTitle: "연락",
     contactText: "이 거버넌스 아키텍처 협업은 이메일로 직접 연락주세요.",
+    caseTitle: "실전 사례 1개",
+    caseSummary: "실제 운영 경로에서 시크릿/환경 불일치가 발생했을 때, 거버넌스 게이트가 배포 전 단계에서 이를 감지해 사용자 영향 전에 차단했습니다.",
+    caseMetric1Label: "감지 시점",
+    caseMetric1Value: "배포 전 게이트",
+    caseMetric2Label: "잠재 리스크",
+    caseMetric2Value: "환경 간 설정 드리프트",
+    caseMetric3Label: "결과",
+    caseMetric3Value: "노출 전 차단",
+    ctaTitle: "다음 액션",
+    ctaText: "이 구조가 팀에 필요하다면, 아래에서 바로 다음 단계를 선택하세요.",
+    ctaContact: "문의하기",
+    ctaWhitepaper: "화이트페이퍼 다운로드",
+    ctaDiagram: "아키텍처 다이어그램 다운로드",
     footer: "최종 릴리스 권한은 Human System Architect에게 있습니다."
   },
   ja: {
     eyebrow: "ガバナンスアーキテクチャ",
     title: "マルチエージェントAIの単一統制レイヤー",
     subtitle: "エージェントは実行できても、境界はガバナンスが定義し、最終権限は人間が持つという設計を平易に説明します。",
+    hierarchyTitle: "Architecture In 3 Layers",
+    hierarchyCoreTitle: "1) Core Concept",
+    hierarchyCore: ["Single governance core", "Deterministic verdict path", "Human override authority"],
+    hierarchySubTitle: "2) Sub Components",
+    hierarchySub: ["Registry", "Schema", "Policy tiers"],
+    hierarchyFlowTitle: "3) Real Application Flow",
+    hierarchyFlow: ["Proposal", "Validation", "Approve/Human Gate"],
     languageLabel: "言語",
     whatTitle: "これは何か",
     what: ["中央ガバナンスコア", "決定論的検証パス", "高リスク変更の人間ゲート"],
@@ -190,12 +261,32 @@ const copy = {
     ],
     contactTitle: "連絡",
     contactText: "協業はメールでご連絡ください。",
+    caseTitle: "One Practical Example",
+    caseSummary: "A secret/config mismatch was blocked before release by governance gates.",
+    caseMetric1Label: "Detected At",
+    caseMetric1Value: "Pre-release Gate",
+    caseMetric2Label: "Potential Impact",
+    caseMetric2Value: "Cross-env drift",
+    caseMetric3Label: "Outcome",
+    caseMetric3Value: "Blocked before exposure",
+    ctaTitle: "Next Actions",
+    ctaText: "Take a concrete next step.",
+    ctaContact: "Contact",
+    ctaWhitepaper: "Download Whitepaper",
+    ctaDiagram: "Download Diagram",
     footer: "最終リリース権限はHuman System Architectにあります。"
   },
   zh: {
     eyebrow: "治理架构",
     title: "多智能体AI的统一控制层",
     subtitle: "本页用通俗语言说明：智能体可以执行，但边界由治理定义，最终权力在人工。",
+    hierarchyTitle: "Architecture In 3 Layers",
+    hierarchyCoreTitle: "1) Core Concept",
+    hierarchyCore: ["Single governance core", "Deterministic verdict path", "Human override authority"],
+    hierarchySubTitle: "2) Sub Components",
+    hierarchySub: ["Registry", "Schema", "Policy tiers"],
+    hierarchyFlowTitle: "3) Real Application Flow",
+    hierarchyFlow: ["Proposal", "Validation", "Approve/Human Gate"],
     languageLabel: "语言",
     whatTitle: "它是什么",
     what: ["中央治理核心", "确定性验证路径", "高风险人工闸门"],
@@ -237,6 +328,19 @@ const copy = {
     ],
     contactTitle: "联系",
     contactText: "欢迎通过邮箱直接联系协作。",
+    caseTitle: "One Practical Example",
+    caseSummary: "A secret/config mismatch was blocked before release by governance gates.",
+    caseMetric1Label: "Detected At",
+    caseMetric1Value: "Pre-release Gate",
+    caseMetric2Label: "Potential Impact",
+    caseMetric2Value: "Cross-env drift",
+    caseMetric3Label: "Outcome",
+    caseMetric3Value: "Blocked before exposure",
+    ctaTitle: "Next Actions",
+    ctaText: "Take a concrete next step.",
+    ctaContact: "Contact",
+    ctaWhitepaper: "Download Whitepaper",
+    ctaDiagram: "Download Diagram",
     footer: "最终发布权限由 Human System Architect 持有。"
   }
 };
@@ -334,6 +438,9 @@ function setText(lang) {
   fillList("how-list", selected.how);
   fillList("why-list", selected.why);
   fillList("flow-list", selected.flow);
+  fillList("hierarchy-core-list", selected.hierarchyCore);
+  fillList("hierarchy-sub-list", selected.hierarchySub);
+  fillList("hierarchy-flow-list", selected.hierarchyFlow);
   fillBlog(lang);
 }
 

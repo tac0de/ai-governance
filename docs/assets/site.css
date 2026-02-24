@@ -129,6 +129,11 @@ h2 {
   font-size: 1.14rem;
 }
 
+h3 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
 ul,
 ol {
   margin: 0;
@@ -153,6 +158,19 @@ ol {
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 10px 12px;
+}
+
+.hierarchy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.hierarchy-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  background: #fcfdff;
 }
 
 .demo-card {
@@ -443,6 +461,66 @@ pre.flash {
   line-height: 1.65;
 }
 
+.case-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.case-metrics {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.case-metrics article {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #f9fbff;
+  padding: 10px;
+}
+
+.case-metrics span {
+  display: block;
+  color: #5f6368;
+  font-size: 0.78rem;
+}
+
+.case-metrics strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 1.05rem;
+  color: #174ea6;
+}
+
+.cta-card p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.cta-actions {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.cta-btn {
+  display: inline-block;
+  border: 1px solid #c7dafc;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: var(--accent-soft);
+  color: #174ea6;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.cta-btn:hover {
+  text-decoration: underline;
+}
+
 .contact-card {
   background: linear-gradient(180deg, #fff 0%, #f9fbff 100%);
 }
@@ -472,7 +550,9 @@ footer {
 @media (max-width: 960px) {
   .grid-3,
   .sim-grid,
-  .cockpit-grid {
+  .cockpit-grid,
+  .hierarchy-grid,
+  .case-metrics {
     grid-template-columns: 1fr;
   }
 }
