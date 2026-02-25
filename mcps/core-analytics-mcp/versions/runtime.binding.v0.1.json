@@ -1,8 +1,8 @@
 {
   "version": "v0.1",
   "runtime_owner_service": "thedivineparadox",
-  "runtime_repo_path": "apps/backend/src/mcp_bridge.ts",
-  "invocation_surface": "POST /mcp/invoke",
+  "runtime_repo_path": "apps/mcp-runtime/src/runtime.ts",
+  "invocation_surface": "POST /invoke (local HTTP sidecar)",
   "sdk_package": "@modelcontextprotocol/sdk",
   "validation_package": "zod",
   "tool_names": [

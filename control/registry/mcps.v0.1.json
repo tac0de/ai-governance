@@ -9,11 +9,12 @@
       "capabilities": [
         "aggregate_events",
         "compute_kpi_summary",
-        "detect_anomaly"
+        "detect_anomaly",
+        "propose_learning_actions"
       ],
       "risk_level": "medium",
       "required_approval_tier": "medium",
-      "pinned_ref_hash": "sha256:4beef6495e284d7806929eb884202284cd01ffd4f3bfcbe19a2f1e3b047aad27"
+      "pinned_ref_hash": "sha256:dfeaeefde8de509bfa68f4fc7be536c1aa5cc7be719fda712e565010da968425"
     },
     {
       "id": "core-experiment-mcp",

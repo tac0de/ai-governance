@@ -6,7 +6,8 @@
       "capabilities": [
         "aggregate_events",
         "compute_kpi_summary",
-        "detect_anomaly"
+        "detect_anomaly",
+        "propose_learning_actions"
       ]
     },
     {

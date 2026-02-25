@@ -6,6 +6,7 @@ Scope:
 - Aggregate UX events for fixed UTC windows.
 - Compute governance-aligned KPI summaries.
 - Detect anomalies using policy-bounded thresholds.
+- Propose deterministic learning actions from KPI deltas.
 
 Out of scope:
 - Runtime database ownership.
