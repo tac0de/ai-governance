@@ -1,0 +1,42 @@
+{
+  "version": "v0.1",
+  "request_id": "mcp.req.council_under_siege.safety_turn_guard.20260225",
+  "service_id": "council-under-siege",
+  "requested_at": "2026-02-25T00:00:00Z",
+  "status": "requested",
+  "request_type": "capability_expansion",
+  "approval_tier": "medium",
+  "risk_tier": "medium",
+  "human_gate_required": false,
+  "title": "Request safety capability expansion for turn action policy guard",
+  "owner": "platform-ops-owner",
+  "objective": "Add deterministic safety guard checks for selected turn actions before final consensus output.",
+  "required_capabilities": [
+    "validate_turn_action_policy",
+    "emit_turn_guardrail_notice"
+  ],
+  "constraints": [
+    "No runtime implementation in governance core repository.",
+    "If reward/account/payment/sanction-policy boundary impact is detected, escalate to high tier and human_gate_required=true.",
+    "Registry/manifest/allowlist sync occurs only after approved status."
+  ],
+  "target_core_mcp_id": "core-safety-fallback-mcp",
+  "io_contract": {
+    "invocation_surface": "POST /invoke (governed sidecar)",
+    "runtime_repo_path": "external service runtime adapter"
+  },
+  "evidence_refs": [
+    {
+      "path": "services/council-under-siege/policy.profile.json",
+      "sha256": "d090df8ccadcd86a4511404abcf69344ddcb804134871c257a5989e09a6120ed"
+    },
+    {
+      "path": "services/council-under-siege/mcp.allowlist.json",
+      "sha256": "43f75d42725ec54068998eb7a329e0fb225c4a680606cfc3b05c8e2762d20c9c"
+    },
+    {
+      "path": "mcps/core-safety-fallback-mcp/manifest.json",
+      "sha256": "37eca750fb26d8ca8207eedc767fd917f46ddc1536f0c1be90673169cf6dbc7e"
+    }
+  ]
+}

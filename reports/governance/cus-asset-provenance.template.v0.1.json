@@ -1,0 +1,21 @@
+{
+  "asset_id": "cus.player.base.v1",
+  "category": "player",
+  "generator_tool": "local-image-lab",
+  "prompt": "pixel art council guardian, top-down, 16-bit, transparent background",
+  "seed": 101,
+  "model": "sdxl",
+  "steps": 4,
+  "generated_at": "2026-02-25T00:00:00Z",
+  "output_paths": [
+    "/Users/wonyoung_choi/local-image-lab/outputs/cus-v1/player/base/101/frame-01.png"
+  ],
+  "file_sha256": [
+    "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+  ],
+  "policy_review": {
+    "ip_risk": "low",
+    "safety_risk": "low",
+    "age_rating_fit": "pass"
+  }
+}

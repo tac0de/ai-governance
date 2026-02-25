@@ -1,0 +1,337 @@
+{
+  "version": "v0.1",
+  "generated_at": "2026-02-25T00:00:00Z",
+  "asset_count": 15,
+  "assets": [
+    {
+      "asset_id": "cus.player.base.v1",
+      "category": "player",
+      "generator_tool": "local-image-lab",
+      "prompt": "pixel art player base for Council Under Siege, deterministic curated candidate",
+      "seed": 101,
+      "model": "sd",
+      "steps": 2,
+      "generated_at": "2026-02-25T00:00:00Z",
+      "output_paths": [
+        "/Users/wonyoung_choi/local-image-lab/outputs/cus-v1/player/base/101/frame-01.png"
+      ],
+      "file_sha256": [
+        "311f22c239790c68f234789e06d13669433f980cc517a3e9b818a68c48c8e460"
+      ],
+      "source_image": "/Users/wonyoung_choi/local-image-lab/outputs/divine-frame-1.png",
+      "policy_review": {
+        "ip_risk": "medium",
+        "safety_risk": "low",
+        "age_rating_fit": "pass"
+      }
+    },
+    {
+      "asset_id": "cus.player.elite.v1",
+      "category": "player",
+      "generator_tool": "local-image-lab",
+      "prompt": "pixel art player elite for Council Under Siege, deterministic curated candidate",
+      "seed": 102,
+      "model": "sd",
+      "steps": 2,
+      "generated_at": "2026-02-25T00:00:00Z",
+      "output_paths": [
+        "/Users/wonyoung_choi/local-image-lab/outputs/cus-v1/player/elite/102/frame-01.png"
+      ],
+      "file_sha256": [
+        "e0cf785e9e644d9338f704d41823cdf78ebb80d660d4d7af5d2bb36d669e2a37"
+      ],
+      "source_image": "/Users/wonyoung_choi/local-image-lab/outputs/divine-frame-2.png",
+      "policy_review": {
+        "ip_risk": "medium",
+        "safety_risk": "low",
+        "age_rating_fit": "pass"
+      }
+    },
+    {
+      "asset_id": "cus.player.seasonal.v1",
+      "category": "player",
+      "generator_tool": "local-image-lab",
+      "prompt": "pixel art player seasonal for Council Under Siege, deterministic curated candidate",
+      "seed": 103,
+      "model": "sd",
+      "steps": 2,
+      "generated_at": "2026-02-25T00:00:00Z",
+      "output_paths": [
+        "/Users/wonyoung_choi/local-image-lab/outputs/cus-v1/player/seasonal/103/frame-01.png"
+      ],
+      "file_sha256": [
+        "b2f28d1ad7d039ec6e199c380865d1054673b29bf5cd17cf941c521a46f1df18"
+      ],
+      "source_image": "/Users/wonyoung_choi/local-image-lab/outputs/divine-frame-3.png",
+      "policy_review": {
+        "ip_risk": "medium",
+        "safety_risk": "low",
+        "age_rating_fit": "pass"
+      }
+    },
+    {
+      "asset_id": "cus.enemy.chaser.v1",
+      "category": "enemy",
+      "generator_tool": "local-image-lab",
+      "prompt": "pixel art enemy chaser for Council Under Siege, deterministic curated candidate",
+      "seed": 201,
+      "model": "sd",
+      "steps": 2,
+      "generated_at": "2026-02-25T00:00:00Z",
+      "output_paths": [
+        "/Users/wonyoung_choi/local-image-lab/outputs/cus-v1/enemy/chaser/201/frame-01.png"
+      ],
+      "file_sha256": [
+        "41debd48e99b5c897e6f7bd2f7d77ef043cb57a74ee96139606063a9937fb218"
+      ],
+      "source_image": "/Users/wonyoung_choi/local-image-lab/outputs/divine-sprite-sheet.png",
+      "policy_review": {
+        "ip_risk": "medium",
+        "safety_risk": "low",
+        "age_rating_fit": "pass"
+      }
+    },
+    {
+      "asset_id": "cus.enemy.brute.v1",
+      "category": "enemy",
+      "generator_tool": "local-image-lab",
+      "prompt": "pixel art enemy brute for Council Under Siege, deterministic curated candidate",
+      "seed": 202,
+      "model": "sd",
+      "steps": 2,
+      "generated_at": "2026-02-25T00:00:00Z",
+      "output_paths": [
+        "/Users/wonyoung_choi/local-image-lab/outputs/cus-v1/enemy/brute/202/frame-01.png"
+      ],
+      "file_sha256": [
+        "f75327365542b46974e94b58f7e4ed8e61a37e4776490b7cedf0f74179947971"
+      ],
+      "source_image": "/Users/wonyoung_choi/local-image-lab/outputs/smoke-sdxl-q.png",
+      "policy_review": {
+        "ip_risk": "medium",
+        "safety_risk": "low",
+        "age_rating_fit": "pass"
+      }
+    },
+    {
+      "asset_id": "cus.enemy.shooter.v1",
+      "category": "enemy",
+      "generator_tool": "local-image-lab",
+      "prompt": "pixel art enemy shooter for Council Under Siege, deterministic curated candidate",
+      "seed": 203,
+      "model": "sd",
+      "steps": 2,
+      "generated_at": "2026-02-25T00:00:00Z",
+      "output_paths": [
+        "/Users/wonyoung_choi/local-image-lab/outputs/cus-v1/enemy/shooter/203/frame-01.png"
+      ],
+      "file_sha256": [
+        "3b87d87d8b12ac2d2c343234d127a6530c6b96152eaf8d8198d21cc3f97a3fa2"
+      ],
+      "source_image": "/Users/wonyoung_choi/local-image-lab/outputs/tdp-divine-frame-1.png",
+      "policy_review": {
+        "ip_risk": "medium",
+        "safety_risk": "low",
+        "age_rating_fit": "pass"
+      }
+    },
+    {
+      "asset_id": "cus.fx.governance-pulse.v1",
+      "category": "fx",
+      "generator_tool": "local-image-lab",
+      "prompt": "pixel art fx governance-pulse for Council Under Siege, deterministic curated candidate",
+      "seed": 301,
+      "model": "sd",
+      "steps": 2,
+      "generated_at": "2026-02-25T00:00:00Z",
+      "output_paths": [
+        "/Users/wonyoung_choi/local-image-lab/outputs/cus-v1/fx/governance-pulse/301/frame-01.png"
+      ],
+      "file_sha256": [
+        "551530593bba9fceec74850287d22d60ab18388a5102793e6c351e284f5a0386"
+      ],
+      "source_image": "/Users/wonyoung_choi/local-image-lab/outputs/tdp-divine-frame-2.png",
+      "policy_review": {
+        "ip_risk": "medium",
+        "safety_risk": "low",
+        "age_rating_fit": "pass"
+      }
+    },
+    {
+      "asset_id": "cus.fx.hit-flash.v1",
+      "category": "fx",
+      "generator_tool": "local-image-lab",
+      "prompt": "pixel art fx hit-flash for Council Under Siege, deterministic curated candidate",
+      "seed": 302,
+      "model": "sd",
+      "steps": 2,
+      "generated_at": "2026-02-25T00:00:00Z",
+      "output_paths": [
+        "/Users/wonyoung_choi/local-image-lab/outputs/cus-v1/fx/hit-flash/302/frame-01.png"
+      ],
+      "file_sha256": [
+        "3b7a875d5436138b73b98b5117c6a9a8771b565dbe36886502a35c294ce18680"
+      ],
+      "source_image": "/Users/wonyoung_choi/local-image-lab/outputs/tdp-divine-frame-3.png",
+      "policy_review": {
+        "ip_risk": "medium",
+        "safety_risk": "low",
+        "age_rating_fit": "pass"
+      }
+    },
+    {
+      "asset_id": "cus.fx.pickup-glow.v1",
+      "category": "fx",
+      "generator_tool": "local-image-lab",
+      "prompt": "pixel art fx pickup-glow for Council Under Siege, deterministic curated candidate",
+      "seed": 303,
+      "model": "sd",
+      "steps": 2,
+      "generated_at": "2026-02-25T00:00:00Z",
+      "output_paths": [
+        "/Users/wonyoung_choi/local-image-lab/outputs/cus-v1/fx/pickup-glow/303/frame-01.png"
+      ],
+      "file_sha256": [
+        "311f22c239790c68f234789e06d13669433f980cc517a3e9b818a68c48c8e460"
+      ],
+      "source_image": "/Users/wonyoung_choi/local-image-lab/outputs/divine-frame-1.png",
+      "policy_review": {
+        "ip_risk": "medium",
+        "safety_risk": "low",
+        "age_rating_fit": "pass"
+      }
+    },
+    {
+      "asset_id": "cus.ui.hp.v1",
+      "category": "ui",
+      "generator_tool": "local-image-lab",
+      "prompt": "pixel art ui hp for Council Under Siege, deterministic curated candidate",
+      "seed": 401,
+      "model": "sd",
+      "steps": 2,
+      "generated_at": "2026-02-25T00:00:00Z",
+      "output_paths": [
+        "/Users/wonyoung_choi/local-image-lab/outputs/cus-v1/ui/hp/401/frame-01.png"
+      ],
+      "file_sha256": [
+        "e0cf785e9e644d9338f704d41823cdf78ebb80d660d4d7af5d2bb36d669e2a37"
+      ],
+      "source_image": "/Users/wonyoung_choi/local-image-lab/outputs/divine-frame-2.png",
+      "policy_review": {
+        "ip_risk": "medium",
+        "safety_risk": "low",
+        "age_rating_fit": "pass"
+      }
+    },
+    {
+      "asset_id": "cus.ui.score.v1",
+      "category": "ui",
+      "generator_tool": "local-image-lab",
+      "prompt": "pixel art ui score for Council Under Siege, deterministic curated candidate",
+      "seed": 402,
+      "model": "sd",
+      "steps": 2,
+      "generated_at": "2026-02-25T00:00:00Z",
+      "output_paths": [
+        "/Users/wonyoung_choi/local-image-lab/outputs/cus-v1/ui/score/402/frame-01.png"
+      ],
+      "file_sha256": [
+        "b2f28d1ad7d039ec6e199c380865d1054673b29bf5cd17cf941c521a46f1df18"
+      ],
+      "source_image": "/Users/wonyoung_choi/local-image-lab/outputs/divine-frame-3.png",
+      "policy_review": {
+        "ip_risk": "medium",
+        "safety_risk": "low",
+        "age_rating_fit": "pass"
+      }
+    },
+    {
+      "asset_id": "cus.ui.wave.v1",
+      "category": "ui",
+      "generator_tool": "local-image-lab",
+      "prompt": "pixel art ui wave for Council Under Siege, deterministic curated candidate",
+      "seed": 403,
+      "model": "sd",
+      "steps": 2,
+      "generated_at": "2026-02-25T00:00:00Z",
+      "output_paths": [
+        "/Users/wonyoung_choi/local-image-lab/outputs/cus-v1/ui/wave/403/frame-01.png"
+      ],
+      "file_sha256": [
+        "41debd48e99b5c897e6f7bd2f7d77ef043cb57a74ee96139606063a9937fb218"
+      ],
+      "source_image": "/Users/wonyoung_choi/local-image-lab/outputs/divine-sprite-sheet.png",
+      "policy_review": {
+        "ip_risk": "medium",
+        "safety_risk": "low",
+        "age_rating_fit": "pass"
+      }
+    },
+    {
+      "asset_id": "cus.ui.meter.v1",
+      "category": "ui",
+      "generator_tool": "local-image-lab",
+      "prompt": "pixel art ui meter for Council Under Siege, deterministic curated candidate",
+      "seed": 404,
+      "model": "sd",
+      "steps": 2,
+      "generated_at": "2026-02-25T00:00:00Z",
+      "output_paths": [
+        "/Users/wonyoung_choi/local-image-lab/outputs/cus-v1/ui/meter/404/frame-01.png"
+      ],
+      "file_sha256": [
+        "f75327365542b46974e94b58f7e4ed8e61a37e4776490b7cedf0f74179947971"
+      ],
+      "source_image": "/Users/wonyoung_choi/local-image-lab/outputs/smoke-sdxl-q.png",
+      "policy_review": {
+        "ip_risk": "medium",
+        "safety_risk": "low",
+        "age_rating_fit": "pass"
+      }
+    },
+    {
+      "asset_id": "cus.ui.shop.v1",
+      "category": "ui",
+      "generator_tool": "local-image-lab",
+      "prompt": "pixel art ui shop for Council Under Siege, deterministic curated candidate",
+      "seed": 405,
+      "model": "sd",
+      "steps": 2,
+      "generated_at": "2026-02-25T00:00:00Z",
+      "output_paths": [
+        "/Users/wonyoung_choi/local-image-lab/outputs/cus-v1/ui/shop/405/frame-01.png"
+      ],
+      "file_sha256": [
+        "3b87d87d8b12ac2d2c343234d127a6530c6b96152eaf8d8198d21cc3f97a3fa2"
+      ],
+      "source_image": "/Users/wonyoung_choi/local-image-lab/outputs/tdp-divine-frame-1.png",
+      "policy_review": {
+        "ip_risk": "medium",
+        "safety_risk": "low",
+        "age_rating_fit": "pass"
+      }
+    },
+    {
+      "asset_id": "cus.ui.pass.v1",
+      "category": "ui",
+      "generator_tool": "local-image-lab",
+      "prompt": "pixel art ui pass for Council Under Siege, deterministic curated candidate",
+      "seed": 406,
+      "model": "sd",
+      "steps": 2,
+      "generated_at": "2026-02-25T00:00:00Z",
+      "output_paths": [
+        "/Users/wonyoung_choi/local-image-lab/outputs/cus-v1/ui/pass/406/frame-01.png"
+      ],
+      "file_sha256": [
+        "551530593bba9fceec74850287d22d60ab18388a5102793e6c351e284f5a0386"
+      ],
+      "source_image": "/Users/wonyoung_choi/local-image-lab/outputs/tdp-divine-frame-2.png",
+      "policy_review": {
+        "ip_risk": "medium",
+        "safety_risk": "low",
+        "age_rating_fit": "pass"
+      }
+    }
+  ]
+}

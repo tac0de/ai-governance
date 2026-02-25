@@ -1,0 +1,38 @@
+{
+  "version": "v0.1",
+  "request_id": "mcp.req.cus.analytics_monetization.20260225",
+  "service_id": "council-under-siege",
+  "requested_at": "2026-02-25T00:00:00Z",
+  "status": "requested",
+  "request_type": "capability_expansion",
+  "approval_tier": "high",
+  "risk_tier": "high",
+  "human_gate_required": true,
+  "title": "Request monetization analytics capabilities for governed store funnel",
+  "owner": "platform-ops-owner",
+  "objective": "Add auditable monetization funnel analytics to evaluate conversion and elasticity without policy bypass.",
+  "required_capabilities": [
+    "track_store_funnel",
+    "compute_offer_elasticity"
+  ],
+  "constraints": [
+    "Any pricing or probability boundary update remains high-tier and human-gated.",
+    "Verdict-critical outputs must remain deterministic and hash-linked.",
+    "No central registry/manifest/allowlist update before explicit approval."
+  ],
+  "target_core_mcp_id": "core-analytics-mcp",
+  "io_contract": {
+    "invocation_surface": "POST /invoke (governed runtime adapter)",
+    "runtime_repo_path": "external runtime repository"
+  },
+  "evidence_refs": [
+    {
+      "path": "reports/governance/cus-store-event-contract-v0.1.json",
+      "sha256": "1ca6bb1abcd7812630cdfff3890ca1e1b21f0de3bdc6f40e6f71532f88c3398e"
+    },
+    {
+      "path": "reports/governance/cus-economy-sim-verdict-20260225.json",
+      "sha256": "6c55a2fbb14c7cf25a07cfd9ee5d5695c002e0138c5bf3112b7dadcb953157f9"
+    }
+  ]
+}

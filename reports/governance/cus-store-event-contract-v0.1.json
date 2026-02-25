@@ -1,0 +1,66 @@
+{
+  "version": "v0.1",
+  "service_id": "council-under-siege",
+  "events": [
+    {
+      "event": "store_open",
+      "fields": {
+        "ts_utc": "ISO8601",
+        "user_id_hash": "sha256",
+        "session_id": "string",
+        "offer_id": null,
+        "price_tier": null,
+        "currency_type": null,
+        "trace_ref": "sha256"
+      }
+    },
+    {
+      "event": "offer_view",
+      "fields": {
+        "ts_utc": "ISO8601",
+        "user_id_hash": "sha256",
+        "session_id": "string",
+        "offer_id": "string",
+        "price_tier": "string",
+        "currency_type": "soft|hard",
+        "trace_ref": "sha256"
+      }
+    },
+    {
+      "event": "offer_click",
+      "fields": {
+        "ts_utc": "ISO8601",
+        "user_id_hash": "sha256",
+        "session_id": "string",
+        "offer_id": "string",
+        "price_tier": "string",
+        "currency_type": "soft|hard",
+        "trace_ref": "sha256"
+      }
+    },
+    {
+      "event": "purchase_attempt",
+      "fields": {
+        "ts_utc": "ISO8601",
+        "user_id_hash": "sha256",
+        "session_id": "string",
+        "offer_id": "string",
+        "price_tier": "string",
+        "currency_type": "hard",
+        "trace_ref": "sha256"
+      }
+    },
+    {
+      "event": "purchase_success",
+      "fields": {
+        "ts_utc": "ISO8601",
+        "user_id_hash": "sha256",
+        "session_id": "string",
+        "offer_id": "string",
+        "price_tier": "string",
+        "currency_type": "hard",
+        "trace_ref": "sha256"
+      }
+    }
+  ]
+}

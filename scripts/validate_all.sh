@@ -158,6 +158,8 @@ validate_jq_contract() {
 
 require jq
 
+bash "$ROOT_DIR/scripts/scan_repo_hygiene.sh"
+
 ORG_REG_REL="control/registry/org.v0.1.json"
 SERVICES_REG_REL="control/registry/services.v0.1.json"
 MCPS_REG_REL="control/registry/mcps.v0.1.json"

@@ -1,0 +1,42 @@
+{
+  "version": "v0.1",
+  "request_id": "mcp.req.council_under_siege.analytics_turn_consensus.20260225",
+  "service_id": "council-under-siege",
+  "requested_at": "2026-02-25T00:00:00Z",
+  "status": "requested",
+  "request_type": "capability_expansion",
+  "approval_tier": "medium",
+  "risk_tier": "medium",
+  "human_gate_required": false,
+  "title": "Request analytics capability expansion for one-turn agent consensus scoring",
+  "owner": "platform-ops-owner",
+  "objective": "Enable deterministic scoring and selection logic for multi-agent proposal consensus in Phase 1 governance loop.",
+  "required_capabilities": [
+    "score_agent_proposals",
+    "select_consensus_action"
+  ],
+  "constraints": [
+    "No runtime implementation in governance core repository.",
+    "Verdict-critical path must remain deterministic.",
+    "Registry/manifest/allowlist sync occurs only after approved status."
+  ],
+  "target_core_mcp_id": "core-analytics-mcp",
+  "io_contract": {
+    "invocation_surface": "POST /invoke (governed sidecar)",
+    "runtime_repo_path": "external service runtime adapter"
+  },
+  "evidence_refs": [
+    {
+      "path": "tmp/council-under-siege.phase1.intent.local.json",
+      "sha256": "e0ecdaaac4bf62cf3b4ce57984c20aa48736e2be0f98ff7a1fa5e016cc1cead5"
+    },
+    {
+      "path": "control/registry/services.v0.1.json",
+      "sha256": "50c4b01b3d7ba8a83bf899236d362919adef417db9b17ad4f4296e22cb190d29"
+    },
+    {
+      "path": "mcps/core-analytics-mcp/manifest.json",
+      "sha256": "b45ddcf600ffe76bdc20f198448b52e204db753bc32ba58d4b666b300ca51f90"
+    }
+  ]
+}
