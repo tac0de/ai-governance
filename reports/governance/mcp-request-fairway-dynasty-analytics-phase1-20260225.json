@@ -25,7 +25,14 @@
   "target_core_mcp_id": "core-analytics-mcp",
   "io_contract": {
     "ingest_subject": "daily_operations_loop",
-    "required_fields": ["trace_id", "day", "seed", "ops_action", "verdict_hash", "day_report"],
+    "required_fields": [
+      "trace_id",
+      "day",
+      "seed",
+      "ops_action",
+      "verdict_hash",
+      "day_report"
+    ],
     "determinism_requirement": "same input + same seed => same verdict_hash"
   },
   "evidence_refs": [

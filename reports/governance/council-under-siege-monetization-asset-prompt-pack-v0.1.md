@@ -1,4 +1,4 @@
-# Agent-Collab Webgame Monetization + Asset Prompt Pack v0.1
+# Council Under Siege Monetization + Asset Prompt Pack v0.1
 
 Purpose: `Council Under Siege`를 과금 가능한 라이브 게임으로 고도화하되, 중앙거버넌스 경로와 증빙/추적 규칙을 유지한다.
 Date: 2026-02-25

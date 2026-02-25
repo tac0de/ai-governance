@@ -28,15 +28,15 @@
   "evidence_refs": [
     {
       "path": "tmp/council-under-siege.phase1.intent.local.json",
-      "sha256": "e0ecdaaac4bf62cf3b4ce57984c20aa48736e2be0f98ff7a1fa5e016cc1cead5"
+      "sha256": "610d44edcd191267c147d83f9cedf282a1398d6ed43c5e674d22bc0181ff9be3"
     },
     {
       "path": "control/registry/services.v0.1.json",
-      "sha256": "50c4b01b3d7ba8a83bf899236d362919adef417db9b17ad4f4296e22cb190d29"
+      "sha256": "e2b791ed3c599b2d8d820197c799dd76f35fa4d2411369fb302a4f6423c2dd29"
     },
     {
       "path": "mcps/core-analytics-mcp/manifest.json",
-      "sha256": "b45ddcf600ffe76bdc20f198448b52e204db753bc32ba58d4b666b300ca51f90"
+      "sha256": "9a9ccd4bbdf5fad35f052ea5587637cbe223f816e573f7799cb3f12f243393c4"
     }
   ]
 }

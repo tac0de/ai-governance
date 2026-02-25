@@ -187,7 +187,7 @@
   "evidence_refs": [
     {
       "path": "reports/governance/mcp-request-tdp-ops-stabilization-20260223.json",
-      "sha256": "34fa4383ae4f730be7c0c11c8a8fc6a09e18c9c66a4fb1fab595a389032cb56b"
+      "sha256": "b7daa1767c1445efca022a71619d1ec56f09957c1bbceea6300a7bdcce3bc2ef"
     }
   ],
   "status": "requested"

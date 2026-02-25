@@ -159,6 +159,7 @@ validate_jq_contract() {
 require jq
 
 bash "$ROOT_DIR/scripts/scan_repo_hygiene.sh"
+bash "$ROOT_DIR/scripts/validate_cross_registry.sh" --mode auto
 
 ORG_REG_REL="control/registry/org.v0.1.json"
 SERVICES_REG_REL="control/registry/services.v0.1.json"
@@ -308,6 +309,27 @@ if [[ -d "$ROOT_DIR/reports/governance" ]]; then
         )
       )
     '
+
+    if check_json "$request_rel"; then
+      while IFS=$'\t' read -r evidence_path expected_hash; do
+        [[ -n "$evidence_path" && -n "$expected_hash" ]] || continue
+
+        if [[ "$evidence_path" == /* ]]; then
+          fail "$request_rel" "evidence_refs.path must be repository-relative ('${evidence_path}')"
+          continue
+        fi
+
+        if [[ ! -f "$ROOT_DIR/$evidence_path" ]]; then
+          fail "$request_rel" "evidence_refs.path missing file ('${evidence_path}')"
+          continue
+        fi
+
+        actual_hash="$(sha256_file "$ROOT_DIR/$evidence_path")"
+        if [[ "$actual_hash" != "$expected_hash" ]]; then
+          fail "$request_rel" "evidence_refs.sha256 mismatch for '${evidence_path}' (expected ${expected_hash}, actual ${actual_hash})"
+        fi
+      done < <(jq -r '.evidence_refs[]? | [.path, .sha256] | @tsv' "$ROOT_DIR/$request_rel")
+    fi
   done < <(find "$ROOT_DIR/reports/governance" -maxdepth 1 -type f -name 'mcp-request-*.json' | sort)
 fi
 

@@ -1,0 +1,1 @@
+Create and operate a Testing/Bug/Refactoring quality engineering cell for TheDivineParadox. Enforce deterministic regression gates, remove redundant scripts/folders, and produce bridge-consumable quality tasks with evidence and rollback conditions.

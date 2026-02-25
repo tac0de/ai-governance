@@ -28,11 +28,11 @@
   "evidence_refs": [
     {
       "path": "reports/governance/cus-store-event-contract-v0.1.json",
-      "sha256": "1ca6bb1abcd7812630cdfff3890ca1e1b21f0de3bdc6f40e6f71532f88c3398e"
+      "sha256": "bb6edb6fb021cee2e20b661e529a04db258a0d74d9ce6430dcb018f585aeefb6"
     },
     {
       "path": "reports/governance/cus-economy-sim-verdict-20260225.json",
-      "sha256": "6c55a2fbb14c7cf25a07cfd9ee5d5695c002e0138c5bf3112b7dadcb953157f9"
+      "sha256": "ff2198f2706afc91cad0e6b5ed9295f6adf7674b70def2b143901055a8e1807f"
     }
   ]
 }

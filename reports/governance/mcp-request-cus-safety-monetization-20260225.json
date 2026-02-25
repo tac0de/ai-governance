@@ -28,11 +28,11 @@
   "evidence_refs": [
     {
       "path": "reports/governance/cus-economy-simulation-spec-v0.1.md",
-      "sha256": "b5e052355d204862a661cf8b16a29d3c7ab275e6753971bd85ae2b282da5b44b"
+      "sha256": "0b54ade647b42db61b4a751be18a03845f5d004de219a6b08daa5b6526bcac69"
     },
     {
       "path": "reports/governance/cus-economy-sim-verdict-20260225.json",
-      "sha256": "6c55a2fbb14c7cf25a07cfd9ee5d5695c002e0138c5bf3112b7dadcb953157f9"
+      "sha256": "ff2198f2706afc91cad0e6b5ed9295f6adf7674b70def2b143901055a8e1807f"
     }
   ]
 }

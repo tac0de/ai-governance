@@ -24,7 +24,15 @@
   ],
   "target_core_mcp_id": "core-analytics-mcp",
   "io_contract": {
-    "required_fields": ["trace_id", "day", "base_seed", "ops_action", "verdict_hash", "idle_hash", "economy_delta"],
+    "required_fields": [
+      "trace_id",
+      "day",
+      "base_seed",
+      "ops_action",
+      "verdict_hash",
+      "idle_hash",
+      "economy_delta"
+    ],
     "ruleset_version": "fd.sim.ruleset.v0.2"
   },
   "evidence_refs": [

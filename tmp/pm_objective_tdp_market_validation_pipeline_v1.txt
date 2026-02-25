@@ -1,0 +1,1 @@
+Implement Market Validation Pipeline v1 for TheDivineParadox: collect key UX events, compute KPI summary aligned to governance SLO contract (D1 return, vote completion, post-vote result open, LLM fallback rate), expose API-level evidence endpoints, and preserve deterministic trace and governance constraints.

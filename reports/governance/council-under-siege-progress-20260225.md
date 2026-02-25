@@ -1,4 +1,4 @@
-# Agent-Collab Webgame Governance Progress 2026-02-25
+# Council Under Siege Governance Progress 2026-02-25
 
 ## Scope
 - Implement v0.2 decision-complete governance onboarding plan inside `ai-governance` only.

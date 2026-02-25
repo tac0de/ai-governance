@@ -1,4 +1,4 @@
-# Agent-Collab Independent Webgame Central Governance Plan v0.1
+# Council Under Siege Central Governance Plan v0.1
 
 Version line: `v0.1`  
 Date: `2026-02-25`  
@@ -111,7 +111,7 @@ Planning mode: `single macro gate + autopilot`
 
 - `bash scripts/validate_all.sh`
 - `bash scripts/test_determinism.sh`
-- `bash scripts/bridge_one_shot_local.sh tmp/council-under-siege.phase1.intent.local.json`
+- `bash scripts/bridge_one_shot_local.sh council-under-siege.phase1.turn_consensus tmp/pm_objective_council_under_siege_phase1.txt medium false`
 
 ## 8) 72-Hour Execution Checklist
 

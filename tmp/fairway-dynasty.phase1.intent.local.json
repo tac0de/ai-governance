@@ -1,0 +1,14 @@
+{
+  "intent_id": "fairway-dynasty.phase1.operations_loop",
+  "objective": "Validate a deterministic golf-course operations daily loop for Fairway Dynasty via mandatory central governance routing and trace-linked evidence.",
+  "constraints": [
+    "Keep verdict path deterministic with fixed seed replay.",
+    "Keep append-only trace and hash-linked evidence refs.",
+    "Do not add real-payment or account-money boundary in Phase 1.",
+    "Use only centrally allowlisted MCP capabilities."
+  ],
+  "approval_tier": "medium",
+  "human_gate_required": true,
+  "target_executor": "codex",
+  "evidence_refs": []
+}

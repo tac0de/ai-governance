@@ -1,0 +1,14 @@
+{
+  "intent_id": "fairway-dynasty.phase1.2d_loop",
+  "objective": "Ship Fairway Dynasty 2D production-ready deterministic operations loop with governance-linked evidence, idle cap, and interactive tutorial flow.",
+  "constraints": [
+    "Maintain deterministic verdict hash for identical input snapshot.",
+    "Keep local asset generation provenance and hash evidence.",
+    "Keep payment boundary out of Phase 1.",
+    "Use only central allowlisted MCP capabilities."
+  ],
+  "approval_tier": "medium",
+  "human_gate_required": true,
+  "target_executor": "codex",
+  "evidence_refs": []
+}

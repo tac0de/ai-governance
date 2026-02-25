@@ -28,15 +28,15 @@
   "evidence_refs": [
     {
       "path": "services/council-under-siege/policy.profile.json",
-      "sha256": "d090df8ccadcd86a4511404abcf69344ddcb804134871c257a5989e09a6120ed"
+      "sha256": "a7cda264941e2d04b8ff94674bf7003556a7ee842ad475b4fd679dddd6e6c2ce"
     },
     {
       "path": "services/council-under-siege/mcp.allowlist.json",
-      "sha256": "43f75d42725ec54068998eb7a329e0fb225c4a680606cfc3b05c8e2762d20c9c"
+      "sha256": "f3d7b01f9cd2fc0ceaeb94412f86e18600f03cc79ef4f1e098394e3e23068277"
     },
     {
       "path": "mcps/core-safety-fallback-mcp/manifest.json",
-      "sha256": "37eca750fb26d8ca8207eedc767fd917f46ddc1536f0c1be90673169cf6dbc7e"
+      "sha256": "01335a5544eb7eea7b5e0956a8316d352157370083a23a9c1b9e608411f23740"
     }
   ]
 }

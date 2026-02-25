@@ -1,0 +1,13 @@
+{
+  "intent_id": "council-under-siege.phase1.turn_consensus",
+  "objective": "Validate one-turn multi-agent consensus loop via mandatory central governance path.",
+  "constraints": [
+    "Keep deterministic verdict path.",
+    "Keep append-only trace with hash-linked evidence.",
+    "No runtime implementation inside ai-governance."
+  ],
+  "approval_tier": "medium",
+  "human_gate_required": false,
+  "target_executor": "codex",
+  "evidence_refs": []
+}

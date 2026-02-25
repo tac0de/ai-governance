@@ -35,6 +35,9 @@ Deterministic Trace 기반 중앙 거버넌스 코어 저장소.
 
 ```bash
 bash scripts/validate_all.sh
+bash scripts/validate_cross_registry.sh --mode required
+# or auto-skip when governed-services registry is unavailable
+bash scripts/validate_cross_registry.sh --mode auto
 bash scripts/run_intent.sh fixtures/intent.envelope.json traces/run1
 bash scripts/test_determinism.sh
 bash scripts/benchmark_gate.sh

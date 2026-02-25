@@ -1,0 +1,1 @@
+Define product KPI contract and implement Phase-1 UX simplification for TheDivineParadox: prioritize plain-language copy, single primary action flow, and post-vote next-step cue while preserving deterministic governance constraints and traceability.
