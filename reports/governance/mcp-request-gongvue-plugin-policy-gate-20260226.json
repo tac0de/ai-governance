@@ -1,0 +1,38 @@
+{
+  "version": "v0.1",
+  "request_id": "mcp.req.gongvue.plugin.policy.gate.20260226",
+  "service_id": "gongvue",
+  "title": "Plugin execution policy gate for gongvue docker delivery",
+  "requested_at": "2026-02-26T11:45:00Z",
+  "approval_tier": "high",
+  "risk_tier": "high",
+  "human_gate_required": true,
+  "owner": "architect-owner",
+  "objective": "Enforce deterministic policy checks before executing customer plugin hooks while keeping core engine opaque.",
+  "required_capabilities": [
+    "validate_plugin_manifest",
+    "evaluate_plugin_policy_gate",
+    "emit_plugin_guardrail_notice"
+  ],
+  "constraints": [
+    "Core runtime source remains outside governance repository.",
+    "Verdict path must remain deterministic and hash-linked.",
+    "Plugin execution approval changes require explicit human gate."
+  ],
+  "target_core_mcp_id": "core-safety-fallback-mcp",
+  "evidence_refs": [
+    {
+      "path": "reports/governance/gongvue-extension-governance-model-ko-v0.1.md",
+      "sha256": "7322d89e7f2953d4ce3ce7847256311e24b9f7819f9d767ff9b63472d0c2ff6f"
+    },
+    {
+      "path": "reports/governance/gongvue-docker-delivery-contract-v0.1.json",
+      "sha256": "97c3ef9c5ce08acbb8404dfe3c05b60acbe032d27bc1041ef97401b4209cd80b"
+    },
+    {
+      "path": "services/gongvue/docs/INTEGRATIONS.md",
+      "sha256": "0f065840da96082ec1eb8826939dedea39661cfbe9d493b150011d588dbaee37"
+    }
+  ],
+  "status": "requested"
+}

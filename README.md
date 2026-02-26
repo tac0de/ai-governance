@@ -89,6 +89,24 @@ bash scripts/cloud_batch_verify.sh \
 bash scripts/validate_all.sh
 ```
 
+## 신규 서비스 온보딩 + Docker 확장 계약 (예: gongvue)
+
+```bash
+# 1) 외부 서비스 저장소 연결 (clone + symlink)
+git clone https://github.com/indoorlabs/gongvue /Users/wonyoung_choi/projects/gongvue
+ln -sfn /Users/wonyoung_choi/projects/gongvue /Users/wonyoung_choi/projects/governed-services/gongvue
+
+# 2) 양쪽 레지스트리 동기 검증
+bash scripts/validate_cross_registry.sh --mode required
+
+# 3) 중앙 계약 검증
+bash scripts/validate_all.sh
+```
+
+- 확장 기본모델은 `Plugin + Sidecar`로 고정한다.
+- 코어 엔진은 Docker 내부 비공개(`opaque`)로 유지한다.
+- 경계 변경은 `high` + human gate를 요구한다.
+
 ## PM <-> Executor Bridge (Deterministic Queue)
 
 ```bash

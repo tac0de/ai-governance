@@ -1,0 +1,38 @@
+{
+  "version": "v0.1",
+  "request_id": "mcp.req.gongvue.sidecar.event.guard.20260226",
+  "service_id": "gongvue",
+  "title": "Sidecar event guard and trace contract for gongvue extensions",
+  "requested_at": "2026-02-26T11:46:00Z",
+  "approval_tier": "high",
+  "risk_tier": "high",
+  "human_gate_required": true,
+  "owner": "architect-owner",
+  "objective": "Protect sidecar webhook/event flow with authentication, deterministic trace linkage, and guardrail notices.",
+  "required_capabilities": [
+    "validate_sidecar_signature",
+    "enforce_sidecar_idempotency",
+    "emit_sidecar_guardrail_notice"
+  ],
+  "constraints": [
+    "Sidecar webhook contract must include event_id/event_type/trace_ref/payload_ref/idempotency_key.",
+    "No network dependency may alter governance verdict determinism.",
+    "Any sidecar boundary or auth contract change remains high tier with human approval."
+  ],
+  "target_core_mcp_id": "core-analytics-mcp",
+  "evidence_refs": [
+    {
+      "path": "reports/governance/gongvue-extension-governance-model-ko-v0.1.md",
+      "sha256": "7322d89e7f2953d4ce3ce7847256311e24b9f7819f9d767ff9b63472d0c2ff6f"
+    },
+    {
+      "path": "reports/governance/gongvue-docker-delivery-contract-v0.1.json",
+      "sha256": "97c3ef9c5ce08acbb8404dfe3c05b60acbe032d27bc1041ef97401b4209cd80b"
+    },
+    {
+      "path": "services/gongvue/docs/INTEGRATIONS.md",
+      "sha256": "0f065840da96082ec1eb8826939dedea39661cfbe9d493b150011d588dbaee37"
+    }
+  ],
+  "status": "requested"
+}
