@@ -32,7 +32,7 @@
     },
     {
       "path": "control/registry/services.v0.1.json",
-      "sha256": "e2b791ed3c599b2d8d820197c799dd76f35fa4d2411369fb302a4f6423c2dd29"
+      "sha256": "2509e1d76765cd20cce67d434b1e88d113dd2600fdef384bac3b65eb7e329030"
     },
     {
       "path": "mcps/core-analytics-mcp/manifest.json",

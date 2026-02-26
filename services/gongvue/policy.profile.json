@@ -1,0 +1,5 @@
+{
+  "policy_profile_file": "policies/policy_profiles.v0.1.json",
+  "policy_profile": "balanced",
+  "governance_path": "mandatory_bridge"
+}

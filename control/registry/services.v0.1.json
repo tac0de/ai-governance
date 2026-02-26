@@ -36,6 +36,18 @@
       "mcp_allowlist_path": "services/fairway-dynasty/mcp.allowlist.json",
       "docs_path": "services/fairway-dynasty/docs",
       "slo_contract_ref": "services/fairway-dynasty/slo.contract.v0.1.json"
+    },
+    {
+      "id": "gongvue",
+      "name": "Gongvue",
+      "owner": "platform-ops-owner",
+      "dept": "Platform Operations",
+      "ministry": "Ministry of Governance and Compliance",
+      "repo_path": "services/gongvue",
+      "policy_profile_ref": "services/gongvue/policy.profile.json",
+      "mcp_allowlist_path": "services/gongvue/mcp.allowlist.json",
+      "docs_path": "services/gongvue/docs",
+      "slo_contract_ref": "services/gongvue/slo.contract.v0.1.json"
     }
   ]
 }
