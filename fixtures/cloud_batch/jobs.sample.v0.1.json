@@ -1,0 +1,35 @@
+{
+  "version": "v0.1",
+  "service_id": "council-under-siege",
+  "run_id": "cus.batch.sample.v0_1",
+  "jobs": [
+    {
+      "job_id": "job-001",
+      "objective_ref": "tmp/pm_objective_council_under_siege_macro_v0_1.txt",
+      "input_artifacts": [
+        {
+          "path": "fixtures/evidence.summary.json",
+          "sha256": "abf6f3a79472e31bd4e0bc237b25de36853db68890dcc9e5cd24dc0b434cb1a3",
+          "role": "evidence_input"
+        }
+      ],
+      "expected_outputs": [
+        { "role": "analysis_report", "required": true }
+      ]
+    },
+    {
+      "job_id": "job-002",
+      "objective_ref": "reports/governance/council-under-siege-macro-planmode-brief-v0.1.ko.md",
+      "input_artifacts": [
+        {
+          "path": "fixtures/acceptance.tests.json",
+          "sha256": "307a8265cbc168ee1605975f9d3034b5fe2f22d1024ce3c38bfbf2f20fccf1b8",
+          "role": "acceptance_rules"
+        }
+      ],
+      "expected_outputs": [
+        { "role": "qa_summary", "required": true }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "version": "v0.1",
+  "service_id": "council-under-siege",
+  "run_id": "cus.batch.sample.v0_1",
+  "results": [
+    {
+      "job_id": "job-001",
+      "status": "success",
+      "artifacts": [
+        {
+          "path": "fixtures/evidence.summary.json",
+          "sha256": "abf6f3a79472e31bd4e0bc237b25de36853db68890dcc9e5cd24dc0b434cb1a3",
+          "role": "analysis_report"
+        }
+      ],
+      "usage": {
+        "tokens_in": 1200,
+        "tokens_out": 800,
+        "latency_ms": 4500
+      }
+    },
+    {
+      "job_id": "job-002",
+      "status": "success",
+      "artifacts": [
+        {
+          "path": "fixtures/acceptance.tests.json",
+          "sha256": "307a8265cbc168ee1605975f9d3034b5fe2f22d1024ce3c38bfbf2f20fccf1b8",
+          "role": "qa_summary"
+        }
+      ],
+      "usage": {
+        "tokens_in": 900,
+        "tokens_out": 700,
+        "latency_ms": 3900
+      }
+    }
+  ]
+}

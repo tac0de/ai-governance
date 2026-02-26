@@ -195,7 +195,10 @@ for schema_rel in \
   schemas/mcp_allowlist.schema.json \
   schemas/mcp_manifest.schema.json \
   schemas/mcp_runtime_binding.schema.json \
-  schemas/mcp_change_request.schema.json
+  schemas/mcp_change_request.schema.json \
+  schemas/cloud_batch_jobs_manifest.schema.json \
+  schemas/cloud_batch_results_manifest.schema.json \
+  schemas/cloud_batch_verify_verdict.schema.json
   do
   check_json "$schema_rel"
 done
@@ -261,12 +264,62 @@ validate_jq_contract "policies/approval_tier_policy.v0.1.json" "schemas/trace_re
   (.tiers.high.approval_mode=="mandatory_human_gate")
 '
 
+validate_jq_contract "policies/cloud_batch_policy.v0.1.json" "schemas/trace_record.schema.json" '
+  .version=="v0.1" and
+  (.thresholds.token_total|type=="number" and .>0) and
+  (.thresholds.max_latency_ms|type=="number" and .>0) and
+  (.thresholds.fail_rate|type=="number" and .>=0 and .<=1) and
+  (.mode_defaults.strictness=="hybrid" or .mode_defaults.strictness=="strict" or .mode_defaults.strictness=="soft")
+'
+
 validate_jq_contract "benchmark/efficiency_benchmark_spec.v0.1.json" "schemas/benchmark_kpi.schema.json" '
   .version=="v0.1" and
   (.kpi_thresholds.min_acceptance_pass_rate>=0 and .kpi_thresholds.min_acceptance_pass_rate<=1) and
   (.kpi_thresholds.min_cache_hit_rate>=0 and .kpi_thresholds.min_cache_hit_rate<=1) and
   (.kpi_thresholds.max_fallback_rate>=0 and .kpi_thresholds.max_fallback_rate<=1) and
   (.kpi_thresholds.min_cost_reduction_vs_baseline>=0)
+'
+
+validate_jq_contract "fixtures/cloud_batch/jobs.sample.v0.1.json" "schemas/cloud_batch_jobs_manifest.schema.json" '
+  .version=="v0.1" and
+  (.service_id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+  (.run_id|type=="string" and test("^[a-zA-Z0-9][a-zA-Z0-9._-]*$")) and
+  (.jobs|type=="array" and length>0) and
+  (all(.jobs[];
+    (.job_id|type=="string" and test("^[a-zA-Z0-9][a-zA-Z0-9._-]*$")) and
+    (.objective_ref|type=="string" and length>0) and
+    (.input_artifacts|type=="array") and
+    (all(.input_artifacts[]?;
+      (.path|type=="string" and length>0) and
+      (.sha256|type=="string" and test("^[a-f0-9]{64}$")) and
+      (.role|type=="string" and length>0)
+    )) and
+    (.expected_outputs|type=="array" and length>0) and
+    (all(.expected_outputs[];
+      (.role|type=="string" and length>0) and
+      ((.required // true)|type=="boolean")
+    ))
+  ))
+'
+
+validate_jq_contract "fixtures/cloud_batch/results.sample.v0.1.json" "schemas/cloud_batch_results_manifest.schema.json" '
+  .version=="v0.1" and
+  (.service_id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+  (.run_id|type=="string" and test("^[a-zA-Z0-9][a-zA-Z0-9._-]*$")) and
+  (.results|type=="array" and length>0) and
+  (all(.results[];
+    (.job_id|type=="string" and test("^[a-zA-Z0-9][a-zA-Z0-9._-]*$")) and
+    (.status=="success" or .status=="failed" or .status=="timeout" or .status=="canceled") and
+    (.artifacts|type=="array") and
+    (all(.artifacts[]?;
+      (.path|type=="string" and length>0) and
+      (.sha256|type=="string" and test("^[a-f0-9]{64}$")) and
+      (.role|type=="string" and length>0)
+    )) and
+    (.usage.tokens_in|type=="number" and .>=0) and
+    (.usage.tokens_out|type=="number" and .>=0) and
+    (.usage.latency_ms|type=="number" and .>=0)
+  ))
 '
 
 # Validate MCP change request artifacts.
@@ -331,6 +384,29 @@ if [[ -d "$ROOT_DIR/reports/governance" ]]; then
       done < <(jq -r '.evidence_refs[]? | [.path, .sha256] | @tsv' "$ROOT_DIR/$request_rel")
     fi
   done < <(find "$ROOT_DIR/reports/governance" -maxdepth 1 -type f -name 'mcp-request-*.json' | sort)
+fi
+
+if [[ -d "$ROOT_DIR/reports/governance/batch" ]]; then
+  while IFS= read -r verdict_path; do
+    verdict_rel="${verdict_path#$ROOT_DIR/}"
+    validate_jq_contract "$verdict_rel" "schemas/cloud_batch_verify_verdict.schema.json" '
+      .version=="v0.1" and
+      (.service_id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+      (.run_id|type=="string" and test("^[a-zA-Z0-9][a-zA-Z0-9._-]*$")) and
+      (.strictness=="hybrid" or .strictness=="strict" or .strictness=="soft") and
+      (.verification_status=="pass" or .verification_status=="fail") and
+      (.metrics.total_jobs|type=="number" and .>=0) and
+      (.metrics.success_jobs|type=="number" and .>=0) and
+      (.metrics.failed_jobs|type=="number" and .>=0) and
+      (.metrics.tokens_in_total|type=="number" and .>=0) and
+      (.metrics.tokens_out_total|type=="number" and .>=0) and
+      (.metrics.max_latency_ms|type=="number" and .>=0) and
+      (.metrics.fail_rate|type=="number" and .>=0 and .<=1) and
+      (.metrics.artifact_checks|type=="number" and .>=0) and
+      (.fail_reasons|type=="array") and
+      (.warnings|type=="array")
+    '
+  done < <(find "$ROOT_DIR/reports/governance/batch" -type f -name 'verify.verdict.json' | sort)
 fi
 
 # Central control room registry validation contracts.
@@ -517,6 +593,17 @@ if json_ready "$SERVICES_REG_REL"; then
       ' "$ROOT_DIR/$slo_contract_ref" >/dev/null 2>&1; then
         fail "$slo_contract_ref" "schema validation failed (schemas/service_slo_contract.schema.json)"
       fi
+    fi
+
+    cloud_batch_policy_rel="services/${service_id}/cloud_batch.policy.v0.1.json"
+    if [[ -f "$ROOT_DIR/$cloud_batch_policy_rel" ]]; then
+      validate_jq_contract "$cloud_batch_policy_rel" "schemas/trace_record.schema.json" '
+        .version=="v0.1" and
+        (.thresholds.token_total|type=="number" and .>0) and
+        (.thresholds.max_latency_ms|type=="number" and .>0) and
+        (.thresholds.fail_rate|type=="number" and .>=0 and .<=1) and
+        (.mode_defaults.strictness=="hybrid" or .mode_defaults.strictness=="strict" or .mode_defaults.strictness=="soft")
+      '
     fi
   done < <(jq -r '.services[] | [.id, .repo_path, .policy_profile_ref, .mcp_allowlist_path, .docs_path, .slo_contract_ref] | @tsv' "$ROOT_DIR/$SERVICES_REG_REL")
 fi

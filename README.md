@@ -43,6 +43,52 @@ bash scripts/test_determinism.sh
 bash scripts/benchmark_gate.sh
 ```
 
+## Macro Planmode (Goal-Only Input)
+
+```bash
+# 1) Write one human goal
+cat > tmp/pm_objective_council_under_siege_macro_v0_1.txt <<'TXT'
+과금 UX 신뢰성 유지 조건에서 30일 운영 플랜을 확정한다.
+TXT
+
+# 2) Generate macro plan pack (Korean brief + minimal evidence JSON)
+bash scripts/macro_plan_pack.sh council-under-siege tmp/pm_objective_council_under_siege_macro_v0_1.txt high high true architect-owner
+
+# 3) Run governance validation
+bash scripts/validate_all.sh
+```
+
+## Cloud Batch L1 Core (Provider-Agnostic)
+
+```bash
+# 1) Submit jobs manifest into governance batch run folder
+bash scripts/cloud_batch_submit.sh \
+  --service council-under-siege \
+  --jobs-manifest fixtures/cloud_batch/jobs.sample.v0.1.json \
+  --run-id cus.batch.sample.v0_1 \
+  --provider manifest
+
+# 2) Collect results manifest (from provider output or local fixture)
+bash scripts/cloud_batch_collect.sh \
+  --run-id cus.batch.sample.v0_1 \
+  --provider manifest \
+  --results-manifest fixtures/cloud_batch/results.sample.v0.1.json
+
+# 3) Verify artifacts and hash integrity
+bash scripts/cloud_batch_verify.sh \
+  --run-id cus.batch.sample.v0_1 \
+  --service council-under-siege \
+  --strictness hybrid
+
+# Optional: force a specific policy file
+bash scripts/cloud_batch_verify.sh \
+  --run-id cus.batch.sample.v0_1 \
+  --policy-file services/council-under-siege/cloud_batch.policy.v0.1.json
+
+# 4) Final governance validation gate
+bash scripts/validate_all.sh
+```
+
 ## PM <-> Executor Bridge (Deterministic Queue)
 
 ```bash

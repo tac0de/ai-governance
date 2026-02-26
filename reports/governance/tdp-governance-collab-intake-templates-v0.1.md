@@ -1,33 +1,38 @@
-# TDP Governance Collaboration Intake Templates v0.1
+# 거버넌스 협업 인테이크 템플릿 v0.1 (쉬운 한국어)
 
-## Template A: Policy Proposal
-- Title:
-- Problem statement:
-- Proposed policy change:
-- Determinism impact:
-- Approval tier impact:
-- Evidence refs:
-- Backward compatibility:
-- Rollback condition:
+목적: 사람은 빠르게 입력하고, 에이전트는 즉시 실행 가능한 플랜으로 변환한다.
 
-## Template B: MCP Proposal
-- MCP id:
-- Job-to-be-done:
-- Capability list:
-- Input contract (JSON):
-- Output contract (JSON):
-- Risk level and required approval tier:
-- Failure/fallback behavior:
-- Conformance tests:
-- Evidence refs:
+## 템플릿 A: 정책 변경 요청
+- 제목:
+- 지금 문제(한 줄):
+- 바꾸려는 정책:
+- 결정성 영향(있음/없음 + 이유):
+- 승인 티어 영향(상향/유지):
+- 근거 파일 경로:
+- 이전 버전 호환 여부:
+- 롤백 조건:
 
-## Template C: Risk Report
-- Risk title:
-- Affected scope:
-- Severity (low/medium/high):
-- Reproduction steps:
-- Expected behavior:
-- Observed behavior:
-- Trace/evidence refs:
-- Immediate mitigation:
-- Long-term fix proposal:
+## 템플릿 B: MCP 요청
+- 서비스 ID:
+- 필요한 MCP(또는 capability):
+- 왜 필요한지(업무 목적):
+- 입력/출력 계약 요약(JSON 경로 또는 3줄 설명):
+- 리스크 티어 / 승인 티어:
+- 실패 시 대체 경로:
+- 검증 방법(스크립트):
+- 근거 파일 경로:
+
+## 템플릿 C: 리스크 보고
+- 리스크 제목:
+- 영향 범위:
+- 심각도(low/medium/high):
+- 재현 방법:
+- 기대 동작:
+- 실제 동작:
+- 근거 파일 경로:
+- 즉시 완화 방법:
+- 장기 개선안:
+
+## 최소 제출 규칙
+- 사람용 한국어 문서 1개
+- 기계용 evidence JSON 1개(경로+sha256)

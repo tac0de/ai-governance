@@ -23,8 +23,8 @@
   ],
   "evidence_refs": [
     {
-      "path": "traces/bridge/dispatched/tdp.phase2.ops_hardening.dispatch.json",
-      "sha256": "f01acdbd9be9f38b82150fed7687e6671f3175da68341a125e0d899a502c7e6c"
+      "path": "reports/governance/phase2-pm-request-20260222.md",
+      "sha256": "680a0f6a9ccf4bbdcf5b4084db91d4b11078730f5b273a483aa0b2bf609ffd89"
     },
     {
       "path": "reports/governance/bridge-pm-mode-transition-20260222.md",
