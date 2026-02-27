@@ -16,6 +16,14 @@
         "select_fallback_policy",
         "emit_degrade_notice"
       ]
+    },
+    {
+      "mcp_id": "core-governance-journal-mcp",
+      "capabilities": [
+        "export_trace_bundle",
+        "append_governance_diary_entry",
+        "verify_export_receipt"
+      ]
     }
   ]
 }

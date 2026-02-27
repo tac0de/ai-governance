@@ -1,6 +1,8 @@
-# ai-governance v0.1
+# ai-governance v0.2
 
 Deterministic Trace 기반 중앙 거버넌스 코어 저장소.
+
+Release line: `v0.2` (artifact file line remains `v0.1` for schema and contract closure).
 
 ## Start Here (Core 4)
 

@@ -9,6 +9,10 @@
   - `classify_llm_error`
   - `select_fallback_policy`
   - `emit_degrade_notice`
+- `core-governance-journal-mcp`
+  - `export_trace_bundle`
+  - `append_governance_diary_entry`
+  - `verify_export_receipt`
 
 ## Governance Interfaces
 - `schemas/bridge_intent.schema.json`
