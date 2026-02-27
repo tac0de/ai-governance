@@ -1,1 +1,0 @@
-Phase-2 이후 운영 고도화: Cloud Run staging/prod 배포 검증 + Secret Manager 연동 + 야간 자동 실행 워크플로우

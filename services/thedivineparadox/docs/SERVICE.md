@@ -20,7 +20,7 @@
 - `policies/policy_profiles.v0.1.json`
 - `policies/approval_tier_policy.v0.1.json`
 - `control/registry/mcps.v0.1.json`
-- `specs/trace_rules.v0.1.md`
+- `control/specs/trace_rules.v0.1.md`
 
 ## Owner
 - Team: Platform Operations

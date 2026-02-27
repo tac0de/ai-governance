@@ -46,7 +46,7 @@ if [[ ! "$run_id" =~ ^[a-zA-Z0-9][a-zA-Z0-9._-]*$ ]]; then
   exit 1
 fi
 
-batch_dir="$ROOT_DIR/reports/governance/batch/$run_id"
+batch_dir="$ROOT_DIR/traces/governance/batch/$run_id"
 mkdir -p "$batch_dir"
 jobs_manifest_path="$batch_dir/jobs.manifest.v0.1.json"
 if [[ ! -f "$jobs_manifest_path" ]]; then
@@ -123,7 +123,7 @@ jq -cn \
   --arg service_id "$results_service" \
   --arg run_id "$run_id" \
   --arg provider "$provider" \
-  --arg results_manifest_path "reports/governance/batch/$run_id/results.manifest.v0.1.json" \
+  --arg results_manifest_path "traces/governance/batch/$run_id/results.manifest.v0.1.json" \
   --arg results_manifest_sha256 "$results_sha" \
   --argjson total_jobs "$total_jobs" \
   --argjson success_jobs "$success_jobs" \

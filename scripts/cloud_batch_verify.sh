@@ -72,7 +72,7 @@ if [[ -n "$service_arg" && ! "$service_arg" =~ ^[a-z0-9][a-z0-9-]*$ ]]; then
   exit 1
 fi
 
-batch_dir="$ROOT_DIR/reports/governance/batch/$run_id"
+batch_dir="$ROOT_DIR/traces/governance/batch/$run_id"
 jobs_manifest_path="$batch_dir/jobs.manifest.v0.1.json"
 results_manifest_path="$batch_dir/results.manifest.v0.1.json"
 verdict_path="$batch_dir/verify.verdict.json"
@@ -120,10 +120,10 @@ if [[ "$strictness" != "hybrid" && "$strictness" != "strict" && "$strictness" !=
 fi
 
 if [[ ! -f "$jobs_manifest_path" ]]; then
-  add_fail "jobs manifest missing: reports/governance/batch/$run_id/jobs.manifest.v0.1.json"
+  add_fail "jobs manifest missing: traces/governance/batch/$run_id/jobs.manifest.v0.1.json"
 fi
 if [[ ! -f "$results_manifest_path" ]]; then
-  add_fail "results manifest missing: reports/governance/batch/$run_id/results.manifest.v0.1.json"
+  add_fail "results manifest missing: traces/governance/batch/$run_id/results.manifest.v0.1.json"
 fi
 
 service_id=""

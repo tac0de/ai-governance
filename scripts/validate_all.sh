@@ -222,6 +222,13 @@ check_exact_files_in_dir "control/playbooks" \
   "change-management.md" \
   "onboarding.md"
 
+check_exact_files_in_dir "control/benchmarks" \
+  "efficiency_benchmark_spec.v0.1.json"
+
+check_exact_files_in_dir "control/specs" \
+  "opcodes.v0.1.json" \
+  "trace_rules.v0.1.md"
+
 check_exact_files_in_dir "control/templates/service" "${SERVICE_DOCS_FIXED[@]}"
 check_exact_files_in_dir "control/templates/mcp" "${MCP_DOCS_FIXED[@]}"
 
@@ -291,7 +298,7 @@ validate_jq_contract "policies/agent_routing_policy.v0.1.json" "schemas/agent_ro
   (.fallback_chain | index("codex") != null)
 '
 
-validate_jq_contract "benchmark/efficiency_benchmark_spec.v0.1.json" "schemas/benchmark_kpi.schema.json" '
+validate_jq_contract "control/benchmarks/efficiency_benchmark_spec.v0.1.json" "schemas/benchmark_kpi.schema.json" '
   .version=="v0.1" and
   (.kpi_thresholds.min_acceptance_pass_rate>=0 and .kpi_thresholds.min_acceptance_pass_rate<=1) and
   (.kpi_thresholds.min_cache_hit_rate>=0 and .kpi_thresholds.min_cache_hit_rate<=1) and
@@ -342,7 +349,7 @@ validate_jq_contract "fixtures/cloud_batch/results.sample.v0.1.json" "schemas/cl
 '
 
 # Validate MCP change request artifacts.
-if [[ -d "$ROOT_DIR/reports/governance" ]]; then
+if [[ -d "$ROOT_DIR/traces/governance" ]]; then
   while IFS= read -r request_path; do
     request_rel="${request_path#$ROOT_DIR/}"
     validate_jq_contract "$request_rel" "schemas/mcp_change_request.schema.json" '
@@ -402,10 +409,10 @@ if [[ -d "$ROOT_DIR/reports/governance" ]]; then
         fi
       done < <(jq -r '.evidence_refs[]? | [.path, .sha256] | @tsv' "$ROOT_DIR/$request_rel")
     fi
-  done < <(find "$ROOT_DIR/reports/governance" -maxdepth 1 -type f -name 'mcp-request-*.json' | sort)
+  done < <(find "$ROOT_DIR/traces/governance" -maxdepth 1 -type f -name 'mcp-request-*.json' | sort)
 fi
 
-if [[ -d "$ROOT_DIR/reports/governance/batch" ]]; then
+if [[ -d "$ROOT_DIR/traces/governance/batch" ]]; then
   while IFS= read -r verdict_path; do
     verdict_rel="${verdict_path#$ROOT_DIR/}"
     validate_jq_contract "$verdict_rel" "schemas/cloud_batch_verify_verdict.schema.json" '
@@ -425,7 +432,7 @@ if [[ -d "$ROOT_DIR/reports/governance/batch" ]]; then
       (.fail_reasons|type=="array") and
       (.warnings|type=="array")
     '
-  done < <(find "$ROOT_DIR/reports/governance/batch" -type f -name 'verify.verdict.json' | sort)
+  done < <(find "$ROOT_DIR/traces/governance/batch" -type f -name 'verify.verdict.json' | sort)
 fi
 
 # Central control room registry validation contracts.

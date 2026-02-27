@@ -13,7 +13,7 @@
 ## Governance Interfaces
 - `schemas/bridge_intent.schema.json`
 - `schemas/mcp_change_request.schema.json`
-- `reports/governance/gongvue-docker-delivery-contract-v0.1.json`
+- `traces/governance/mcp-request-*.json`
 
 ## Extension Baseline
 - 1차 모델: Plugin + Sidecar

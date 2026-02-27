@@ -5,7 +5,7 @@
   "jobs": [
     {
       "job_id": "job-001",
-      "objective_ref": "tmp/pm_objective_tdp_phase1_simple_loop.txt",
+      "objective_ref": "control/playbooks/onboarding.md",
       "input_artifacts": [
         {
           "path": "fixtures/evidence.summary.json",
@@ -22,7 +22,7 @@
     },
     {
       "job_id": "job-002",
-      "objective_ref": "reports/governance/tdp-planmode-prompt-pack-v0.1.md",
+      "objective_ref": "docs/assets/ai-governance-whitepaper-v0.1.md",
       "input_artifacts": [
         {
           "path": "fixtures/acceptance.tests.json",

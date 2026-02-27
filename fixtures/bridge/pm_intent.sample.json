@@ -11,8 +11,8 @@
   "target_executor": "codex",
   "evidence_refs": [
     {
-      "path": "reports/governance/phase2-pm-request-20260222.md",
-      "sha256": "2a7f8960a72f65ff64d7390a37e9d5d9ccf8d750db7fb87f2d0fd3f9329f2d56"
+      "path": "control/playbooks/change-management.md",
+      "sha256": "9775b1e05e0d70d202ec60c9c3d5e8261b9c30104705f175e658e2742abb9585"
     }
   ]
 }

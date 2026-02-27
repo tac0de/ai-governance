@@ -7,7 +7,7 @@
 
 ## Onboarding Flow
 - 중앙 레지스트리에 서비스 계약 패키지를 등록한다.
-- MCP 확장 요청은 `reports/governance/mcp-request-*.json`로 생성한다.
+- MCP 확장 요청은 `traces/governance/mcp-request-*.json`로 생성한다.
 
 ## Change Flow
 - medium 범위: 계약/문서 정리 후 검증 통과 시 반영

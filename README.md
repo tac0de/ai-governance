@@ -67,7 +67,7 @@ bash scripts/validate_all.sh
 ## Cloud Batch L1 Core (Provider-Agnostic)
 
 ```bash
-# 1) Submit jobs manifest into governance batch run folder
+# 1) Submit jobs manifest into deterministic trace batch folder
 bash scripts/cloud_batch_submit.sh \
   --service thedivineparadox \
   --jobs-manifest fixtures/cloud_batch/jobs.sample.v0.1.json \
@@ -151,19 +151,16 @@ Notes:
 
 - `control/templates/`: service/MCP fixed-doc templates
 - `control/playbooks/`: incident/change/onboarding guides
-- `specs/`: opcode set, trace rules
+- `control/specs/`: opcode set, trace rules
+- `control/benchmarks/`: efficiency benchmark spec
 - `fixtures/`: deterministic sample inputs
-- `benchmark/`: efficiency benchmark spec
-- `docs/`: archived or supporting docs
+- `docs/`: GitHub Pages showcase only
+- `traces/`: local deterministic traces only (long-lived service logs should move to `obsidian-mcp`)
 
 ## Legacy Archive
 
 Current pre-rebuild implementation is archived in branch:
 - `legacy/archive-2026-02-21`
-
-## Overnight Automation
-
-- Hourly governance progress workflow: `.github/workflows/overnight-governance-progress.yml`
 
 ## GitHub Pages Showcase
 

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-SPEC_PATH="${ROOT_DIR}/benchmark/efficiency_benchmark_spec.v0.1.json"
+SPEC_PATH="${ROOT_DIR}/control/benchmarks/efficiency_benchmark_spec.v0.1.json"
 BASELINE_PATH="${ROOT_DIR}/fixtures/benchmark/baseline.kpi.json"
 CANDIDATE_PATH="${ROOT_DIR}/fixtures/benchmark/candidate.kpi.json"
 

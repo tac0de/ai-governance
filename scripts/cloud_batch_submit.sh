@@ -95,7 +95,7 @@ if [[ "$manifest_run_id" != "$run_id" ]]; then
   exit 1
 fi
 
-batch_dir="$ROOT_DIR/reports/governance/batch/$run_id"
+batch_dir="$ROOT_DIR/traces/governance/batch/$run_id"
 mkdir -p "$batch_dir"
 cp "$jobs_manifest" "$batch_dir/jobs.manifest.v0.1.json"
 
@@ -107,7 +107,7 @@ jq -cn \
   --arg service_id "$service_id" \
   --arg run_id "$run_id" \
   --arg provider "$provider" \
-  --arg jobs_manifest_path "reports/governance/batch/$run_id/jobs.manifest.v0.1.json" \
+  --arg jobs_manifest_path "traces/governance/batch/$run_id/jobs.manifest.v0.1.json" \
   --arg jobs_manifest_sha256 "$jobs_sha" \
   --argjson job_count "$job_count" \
   '{
