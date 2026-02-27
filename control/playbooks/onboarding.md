@@ -7,7 +7,7 @@
 4. Pass `scripts/validate_all.sh`.
 
 ## New MCP Onboarding
-1. Create `mcps/<mcp-id>/` with manifest and docs.
+1. Create `control/mcps/<mcp-id>/` with manifest and docs.
 2. Register MCP in `control/registry/mcps.v0.1.json`.
 3. Map capabilities and approval tier.
 4. Pass `scripts/validate_all.sh`.

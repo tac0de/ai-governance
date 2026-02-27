@@ -27,7 +27,7 @@ This repository is architecturally governed.
 
 - Keep the root top-level directory set stable.
 - Do not add, remove, or rename root-level directories without explicit human architect approval.
-- Place new artifacts under existing roots first; prefer `control/`, `policies/`, `schemas/`, `scripts/`, `services/`, and `mcps/`.
+- Place new artifacts under existing roots first; prefer `control/`, `policies/`, `schemas/`, `scripts/`, and `services/`.
 - Treat root-level structure changes as high-risk governance changes.
 
 # AGENTS Hierarchy

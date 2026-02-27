@@ -4,7 +4,7 @@
     {
       "id": "core-analytics-mcp",
       "name": "Core Analytics MCP",
-      "root_path": "mcps/core-analytics-mcp",
+      "root_path": "control/mcps/core-analytics-mcp",
       "version": "0.1.0",
       "capabilities": [
         "aggregate_events",
@@ -19,7 +19,7 @@
     {
       "id": "core-experiment-mcp",
       "name": "Core Experiment Orchestrator MCP",
-      "root_path": "mcps/core-experiment-mcp",
+      "root_path": "control/mcps/core-experiment-mcp",
       "version": "0.1.0",
       "capabilities": [
         "assign_cohort",
@@ -33,7 +33,7 @@
     {
       "id": "core-safety-fallback-mcp",
       "name": "Core Safety Fallback MCP",
-      "root_path": "mcps/core-safety-fallback-mcp",
+      "root_path": "control/mcps/core-safety-fallback-mcp",
       "version": "0.1.0",
       "capabilities": [
         "classify_llm_error",
@@ -47,7 +47,7 @@
     {
       "id": "core-study-session-governor-mcp",
       "name": "Core Study Session Governor MCP",
-      "root_path": "mcps/core-study-session-governor-mcp",
+      "root_path": "control/mcps/core-study-session-governor-mcp",
       "version": "0.1.0",
       "capabilities": [
         "evaluate_group_session_state",

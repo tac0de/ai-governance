@@ -68,7 +68,7 @@
       "properties": {
         "id": { "type": "string", "pattern": "^core-[a-z0-9][a-z0-9-]*$" },
         "name": { "type": "string", "minLength": 1 },
-        "proposed_root_path": { "type": "string", "pattern": "^mcps/core-[a-z0-9][a-z0-9-]*$" },
+        "proposed_root_path": { "type": "string", "pattern": "^control/mcps/core-[a-z0-9][a-z0-9-]*$" },
         "capabilities": {
           "type": "array",
           "items": { "type": "string", "minLength": 1 },

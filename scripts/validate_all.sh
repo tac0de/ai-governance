@@ -368,7 +368,7 @@ if [[ -d "$ROOT_DIR/traces/governance" ]]; then
           .approval_tier=="high" and
           .human_gate_required==true and
           (.mcp_candidate.id|type=="string" and test("^core-[a-z0-9][a-z0-9-]*$")) and
-          (.mcp_candidate.proposed_root_path|type=="string" and test("^mcps/core-[a-z0-9][a-z0-9-]*$")) and
+          (.mcp_candidate.proposed_root_path|type=="string" and test("^control/mcps/core-[a-z0-9][a-z0-9-]*$")) and
           (.mcp_candidate.capabilities|type=="array" and length>0 and all(.[]; type=="string" and length>0)) and
           (.mcp_candidate.required_approval_tier=="high") and
           (.mcp_candidate.risk_level=="high") and
@@ -486,7 +486,7 @@ validate_jq_contract "$MCPS_REG_REL" "schemas/mcps_registry.schema.json" '
   (all(.mcps[];
     (.id|type=="string" and test("^core-[a-z0-9][a-z0-9-]*$")) and
     (.name|type=="string" and length>0) and
-    (.root_path|type=="string" and test("^mcps/core-[a-z0-9][a-z0-9-]*$")) and
+    (.root_path|type=="string" and test("^control/mcps/core-[a-z0-9][a-z0-9-]*$")) and
     (.version|type=="string" and test("^[0-9]+\\.[0-9]+\\.[0-9]+$")) and
     (.capabilities|type=="array" and length>0 and length==(unique|length) and all(.[]; type=="string" and length>0)) and
     (.risk_level=="low" or .risk_level=="medium" or .risk_level=="high") and
@@ -501,7 +501,7 @@ validate_jq_contract "$MCPS_REG_REL" "schemas/mcps_registry.schema.json" '
 check_services_have_agents
 
 if [[ -d "$ROOT_DIR/packages/mcps" ]]; then
-  fail "packages/mcps" "unsupported MCP root; use mcps/<mcp-name>"
+  fail "packages/mcps" "unsupported MCP root; use control/mcps/<mcp-name>"
 fi
 
 # Cross-registry consistency checks.
@@ -706,14 +706,14 @@ if json_ready "$MCPS_REG_REL"; then
   done < <(jq -r '.mcps[] | [.id, .root_path, .version, .required_approval_tier, .pinned_ref_hash] | @tsv' "$ROOT_DIR/$MCPS_REG_REL")
 fi
 
-# Every mcps/* directory must be in central MCP registry.
-if json_ready "$MCPS_REG_REL" && [[ -d "$ROOT_DIR/mcps" ]]; then
+# Every control/mcps/* directory must be in central MCP registry.
+if json_ready "$MCPS_REG_REL" && [[ -d "$ROOT_DIR/control/mcps" ]]; then
   while IFS= read -r mcp_dir; do
     mcp_name="$(basename "$mcp_dir")"
-    if ! jq -e --arg root_path "mcps/${mcp_name}" '.mcps | any(.root_path==$root_path)' "$ROOT_DIR/$MCPS_REG_REL" >/dev/null 2>&1; then
-      fail "mcps/${mcp_name}" "MCP directory not registered in ${MCPS_REG_REL}"
+    if ! jq -e --arg root_path "control/mcps/${mcp_name}" '.mcps | any(.root_path==$root_path)' "$ROOT_DIR/$MCPS_REG_REL" >/dev/null 2>&1; then
+      fail "control/mcps/${mcp_name}" "MCP directory not registered in ${MCPS_REG_REL}"
     fi
-  done < <(find "$ROOT_DIR/mcps" -mindepth 1 -maxdepth 1 -type d | sort)
+  done < <(find "$ROOT_DIR/control/mcps" -mindepth 1 -maxdepth 1 -type d | sort)
 fi
 
 if (( errors > 0 )); then

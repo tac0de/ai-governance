@@ -22,7 +22,7 @@
     },
     {
       "job_id": "job-002",
-      "objective_ref": "docs/assets/ai-governance-whitepaper-v0.1.md",
+      "objective_ref": "control/playbooks/onboarding.md",
       "input_artifacts": [
         {
           "path": "fixtures/acceptance.tests.json",

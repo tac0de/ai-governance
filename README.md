@@ -29,7 +29,7 @@ Deterministic Trace 기반 중앙 거버넌스 코어 저장소.
 
 - Government: `policies/`, `schemas/`, `traces/`
 - Company: `control/registry/org.v0.1.json`, `control/registry/services.v0.1.json`, `services/`
-- Execution contracts: `control/registry/mcps.v0.1.json`, `mcps/`
+- Execution contracts: `control/registry/mcps.v0.1.json`, `control/mcps/`
 - Executor routing: `policies/agent_routing_policy.v0.1.json`
 
 ## Quick Start

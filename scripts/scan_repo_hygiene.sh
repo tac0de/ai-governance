@@ -13,7 +13,6 @@ ALLOWED_ROOT_DIRS=(
   "control"
   "docs"
   "fixtures"
-  "mcps"
   "policies"
   "schemas"
   "scripts"
