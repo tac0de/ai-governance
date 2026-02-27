@@ -147,6 +147,15 @@ Notes:
 - If generated intent is `high` tier or `human_gate_required=true`, dispatch is held (`awaiting_human_gate`) until:
   - `bash scripts/bridge_human_gate.sh <intent_id> approve <actor>`
 
+## Governance Journal Export
+
+```bash
+# Prepare a deterministic export packet for the external Obsidian governance diary
+bash scripts/export_governance_journal.sh traces/bridge
+```
+
+This creates a local export packet and receipt skeleton under `traces/governance-journal/`.
+
 ## Appendix (Secondary Paths)
 
 - `control/templates/`: service/MCP fixed-doc templates
