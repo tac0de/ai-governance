@@ -8,7 +8,7 @@
   ],
   "approval_tier": "medium",
   "human_gate_required": false,
-  "target_executor": "codex",
+  "target_executor": "service-review",
   "evidence_refs": [
     {
       "path": "control/playbooks/change-management.md",

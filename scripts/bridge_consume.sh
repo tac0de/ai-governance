@@ -8,14 +8,14 @@ Usage:
 
 Defaults:
   bridge_dir: traces/bridge
-  executor: codex
+  executor: service-review
   executor_out_dir: traces/executor-queue/<executor>
 USAGE
 }
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 bridge_dir="$ROOT_DIR/traces/bridge"
-executor="codex"
+executor="service-review"
 executor_out_dir=""
 
 positional=()

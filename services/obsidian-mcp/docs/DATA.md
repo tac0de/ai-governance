@@ -8,8 +8,8 @@
 - If PII appears in artifacts, redact and escalate to high-tier review.
 
 ## Retention
-- Intent/trace/evidence links retained per governance trace policy.
-- Incident records retained per control playbooks.
+- `traces/` is the in-repo short-term governance diary.
+- Long-lived records are exported to the external Obsidian governance hub after validation.
 
 ## Access Controls
 - RBAC for owner/reviewer roles only.

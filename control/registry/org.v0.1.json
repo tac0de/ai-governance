@@ -3,10 +3,9 @@
   "company_departments": [
     {
       "name": "Platform Operations",
-      "owner": "platform-ops-owner",
+      "owner": "architect-owner",
       "portfolio_services": [
         "gongvue",
-        "kakao-study-groupbot",
         "obsidian-mcp",
         "thedivineparadox"
       ]

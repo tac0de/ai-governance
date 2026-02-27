@@ -1,10 +1,9 @@
 {
   "version": "v0.1",
   "allowed_executors_by_tier": {
-    "low": ["codex-mini", "gemini-flash"],
-    "medium": ["codex", "gemini-pro", "claude-sonnet"],
-    "high": ["codex", "claude-opus"]
+    "low": ["service-review"],
+    "medium": ["service-review", "policy-ops"],
+    "high": ["governance-council", "policy-ops"]
   },
-  "fallback_chain": ["codex"]
+  "fallback_chain": ["governance-council"]
 }
-

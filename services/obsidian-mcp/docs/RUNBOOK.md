@@ -6,9 +6,10 @@
   - `bash scripts/test_determinism.sh`
 - Run bridge dry-run:
   - `bash scripts/bridge_one_shot_local.sh obsidian-mcp.readflow.v1 traces/local/pm_objective_tdp_phase1_simple_loop.txt medium true architect-owner`
+- Export long-lived governance traces from `traces/` into the external Obsidian runtime after validation.
 
 ## Rollback
-- Revert latest obsidian-mcp governance contract changes.
+- Revert latest obsidian-mcp governance export contract changes.
 - Re-run validation and determinism checks.
 
 ## Incident Steps
@@ -19,4 +20,4 @@
 
 ## Access and Key Revocation
 - Rotate credentials when boundary violations are detected.
-- Record revocation and rationale in governance report artifacts.
+- Record revocation and rationale in external Obsidian governance diary artifacts.

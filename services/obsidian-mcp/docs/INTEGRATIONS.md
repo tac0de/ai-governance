@@ -17,7 +17,8 @@
 
 ## Runtime Reference (External)
 - Runtime repo path: `/Users/wonyoung_choi/projects/obsidian-mcp`
+- Primary role: long-lived governance diary and export sink for validated traces.
 
 ## Boundary Rule
-- Runtime MCP implementations remain outside `ai-governance`.
-- Governance core stores only policy-bound validation artifacts.
+- Runtime vault operations remain outside `ai-governance`.
+- Governance core stores only policy-bound validation artifacts before export.

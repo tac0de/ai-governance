@@ -58,7 +58,7 @@ cat > "$ROOT_DIR/$tmp_intent_rel" <<EOF
   ],
   "approval_tier": "${approval_tier}",
   "human_gate_required": ${human_gate_required},
-  "target_executor": "codex",
+  "target_executor": "service-review",
   "evidence_refs": []
 }
 EOF

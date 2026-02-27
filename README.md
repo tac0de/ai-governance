@@ -119,11 +119,11 @@ bash scripts/bridge_human_gate.sh phase2-backend-fastify-ts approve architect-ow
 bash scripts/bridge_dispatch.sh
 
 # 4) Consume dispatched packets into local executor task queue (traces/)
-bash scripts/bridge_consume.sh --executor codex
+bash scripts/bridge_consume.sh --executor service-review
 
-# Optional: multi-executor queue
-bash scripts/bridge_consume.sh --executor gemini-flash
-bash scripts/bridge_consume.sh --executor claude-sonnet
+# Optional: alternate governance lanes
+bash scripts/bridge_consume.sh --executor policy-ops
+bash scripts/bridge_consume.sh --executor governance-council
 
 # 5) One-shot minimal-token mode (local PM + bridge pipeline)
 bash scripts/bridge_one_shot_local.sh tdp.phase2.ops_hardening traces/local/pm_objective_ops_hardening.txt high true architect-owner

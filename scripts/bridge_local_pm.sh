@@ -52,7 +52,7 @@ fi
 
 mkdir -p "$(dirname "$intent_out")"
 objective="$(cat "$objective_file")"
-target_executor="${TARGET_EXECUTOR:-codex}"
+target_executor="${TARGET_EXECUTOR:-service-review}"
 
 # Deterministic default constraints for local PM mode.
 constraints_json='[

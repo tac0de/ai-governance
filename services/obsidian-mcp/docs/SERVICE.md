@@ -1,15 +1,15 @@
 # SERVICE
 
 ## Purpose
-- Govern deterministic, read-only knowledge retrieval workflows for Obsidian vault operations.
-- Keep all runtime-boundary changes routed through central governance contracts.
+- Govern the external Obsidian operations hub that receives long-lived governance traces.
+- Keep central diary/export flows deterministic and policy-bound.
 
 ## Primary User
-- Governance operators and maintainers for `obsidian-mcp`.
+- Architect-owner operating the external Obsidian governance hub.
 
 ## Boundaries
-- In scope: governance contracts, allowlist policy, evidence/trace-linked validation.
-- Out of scope: runtime MCP implementation in `ai-governance`.
+- In scope: export policy, trace retention contracts, evidence/trace-linked validation.
+- Out of scope: runtime vault implementation in `ai-governance`.
 
 ## Dependencies
 - `control/registry/services.v0.1.json`
@@ -20,4 +20,4 @@
 
 ## Owner
 - Team: Platform Operations
-- Contact: platform-ops-owner
+- Contact: architect-owner

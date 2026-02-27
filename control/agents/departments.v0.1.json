@@ -5,22 +5,22 @@
       "id": "governance-council",
       "name": "Governance Council",
       "purpose": "Sets central policy and final human override decisions.",
-      "default_executor": "codex",
-      "supports_roles": ["architect-owner", "platform-ops-owner"]
+      "default_prompt_set": "change-gate",
+      "supports_roles": ["architect-owner"]
     },
     {
       "id": "policy-ops",
       "name": "Policy Operations",
       "purpose": "Maintains validation rules, routing policy, and compliance changes.",
-      "default_executor": "claude-sonnet",
-      "supports_roles": ["platform-ops-owner"]
+      "default_prompt_set": "policy-review",
+      "supports_roles": ["architect-owner"]
     },
     {
       "id": "service-review",
       "name": "Service Review",
       "purpose": "Reviews service contracts and bridge requests before rollout.",
-      "default_executor": "gemini-pro",
-      "supports_roles": ["platform-ops-owner"]
+      "default_prompt_set": "governance-intake",
+      "supports_roles": ["architect-owner"]
     }
   ]
 }

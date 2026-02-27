@@ -4,7 +4,7 @@
     {
       "id": "gongvue",
       "name": "Gongvue",
-      "owner": "platform-ops-owner",
+      "owner": "architect-owner",
       "dept": "Platform Operations",
       "ministry": "Ministry of Governance and Compliance",
       "repo_path": "services/gongvue",
@@ -14,21 +14,9 @@
       "slo_contract_ref": "services/gongvue/slo.contract.v0.1.json"
     },
     {
-      "id": "kakao-study-groupbot",
-      "name": "KakaoStudyGroupbot",
-      "owner": "platform-ops-owner",
-      "dept": "Platform Operations",
-      "ministry": "Ministry of Governance and Compliance",
-      "repo_path": "services/kakao-study-groupbot",
-      "policy_profile_ref": "services/kakao-study-groupbot/policy.profile.json",
-      "mcp_allowlist_path": "services/kakao-study-groupbot/mcp.allowlist.json",
-      "docs_path": "services/kakao-study-groupbot/docs",
-      "slo_contract_ref": "services/kakao-study-groupbot/slo.contract.v0.1.json"
-    },
-    {
       "id": "obsidian-mcp",
       "name": "ObsidianMcp",
-      "owner": "platform-ops-owner",
+      "owner": "architect-owner",
       "dept": "Platform Operations",
       "ministry": "Ministry of Governance and Compliance",
       "repo_path": "services/obsidian-mcp",
@@ -40,7 +28,7 @@
     {
       "id": "thedivineparadox",
       "name": "TheDivineParadox",
-      "owner": "platform-ops-owner",
+      "owner": "architect-owner",
       "dept": "Platform Operations",
       "ministry": "Ministry of Governance and Compliance",
       "repo_path": "services/thedivineparadox",

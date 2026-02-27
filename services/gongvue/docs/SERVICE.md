@@ -19,4 +19,4 @@
 
 ## Owner
 - Team: Platform Operations
-- Contact: platform-ops-owner
+- Contact: architect-owner

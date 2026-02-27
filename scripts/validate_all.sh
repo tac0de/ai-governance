@@ -217,6 +217,14 @@ check_exact_files_in_dir "control/playbooks" \
 check_exact_files_in_dir "control/benchmarks" \
   "efficiency_benchmark_spec.v0.1.json"
 
+check_exact_files_in_dir "control/agents" \
+  "README.md" \
+  "departments.v0.1.json"
+
+check_exact_files_in_dir "control/prompts" \
+  "README.md" \
+  "library.v0.1.json"
+
 check_exact_files_in_dir "control/specs" \
   "opcodes.v0.1.json" \
   "trace_rules.v0.1.md"
@@ -286,8 +294,54 @@ validate_jq_contract "policies/agent_routing_policy.v0.1.json" "schemas/agent_ro
   (.allowed_executors_by_tier.medium|type=="array" and length>0 and length==(unique|length) and all(.[]; type=="string" and test("^[a-z0-9][a-z0-9-]*$"))) and
   (.allowed_executors_by_tier.high|type=="array" and length>0 and length==(unique|length) and all(.[]; type=="string" and test("^[a-z0-9][a-z0-9-]*$"))) and
   (.fallback_chain|type=="array" and length>0 and length==(unique|length) and all(.[]; type=="string" and test("^[a-z0-9][a-z0-9-]*$"))) and
-  (.fallback_chain | index("codex") != null)
+  (.fallback_chain | index("governance-council") != null)
 '
+
+validate_jq_contract "control/agents/departments.v0.1.json" "schemas/trace_record.schema.json" '
+  .version=="v0.1" and
+  (.departments|type=="array" and length>0) and
+  (all(.departments[];
+    (.id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+    (.name|type=="string" and length>0) and
+    (.purpose|type=="string" and length>0) and
+    (.default_prompt_set|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+    (.supports_roles|type=="array" and length>0 and all(.[]; .=="architect-owner"))
+  )) and
+  ([.departments[].id] | length==(unique|length))
+'
+
+validate_jq_contract "control/prompts/library.v0.1.json" "schemas/trace_record.schema.json" '
+  .version=="v0.1" and
+  (.prompt_sets|type=="array" and length>0) and
+  (all(.prompt_sets[];
+    (.id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+    (.purpose|type=="string" and length>0)
+  )) and
+  ([.prompt_sets[].id] | length==(unique|length))
+'
+
+if json_ready "control/agents/departments.v0.1.json" && json_ready "control/prompts/library.v0.1.json"; then
+  while IFS=$'\t' read -r dept_id prompt_set; do
+    [[ -n "$dept_id" ]] || continue
+    if ! jq -e --arg id "$prompt_set" '.prompt_sets | any(.id==$id)' "$ROOT_DIR/control/prompts/library.v0.1.json" >/dev/null 2>&1; then
+      fail "control/agents/departments.v0.1.json" "department '$dept_id' default_prompt_set '$prompt_set' not found in control/prompts/library.v0.1.json"
+    fi
+  done < <(jq -r '.departments[] | [.id, .default_prompt_set] | @tsv' "$ROOT_DIR/control/agents/departments.v0.1.json")
+fi
+
+if json_ready "control/agents/departments.v0.1.json" && json_ready "policies/agent_routing_policy.v0.1.json"; then
+  while IFS= read -r lane; do
+    [[ -n "$lane" ]] || continue
+    if ! jq -e --arg id "$lane" '.departments | any(.id==$id)' "$ROOT_DIR/control/agents/departments.v0.1.json" >/dev/null 2>&1; then
+      fail "policies/agent_routing_policy.v0.1.json" "routing lane '$lane' not found in control/agents/departments.v0.1.json"
+    fi
+  done < <(jq -r '
+    (.allowed_executors_by_tier.low[]?),
+    (.allowed_executors_by_tier.medium[]?),
+    (.allowed_executors_by_tier.high[]?),
+    (.fallback_chain[]?)
+  ' "$ROOT_DIR/policies/agent_routing_policy.v0.1.json" | sort -u)
+fi
 
 validate_jq_contract "control/benchmarks/efficiency_benchmark_spec.v0.1.json" "schemas/benchmark_kpi.schema.json" '
   .version=="v0.1" and
