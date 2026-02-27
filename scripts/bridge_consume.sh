@@ -4,7 +4,7 @@ set -euo pipefail
 usage() {
   cat <<'USAGE' >&2
 Usage:
-  bridge_consume.sh [bridge_dir] [executor_out_dir] [--executor <agent_id>]
+  bridge_consume.sh [bridge_dir] [executor_out_dir] [--executor <executor_id>]
 
 Defaults:
   bridge_dir: traces/bridge
@@ -75,17 +75,15 @@ sanitize_id() {
 
 require jq
 
-agents_reg="$ROOT_DIR/control/registry/agents.v0.1.json"
-if [[ ! -f "$agents_reg" ]]; then
-  echo "AGENTS_REGISTRY_MISSING $agents_reg" >&2
-  exit 1
-fi
-if ! jq -e . "$agents_reg" >/dev/null 2>&1; then
-  echo "AGENTS_REGISTRY_INVALID_JSON $agents_reg" >&2
-  exit 1
-fi
-if ! jq -e --arg id "$executor" '.agents | any(.id==$id)' "$agents_reg" >/dev/null 2>&1; then
-  echo "EXECUTOR_NOT_REGISTERED executor=$executor" >&2
+if ! jq -e --arg id "$executor" '
+  [
+    (.allowed_executors_by_tier.low[]?),
+    (.allowed_executors_by_tier.medium[]?),
+    (.allowed_executors_by_tier.high[]?),
+    (.fallback_chain[]?)
+  ] | any(.==$id)
+' "$ROOT_DIR/policies/agent_routing_policy.v0.1.json" >/dev/null 2>&1; then
+  echo "EXECUTOR_NOT_ALLOWED_BY_POLICY executor=$executor" >&2
   exit 1
 fi
 
@@ -102,7 +100,6 @@ for dispatch_path in "$bridge_dir"/dispatched/*.dispatch.json; do
     (.intent_id|type=="string" and length>0) and
     (.intent_ref|type=="string" and test("^[a-f0-9]{64}$")) and
     (.target_executor|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
-    (.prompt_pack_id==null or (.prompt_pack_id|type=="string" and length>0)) and
     (.objective|type=="string" and length>0) and
     (.constraints|type=="array") and
     (.evidence_refs|type=="array") and
@@ -137,7 +134,6 @@ for dispatch_path in "$bridge_dir"/dispatched/*.dispatch.json; do
     --arg source_dispatch_path "${dispatch_path#$ROOT_DIR/}" \
     --arg source_dispatch_ref "$dispatch_ref" \
     --arg target_executor "$target_executor" \
-    --arg prompt_pack_id "$(jq -r '.prompt_pack_id // ""' "$dispatch_path")" \
     --arg intent_id "$(jq -r '.intent_id' "$dispatch_path")" \
     --arg intent_ref "$(jq -r '.intent_ref' "$dispatch_path")" \
     --arg objective "$(jq -r '.objective' "$dispatch_path")" \
@@ -148,10 +144,7 @@ for dispatch_path in "$bridge_dir"/dispatched/*.dispatch.json; do
       version:"v0.1",
       created_at:$created_at,
       source:{repo:$source_repo,dispatch_path:$source_dispatch_path,dispatch_ref:$source_dispatch_ref},
-      intent: (
-        {intent_id:$intent_id,intent_ref:$intent_ref,objective:$objective,submitted_at:$submitted_at,constraints:$constraints,evidence_refs:$evidence_refs,target_executor:$target_executor}
-        + (if ($prompt_pack_id|length)>0 then {prompt_pack_id:$prompt_pack_id} else {} end)
-      ),
+      intent:{intent_id:$intent_id,intent_ref:$intent_ref,objective:$objective,submitted_at:$submitted_at,constraints:$constraints,evidence_refs:$evidence_refs,target_executor:$target_executor},
       status:"queued"
     }' > "$task_file"
 

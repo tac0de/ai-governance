@@ -163,8 +163,6 @@ bash "$ROOT_DIR/scripts/scan_repo_hygiene.sh"
 ORG_REG_REL="control/registry/org.v0.1.json"
 SERVICES_REG_REL="control/registry/services.v0.1.json"
 MCPS_REG_REL="control/registry/mcps.v0.1.json"
-AGENTS_REG_REL="control/registry/agents.v0.1.json"
-PROMPTS_REG_REL="control/registry/prompts.v0.1.json"
 
 SERVICE_DOCS_FIXED=(
   "SERVICE.md"
@@ -189,10 +187,6 @@ for schema_rel in \
   schemas/evidence.schema.json \
   schemas/benchmark_kpi.schema.json \
   schemas/bridge_intent.schema.json \
-  schemas/agents_registry.schema.json \
-  schemas/agent_profile.schema.json \
-  schemas/prompts_registry.schema.json \
-  schemas/prompt_pack.schema.json \
   schemas/agent_routing_policy.schema.json \
   schemas/org.schema.json \
   schemas/services_registry.schema.json \
@@ -213,9 +207,7 @@ done
 check_exact_files_in_dir "control/registry" \
   "org.v0.1.json" \
   "services.v0.1.json" \
-  "mcps.v0.1.json" \
-  "agents.v0.1.json" \
-  "prompts.v0.1.json"
+  "mcps.v0.1.json"
 
 check_exact_files_in_dir "control/playbooks" \
   "incident.md" \
@@ -256,7 +248,6 @@ validate_jq_contract "fixtures/bridge/pm_intent.sample.json" "schemas/bridge_int
   (.approval_tier=="low" or .approval_tier=="medium" or .approval_tier=="high") and
   (.human_gate_required|type=="boolean") and
   (.target_executor|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
-  (.prompt_pack_id==null or (.prompt_pack_id|type=="string" and test("^[a-z0-9][a-z0-9-]*$"))) and
   (.evidence_refs|type=="array") and
   (all(.evidence_refs[]?;
     (.path|type=="string" and length>0) and
@@ -506,117 +497,11 @@ validate_jq_contract "$MCPS_REG_REL" "schemas/mcps_registry.schema.json" '
   ([.mcps[].root_path] | length==(unique|length))
 '
 
-validate_jq_contract "$AGENTS_REG_REL" "schemas/agents_registry.schema.json" '
-  .version=="v0.1" and
-  (.agents | type=="array" and length>0) and
-  (all(.agents[];
-    (.id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
-    (.name|type=="string" and length>0) and
-    (.provider=="openai" or .provider=="google" or .provider=="anthropic" or .provider=="other") and
-    (.root_path|type=="string" and test("^agents/models/[a-z0-9][a-z0-9-]*$")) and
-    (.profile_ref|type=="string" and test("^agents/models/[a-z0-9][a-z0-9-]*/agent\\.profile\\.v0\\.1\\.json$")) and
-    (.default_prompt_pack_id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
-    (.risk_level=="low" or .risk_level=="medium" or .risk_level=="high") and
-    (.pinned_ref_hash|type=="string" and test("^sha256:[a-f0-9]{64}$"))
-  )) and
-  ([.agents[].id] | length==(unique|length)) and
-  ([.agents[].root_path] | length==(unique|length))
-'
-
-validate_jq_contract "$PROMPTS_REG_REL" "schemas/prompts_registry.schema.json" '
-  .version=="v0.1" and
-  (.prompts | type=="array" and length>0) and
-  (all(.prompts[];
-    (.id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
-    (.name|type=="string" and length>0) and
-    (.root_path|type=="string" and test("^prompts/packs/[a-z0-9][a-z0-9-]*$")) and
-    (.pack_ref|type=="string" and test("^prompts/packs/[a-z0-9][a-z0-9-]*/pack\\.v0\\.1\\.json$")) and
-    (.pinned_ref_hash|type=="string" and test("^sha256:[a-f0-9]{64}$"))
-  )) and
-  ([.prompts[].id] | length==(unique|length)) and
-  ([.prompts[].root_path] | length==(unique|length))
-'
-
-# Ensure agent routing policy references only registered executors.
-if json_ready "$AGENTS_REG_REL" && json_ready "policies/agent_routing_policy.v0.1.json"; then
-  while IFS= read -r ex; do
-    [[ -n "$ex" ]] || continue
-    if ! jq -e --arg id "$ex" '.agents | any(.id==$id)' "$ROOT_DIR/$AGENTS_REG_REL" >/dev/null 2>&1; then
-      fail "policies/agent_routing_policy.v0.1.json" "executor '$ex' is not registered in ${AGENTS_REG_REL}"
-    fi
-  done < <(jq -r '
-    (.allowed_executors_by_tier.low[]?),
-    (.allowed_executors_by_tier.medium[]?),
-    (.allowed_executors_by_tier.high[]?),
-    (.fallback_chain[]?)
-  ' "$ROOT_DIR/policies/agent_routing_policy.v0.1.json" | sort -u)
-fi
-
 # Ensure every service has a service-level AGENTS policy narrowing file.
 check_services_have_agents
 
 if [[ -d "$ROOT_DIR/packages/mcps" ]]; then
   fail "packages/mcps" "unsupported MCP root; use mcps/<mcp-name>"
-fi
-
-# Validate agent profiles and prompt packs by registry (pinned hash must match canonical JSON).
-if json_ready "$AGENTS_REG_REL" && json_ready "$PROMPTS_REG_REL"; then
-  while IFS=$'\t' read -r agent_id root_path profile_ref default_prompt_pack_id pinned_ref_hash; do
-    [[ -n "$agent_id" ]] || continue
-
-    check_dir "$root_path"
-    check_file "$profile_ref"
-    if check_json "$profile_ref"; then
-      if ! jq -e --arg id "$agent_id" '.version=="v0.1" and .id==$id' "$ROOT_DIR/$profile_ref" >/dev/null 2>&1; then
-        fail "$profile_ref" "agent profile id/version does not match registry (schemas/agent_profile.schema.json)"
-      fi
-
-      if ! jq -e --arg pack_id "$default_prompt_pack_id" '.prompts | any(.id==$pack_id)' "$ROOT_DIR/$PROMPTS_REG_REL" >/dev/null 2>&1; then
-        fail "$AGENTS_REG_REL" "agent '$agent_id' default_prompt_pack_id '$default_prompt_pack_id' not found in ${PROMPTS_REG_REL}"
-      fi
-
-      expected_hash="sha256:$(bash "$ROOT_DIR/scripts/hash_ref.sh" "$ROOT_DIR/$profile_ref")"
-      if [[ "$pinned_ref_hash" != "$expected_hash" ]]; then
-        fail "$AGENTS_REG_REL" "pinned_ref_hash for agent '$agent_id' must equal profile_ref hash (${expected_hash})"
-      fi
-    fi
-  done < <(jq -r '.agents[] | [.id, .root_path, .profile_ref, .default_prompt_pack_id, .pinned_ref_hash] | @tsv' "$ROOT_DIR/$AGENTS_REG_REL")
-
-  while IFS=$'\t' read -r prompt_id root_path pack_ref pinned_ref_hash; do
-    [[ -n "$prompt_id" ]] || continue
-
-    check_dir "$root_path"
-    check_file "$pack_ref"
-    if check_json "$pack_ref"; then
-      if ! jq -e --arg id "$prompt_id" '.version=="v0.1" and .id==$id' "$ROOT_DIR/$pack_ref" >/dev/null 2>&1; then
-        fail "$pack_ref" "prompt pack id/version does not match registry (schemas/prompt_pack.schema.json)"
-      fi
-      expected_hash="sha256:$(bash "$ROOT_DIR/scripts/hash_ref.sh" "$ROOT_DIR/$pack_ref")"
-      if [[ "$pinned_ref_hash" != "$expected_hash" ]]; then
-        fail "$PROMPTS_REG_REL" "pinned_ref_hash for prompt '$prompt_id' must equal pack_ref hash (${expected_hash})"
-      fi
-    fi
-  done < <(jq -r '.prompts[] | [.id, .root_path, .pack_ref, .pinned_ref_hash] | @tsv' "$ROOT_DIR/$PROMPTS_REG_REL")
-fi
-
-# Every agents/models/* directory must be in central agents registry.
-if json_ready "$AGENTS_REG_REL" && [[ -d "$ROOT_DIR/agents/models" ]]; then
-  while IFS= read -r agent_dir; do
-    agent_name="$(basename "$agent_dir")"
-    if ! jq -e --arg root_path "agents/models/${agent_name}" '.agents | any(.root_path==$root_path)' "$ROOT_DIR/$AGENTS_REG_REL" >/dev/null 2>&1; then
-      fail "agents/models/${agent_name}" "agent directory not registered in ${AGENTS_REG_REL}"
-    fi
-  done < <(find "$ROOT_DIR/agents/models" -mindepth 1 -maxdepth 1 -type d | sort)
-fi
-
-# Every prompts/packs/* directory must be in central prompts registry.
-if json_ready "$PROMPTS_REG_REL" && [[ -d "$ROOT_DIR/prompts/packs" ]]; then
-  while IFS= read -r prompt_dir; do
-    prompt_name="$(basename "$prompt_dir")"
-    if ! jq -e --arg root_path "prompts/packs/${prompt_name}" '.prompts | any(.root_path==$root_path)' "$ROOT_DIR/$PROMPTS_REG_REL" >/dev/null 2>&1; then
-      fail "prompts/packs/${prompt_name}" "prompt pack directory not registered in ${PROMPTS_REG_REL}"
-    fi
-  done < <(find "$ROOT_DIR/prompts/packs" -mindepth 1 -maxdepth 1 -type d | sort)
 fi
 
 # Cross-registry consistency checks.

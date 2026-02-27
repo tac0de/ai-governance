@@ -31,7 +31,6 @@ for file in "$bridge_dir"/queue/*.queue.json; do
       evidence_refs:.intent.evidence_refs,
       submitted_at:.submitted_at
     }
-    + (if (.intent|has("prompt_pack_id")) then {prompt_pack_id:.intent.prompt_pack_id} else {} end)
   ' "$file")"
   printf '%s\n' "$dispatch_packet" > "$bridge_dir/dispatched/${intent_id}.dispatch.json"
 

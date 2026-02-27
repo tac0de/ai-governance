@@ -10,13 +10,11 @@ ENABLE_TMP_SENSITIVE_KEYWORD_GUARD=0
 ALLOWED_ROOT_DIRS=(
   ".git"
   ".github"
-  "agents"
   "control"
   "docs"
   "fixtures"
   "mcps"
   "policies"
-  "prompts"
   "schemas"
   "scripts"
   "services"
@@ -122,6 +120,10 @@ scan_tmp_hygiene() {
 
   while IFS= read -r file_path; do
     file_name="$(basename "$file_path")"
+
+    if [[ "$file_name" == ".gitkeep" ]]; then
+      continue
+    fi
 
     if [[ "$file_name" != *.* ]]; then
       fail "tmp/$file_name" "extension required; allowed extensions: txt, md, json"

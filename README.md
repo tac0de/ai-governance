@@ -5,20 +5,18 @@ Deterministic Trace 기반 중앙 거버넌스 코어 저장소.
 ## Start Here (Core 4)
 
 1. `control/registry/`
-- 조직/서비스/MCP/에이전트/프롬프트의 단일 진실 소스.
+- 조직/서비스/MCP의 단일 진실 소스.
 
-2. `schemas/` (특히 중앙 통제 스키마 5개)
+2. `schemas/` (특히 중앙 통제 스키마)
 - `org.schema.json`
 - `services_registry.schema.json`
 - `mcps_registry.schema.json`
-- `agents_registry.schema.json`
-- `prompts_registry.schema.json`
 - `mcp_allowlist.schema.json`
 - `mcp_manifest.schema.json`
 
 3. `scripts/validate_all.sh`
 - 중앙 설계 강제 지점.
-- 고정 문서 세트, 레지스트리 정합성, 정책 프로파일, MCP allowlist/manifest, agent/prompt pinned refs를 검증.
+- 고정 문서 세트, 레지스트리 정합성, 정책 프로파일, MCP allowlist/manifest, executor routing policy를 검증.
 
 4. `.github/workflows/deterministic-governance.yml`
 - CI에서 `validate_all.sh` + 결정성/벤치마크 게이트를 실행.
@@ -32,7 +30,7 @@ Deterministic Trace 기반 중앙 거버넌스 코어 저장소.
 - Government: `policies/`, `schemas/`, `traces/`
 - Company: `control/registry/org.v0.1.json`, `control/registry/services.v0.1.json`, `services/`
 - Execution contracts: `control/registry/mcps.v0.1.json`, `mcps/`
-- Agent/prompt contracts: `control/registry/agents.v0.1.json`, `control/registry/prompts.v0.1.json`, `agents/`, `prompts/`
+- Executor routing: `policies/agent_routing_policy.v0.1.json`
 
 ## Quick Start
 

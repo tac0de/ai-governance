@@ -26,10 +26,6 @@
       "type": "string",
       "pattern": "^[a-z0-9][a-z0-9-]*$"
     },
-    "prompt_pack_id": {
-      "type": "string",
-      "pattern": "^[a-z0-9][a-z0-9-]*$"
-    },
     "evidence_refs": {
       "type": "array",
       "items": {
