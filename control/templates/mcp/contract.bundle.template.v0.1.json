@@ -1,0 +1,58 @@
+{
+  "version": "v0.1",
+  "mcp_id": "core-example-mcp",
+  "summary": "Example governance contract bundle for a core MCP.",
+  "purpose": "Define the minimum deterministic governance contract for a core MCP.",
+  "capability_contract": {
+    "allowed_operations": [
+      "example_operation"
+    ],
+    "forbidden_expansion": [
+      "Undeclared capability drift"
+    ],
+    "required_approval_tier": "medium",
+    "scope": [
+      "Deterministic contract execution only"
+    ]
+  },
+  "security_boundary": {
+    "allowed_inputs": [
+      "Policy-validated JSON inputs"
+    ],
+    "forbidden_inputs": [
+      "Secret material"
+    ],
+    "non_goals": [
+      "Runtime implementation in ai-governance"
+    ],
+    "controls": [
+      "Trace-linked evidence refs"
+    ]
+  },
+  "evidence_contract": {
+    "required_refs": [
+      "intent_ref",
+      "evidence_ref"
+    ],
+    "hash_policy": "Hash-referenced artifacts only.",
+    "trace_linkage": "Outputs must remain trace-linkable."
+  },
+  "runtime_contract": {
+    "binding_ref": "control/mcps/core-example-mcp/versions/runtime.binding.v0.1.json",
+    "runtime_owner_service": "example-service",
+    "runtime_repo_path": "runtime/path.ts",
+    "invocation_surface": "POST /invoke",
+    "sdk_package": "@modelcontextprotocol/sdk",
+    "validation_package": "zod",
+    "tool_names": [
+      "example.operation"
+    ]
+  },
+  "change_log": [
+    {
+      "release_line": "v0.2",
+      "change": "Initial JSON-only MCP contract bundle template.",
+      "date_label": "2026-02-27"
+    }
+  ]
+}

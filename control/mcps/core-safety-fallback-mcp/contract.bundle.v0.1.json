@@ -1,0 +1,71 @@
+{
+  "version": "v0.1",
+  "mcp_id": "core-safety-fallback-mcp",
+  "summary": "Deterministic fallback contract for provider failures and controlled degrade messaging.",
+  "purpose": "Normalize LLM failure handling through fixed error categories, policy-bound fallback selection, and deterministic degrade notices.",
+  "capability_contract": {
+    "allowed_operations": [
+      "classify_llm_error",
+      "select_fallback_policy",
+      "emit_degrade_notice"
+    ],
+    "forbidden_expansion": [
+      "Upstream model secret management.",
+      "Free-form narrative generation outside policy constraints."
+    ],
+    "required_approval_tier": "medium",
+    "scope": [
+      "Classify LLM failure categories.",
+      "Select policy-bound fallback response mode.",
+      "Emit deterministic degrade notice payloads."
+    ]
+  },
+  "security_boundary": {
+    "allowed_inputs": [
+      "Controlled provider failure metadata.",
+      "Finite policy mode selectors."
+    ],
+    "forbidden_inputs": [
+      "Upstream provider secrets.",
+      "Unbounded narrative prompts."
+    ],
+    "non_goals": [
+      "Provider secret management.",
+      "Free-form generation without policy constraints."
+    ],
+    "controls": [
+      "Fallback logic must not leak provider secrets.",
+      "Error classification outputs are constrained to finite enums.",
+      "Every degrade notice must include trace-compatible references."
+    ]
+  },
+  "evidence_contract": {
+    "required_refs": [
+      "error_ref",
+      "policy_ref",
+      "trace_ref"
+    ],
+    "hash_policy": "Fallback decisions must remain trace-compatible and hash-referenced.",
+    "trace_linkage": "Every degrade notice must preserve trace-compatible references."
+  },
+  "runtime_contract": {
+    "binding_ref": "control/mcps/core-safety-fallback-mcp/versions/runtime.binding.v0.1.json",
+    "runtime_owner_service": "thedivineparadox",
+    "runtime_repo_path": "apps/backend/src/mcp_bridge.ts",
+    "invocation_surface": "POST /mcp/invoke",
+    "sdk_package": "@modelcontextprotocol/sdk",
+    "validation_package": "zod",
+    "tool_names": [
+      "safety.classify_llm_error",
+      "safety.select_fallback_policy",
+      "safety.emit_degrade_notice"
+    ]
+  },
+  "change_log": [
+    {
+      "release_line": "v0.2",
+      "change": "Collapsed safety fallback MCP Markdown docs into a single JSON contract bundle.",
+      "date_label": "2026-02-27"
+    }
+  ]
+}

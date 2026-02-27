@@ -1,0 +1,167 @@
+{
+  "version": "v0.1",
+  "service_id": "gongvue",
+  "summary": "Governance contract for gongvue service onboarding, extension boundaries, and deterministic validation.",
+  "purpose": "Maintain the central governance package for gongvue while keeping runtime implementation and deployment automation outside ai-governance.",
+  "owner_role": "architect-owner",
+  "governance_scope": {
+    "execution_path": "mandatory_bridge",
+    "approval_boundary": [
+      "medium for routine contract maintenance",
+      "high plus human gate for plugin or sidecar boundary expansion"
+    ],
+    "forbidden_actions": [
+      "Gongvue runtime code changes in ai-governance",
+      "MCP runtime implementation in ai-governance",
+      "Autonomous deployment infrastructure changes"
+    ],
+    "scope_in": [
+      "Service registration",
+      "Policy profile",
+      "MCP allowlist",
+      "Plugin and sidecar contract boundary"
+    ],
+    "scope_out": [
+      "Product runtime execution",
+      "Service deployment",
+      "Unbounded extension execution"
+    ],
+    "dependencies": [
+      "control/registry/services.v0.1.json",
+      "control/registry/mcps.v0.1.json",
+      "scripts/validate_all.sh"
+    ],
+    "primary_users": [
+      "governance operators",
+      "gongvue maintainers"
+    ]
+  },
+  "runbook": {
+    "start_conditions": [
+      "Run bash scripts/validate_all.sh before rollout.",
+      "Run bash scripts/test_determinism.sh before rollout.",
+      "Create MCP expansion requests under traces/governance/mcp-request-*.json when needed."
+    ],
+    "steady_state": [
+      "Keep service registration, policy profile, allowlist, and contract bundle aligned.",
+      "Treat plugin and sidecar extensions as contract-only boundaries."
+    ],
+    "failure_response": [
+      "Stop rollout on hash mismatch and regenerate evidence.",
+      "Rollback request status to requested when allowlist and request drift.",
+      "Escalate extension boundary issues to high-tier review."
+    ],
+    "rollback_reference": [
+      "Revert the latest contract-only change set.",
+      "Re-run validation and determinism gates before reopening."
+    ]
+  },
+  "risk": {
+    "tier": "medium",
+    "failure_modes": [
+      "Policy bypass at the plugin or sidecar boundary.",
+      "Sensitive customer data leaking into evidence artifacts.",
+      "Registry drift between central contracts and extension requests.",
+      "Customer extension code causing policy violations."
+    ],
+    "mandatory_controls": [
+      "High-tier human gate for extension boundary changes.",
+      "Hash-reference-only evidence summaries.",
+      "Central validate_all gate as the default contract check."
+    ]
+  },
+  "data_contract": {
+    "classification": "internal",
+    "pii_allowed": false,
+    "primary_artifacts": [
+      "traces/local/pm_objective_*.txt",
+      "traces/local/*.intent.local.json",
+      "traces/governance/mcp-request-*.json",
+      "traces/bridge/*"
+    ],
+    "retention_policy": [
+      "Keep only minimal core traces in-repo.",
+      "Move long-lived operating logs to obsidian-mcp after validation.",
+      "Create all temporary artifacts only under traces/."
+    ],
+    "journal_export_policy": {
+      "mode": "conditional",
+      "target_service": "obsidian-mcp",
+      "conditions": [
+        "Export only validated governance artifacts.",
+        "Preserve repo-relative evidence paths and sha256 references."
+      ]
+    },
+    "access_controls": [
+      "Owner and reviewer access only.",
+      "No raw customer payloads in evidence summaries."
+    ]
+  },
+  "integrations": {
+    "allowed_mcp_ids": [
+      "core-analytics-mcp",
+      "core-safety-fallback-mcp"
+    ],
+    "external_runtime_refs": [
+      "/opt/gongvue/plugins",
+      "GONGVUE_SIDECAR_WEBHOOK_URL"
+    ],
+    "governance_interfaces": [
+      "schemas/bridge_intent.schema.json",
+      "schemas/mcp_change_request.schema.json",
+      "traces/governance/mcp-request-*.json"
+    ],
+    "extension_baseline": [
+      "Plugin plus sidecar is the first-stage extension model.",
+      "SDK distribution is deferred to L2 or later.",
+      "Central governance owns policy, validation, and audit only."
+    ],
+    "permissions_scope": [
+      "Least-privilege MCP capabilities only.",
+      "No runtime code execution in the governance core."
+    ]
+  },
+  "slo_notes": {
+    "common_kpi_set": "governance-core-v1",
+    "critical_metrics": [
+      {
+        "id": "validation_reliability",
+        "target": ">= 99%",
+        "alert": "< 99%",
+        "window": "7d",
+        "notes": "Central validation pass ratio."
+      },
+      {
+        "id": "operational_latency_p95_ms",
+        "target": "<= 1200ms",
+        "alert": "> 1200ms",
+        "window": "rolling benchmark window",
+        "notes": "Policy validation path p95 latency."
+      },
+      {
+        "id": "llm_fallback_rate",
+        "target": "<= 10%",
+        "alert": "> 15%",
+        "window": "24h",
+        "notes": "Safety fallback invocation share."
+      }
+    ],
+    "error_budget": [
+      "Use a 7d rolling window.",
+      "Spend budget on deterministic validation failures.",
+      "Freeze high-risk changes until the budget recovers."
+    ]
+  },
+  "change_log": [
+    {
+      "release_line": "v0.2",
+      "change": "Collapsed gongvue governance docs into a single JSON contract bundle.",
+      "date_label": "2026-02-27"
+    },
+    {
+      "release_line": "v0.1",
+      "change": "Added gongvue onboarding contract package and linked it to the central registries.",
+      "date_label": "2026-02-26"
+    }
+  ]
+}

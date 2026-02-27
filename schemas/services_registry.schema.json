@@ -22,7 +22,7 @@
           "repo_path",
           "policy_profile_ref",
           "mcp_allowlist_path",
-          "docs_path",
+          "contract_bundle_ref",
           "slo_contract_ref"
         ],
         "properties": {
@@ -34,7 +34,10 @@
           "repo_path": { "type": "string", "minLength": 1 },
           "policy_profile_ref": { "type": "string", "minLength": 1 },
           "mcp_allowlist_path": { "type": "string", "minLength": 1 },
-          "docs_path": { "type": "string", "minLength": 1 },
+          "contract_bundle_ref": {
+            "type": "string",
+            "pattern": "^services/[a-z0-9][a-z0-9-]*/contract\\.bundle\\.v0\\.1\\.json$"
+          },
           "slo_contract_ref": { "type": "string", "minLength": 1 }
         },
         "additionalProperties": false

@@ -32,10 +32,8 @@ This repository is architecturally governed.
 
 # AGENTS Hierarchy
 
-- Policy precedence is strict: repository root `AGENTS.md` > `services/<service>/AGENTS.md`.
-- A service-level `AGENTS.md` is optional and may only narrow scope for that service.
-- Service-level rules must not broaden tool access, approval tiers, or evidence/trace obligations defined at root.
-- Any conflict is resolved by root `AGENTS.md`.
+- Repository root `AGENTS.md` is the only AGENTS file used in this repository.
+- Service-level `AGENTS.md` files are not used in this repository.
 - Human override authority remains centralized at root governance policy.
 
 # Execution Guardrails
@@ -43,6 +41,9 @@ This repository is architecturally governed.
 - Keep changes minimal, deterministic, and testable via shell scripts.
 - Prioritize API-level verification; use UI-level checks only when explicitly required.
 - For high-risk boundary changes, require explicit human architect approval.
+- Governed artifacts under `control/`, `policies/`, `schemas/`, `scripts/`, and `services/` must use JSON contracts.
+- `docs/` is a non-contract UI exception.
+- Root `README.md` is the only human-facing Markdown document.
 
 # Default Reporting Format
 

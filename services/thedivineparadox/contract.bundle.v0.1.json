@@ -1,0 +1,180 @@
+{
+  "version": "v0.1",
+  "service_id": "thedivineparadox",
+  "summary": "Governance contract for evidence-based strategic insight workflows with deterministic validation boundaries.",
+  "purpose": "Provide governance-grade strategic insight contracts while ensuring every approved output remains explainable, policy-bound, and trace-linked.",
+  "owner_role": "architect-owner",
+  "governance_scope": {
+    "execution_path": "mandatory_bridge",
+    "approval_boundary": [
+      "medium for approved API-surface tuning within the existing boundary",
+      "high for experimental API expansion, data-boundary change, or external permission escalation"
+    ],
+    "forbidden_actions": [
+      "Product runtime execution logic in ai-governance",
+      "Network-dependent verdict generation in the deterministic path",
+      "Autonomous high-risk decision execution"
+    ],
+    "scope_in": [
+      "Evidence summarization contracts",
+      "Policy-conflict narrative generation contracts",
+      "Scenario recommendation drafting contracts",
+      "Governance documentation for approved paths"
+    ],
+    "scope_out": [
+      "Product runtime behavior",
+      "Untracked external API use",
+      "Unbounded experimental outputs"
+    ],
+    "dependencies": [
+      "policies/policy_profiles.v0.1.json",
+      "policies/approval_tier_policy.v0.1.json",
+      "control/registry/mcps.v0.1.json",
+      "control/specs/trace_rules.v0.1.json"
+    ],
+    "primary_users": [
+      "platform owners",
+      "architects approving policy and risk decisions"
+    ],
+    "decision_principles": [
+      "Evidence-first",
+      "Explainability-first",
+      "Policy-first"
+    ]
+  },
+  "runbook": {
+    "start_conditions": [
+      "Update service contracts and policy contracts in a single change set.",
+      "Run bash scripts/validate_all.sh, bash scripts/test_determinism.sh, and bash scripts/benchmark_gate.sh before merge."
+    ],
+    "steady_state": [
+      "Preserve evidence refs and trace refs for every approved insight.",
+      "Keep external API use limited to the declared and approved surface."
+    ],
+    "failure_response": [
+      "Freeze release on failed validation, moderation violations, missing evidence refs, or benchmark regressions.",
+      "Disable experimental path outputs and route back to deterministic baseline flow.",
+      "If external API path is degraded, emit governance-safe fallback notes instead of an autonomous verdict."
+    ],
+    "rollback_reference": [
+      "Revert the latest service contract change set.",
+      "Re-run validation and determinism checks to confirm baseline restoration."
+    ],
+    "access_revocation": [
+      "Rotate external API credentials according to incident severity.",
+      "Remove access for non-compliant operators and record revocation trace refs."
+    ]
+  },
+  "risk": {
+    "tier": "medium",
+    "failure_modes": [
+      "External API expansion introduces unreviewed capability drift.",
+      "Evidence bundles include sensitive metadata.",
+      "Asynchronous batch runs hide failures and reduce explainability.",
+      "Untracked external API usage creates contractual or regional exposure."
+    ],
+    "mandatory_controls": [
+      "Allowlist-only external API surface.",
+      "Moderation gates before and after release paths.",
+      "Fallback to deterministic local validation when async paths fail.",
+      "Architect review for high-tier boundary changes."
+    ]
+  },
+  "data_contract": {
+    "classification": "internal",
+    "pii_allowed": false,
+    "primary_artifacts": [
+      "Evidence summaries linked by hash.",
+      "Trace-linked strategic insight outputs.",
+      "Incident records required by governance incident playbook."
+    ],
+    "retention_policy": [
+      "Retain evidence summaries by trace reference policy.",
+      "Retain derived strategic insights only with linked evidence and trace refs.",
+      "Retain incident records according to the governance incident playbook."
+    ],
+    "journal_export_policy": {
+      "mode": "conditional",
+      "target_service": "obsidian-mcp",
+      "conditions": [
+        "Export only validated long-lived governance diary entries.",
+        "Redact any unexpected sensitive data before export."
+      ]
+    },
+    "access_controls": [
+      "RBAC for service owners and designated reviewers only.",
+      "All access and approvals must be trace-recorded.",
+      "No anonymous or unmanaged external access."
+    ]
+  },
+  "integrations": {
+    "allowed_mcp_ids": [
+      "core-analytics-mcp",
+      "core-experiment-mcp",
+      "core-safety-fallback-mcp"
+    ],
+    "external_runtime_refs": [
+      "OpenAI responses",
+      "OpenAI embeddings",
+      "OpenAI moderation",
+      "OpenAI files",
+      "OpenAI batches"
+    ],
+    "governance_interfaces": [
+      "policies/policy_profiles.v0.1.json",
+      "policies/approval_tier_policy.v0.1.json",
+      "control/specs/trace_rules.v0.1.json"
+    ],
+    "extension_baseline": [
+      "Experimental APIs are recommendation-only and never on the core verdict path.",
+      "Replace placeholder MCP bootstrap only after registry onboarding and conformance artifacts."
+    ],
+    "permissions_scope": [
+      "Least-privilege declared MCP capabilities and approved external API surfaces only.",
+      "Escalate to high tier for experimental API, data-boundary, or external permission expansion."
+    ]
+  },
+  "slo_notes": {
+    "common_kpi_set": "governance-core-v1",
+    "critical_metrics": [
+      {
+        "id": "explainability_coverage",
+        "target": "100%",
+        "alert": "< 100% in any release candidate",
+        "window": "release-candidate",
+        "notes": "Every shipped change must include evidence and trace refs."
+      },
+      {
+        "id": "validation_reliability",
+        "target": ">= 99%",
+        "alert": "< 99% over 7d",
+        "window": "7d",
+        "notes": "Governance validation pass ratio."
+      },
+      {
+        "id": "llm_fallback_rate",
+        "target": "<= 8%",
+        "alert": "> 12% over 24h",
+        "window": "24h",
+        "notes": "Share of recompute events ending with degraded LLM status."
+      }
+    ],
+    "error_budget": [
+      "Use a 28 day window.",
+      "Track burn by explainability and validation misses.",
+      "Freeze non-essential changes when burn exceeds 50 percent before mid-window."
+    ]
+  },
+  "change_log": [
+    {
+      "release_line": "v0.2",
+      "change": "Collapsed thedivineparadox governance docs into a single JSON contract bundle.",
+      "date_label": "2026-02-27"
+    },
+    {
+      "release_line": "v0.1",
+      "change": "Introduced thedivineparadox governance service contract and approved external API usage scope.",
+      "date_label": "2026-02-22"
+    }
+  ]
+}

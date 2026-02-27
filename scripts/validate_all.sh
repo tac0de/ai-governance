@@ -96,23 +96,6 @@ check_allowed_entries_in_dir() {
   done < <(find "$ROOT_DIR/$rel_dir" -mindepth 1 -maxdepth 1 | sort)
 }
 
-check_services_have_agents() {
-  local services_root="services"
-  local service_path
-  local service_name
-
-  if ! check_dir "$services_root"; then
-    return
-  fi
-
-  while IFS= read -r service_path; do
-    service_name="$(basename "$service_path")"
-    if [[ ! -f "$service_path/AGENTS.md" ]]; then
-      fail "$services_root/$service_name/AGENTS.md" "missing service-level AGENTS.md"
-    fi
-  done < <(find "$ROOT_DIR/$services_root" -mindepth 1 -maxdepth 1 -type d | sort)
-}
-
 check_json() {
   local rel_path="$1"
   if ! check_file "$rel_path"; then
@@ -164,20 +147,11 @@ ORG_REG_REL="control/registry/org.v0.1.json"
 SERVICES_REG_REL="control/registry/services.v0.1.json"
 MCPS_REG_REL="control/registry/mcps.v0.1.json"
 
-SERVICE_DOCS_FIXED=(
-  "SERVICE.md"
-  "SLO.md"
-  "RISK.md"
-  "RUNBOOK.md"
-  "DATA.md"
-  "INTEGRATIONS.md"
-  "CHANGELOG.md"
-)
-
-MCP_DOCS_FIXED=(
-  "MCP.md"
-  "CAPABILITIES.md"
-  "SECURITY.md"
+SERVICE_PACKAGE_FIXED=(
+  "contract.bundle.v0.1.json"
+  "mcp.allowlist.json"
+  "policy.profile.json"
+  "slo.contract.v0.1.json"
 )
 
 # Ensure all schema contracts exist and are valid JSON.
@@ -190,12 +164,17 @@ for schema_rel in \
   schemas/agent_routing_policy.schema.json \
   schemas/org.schema.json \
   schemas/services_registry.schema.json \
+  schemas/service_contract_bundle.schema.json \
   schemas/service_slo_contract.schema.json \
   schemas/mcps_registry.schema.json \
   schemas/mcp_allowlist.schema.json \
   schemas/mcp_manifest.schema.json \
+  schemas/mcp_contract_bundle.schema.json \
   schemas/mcp_runtime_binding.schema.json \
   schemas/mcp_change_request.schema.json \
+  schemas/control_playbook.schema.json \
+  schemas/trace_rules.schema.json \
+  schemas/mcp_ownership_policy.schema.json \
   schemas/cloud_batch_jobs_manifest.schema.json \
   schemas/cloud_batch_results_manifest.schema.json \
   schemas/cloud_batch_verify_verdict.schema.json
@@ -210,27 +189,25 @@ check_exact_files_in_dir "control/registry" \
   "mcps.v0.1.json"
 
 check_exact_files_in_dir "control/playbooks" \
-  "incident.md" \
-  "change-management.md" \
-  "onboarding.md"
+  "incident.v0.1.json" \
+  "change-management.v0.1.json" \
+  "onboarding.v0.1.json"
 
 check_exact_files_in_dir "control/benchmarks" \
   "efficiency_benchmark_spec.v0.1.json"
 
 check_exact_files_in_dir "control/agents" \
-  "README.md" \
   "departments.v0.1.json"
 
 check_exact_files_in_dir "control/prompts" \
-  "README.md" \
   "library.v0.1.json"
 
 check_exact_files_in_dir "control/specs" \
   "opcodes.v0.1.json" \
-  "trace_rules.v0.1.md"
+  "trace_rules.v0.1.json"
 
-check_exact_files_in_dir "control/templates/service" "${SERVICE_DOCS_FIXED[@]}"
-check_exact_files_in_dir "control/templates/mcp" "${MCP_DOCS_FIXED[@]}"
+check_exact_files_in_dir "control/templates/service" "contract.bundle.template.v0.1.json"
+check_exact_files_in_dir "control/templates/mcp" "contract.bundle.template.v0.1.json"
 
 # Existing governance core validation contracts.
 validate_jq_contract "fixtures/intent.envelope.json" "schemas/envelope.schema.json" '
@@ -349,6 +326,64 @@ validate_jq_contract "control/benchmarks/efficiency_benchmark_spec.v0.1.json" "s
   (.kpi_thresholds.min_cache_hit_rate>=0 and .kpi_thresholds.min_cache_hit_rate<=1) and
   (.kpi_thresholds.max_fallback_rate>=0 and .kpi_thresholds.max_fallback_rate<=1) and
   (.kpi_thresholds.min_cost_reduction_vs_baseline>=0)
+'
+
+validate_jq_contract "control/playbooks/incident.v0.1.json" "schemas/control_playbook.schema.json" '
+  .version=="v0.1" and
+  (.playbook_id=="incident") and
+  (.trigger_conditions|type=="array" and length>0) and
+  (.execution_steps|type=="array" and length>0) and
+  (.rollback_condition|type=="array" and length>0)
+'
+
+validate_jq_contract "control/playbooks/change-management.v0.1.json" "schemas/control_playbook.schema.json" '
+  .version=="v0.1" and
+  (.playbook_id=="change-management") and
+  (.required_inputs|type=="array" and length>0) and
+  (.execution_steps|type=="array" and length>0) and
+  (.evidence_outputs|type=="array" and length>0)
+'
+
+validate_jq_contract "control/playbooks/onboarding.v0.1.json" "schemas/control_playbook.schema.json" '
+  .version=="v0.1" and
+  (.playbook_id=="onboarding") and
+  (.required_inputs|type=="array" and length>0) and
+  (.execution_steps|type=="array" and length>0) and
+  (.rollback_condition|type=="array" and length>0)
+'
+
+validate_jq_contract "control/specs/trace_rules.v0.1.json" "schemas/trace_rules.schema.json" '
+  .version=="v0.1" and
+  (.append_only==true) and
+  (.hash_reference_required==true) and
+  (.allowed_record_types|type=="array" and length>0) and
+  (.forbidden_mutations|type=="array" and length>0) and
+  (.retention_model.primary_store=="traces/") and
+  (.journal_export_boundary.mcp_id=="core-governance-journal-mcp") and
+  (.journal_export_boundary.target_service=="obsidian-mcp")
+'
+
+validate_jq_contract "policies/mcp_ownership_policy.v0.1.json" "schemas/mcp_ownership_policy.schema.json" '
+  .version=="v0.1" and
+  (.central_ownership|type=="array" and length>0) and
+  (.service_ownership|type=="array" and length>0) and
+  (.non_negotiable_rules|type=="array" and length>0) and
+  (.service_scoped_exception.allowed|type=="boolean") and
+  (.service_scoped_exception.conditions|type=="array" and length>0)
+'
+
+validate_jq_contract "control/templates/service/contract.bundle.template.v0.1.json" "schemas/service_contract_bundle.schema.json" '
+  .version=="v0.1" and
+  (.service_id=="example-service") and
+  (.owner_role=="architect-owner") and
+  (.governance_scope.execution_path=="mandatory_bridge")
+'
+
+validate_jq_contract "control/templates/mcp/contract.bundle.template.v0.1.json" "schemas/mcp_contract_bundle.schema.json" '
+  .version=="v0.1" and
+  (.mcp_id=="core-example-mcp") and
+  (.capability_contract.required_approval_tier=="medium") and
+  (.runtime_contract.binding_ref=="control/mcps/core-example-mcp/versions/runtime.binding.v0.1.json")
 '
 
 validate_jq_contract "fixtures/cloud_batch/jobs.sample.v0.1.json" "schemas/cloud_batch_jobs_manifest.schema.json" '
@@ -527,11 +562,13 @@ validate_jq_contract "$SERVICES_REG_REL" "schemas/services_registry.schema.json"
     (.repo_path|type=="string" and length>0) and
     (.policy_profile_ref|type=="string" and length>0) and
     (.mcp_allowlist_path|type=="string" and length>0) and
-    (.docs_path|type=="string" and length>0) and
+    (.contract_bundle_ref|type=="string" and length>0) and
+    (has("docs_path") | not) and
     (.slo_contract_ref|type=="string" and length>0)
   )) and
   ([.services[].id] | length==(unique|length)) and
-  ([.services[].repo_path] | length==(unique|length))
+  ([.services[].repo_path] | length==(unique|length)) and
+  ([.services[].contract_bundle_ref] | length==(unique|length))
 '
 
 validate_jq_contract "$MCPS_REG_REL" "schemas/mcps_registry.schema.json" '
@@ -550,9 +587,6 @@ validate_jq_contract "$MCPS_REG_REL" "schemas/mcps_registry.schema.json" '
   ([.mcps[].id] | length==(unique|length)) and
   ([.mcps[].root_path] | length==(unique|length))
 '
-
-# Ensure every service has a service-level AGENTS policy narrowing file.
-check_services_have_agents
 
 if [[ -d "$ROOT_DIR/packages/mcps" ]]; then
   fail "packages/mcps" "unsupported MCP root; use control/mcps/<mcp-name>"
@@ -583,16 +617,15 @@ fi
 
 # Validate each service contract package.
 if json_ready "$SERVICES_REG_REL"; then
-  while IFS=$'\t' read -r service_id repo_path policy_profile_ref mcp_allowlist_path docs_path slo_contract_ref; do
+  while IFS=$'\t' read -r service_id repo_path policy_profile_ref mcp_allowlist_path contract_bundle_ref slo_contract_ref; do
     [[ -n "$service_id" ]] || continue
 
     check_dir "$repo_path"
+    check_exact_files_in_dir "$repo_path" "${SERVICE_PACKAGE_FIXED[@]}"
     check_file "$policy_profile_ref"
     check_file "$mcp_allowlist_path"
-    check_dir "$docs_path"
+    check_file "$contract_bundle_ref"
     check_file "$slo_contract_ref"
-
-    check_exact_files_in_dir "$docs_path" "${SERVICE_DOCS_FIXED[@]}"
 
     if check_json "$policy_profile_ref"; then
       if ! jq -e '
@@ -649,6 +682,75 @@ if json_ready "$SERVICES_REG_REL"; then
         done < <(jq -r '.allowed_mcps[]? | .mcp_id as $mcp_id | .capabilities[]? | [$mcp_id, .] | @tsv' "$ROOT_DIR/$mcp_allowlist_path")
       fi
     fi
+
+    if check_json "$contract_bundle_ref"; then
+      if ! jq -e '
+        .version=="v0.1" and
+        (.service_id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+        (.summary|type=="string" and length>0) and
+        (.purpose|type=="string" and length>0) and
+        (.owner_role=="architect-owner") and
+        (.governance_scope.execution_path=="mandatory_bridge") and
+        (.governance_scope.approval_boundary|type=="array" and length>0) and
+        (.governance_scope.forbidden_actions|type=="array" and length>0) and
+        (.governance_scope.scope_in|type=="array" and length>0) and
+        (.governance_scope.scope_out|type=="array" and length>0) and
+        (.governance_scope.dependencies|type=="array" and length>0) and
+        (.governance_scope.primary_users|type=="array" and length>0) and
+        (.runbook.start_conditions|type=="array" and length>0) and
+        (.runbook.steady_state|type=="array" and length>0) and
+        (.runbook.failure_response|type=="array" and length>0) and
+        (.runbook.rollback_reference|type=="array" and length>0) and
+        (.risk.tier=="low" or .risk.tier=="medium" or .risk.tier=="high") and
+        (.risk.failure_modes|type=="array" and length>0) and
+        (.risk.mandatory_controls|type=="array" and length>0) and
+        (.data_contract.classification|type=="string" and length>0) and
+        (.data_contract.pii_allowed|type=="boolean") and
+        (.data_contract.primary_artifacts|type=="array" and length>0) and
+        (.data_contract.retention_policy|type=="array" and length>0) and
+        (.data_contract.journal_export_policy.mode=="disabled" or .data_contract.journal_export_policy.mode=="conditional" or .data_contract.journal_export_policy.mode=="required") and
+        (.data_contract.journal_export_policy.conditions|type=="array" and length>0) and
+        (.data_contract.access_controls|type=="array" and length>0) and
+        (.integrations.allowed_mcp_ids|type=="array") and
+        (.integrations.external_runtime_refs|type=="array") and
+        (.integrations.governance_interfaces|type=="array" and length>0) and
+        (.slo_notes.common_kpi_set=="governance-core-v1") and
+        (.slo_notes.critical_metrics|type=="array" and length>0) and
+        (.slo_notes.error_budget|type=="array" and length>0) and
+        (.change_log|type=="array" and length>0)
+      ' "$ROOT_DIR/$contract_bundle_ref" >/dev/null 2>&1; then
+        fail "$contract_bundle_ref" "schema validation failed (schemas/service_contract_bundle.schema.json)"
+      fi
+
+      bundle_service_id="$(jq -r '.service_id // ""' "$ROOT_DIR/$contract_bundle_ref")"
+      if [[ "$bundle_service_id" != "$service_id" ]]; then
+        fail "$contract_bundle_ref" "service_id '$bundle_service_id' does not match registry service id '$service_id'"
+      fi
+
+      bundle_target_service="$(jq -r 'if .data_contract.journal_export_policy.target_service == null then "" else .data_contract.journal_export_policy.target_service end' "$ROOT_DIR/$contract_bundle_ref")"
+      if [[ -n "$bundle_target_service" && "$bundle_target_service" != "obsidian-mcp" ]]; then
+        fail "$contract_bundle_ref" "journal export target must be 'obsidian-mcp' when declared"
+      fi
+
+      if json_ready "$MCPS_REG_REL"; then
+        while IFS= read -r allowed_mcp_id; do
+          [[ -n "$allowed_mcp_id" ]] || continue
+          if ! jq -e --arg mcp_id "$allowed_mcp_id" '.mcps | any(.id==$mcp_id)' "$ROOT_DIR/$MCPS_REG_REL" >/dev/null 2>&1; then
+            fail "$contract_bundle_ref" "unknown MCP id '$allowed_mcp_id' in integrations.allowed_mcp_ids"
+          fi
+        done < <(jq -r '.integrations.allowed_mcp_ids[]?' "$ROOT_DIR/$contract_bundle_ref")
+      fi
+
+      if check_json "$mcp_allowlist_path"; then
+        if ! jq -e \
+          --slurpfile bundle "$ROOT_DIR/$contract_bundle_ref" \
+          '(([.allowed_mcps[]?.mcp_id] | sort) == (($bundle[0].integrations.allowed_mcp_ids // []) | sort))' \
+          "$ROOT_DIR/$mcp_allowlist_path" >/dev/null 2>&1; then
+          fail "$contract_bundle_ref" "integrations.allowed_mcp_ids must match ${mcp_allowlist_path}"
+        fi
+      fi
+    fi
+
     if check_json "$slo_contract_ref"; then
       if ! jq -e '
         .version=="v0.1" and
@@ -676,7 +778,7 @@ if json_ready "$SERVICES_REG_REL"; then
         (.mode_defaults.strictness=="hybrid" or .mode_defaults.strictness=="strict" or .mode_defaults.strictness=="soft")
       '
     fi
-  done < <(jq -r '.services[] | [.id, .repo_path, .policy_profile_ref, .mcp_allowlist_path, .docs_path, .slo_contract_ref] | @tsv' "$ROOT_DIR/$SERVICES_REG_REL")
+  done < <(jq -r '.services[] | [.id, .repo_path, .policy_profile_ref, .mcp_allowlist_path, .contract_bundle_ref, .slo_contract_ref] | @tsv' "$ROOT_DIR/$SERVICES_REG_REL")
 fi
 
 # Every services/* directory must be in central services registry.
@@ -695,11 +797,13 @@ if json_ready "$MCPS_REG_REL"; then
     [[ -n "$mcp_id" ]] || continue
 
     manifest_rel="$root_path/manifest.json"
+    contract_bundle_rel="$root_path/contract.bundle.v0.1.json"
     check_dir "$root_path"
     check_file "$manifest_rel"
-    check_allowed_entries_in_dir "$root_path" "manifest.json" "docs" "versions"
-    check_exact_files_in_dir "$root_path/docs" "${MCP_DOCS_FIXED[@]}"
+    check_file "$contract_bundle_rel"
+    check_allowed_entries_in_dir "$root_path" "manifest.json" "contract.bundle.v0.1.json" "versions"
     runtime_binding_rel="$root_path/versions/runtime.binding.v0.1.json"
+    check_exact_files_in_dir "$root_path/versions" "runtime.binding.v0.1.json"
     check_file "$runtime_binding_rel"
     check_json "$runtime_binding_rel"
     if check_json "$runtime_binding_rel"; then
@@ -713,6 +817,46 @@ if json_ready "$MCPS_REG_REL"; then
         (.tool_names|type=="array" and length>0 and length==(unique|length) and all(.[]; type=="string" and test("^[a-z0-9][a-z0-9._-]*$")))
       ' "$ROOT_DIR/$runtime_binding_rel" >/dev/null 2>&1; then
         fail "$runtime_binding_rel" "schema validation failed (schemas/mcp_runtime_binding.schema.json)"
+      fi
+    fi
+
+    if check_json "$contract_bundle_rel"; then
+      if ! jq -e '
+        .version=="v0.1" and
+        (.mcp_id|type=="string" and test("^core-[a-z0-9][a-z0-9-]*$")) and
+        (.summary|type=="string" and length>0) and
+        (.purpose|type=="string" and length>0) and
+        (.capability_contract.allowed_operations|type=="array" and length>0 and length==(unique|length)) and
+        (.capability_contract.forbidden_expansion|type=="array" and length>0) and
+        (.capability_contract.required_approval_tier=="low" or .capability_contract.required_approval_tier=="medium" or .capability_contract.required_approval_tier=="high") and
+        (.capability_contract.scope|type=="array" and length>0) and
+        (.security_boundary.allowed_inputs|type=="array" and length>0) and
+        (.security_boundary.forbidden_inputs|type=="array" and length>0) and
+        (.security_boundary.non_goals|type=="array" and length>0) and
+        (.security_boundary.controls|type=="array" and length>0) and
+        (.evidence_contract.required_refs|type=="array" and length>0) and
+        (.evidence_contract.hash_policy|type=="string" and length>0) and
+        (.evidence_contract.trace_linkage|type=="string" and length>0) and
+        (.runtime_contract.binding_ref|type=="string" and length>0) and
+        (.runtime_contract.runtime_owner_service|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+        (.runtime_contract.runtime_repo_path|type=="string" and length>0) and
+        (.runtime_contract.invocation_surface|type=="string" and length>0) and
+        (.runtime_contract.sdk_package|type=="string" and length>0) and
+        (.runtime_contract.validation_package|type=="string" and length>0) and
+        (.runtime_contract.tool_names|type=="array" and length>0 and length==(unique|length)) and
+        (.change_log|type=="array" and length>0)
+      ' "$ROOT_DIR/$contract_bundle_rel" >/dev/null 2>&1; then
+        fail "$contract_bundle_rel" "schema validation failed (schemas/mcp_contract_bundle.schema.json)"
+      fi
+
+      bundle_mcp_id="$(jq -r '.mcp_id // ""' "$ROOT_DIR/$contract_bundle_rel")"
+      if [[ "$bundle_mcp_id" != "$mcp_id" ]]; then
+        fail "$contract_bundle_rel" "mcp_id '$bundle_mcp_id' does not match registry id '$mcp_id'"
+      fi
+
+      bundle_binding_ref="$(jq -r '.runtime_contract.binding_ref // ""' "$ROOT_DIR/$contract_bundle_rel")"
+      if [[ "$bundle_binding_ref" != "$runtime_binding_rel" ]]; then
+        fail "$contract_bundle_rel" "runtime_contract.binding_ref must equal ${runtime_binding_rel}"
       fi
     fi
 
@@ -750,10 +894,26 @@ if json_ready "$MCPS_REG_REL"; then
         fail "$MCPS_REG_REL" "registry pinned_ref_hash for MCP '$mcp_id' must equal runtime binding hash (${expected_pinned_hash})"
       fi
 
+      runtime_owner_service="$(jq -r '.runtime_owner_service // ""' "$ROOT_DIR/$runtime_binding_rel")"
       if json_ready "$SERVICES_REG_REL"; then
-        runtime_owner_service="$(jq -r '.runtime_owner_service // ""' "$ROOT_DIR/$runtime_binding_rel")"
         if ! jq -e --arg service_id "$runtime_owner_service" '.services | any(.id==$service_id)' "$ROOT_DIR/$SERVICES_REG_REL" >/dev/null 2>&1; then
           fail "$runtime_binding_rel" "runtime_owner_service '$runtime_owner_service' is not registered in ${SERVICES_REG_REL}"
+        fi
+      fi
+
+      if check_json "$contract_bundle_rel"; then
+        if ! jq -e --arg service_id "$runtime_owner_service" '.runtime_contract.runtime_owner_service==$service_id' "$ROOT_DIR/$contract_bundle_rel" >/dev/null 2>&1; then
+          fail "$contract_bundle_rel" "runtime_contract.runtime_owner_service does not match ${runtime_binding_rel}"
+        fi
+
+        if ! jq -e --arg surface "$(jq -r '.invocation_surface' "$ROOT_DIR/$runtime_binding_rel")" '.runtime_contract.invocation_surface==$surface' "$ROOT_DIR/$contract_bundle_rel" >/dev/null 2>&1; then
+          fail "$contract_bundle_rel" "runtime_contract.invocation_surface does not match ${runtime_binding_rel}"
+        fi
+
+        if ! jq -e --slurpfile manifest "$ROOT_DIR/$manifest_rel" '
+            ((.capability_contract.allowed_operations | sort) == (($manifest[0].capabilities | sort)))
+          ' "$ROOT_DIR/$contract_bundle_rel" >/dev/null 2>&1; then
+          fail "$contract_bundle_rel" "capability_contract.allowed_operations must match ${manifest_rel}"
         fi
       fi
     fi

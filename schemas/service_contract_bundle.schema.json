@@ -1,0 +1,247 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ServiceContractBundle",
+  "type": "object",
+  "required": [
+    "version",
+    "service_id",
+    "summary",
+    "purpose",
+    "owner_role",
+    "governance_scope",
+    "runbook",
+    "risk",
+    "data_contract",
+    "integrations",
+    "slo_notes",
+    "change_log"
+  ],
+  "properties": {
+    "version": { "type": "string", "const": "v0.1" },
+    "service_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "summary": { "type": "string", "minLength": 1 },
+    "purpose": { "type": "string", "minLength": 1 },
+    "owner_role": { "type": "string", "const": "architect-owner" },
+    "governance_scope": {
+      "type": "object",
+      "required": [
+        "execution_path",
+        "approval_boundary",
+        "forbidden_actions",
+        "scope_in",
+        "scope_out",
+        "dependencies",
+        "primary_users"
+      ],
+      "properties": {
+        "execution_path": { "type": "string", "minLength": 1 },
+        "approval_boundary": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "forbidden_actions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "scope_in": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "scope_out": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "dependencies": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "primary_users": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "decision_principles": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "runbook": {
+      "type": "object",
+      "required": ["start_conditions", "steady_state", "failure_response", "rollback_reference"],
+      "properties": {
+        "start_conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "steady_state": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "failure_response": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "rollback_reference": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "access_revocation": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "risk": {
+      "type": "object",
+      "required": ["tier", "failure_modes", "mandatory_controls"],
+      "properties": {
+        "tier": { "type": "string", "enum": ["low", "medium", "high"] },
+        "failure_modes": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "mandatory_controls": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "data_contract": {
+      "type": "object",
+      "required": [
+        "classification",
+        "pii_allowed",
+        "primary_artifacts",
+        "retention_policy",
+        "journal_export_policy",
+        "access_controls"
+      ],
+      "properties": {
+        "classification": { "type": "string", "minLength": 1 },
+        "pii_allowed": { "type": "boolean" },
+        "primary_artifacts": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "retention_policy": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "journal_export_policy": {
+          "type": "object",
+          "required": ["mode", "target_service", "conditions"],
+          "properties": {
+            "mode": { "type": "string", "enum": ["disabled", "conditional", "required"] },
+            "target_service": {
+              "type": ["string", "null"],
+              "pattern": "^[a-z0-9][a-z0-9-]*$"
+            },
+            "conditions": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            }
+          },
+          "additionalProperties": false
+        },
+        "access_controls": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "integrations": {
+      "type": "object",
+      "required": ["allowed_mcp_ids", "external_runtime_refs", "governance_interfaces"],
+      "properties": {
+        "allowed_mcp_ids": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^core-[a-z0-9][a-z0-9-]*$" },
+          "uniqueItems": true
+        },
+        "external_runtime_refs": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "governance_interfaces": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "extension_baseline": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "permissions_scope": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "slo_notes": {
+      "type": "object",
+      "required": ["common_kpi_set", "critical_metrics", "error_budget"],
+      "properties": {
+        "common_kpi_set": { "type": "string", "minLength": 1 },
+        "critical_metrics": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "target", "alert", "window", "notes"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "target": { "type": "string", "minLength": 1 },
+              "alert": { "type": "string", "minLength": 1 },
+              "window": { "type": "string", "minLength": 1 },
+              "notes": { "type": "string", "minLength": 1 }
+            },
+            "additionalProperties": false
+          }
+        },
+        "error_budget": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "change_log": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["release_line", "change", "date_label"],
+        "properties": {
+          "release_line": { "type": "string", "minLength": 1 },
+          "change": { "type": "string", "minLength": 1 },
+          "date_label": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

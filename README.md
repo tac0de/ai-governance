@@ -18,7 +18,7 @@ Release line: `v0.2` (artifact file line remains `v0.1` for schema and contract 
 
 3. `scripts/validate_all.sh`
 - 중앙 설계 강제 지점.
-- 고정 문서 세트, 레지스트리 정합성, 정책 프로파일, MCP allowlist/manifest, executor routing policy를 검증.
+- JSON contract bundle, 레지스트리 정합성, 정책 프로파일, MCP allowlist/manifest, executor routing policy를 검증.
 
 4. `.github/workflows/deterministic-governance.yml`
 - CI에서 `validate_all.sh` + 결정성/벤치마크 게이트를 실행.
@@ -98,7 +98,7 @@ bash scripts/validate_all.sh
 ## 신규 서비스 온보딩 (Contracts-Only)
 
 ```bash
-# 1) 서비스 계약 패키지 추가 (services/<service-id>)
+# 1) 서비스 계약 패키지 추가 (services/<service-id>/contract.bundle.v0.1.json)
 # 2) 중앙 레지스트리에 등록 (control/registry/services.v0.1.json)
 # 3) 중앙 계약 검증
 bash scripts/validate_all.sh
@@ -131,7 +131,7 @@ bash scripts/bridge_consume.sh --executor governance-council
 bash scripts/bridge_one_shot_local.sh tdp.phase2.ops_hardening traces/local/pm_objective_ops_hardening.txt high true architect-owner
 ```
 
-## Local Codex PM Integration (No External API)
+## Local PM Integration (No External API)
 
 ```bash
 # 1) Prepare objective text (free-form)
@@ -158,11 +158,11 @@ This creates a local export packet and receipt skeleton under `traces/governance
 
 ## Appendix (Secondary Paths)
 
-- `control/templates/`: service/MCP fixed-doc templates
-- `control/playbooks/`: incident/change/onboarding guides
+- `control/templates/`: service/MCP JSON contract bundle templates
+- `control/playbooks/`: incident/change/onboarding JSON playbooks
 - `control/agents/`: central department assignment catalog
 - `control/prompts/`: generic governance prompt library
-- `control/specs/`: opcode set, trace rules
+- `control/specs/`: opcode set, JSON trace rules
 - `control/benchmarks/`: efficiency benchmark spec
 - `fixtures/`: deterministic sample inputs
 - `docs/`: GitHub Pages showcase only

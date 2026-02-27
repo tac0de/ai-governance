@@ -1,0 +1,129 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "McpContractBundle",
+  "type": "object",
+  "required": [
+    "version",
+    "mcp_id",
+    "summary",
+    "purpose",
+    "capability_contract",
+    "security_boundary",
+    "evidence_contract",
+    "runtime_contract",
+    "change_log"
+  ],
+  "properties": {
+    "version": { "type": "string", "const": "v0.1" },
+    "mcp_id": { "type": "string", "pattern": "^core-[a-z0-9][a-z0-9-]*$" },
+    "summary": { "type": "string", "minLength": 1 },
+    "purpose": { "type": "string", "minLength": 1 },
+    "capability_contract": {
+      "type": "object",
+      "required": ["allowed_operations", "forbidden_expansion", "required_approval_tier", "scope"],
+      "properties": {
+        "allowed_operations": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "forbidden_expansion": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "required_approval_tier": { "type": "string", "enum": ["low", "medium", "high"] },
+        "scope": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "security_boundary": {
+      "type": "object",
+      "required": ["allowed_inputs", "forbidden_inputs", "non_goals", "controls"],
+      "properties": {
+        "allowed_inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "forbidden_inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "non_goals": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "controls": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidence_contract": {
+      "type": "object",
+      "required": ["required_refs", "hash_policy", "trace_linkage"],
+      "properties": {
+        "required_refs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "hash_policy": { "type": "string", "minLength": 1 },
+        "trace_linkage": { "type": "string", "minLength": 1 }
+      },
+      "additionalProperties": false
+    },
+    "runtime_contract": {
+      "type": "object",
+      "required": [
+        "binding_ref",
+        "runtime_owner_service",
+        "runtime_repo_path",
+        "invocation_surface",
+        "sdk_package",
+        "validation_package",
+        "tool_names"
+      ],
+      "properties": {
+        "binding_ref": { "type": "string", "minLength": 1 },
+        "runtime_owner_service": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+        "runtime_repo_path": { "type": "string", "minLength": 1 },
+        "invocation_surface": { "type": "string", "minLength": 1 },
+        "sdk_package": { "type": "string", "minLength": 1 },
+        "validation_package": { "type": "string", "minLength": 1 },
+        "tool_names": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    },
+    "change_log": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["release_line", "change", "date_label"],
+        "properties": {
+          "release_line": { "type": "string", "minLength": 1 },
+          "change": { "type": "string", "minLength": 1 },
+          "date_label": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,122 @@
+{
+  "version": "v0.1",
+  "service_id": "example-service",
+  "summary": "Example governance contract bundle for a service package.",
+  "purpose": "Define the minimum deterministic governance contract for a service package.",
+  "owner_role": "architect-owner",
+  "governance_scope": {
+    "execution_path": "mandatory_bridge",
+    "approval_boundary": [
+      "medium for routine contract updates",
+      "high plus human gate for boundary expansion"
+    ],
+    "forbidden_actions": [
+      "Runtime implementation in ai-governance"
+    ],
+    "scope_in": [
+      "Policy profile",
+      "MCP allowlist",
+      "Service contract bundle"
+    ],
+    "scope_out": [
+      "Product runtime code"
+    ],
+    "dependencies": [
+      "control/registry/services.v0.1.json"
+    ],
+    "primary_users": [
+      "architect-owner"
+    ],
+    "decision_principles": [
+      "Evidence-first",
+      "Policy-first"
+    ]
+  },
+  "runbook": {
+    "start_conditions": [
+      "Change set prepared"
+    ],
+    "steady_state": [
+      "Run bash scripts/validate_all.sh"
+    ],
+    "failure_response": [
+      "Freeze rollout and restore last compliant contract set"
+    ],
+    "rollback_reference": [
+      "Revert the latest contract-only change set"
+    ],
+    "access_revocation": [
+      "Record credential rotation in trace artifacts"
+    ]
+  },
+  "risk": {
+    "tier": "medium",
+    "failure_modes": [
+      "Policy drift",
+      "Missing evidence refs"
+    ],
+    "mandatory_controls": [
+      "Approval-tier enforcement",
+      "Deterministic validation"
+    ]
+  },
+  "data_contract": {
+    "classification": "internal",
+    "pii_allowed": false,
+    "primary_artifacts": [
+      "trace-linked JSON contracts"
+    ],
+    "retention_policy": [
+      "Keep only governance-relevant artifacts"
+    ],
+    "journal_export_policy": {
+      "mode": "conditional",
+      "target_service": "obsidian-mcp",
+      "conditions": [
+        "Export only validated governance artifacts"
+      ]
+    },
+    "access_controls": [
+      "Owner or reviewer RBAC only"
+    ]
+  },
+  "integrations": {
+    "allowed_mcp_ids": [
+      "core-analytics-mcp"
+    ],
+    "external_runtime_refs": [
+      "runtime stays outside ai-governance"
+    ],
+    "governance_interfaces": [
+      "schemas/bridge_intent.schema.json"
+    ],
+    "extension_baseline": [
+      "No runtime implementation in governance core"
+    ],
+    "permissions_scope": [
+      "Least privilege"
+    ]
+  },
+  "slo_notes": {
+    "common_kpi_set": "governance-core-v1",
+    "critical_metrics": [
+      {
+        "id": "validation_reliability",
+        "target": ">= 99%",
+        "alert": "< 99%",
+        "window": "7d",
+        "notes": "Central validation pass ratio"
+      }
+    ],
+    "error_budget": [
+      "Freeze non-essential changes on budget burn"
+    ]
+  },
+  "change_log": [
+    {
+      "release_line": "v0.2",
+      "change": "Initial JSON-only service contract bundle template.",
+      "date_label": "2026-02-27"
+    }
+  ]
+}

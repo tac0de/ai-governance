@@ -1,0 +1,170 @@
+{
+  "version": "v0.1",
+  "service_id": "obsidian-mcp",
+  "summary": "Governance package for the external Obsidian operations hub that receives validated long-lived governance traces.",
+  "purpose": "Define the export, retention, and trace-linking contract for the external governance journal sink without implementing vault runtime logic in ai-governance.",
+  "owner_role": "architect-owner",
+  "governance_scope": {
+    "execution_path": "mandatory_bridge",
+    "approval_boundary": [
+      "medium for bounded read-only workflow tuning and contract maintenance",
+      "high for write or delete capability expansion"
+    ],
+    "forbidden_actions": [
+      "Vault runtime implementation in ai-governance",
+      "Unbounded file reads or path escape",
+      "Write-capable tool expansion without high-tier review"
+    ],
+    "scope_in": [
+      "Export policy",
+      "Trace retention contract",
+      "Evidence and trace-linked validation",
+      "External runtime boundary description"
+    ],
+    "scope_out": [
+      "Vault runtime code",
+      "Unreviewed write tooling",
+      "Direct product runtime operations"
+    ],
+    "dependencies": [
+      "control/registry/services.v0.1.json",
+      "control/registry/mcps.v0.1.json",
+      "schemas/bridge_intent.schema.json",
+      "schemas/mcp_change_request.schema.json",
+      "scripts/validate_all.sh"
+    ],
+    "primary_users": [
+      "architect-owner operating the external Obsidian governance hub"
+    ]
+  },
+  "runbook": {
+    "start_conditions": [
+      "Run bash scripts/validate_all.sh and bash scripts/test_determinism.sh.",
+      "Run bridge dry-run before export contract rollout."
+    ],
+    "steady_state": [
+      "Export long-lived governance traces from traces/ only after validation.",
+      "Keep runtime vault operations outside ai-governance."
+    ],
+    "failure_response": [
+      "Freeze rollout on schema failure, determinism mismatch, or missing trace or evidence refs.",
+      "Restore the last compliant contract set and re-run all governance scripts.",
+      "Record key revocation rationale in external governance diary artifacts."
+    ],
+    "rollback_reference": [
+      "Revert the latest obsidian-mcp governance export contract changes.",
+      "Re-run validation and determinism checks before reopening."
+    ],
+    "access_revocation": [
+      "Rotate credentials when boundary violations are detected.",
+      "Limit access to owner and reviewer roles only."
+    ]
+  },
+  "risk": {
+    "tier": "medium",
+    "failure_modes": [
+      "Vault path escape or unbounded file reads.",
+      "Sensitive note metadata leaking into export artifacts.",
+      "Result-order instability across repeated queries.",
+      "Policy drift when enabling write-capable tools."
+    ],
+    "mandatory_controls": [
+      "Strict boundary checks and deterministic rejection contracts.",
+      "Internal classification and redaction before export.",
+      "Sorted output and replay checks.",
+      "High-tier review for capability expansion."
+    ]
+  },
+  "data_contract": {
+    "classification": "internal",
+    "pii_allowed": false,
+    "primary_artifacts": [
+      "traces/*",
+      "traces/governance-journal/*.packet.json",
+      "traces/governance-journal/*.receipt.json"
+    ],
+    "retention_policy": [
+      "Keep traces/ as the short-term in-repo governance diary.",
+      "Export long-lived records to the external Obsidian governance hub after validation.",
+      "Escalate and redact if PII appears in artifacts."
+    ],
+    "journal_export_policy": {
+      "mode": "required",
+      "target_service": "obsidian-mcp",
+      "conditions": [
+        "Export only validated governance trace bundles.",
+        "Require a receipt artifact before export is considered complete."
+      ]
+    },
+    "access_controls": [
+      "RBAC for owner or reviewer roles only.",
+      "Every approval and execution artifact must remain trace-linked."
+    ]
+  },
+  "integrations": {
+    "allowed_mcp_ids": [
+      "core-analytics-mcp",
+      "core-safety-fallback-mcp",
+      "core-governance-journal-mcp"
+    ],
+    "external_runtime_refs": [
+      "/Users/wonyoung_choi/projects/obsidian-mcp"
+    ],
+    "governance_interfaces": [
+      "schemas/bridge_intent.schema.json",
+      "schemas/mcp_change_request.schema.json",
+      "schemas/trace_record.schema.json"
+    ],
+    "extension_baseline": [
+      "The external runtime is the long-lived governance diary sink.",
+      "The governance core stores only policy-bound artifacts before export."
+    ],
+    "permissions_scope": [
+      "Read-only tuning remains medium tier.",
+      "Write or delete capability onboarding is high tier."
+    ]
+  },
+  "slo_notes": {
+    "common_kpi_set": "governance-core-v1",
+    "critical_metrics": [
+      {
+        "id": "explainability_coverage",
+        "target": "100%",
+        "alert": "< 100%",
+        "window": "release-candidate",
+        "notes": "Every vault operation decision remains trace-linked."
+      },
+      {
+        "id": "validation_reliability",
+        "target": ">= 99%",
+        "alert": "< 99%",
+        "window": "7d",
+        "notes": "Schema and guardrail checks must remain stable."
+      },
+      {
+        "id": "operational_latency_p95_ms",
+        "target": "<= 1200ms",
+        "alert": "> 1200ms for two windows",
+        "window": "rolling benchmark window",
+        "notes": "Bridge-path p95 latency for vault-read workflows."
+      }
+    ],
+    "error_budget": [
+      "Use a 28 day window.",
+      "Track burn by explainability and validation misses.",
+      "Freeze non-essential changes when burn exceeds 50 percent before mid-window."
+    ]
+  },
+  "change_log": [
+    {
+      "release_line": "v0.2",
+      "change": "Collapsed obsidian-mcp governance docs into a single JSON contract bundle.",
+      "date_label": "2026-02-27"
+    },
+    {
+      "release_line": "v0.1",
+      "change": "Added obsidian-mcp governance onboarding package and linked the read-only vault path to central contracts.",
+      "date_label": "2026-02-26"
+    }
+  ]
+}

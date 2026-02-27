@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "McpOwnershipPolicy",
+  "type": "object",
+  "required": [
+    "version",
+    "purpose",
+    "central_ownership",
+    "service_ownership",
+    "non_negotiable_rules",
+    "service_scoped_exception"
+  ],
+  "properties": {
+    "version": { "type": "string", "const": "v0.1" },
+    "purpose": { "type": "string", "minLength": 1 },
+    "central_ownership": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "service_ownership": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "non_negotiable_rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "minLength": 1 }
+    },
+    "service_scoped_exception": {
+      "type": "object",
+      "required": ["allowed", "conditions"],
+      "properties": {
+        "allowed": { "type": "boolean" },
+        "conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

@@ -10,7 +10,7 @@
       "repo_path": "services/gongvue",
       "policy_profile_ref": "services/gongvue/policy.profile.json",
       "mcp_allowlist_path": "services/gongvue/mcp.allowlist.json",
-      "docs_path": "services/gongvue/docs",
+      "contract_bundle_ref": "services/gongvue/contract.bundle.v0.1.json",
       "slo_contract_ref": "services/gongvue/slo.contract.v0.1.json"
     },
     {
@@ -22,7 +22,7 @@
       "repo_path": "services/obsidian-mcp",
       "policy_profile_ref": "services/obsidian-mcp/policy.profile.json",
       "mcp_allowlist_path": "services/obsidian-mcp/mcp.allowlist.json",
-      "docs_path": "services/obsidian-mcp/docs",
+      "contract_bundle_ref": "services/obsidian-mcp/contract.bundle.v0.1.json",
       "slo_contract_ref": "services/obsidian-mcp/slo.contract.v0.1.json"
     },
     {
@@ -34,7 +34,7 @@
       "repo_path": "services/thedivineparadox",
       "policy_profile_ref": "services/thedivineparadox/policy.profile.json",
       "mcp_allowlist_path": "services/thedivineparadox/mcp.allowlist.json",
-      "docs_path": "services/thedivineparadox/docs",
+      "contract_bundle_ref": "services/thedivineparadox/contract.bundle.v0.1.json",
       "slo_contract_ref": "services/thedivineparadox/slo.contract.v0.1.json"
     }
   ]

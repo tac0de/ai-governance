@@ -1,0 +1,72 @@
+{
+  "version": "v0.1",
+  "mcp_id": "core-experiment-mcp",
+  "summary": "Controlled experiment routing contract with deterministic assignment and rollback controls.",
+  "purpose": "Provide deterministic cohort assignment, rollout contract resolution, and emergency kill-switch control under high-tier governance.",
+  "capability_contract": {
+    "allowed_operations": [
+      "assign_cohort",
+      "resolve_flag",
+      "kill_switch"
+    ],
+    "forbidden_expansion": [
+      "UI rendering logic.",
+      "Unlogged ad-hoc experiment overrides."
+    ],
+    "required_approval_tier": "high",
+    "scope": [
+      "Cohort assignment by deterministic key.",
+      "Feature flag resolution with explicit version refs.",
+      "Emergency kill-switch for unsafe experiments."
+    ]
+  },
+  "security_boundary": {
+    "allowed_inputs": [
+      "Stable actor keys.",
+      "Declared rollout contract references.",
+      "Trace reason for kill-switch actions."
+    ],
+    "forbidden_inputs": [
+      "Unlogged override commands.",
+      "Undeclared experiment state changes."
+    ],
+    "non_goals": [
+      "UI rendering logic.",
+      "Ad-hoc overrides outside trace logging."
+    ],
+    "controls": [
+      "High-risk tier requires high approval.",
+      "Kill-switch actions must include operator identity and trace reason.",
+      "Cohort and flag decisions are append-only trace events."
+    ]
+  },
+  "evidence_contract": {
+    "required_refs": [
+      "operator_identity",
+      "trace_reason",
+      "rollout_contract_ref"
+    ],
+    "hash_policy": "Bindings and approvals must remain hash-referenced.",
+    "trace_linkage": "All cohort, flag, and kill-switch decisions must remain append-only trace events."
+  },
+  "runtime_contract": {
+    "binding_ref": "control/mcps/core-experiment-mcp/versions/runtime.binding.v0.1.json",
+    "runtime_owner_service": "thedivineparadox",
+    "runtime_repo_path": "apps/backend/src/mcp_bridge.ts",
+    "invocation_surface": "POST /mcp/invoke",
+    "sdk_package": "@modelcontextprotocol/sdk",
+    "validation_package": "zod",
+    "tool_names": [
+      "experiments.kill_switch",
+      "experiments.assign_cohort",
+      "experiments.resolve_flag"
+    ]
+  },
+  "change_log": [
+    {
+      "release_line": "v0.2",
+      "change": "Collapsed experiment MCP Markdown docs into a single JSON contract bundle.",
+      "date_label": "2026-02-27"
+    }
+  ]
+}

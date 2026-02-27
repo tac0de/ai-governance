@@ -1,0 +1,28 @@
+{
+  "version": "v0.1",
+  "purpose": "Define a clear ownership split so service teams can move quickly without fragmenting core MCP contracts.",
+  "central_ownership": [
+    "MCP IDs and capability contracts.",
+    "Risk tier and approval tier mapping.",
+    "Registry and pinned reference hash policy."
+  ],
+  "service_ownership": [
+    "Runtime adapters or clients that invoke approved MCP contracts.",
+    "Service-local wiring such as auth header, timeout, retry, and trace propagation."
+  ],
+  "non_negotiable_rules": [
+    "MCP IDs must use core-* naming in the central registry and service allowlists.",
+    "pinned_ref_hash must point to a deterministic runtime binding artifact.",
+    "Service repositories must not create independent MCP contract IDs that bypass the central registry.",
+    "Capability addition or removal is a central governance change and must update the registry, MCP manifest, and service allowlists."
+  ],
+  "service_scoped_exception": {
+    "allowed": true,
+    "conditions": [
+      "Service-only MCP is temporary transition only.",
+      "The exception must be marked transitional.",
+      "A deprecation date is required.",
+      "A migration plan to core-* is required."
+    ]
+  }
+}
