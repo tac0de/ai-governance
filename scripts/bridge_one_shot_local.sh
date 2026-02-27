@@ -7,7 +7,7 @@ set -euo pipefail
 #   bash scripts/bridge_one_shot_local.sh <intent_id> <objective_file> [approval_tier] [human_gate_required] [auto_gate_actor]
 #
 # Example:
-#   bash scripts/bridge_one_shot_local.sh tdp.phase2.ops_hardening tmp/pm_objective.txt high true architect-owner
+#   bash scripts/bridge_one_shot_local.sh tdp.phase2.ops_hardening traces/local/pm_objective.txt high true architect-owner
 
 if [[ $# -lt 2 || $# -gt 5 ]]; then
   echo "Usage: $0 <intent_id> <objective_file> [approval_tier] [human_gate_required] [auto_gate_actor]" >&2
@@ -21,7 +21,7 @@ approval_tier="${3:-medium}"
 human_gate_required="${4:-false}"
 auto_gate_actor="${5:-}"
 
-intent_out="$ROOT_DIR/tmp/${intent_id}.intent.local.json"
+intent_out="$ROOT_DIR/traces/local/${intent_id}.intent.local.json"
 
 bash "$ROOT_DIR/scripts/bridge_local_pm.sh" "$intent_id" "$objective_file" "$intent_out" "$approval_tier" "$human_gate_required" --auto
 target_executor="$(jq -r '.target_executor' "$intent_out")"

@@ -5,7 +5,7 @@
   - `bash scripts/validate_all.sh`
   - `bash scripts/test_determinism.sh`
 - Run bridge dry-run:
-  - `bash scripts/bridge_one_shot_local.sh obsidian-mcp.readflow.v1 tmp/pm_objective_tdp_phase1_simple_loop.txt medium true architect-owner`
+  - `bash scripts/bridge_one_shot_local.sh obsidian-mcp.readflow.v1 traces/local/pm_objective_tdp_phase1_simple_loop.txt medium true architect-owner`
 
 ## Rollback
 - Revert latest obsidian-mcp governance contract changes.

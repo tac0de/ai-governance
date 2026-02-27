@@ -9,7 +9,7 @@ Usage:
 Defaults:
   bridge_dir: traces/bridge
   executor: codex
-  executor_out_dir: tmp/executor-queue/<executor>
+  executor_out_dir: traces/executor-queue/<executor>
 USAGE
 }
 
@@ -51,7 +51,7 @@ if (( ${#positional[@]} == 2 )); then
   executor_out_dir="${positional[1]}"
 fi
 if [[ -z "$executor_out_dir" ]]; then
-  executor_out_dir="$ROOT_DIR/tmp/executor-queue/$executor"
+  executor_out_dir="$ROOT_DIR/traces/executor-queue/$executor"
 fi
 
 action_ts="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"

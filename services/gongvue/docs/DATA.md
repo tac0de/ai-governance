@@ -1,8 +1,8 @@
 # DATA
 
 ## Data Contract Surface
-- Objective text: `tmp/pm_objective_*.txt`
-- Intent artifact: `tmp/*.intent.local.json`
+- Objective text: `traces/local/pm_objective_*.txt`
+- Intent artifact: `traces/local/*.intent.local.json`
 - MCP request: `traces/governance/mcp-request-*.json`
 - Trace records: `traces/bridge/*`
 
@@ -12,4 +12,4 @@
 
 ## Retention Notes
 - 장기 운영 로그는 `obsidian-mcp`로 이관하고, 코어에는 최소 trace만 남긴다.
-- 임시 결과물은 `tmp/` hygiene 규칙을 따른다.
+- 임시 산출물도 `traces/` 아래에서만 생성한다.

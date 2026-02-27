@@ -35,12 +35,12 @@ if [[ "$human_gate_required" != "true" && "$human_gate_required" != "false" ]]; 
   exit 1
 fi
 
-tmp_goal_rel="tmp/pm_objective_${service_slug//-/_}_macro_v0_1.txt"
-tmp_intent_rel="tmp/${service_slug}.macro.v0_1.intent.local.json"
+tmp_goal_rel="traces/local/pm_objective_${service_slug//-/_}_macro_v0_1.txt"
+tmp_intent_rel="traces/local/${service_slug}.macro.v0_1.intent.local.json"
 brief_rel="traces/governance/${service_slug}-macro-planmode-brief-v0.1.ko.md"
 evidence_rel="traces/governance/${service_slug}-macro-planmode-evidence-min-v0.1.json"
 
-mkdir -p "$ROOT_DIR/tmp" "$ROOT_DIR/traces/governance"
+mkdir -p "$ROOT_DIR/traces/local" "$ROOT_DIR/traces/governance"
 goal_abs="$(cd "$(dirname "$goal_path")" && pwd)/$(basename "$goal_path")"
 target_goal_abs="$ROOT_DIR/$tmp_goal_rel"
 if [[ "$goal_abs" != "$target_goal_abs" ]]; then

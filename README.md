@@ -51,12 +51,12 @@ bash scripts/validate_cross_registry.sh --mode auto
 
 ```bash
 # 1) Write one human goal
-cat > tmp/pm_objective_tdp_macro_v0_1.txt <<'TXT'
+cat > traces/local/pm_objective_tdp_macro_v0_1.txt <<'TXT'
 과금 UX 신뢰성 유지 조건에서 30일 운영 플랜을 확정한다.
 TXT
 
 # 2) Generate macro plan pack (Korean brief + minimal evidence JSON)
-bash scripts/macro_plan_pack.sh thedivineparadox tmp/pm_objective_tdp_macro_v0_1.txt high high true architect-owner
+bash scripts/macro_plan_pack.sh thedivineparadox traces/local/pm_objective_tdp_macro_v0_1.txt high high true architect-owner
 
 # 3) Run governance validation
 bash scripts/validate_all.sh
@@ -118,7 +118,7 @@ bash scripts/bridge_human_gate.sh phase2-backend-fastify-ts approve architect-ow
 # 3) Dispatch ready intents to executor packets
 bash scripts/bridge_dispatch.sh
 
-# 4) Consume dispatched packets into local executor task queue (tmp/)
+# 4) Consume dispatched packets into local executor task queue (traces/)
 bash scripts/bridge_consume.sh --executor codex
 
 # Optional: multi-executor queue
@@ -126,19 +126,19 @@ bash scripts/bridge_consume.sh --executor gemini-flash
 bash scripts/bridge_consume.sh --executor claude-sonnet
 
 # 5) One-shot minimal-token mode (local PM + bridge pipeline)
-bash scripts/bridge_one_shot_local.sh tdp.phase2.ops_hardening tmp/pm_objective_ops_hardening.txt high true architect-owner
+bash scripts/bridge_one_shot_local.sh tdp.phase2.ops_hardening traces/local/pm_objective_ops_hardening.txt high true architect-owner
 ```
 
 ## Local Codex PM Integration (No External API)
 
 ```bash
 # 1) Prepare objective text (free-form)
-cat > tmp/pm_objective.txt <<'TXT'
+cat > traces/local/pm_objective.txt <<'TXT'
 Plan and package a high-tier backend architecture migration with deterministic safeguards.
 TXT
 
 # 2) Generate PM intent JSON locally and auto-submit/dispatch
-bash scripts/bridge_local_pm.sh tdp.phase2.backend_fastify_ts_strict tmp/pm_objective.txt tmp/pm_intent.local.json high true --auto
+bash scripts/bridge_local_pm.sh tdp.phase2.backend_fastify_ts_strict traces/local/pm_objective.txt traces/local/pm_intent.local.json high true --auto
 ```
 
 Notes:
@@ -149,11 +149,13 @@ Notes:
 
 - `control/templates/`: service/MCP fixed-doc templates
 - `control/playbooks/`: incident/change/onboarding guides
+- `control/agents/`: central department assignment catalog
+- `control/prompts/`: generic governance prompt library
 - `control/specs/`: opcode set, trace rules
 - `control/benchmarks/`: efficiency benchmark spec
 - `fixtures/`: deterministic sample inputs
 - `docs/`: GitHub Pages showcase only
-- `traces/`: local deterministic traces only (long-lived service logs should move to `obsidian-mcp`)
+- `traces/`: the only runtime scratch + governance diary space
 
 ## Legacy Archive
 

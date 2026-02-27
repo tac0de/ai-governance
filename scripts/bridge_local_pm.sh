@@ -15,7 +15,7 @@ fi
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 intent_id="$1"
 objective_file="$2"
-intent_out="${3:-$ROOT_DIR/tmp/pm_intent.local.json}"
+intent_out="${3:-$ROOT_DIR/traces/local/pm_intent.local.json}"
 approval_tier="${4:-medium}"
 human_gate_required="${5:-false}"
 auto_mode="false"
