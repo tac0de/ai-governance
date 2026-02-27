@@ -22,7 +22,14 @@
     },
     "approval_tier": { "type": "string", "enum": ["low", "medium", "high"] },
     "human_gate_required": { "type": "boolean" },
-    "target_executor": { "type": "string", "enum": ["codex", "other-agent"] },
+    "target_executor": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "prompt_pack_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
     "evidence_refs": {
       "type": "array",
       "items": {

@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# DEPRECATED: legacy helper for syncing against an external governed-services registry.
+# Prefer running `bash scripts/validate_all.sh` (governance-core only) and keep cross-repo
+# linking out of the default CI/verdict path.
+
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 errors=0
 

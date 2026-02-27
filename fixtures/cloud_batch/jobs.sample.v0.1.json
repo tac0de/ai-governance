@@ -1,11 +1,11 @@
 {
   "version": "v0.1",
-  "service_id": "council-under-siege",
-  "run_id": "cus.batch.sample.v0_1",
+  "service_id": "thedivineparadox",
+  "run_id": "tdp.batch.sample.v0_1",
   "jobs": [
     {
       "job_id": "job-001",
-      "objective_ref": "tmp/pm_objective_council_under_siege_macro_v0_1.txt",
+      "objective_ref": "tmp/pm_objective_tdp_phase1_simple_loop.txt",
       "input_artifacts": [
         {
           "path": "fixtures/evidence.summary.json",
@@ -14,12 +14,15 @@
         }
       ],
       "expected_outputs": [
-        { "role": "analysis_report", "required": true }
+        {
+          "role": "analysis_report",
+          "required": true
+        }
       ]
     },
     {
       "job_id": "job-002",
-      "objective_ref": "reports/governance/council-under-siege-macro-planmode-brief-v0.1.ko.md",
+      "objective_ref": "reports/governance/tdp-planmode-prompt-pack-v0.1.md",
       "input_artifacts": [
         {
           "path": "fixtures/acceptance.tests.json",
@@ -28,7 +31,10 @@
         }
       ],
       "expected_outputs": [
-        { "role": "qa_summary", "required": true }
+        {
+          "role": "qa_summary",
+          "required": true
+        }
       ]
     }
   ]

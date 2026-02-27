@@ -52,6 +52,8 @@ fi
 
 mkdir -p "$(dirname "$intent_out")"
 objective="$(cat "$objective_file")"
+target_executor="${TARGET_EXECUTOR:-codex}"
+prompt_pack_id="${PROMPT_PACK_ID:-}"
 
 # Deterministic default constraints for local PM mode.
 constraints_json='[
@@ -67,6 +69,8 @@ intent_json="$(jq -cn \
   --arg objective "$objective" \
   --arg approval_tier "$approval_tier" \
   --argjson human_gate_required "$human_gate_required" \
+  --arg target_executor "$target_executor" \
+  --arg prompt_pack_id "$prompt_pack_id" \
   --argjson constraints "$constraints_json" \
   '{
     intent_id:$intent_id,
@@ -74,9 +78,11 @@ intent_json="$(jq -cn \
     constraints:$constraints,
     approval_tier:$approval_tier,
     human_gate_required:$human_gate_required,
-    target_executor:"codex",
+    target_executor:$target_executor,
     evidence_refs:[]
-  }')"
+  }
+  + (if ($prompt_pack_id|length)>0 then {prompt_pack_id:$prompt_pack_id} else {} end)
+  ')"
 
 if ! printf '%s' "$intent_json" | jq -e '
   (.intent_id|type=="string" and test("^[a-zA-Z0-9][a-zA-Z0-9._-]*$")) and
@@ -84,7 +90,8 @@ if ! printf '%s' "$intent_json" | jq -e '
   (.constraints|type=="array" and length>0 and all(.[]; type=="string" and length>0)) and
   (.approval_tier=="low" or .approval_tier=="medium" or .approval_tier=="high") and
   (.human_gate_required|type=="boolean") and
-  (.target_executor=="codex" or .target_executor=="other-agent") and
+  (.target_executor|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+  (.prompt_pack_id==null or (.prompt_pack_id|type=="string" and test("^[a-z0-9][a-z0-9-]*$"))) and
   (.evidence_refs|type=="array")
 ' >/dev/null; then
   echo "LOCAL_PM_SCHEMA_FAIL" >&2

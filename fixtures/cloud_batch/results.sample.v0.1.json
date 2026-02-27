@@ -1,7 +1,7 @@
 {
   "version": "v0.1",
-  "service_id": "council-under-siege",
-  "run_id": "cus.batch.sample.v0_1",
+  "service_id": "thedivineparadox",
+  "run_id": "tdp.batch.sample.v0_1",
   "results": [
     {
       "job_id": "job-001",

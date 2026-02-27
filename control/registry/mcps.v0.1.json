@@ -43,6 +43,21 @@
       "risk_level": "medium",
       "required_approval_tier": "medium",
       "pinned_ref_hash": "sha256:a467f9bf4b7e5c525ac89e39212e7902ab8cdc2dd26723ae70e89164c71405af"
+    },
+    {
+      "id": "core-study-session-governor-mcp",
+      "name": "Core Study Session Governor MCP",
+      "root_path": "mcps/core-study-session-governor-mcp",
+      "version": "0.1.0",
+      "capabilities": [
+        "evaluate_group_session_state",
+        "select_next_learning_intervention",
+        "enforce_turn_and_participation_policy",
+        "emit_learning_session_trace_contract"
+      ],
+      "risk_level": "high",
+      "required_approval_tier": "high",
+      "pinned_ref_hash": "sha256:c0cea81b519d8373db6acb270e20ae95629a3253afba798c7fa5587894c88154"
     }
   ]
 }

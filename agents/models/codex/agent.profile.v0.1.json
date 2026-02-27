@@ -1,0 +1,23 @@
+{
+  "version": "v0.1",
+  "id": "codex",
+  "name": "Codex",
+  "provider": "openai",
+  "default_prompt_pack_id": "codex-system",
+  "recommended_for": [
+    "Repository changes (deterministic contracts, scripts, schemas)",
+    "Policy-bound refactors with validation gates",
+    "Evidence-linked implementation work"
+  ],
+  "known_failure_modes": [
+    "Over-eager refactors without full contract validation",
+    "Assuming runtime capabilities inside governance-core repositories",
+    "Missing hash/pinned-ref updates on contract changes"
+  ],
+  "tooling_assumptions": [
+    "This repository is governance-core only; do not implement product runtime or real MCP servers here.",
+    "Verdict-critical paths must not depend on wall-clock time, randomness, or network access.",
+    "All changes must remain testable via shell scripts and trace-linked artifacts."
+  ]
+}
+

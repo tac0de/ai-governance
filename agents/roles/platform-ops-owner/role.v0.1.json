@@ -1,0 +1,12 @@
+{
+  "version": "v0.1",
+  "id": "platform-ops-owner",
+  "name": "Platform Operations Owner",
+  "scope": "service_portfolio",
+  "responsibilities": [
+    "Own service portfolio execution contracts",
+    "Approve medium-tier operational changes",
+    "Maintain SLO contracts and service docs"
+  ]
+}
+

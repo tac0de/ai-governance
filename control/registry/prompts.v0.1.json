@@ -1,0 +1,47 @@
+{
+  "version": "v0.1",
+  "prompts": [
+    {
+      "id": "codex-system",
+      "name": "Codex System Prompt",
+      "root_path": "prompts/packs/codex-system",
+      "pack_ref": "prompts/packs/codex-system/pack.v0.1.json",
+      "pinned_ref_hash": "sha256:d8f47d67bf26a1a6fe3ca698607867af0418dff3ad0a6dabfde763d997a48e08"
+    },
+    {
+      "id": "codex-mini-system",
+      "name": "Codex Mini System Prompt",
+      "root_path": "prompts/packs/codex-mini-system",
+      "pack_ref": "prompts/packs/codex-mini-system/pack.v0.1.json",
+      "pinned_ref_hash": "sha256:6c4499b654cb88e8da5737f25ce1ebb93a7d0ab4851e16c45f00b8a16a29e3d8"
+    },
+    {
+      "id": "gemini-pro-system",
+      "name": "Gemini Pro System Prompt",
+      "root_path": "prompts/packs/gemini-pro-system",
+      "pack_ref": "prompts/packs/gemini-pro-system/pack.v0.1.json",
+      "pinned_ref_hash": "sha256:a85311ff25b080a39d29405a2a376fe7a086c3f959d09fd54c5fa7bbc430c329"
+    },
+    {
+      "id": "gemini-flash-system",
+      "name": "Gemini Flash System Prompt",
+      "root_path": "prompts/packs/gemini-flash-system",
+      "pack_ref": "prompts/packs/gemini-flash-system/pack.v0.1.json",
+      "pinned_ref_hash": "sha256:1cf46cf3f6c7992f93c3ced4bd9851fe2abf8a1779d004a1f4104ffecf644ff4"
+    },
+    {
+      "id": "claude-sonnet-system",
+      "name": "Claude Sonnet System Prompt",
+      "root_path": "prompts/packs/claude-sonnet-system",
+      "pack_ref": "prompts/packs/claude-sonnet-system/pack.v0.1.json",
+      "pinned_ref_hash": "sha256:01ea33db61bf46871d56f6a18b0ff03ce77437af2390063dcb7c632acc8bf09e"
+    },
+    {
+      "id": "claude-opus-system",
+      "name": "Claude Opus System Prompt",
+      "root_path": "prompts/packs/claude-opus-system",
+      "pack_ref": "prompts/packs/claude-opus-system/pack.v0.1.json",
+      "pinned_ref_hash": "sha256:6e720d21c960b13eb593a47ca8b195852f3729cb7fefe886da6af988de5e1ca8"
+    }
+  ]
+}

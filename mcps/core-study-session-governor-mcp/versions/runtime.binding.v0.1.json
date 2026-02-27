@@ -1,0 +1,14 @@
+{
+  "version": "v0.1",
+  "runtime_owner_service": "kakao-study-groupbot",
+  "runtime_repo_path": "apps/backend/src/mcp/study_session_governor.ts",
+  "invocation_surface": "POST /mcp/invoke/study-session-governor",
+  "sdk_package": "@modelcontextprotocol/sdk",
+  "validation_package": "zod",
+  "tool_names": [
+    "study_session.evaluate_group_session_state",
+    "study_session.select_next_learning_intervention",
+    "study_session.enforce_turn_and_participation_policy",
+    "study_session.emit_learning_session_trace_contract"
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "version": "v0.1",
+  "request_id": "mcp-request-kakao-study-session-governor-20260226",
+  "service_id": "kakao-study-groupbot",
+  "title": "Register core study session governor MCP for kakao-study-groupbot",
+  "owner": "architect-owner",
+  "requested_at": "2026-02-26T21:30:00Z",
+  "status": "implemented",
+  "request_type": "new_mcp_registration",
+  "approval_tier": "high",
+  "risk_tier": "high",
+  "human_gate_required": true,
+  "objective": "Introduce deterministic group session governance capabilities for the Kakao study chatbot beta path.",
+  "constraints": [
+    "No product runtime implementation in ai-governance.",
+    "Verdict path must remain deterministic and hash-linked.",
+    "All boundary changes require high-tier controls."
+  ],
+  "mcp_candidate": {
+    "id": "core-study-session-governor-mcp",
+    "name": "Core Study Session Governor MCP",
+    "proposed_root_path": "mcps/core-study-session-governor-mcp",
+    "capabilities": [
+      "evaluate_group_session_state",
+      "select_next_learning_intervention",
+      "enforce_turn_and_participation_policy",
+      "emit_learning_session_trace_contract"
+    ],
+    "required_approval_tier": "high",
+    "risk_level": "high"
+  },
+  "governance_rationale": {
+    "need": "Group-learning chatbot flow needs deterministic session-state and intervention governance beyond existing generic MCP capabilities.",
+    "boundary": "Only contract-level governance artifacts are added in this repository; runtime execution remains in external governed service repositories.",
+    "controls": [
+      "mandatory human gate for high-tier boundary changes",
+      "append-only trace linkage",
+      "runtime binding hash pinning in registry and manifest"
+    ]
+  },
+  "expected_artifacts": [
+    "services/kakao-study-groupbot/mcp.allowlist.json",
+    "mcps/core-study-session-governor-mcp/manifest.json",
+    "mcps/core-study-session-governor-mcp/versions/runtime.binding.v0.1.json",
+    "control/registry/mcps.v0.1.json",
+    "reports/research/kakao-beta-evidence-v0.1.md"
+  ]
+}

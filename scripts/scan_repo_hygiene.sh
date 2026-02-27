@@ -10,12 +10,14 @@ ENABLE_TMP_SENSITIVE_KEYWORD_GUARD=0
 ALLOWED_ROOT_DIRS=(
   ".git"
   ".github"
+  "agents"
   "benchmark"
   "control"
   "docs"
   "fixtures"
   "mcps"
   "policies"
+  "prompts"
   "reports"
   "schemas"
   "scripts"
@@ -30,7 +32,7 @@ ALLOWED_TMP_PATTERNS=(
   "pm_intent.*.json"
   "*.intent.local.json"
   "*.mcp.request.plan.v*.md"
-  "cus-*.json"
+  "batch-*.json"
   "tdp.*.md"
 )
 
@@ -91,6 +93,7 @@ scan_root_shape() {
 
 scan_tmp_hygiene() {
   local tmp_root="$ROOT_DIR/tmp"
+  local exec_queue_root="$tmp_root/executor-queue"
   local dir_path
   local rel_dir
   local file_path
@@ -103,8 +106,20 @@ scan_tmp_hygiene() {
     return
   fi
 
+  # Allow tmp/executor-queue/<executor> as a deterministic local queue for bridge consumption.
   while IFS= read -r dir_path; do
     rel_dir="${dir_path#$ROOT_DIR/}"
+
+    if [[ "$rel_dir" == "tmp/executor-queue" ]]; then
+      continue
+    fi
+    if [[ "$rel_dir" == tmp/executor-queue/* ]]; then
+      if [[ "$rel_dir" == tmp/executor-queue/*/* ]]; then
+        fail "$rel_dir" "nested subdirectory not allowed under tmp/executor-queue"
+      fi
+      continue
+    fi
+
     fail "$rel_dir" "subdirectory not allowed in tmp hygiene gate"
   done < <(find "$tmp_root" -mindepth 1 -type d | sort)
 
@@ -138,6 +153,21 @@ scan_tmp_hygiene() {
       done
     fi
   done < <(find "$tmp_root" -mindepth 1 -maxdepth 1 -type f | sort)
+
+  if [[ -d "$exec_queue_root" ]]; then
+    while IFS= read -r file_path; do
+      rel_dir="${file_path#$ROOT_DIR/}"
+      file_name="$(basename "$file_path")"
+      if [[ "$file_name" != executor-task-*.json ]]; then
+        fail "$rel_dir" "unexpected executor queue artifact filename"
+        continue
+      fi
+      file_size="$(wc -c < "$file_path" | tr -d '[:space:]')"
+      if (( file_size > TMP_MAX_FILE_BYTES )); then
+        fail "$rel_dir" "file too large (${file_size} bytes > ${TMP_MAX_FILE_BYTES} bytes)"
+      fi
+    done < <(find "$exec_queue_root" -type f | sort)
+  fi
 }
 
 scan_root_shape

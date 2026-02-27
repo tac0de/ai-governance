@@ -1,0 +1,10 @@
+{
+  "version": "v0.1",
+  "allowed_executors_by_tier": {
+    "low": ["codex-mini", "gemini-flash"],
+    "medium": ["codex", "gemini-pro", "claude-sonnet"],
+    "high": ["codex", "claude-opus"]
+  },
+  "fallback_chain": ["codex"]
+}
+

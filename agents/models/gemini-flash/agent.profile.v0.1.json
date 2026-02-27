@@ -1,0 +1,20 @@
+{
+  "version": "v0.1",
+  "id": "gemini-flash",
+  "name": "Gemini Flash",
+  "provider": "google",
+  "default_prompt_pack_id": "gemini-flash-system",
+  "recommended_for": [
+    "Low-tier quick summaries and lightweight classification",
+    "Fast iteration on non-breaking documentation edits"
+  ],
+  "known_failure_modes": [
+    "Higher chance of structured-output variance",
+    "May omit required sections if prompt is not strict"
+  ],
+  "tooling_assumptions": [
+    "This repository is governance-core only; do not implement product runtime or real MCP servers here.",
+    "High-tier boundary changes are forbidden for this executor in routing policy."
+  ]
+}
+

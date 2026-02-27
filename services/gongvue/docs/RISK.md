@@ -10,7 +10,8 @@
 
 ## Operational Risks
 - Risk: 서비스 레지스트리와 외부 레지스트리 드리프트.
-- Control: `scripts/validate_cross_registry.sh`로 양측 정합성 강제.
+- Control: 기본 경로는 `scripts/validate_all.sh`로 중앙 정합성 강제.
+- Optional/Deprecated: 외부 레지스트리 동기화는 `scripts/validate_cross_registry.sh`를 명시 호출로만 수행.
 
 ## Legal Risks
 - Risk: 고객 확장 코드로 규정 위반 동작 발생.

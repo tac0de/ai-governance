@@ -1,0 +1,17 @@
+{
+  "id": "core-study-session-governor-mcp",
+  "version": "0.1.0",
+  "capabilities": [
+    "evaluate_group_session_state",
+    "select_next_learning_intervention",
+    "enforce_turn_and_participation_policy",
+    "emit_learning_session_trace_contract"
+  ],
+  "required_approval_tier": "high",
+  "pinned_ref_hash": "sha256:c0cea81b519d8373db6acb270e20ae95629a3253afba798c7fa5587894c88154",
+  "refs": {
+    "runtime_binding": "mcps/core-study-session-governor-mcp/versions/runtime.binding.v0.1.json",
+    "policy": "policies/approval_tier_policy.v0.1.json",
+    "trace_schema": "schemas/trace_record.schema.json"
+  }
+}

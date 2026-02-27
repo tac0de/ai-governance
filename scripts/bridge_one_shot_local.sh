@@ -24,6 +24,7 @@ auto_gate_actor="${5:-}"
 intent_out="$ROOT_DIR/tmp/${intent_id}.intent.local.json"
 
 bash "$ROOT_DIR/scripts/bridge_local_pm.sh" "$intent_id" "$objective_file" "$intent_out" "$approval_tier" "$human_gate_required" --auto
+target_executor="$(jq -r '.target_executor' "$intent_out")"
 
 queue_file="$ROOT_DIR/traces/bridge/queue/${intent_id}.queue.json"
 if [[ ! -f "$queue_file" ]]; then
@@ -39,7 +40,7 @@ if [[ "$status" == "awaiting_human_gate" && -n "$auto_gate_actor" ]]; then
 fi
 
 if [[ "$status" == "dispatched" || "$status" == "ready" ]]; then
-  bash "$ROOT_DIR/scripts/bridge_consume.sh"
+  bash "$ROOT_DIR/scripts/bridge_consume.sh" --executor "$target_executor"
 fi
 
 echo "ONE_SHOT_OK intent_id=$intent_id status=$status"

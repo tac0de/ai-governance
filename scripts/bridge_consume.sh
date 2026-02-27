@@ -1,26 +1,58 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $# -gt 2 ]]; then
-  echo "Usage: $0 [bridge_dir] [executor_out_dir]" >&2
-  exit 1
-fi
+usage() {
+  cat <<'USAGE' >&2
+Usage:
+  bridge_consume.sh [bridge_dir] [executor_out_dir] [--executor <agent_id>]
+
+Defaults:
+  bridge_dir: traces/bridge
+  executor: codex
+  executor_out_dir: tmp/executor-queue/<executor>
+USAGE
+}
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-bridge_dir="${1:-$ROOT_DIR/traces/bridge}"
+bridge_dir="$ROOT_DIR/traces/bridge"
+executor="codex"
+executor_out_dir=""
 
-default_executor_out_dir="$HOME/projects/thedivineparadox/reports/overnight"
-if [[ -d "$HOME/projects/governed-services/thedivineparadox/reports/overnight" ]]; then
-  default_executor_out_dir="$HOME/projects/governed-services/thedivineparadox/reports/overnight"
-fi
-if [[ -d "$HOME/thedivineparadox/reports/overnight" ]]; then
-  default_executor_out_dir="$HOME/thedivineparadox/reports/overnight"
-fi
-if [[ -d "$HOME/the-divine-paradox/reports/overnight" ]]; then
-  default_executor_out_dir="$HOME/the-divine-paradox/reports/overnight"
-fi
+positional=()
+while (( $# > 0 )); do
+  case "$1" in
+    --executor)
+      if (( $# < 2 )); then
+        usage
+        exit 1
+      fi
+      executor="${2:-}"
+      shift 2
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      positional+=("$1")
+      shift
+      ;;
+  esac
+done
 
-executor_out_dir="${2:-$default_executor_out_dir}"
+if (( ${#positional[@]} > 2 )); then
+  usage
+  exit 1
+fi
+if (( ${#positional[@]} >= 1 )); then
+  bridge_dir="${positional[0]}"
+fi
+if (( ${#positional[@]} == 2 )); then
+  executor_out_dir="${positional[1]}"
+fi
+if [[ -z "$executor_out_dir" ]]; then
+  executor_out_dir="$ROOT_DIR/tmp/executor-queue/$executor"
+fi
 
 action_ts="$(date -u +"%Y-%m-%dT%H:%M:%SZ")"
 
@@ -43,6 +75,20 @@ sanitize_id() {
 
 require jq
 
+agents_reg="$ROOT_DIR/control/registry/agents.v0.1.json"
+if [[ ! -f "$agents_reg" ]]; then
+  echo "AGENTS_REGISTRY_MISSING $agents_reg" >&2
+  exit 1
+fi
+if ! jq -e . "$agents_reg" >/dev/null 2>&1; then
+  echo "AGENTS_REGISTRY_INVALID_JSON $agents_reg" >&2
+  exit 1
+fi
+if ! jq -e --arg id "$executor" '.agents | any(.id==$id)' "$agents_reg" >/dev/null 2>&1; then
+  echo "EXECUTOR_NOT_REGISTERED executor=$executor" >&2
+  exit 1
+fi
+
 mkdir -p "$bridge_dir"/{dispatched,consumed,logs}
 mkdir -p "$executor_out_dir"
 
@@ -55,12 +101,19 @@ for dispatch_path in "$bridge_dir"/dispatched/*.dispatch.json; do
   if ! jq -e '
     (.intent_id|type=="string" and length>0) and
     (.intent_ref|type=="string" and test("^[a-f0-9]{64}$")) and
+    (.target_executor|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+    (.prompt_pack_id==null or (.prompt_pack_id|type=="string" and length>0)) and
     (.objective|type=="string" and length>0) and
     (.constraints|type=="array") and
     (.evidence_refs|type=="array") and
     (.submitted_at|type=="string" and length>0)
   ' "$dispatch_path" >/dev/null 2>&1; then
     echo "DISPATCH_SCHEMA_FAIL path=$dispatch_path" >&2
+    continue
+  fi
+
+  target_executor="$(jq -r '.target_executor' "$dispatch_path")"
+  if [[ "$target_executor" != "$executor" ]]; then
     continue
   fi
 
@@ -83,6 +136,8 @@ for dispatch_path in "$bridge_dir"/dispatched/*.dispatch.json; do
     --arg source_repo "ai-governance" \
     --arg source_dispatch_path "${dispatch_path#$ROOT_DIR/}" \
     --arg source_dispatch_ref "$dispatch_ref" \
+    --arg target_executor "$target_executor" \
+    --arg prompt_pack_id "$(jq -r '.prompt_pack_id // ""' "$dispatch_path")" \
     --arg intent_id "$(jq -r '.intent_id' "$dispatch_path")" \
     --arg intent_ref "$(jq -r '.intent_ref' "$dispatch_path")" \
     --arg objective "$(jq -r '.objective' "$dispatch_path")" \
@@ -93,7 +148,10 @@ for dispatch_path in "$bridge_dir"/dispatched/*.dispatch.json; do
       version:"v0.1",
       created_at:$created_at,
       source:{repo:$source_repo,dispatch_path:$source_dispatch_path,dispatch_ref:$source_dispatch_ref},
-      intent:{intent_id:$intent_id,intent_ref:$intent_ref,objective:$objective,submitted_at:$submitted_at,constraints:$constraints,evidence_refs:$evidence_refs},
+      intent: (
+        {intent_id:$intent_id,intent_ref:$intent_ref,objective:$objective,submitted_at:$submitted_at,constraints:$constraints,evidence_refs:$evidence_refs,target_executor:$target_executor}
+        + (if ($prompt_pack_id|length)>0 then {prompt_pack_id:$prompt_pack_id} else {} end)
+      ),
       status:"queued"
     }' > "$task_file"
 
@@ -101,16 +159,18 @@ for dispatch_path in "$bridge_dir"/dispatched/*.dispatch.json; do
     --arg intent_id "$intent_id" \
     --arg consumed_at "$action_ts" \
     --arg dispatch_ref "$dispatch_ref" \
+    --arg executor "$executor" \
     --arg task_path "$task_file" \
-    '{intent_id:$intent_id,consumed_at:$consumed_at,dispatch_ref:$dispatch_ref,task_path:$task_path}' > "$consumed_path"
+    '{intent_id:$intent_id,consumed_at:$consumed_at,dispatch_ref:$dispatch_ref,executor:$executor,task_path:$task_path}' > "$consumed_path"
 
   jq -cn \
     --arg ts "$action_ts" \
     --arg event "dispatch_consumed" \
     --arg intent_id "$intent_id" \
     --arg dispatch_ref "$dispatch_ref" \
+    --arg executor "$executor" \
     --arg task_path "$task_file" \
-    '{ts:$ts,event:$event,intent_id:$intent_id,dispatch_ref:$dispatch_ref,task_path:$task_path}' \
+    '{ts:$ts,event:$event,intent_id:$intent_id,dispatch_ref:$dispatch_ref,executor:$executor,task_path:$task_path}' \
     >> "$bridge_dir/logs/events.jsonl"
 
   consumed_count=$((consumed_count + 1))

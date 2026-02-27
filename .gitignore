@@ -1,4 +1,5 @@
 traces/*
 !traces/.gitkeep
+tmp/executor-queue/
 *.tmp
 .DS_Store

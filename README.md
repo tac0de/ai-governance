@@ -5,18 +5,20 @@ Deterministic Trace 기반 중앙 거버넌스 코어 저장소.
 ## Start Here (Core 4)
 
 1. `control/registry/`
-- 조직/서비스/MCP의 단일 진실 소스.
+- 조직/서비스/MCP/에이전트/프롬프트의 단일 진실 소스.
 
 2. `schemas/` (특히 중앙 통제 스키마 5개)
 - `org.schema.json`
 - `services_registry.schema.json`
 - `mcps_registry.schema.json`
+- `agents_registry.schema.json`
+- `prompts_registry.schema.json`
 - `mcp_allowlist.schema.json`
 - `mcp_manifest.schema.json`
 
 3. `scripts/validate_all.sh`
 - 중앙 설계 강제 지점.
-- 고정 문서 세트, 레지스트리 정합성, 정책 프로파일, MCP allowlist/manifest를 검증.
+- 고정 문서 세트, 레지스트리 정합성, 정책 프로파일, MCP allowlist/manifest, agent/prompt pinned refs를 검증.
 
 4. `.github/workflows/deterministic-governance.yml`
 - CI에서 `validate_all.sh` + 결정성/벤치마크 게이트를 실행.
@@ -29,30 +31,34 @@ Deterministic Trace 기반 중앙 거버넌스 코어 저장소.
 
 - Government: `policies/`, `schemas/`, `traces/`
 - Company: `control/registry/org.v0.1.json`, `control/registry/services.v0.1.json`, `services/`
-- Execution: `control/registry/mcps.v0.1.json`, `mcps/`
+- Execution contracts: `control/registry/mcps.v0.1.json`, `mcps/`
+- Agent/prompt contracts: `control/registry/agents.v0.1.json`, `control/registry/prompts.v0.1.json`, `agents/`, `prompts/`
 
 ## Quick Start
 
 ```bash
 bash scripts/validate_all.sh
-bash scripts/validate_cross_registry.sh --mode required
-# or auto-skip when governed-services registry is unavailable
-bash scripts/validate_cross_registry.sh --mode auto
 bash scripts/run_intent.sh fixtures/intent.envelope.json traces/run1
 bash scripts/test_determinism.sh
 bash scripts/benchmark_gate.sh
+```
+
+Legacy/Optional:
+```bash
+# DEPRECATED: cross-repo registry sync helper (governed-services)
+bash scripts/validate_cross_registry.sh --mode auto
 ```
 
 ## Macro Planmode (Goal-Only Input)
 
 ```bash
 # 1) Write one human goal
-cat > tmp/pm_objective_council_under_siege_macro_v0_1.txt <<'TXT'
+cat > tmp/pm_objective_tdp_macro_v0_1.txt <<'TXT'
 과금 UX 신뢰성 유지 조건에서 30일 운영 플랜을 확정한다.
 TXT
 
 # 2) Generate macro plan pack (Korean brief + minimal evidence JSON)
-bash scripts/macro_plan_pack.sh council-under-siege tmp/pm_objective_council_under_siege_macro_v0_1.txt high high true architect-owner
+bash scripts/macro_plan_pack.sh thedivineparadox tmp/pm_objective_tdp_macro_v0_1.txt high high true architect-owner
 
 # 3) Run governance validation
 bash scripts/validate_all.sh
@@ -63,42 +69,37 @@ bash scripts/validate_all.sh
 ```bash
 # 1) Submit jobs manifest into governance batch run folder
 bash scripts/cloud_batch_submit.sh \
-  --service council-under-siege \
+  --service thedivineparadox \
   --jobs-manifest fixtures/cloud_batch/jobs.sample.v0.1.json \
-  --run-id cus.batch.sample.v0_1 \
+  --run-id tdp.batch.sample.v0_1 \
   --provider manifest
 
 # 2) Collect results manifest (from provider output or local fixture)
 bash scripts/cloud_batch_collect.sh \
-  --run-id cus.batch.sample.v0_1 \
+  --run-id tdp.batch.sample.v0_1 \
   --provider manifest \
   --results-manifest fixtures/cloud_batch/results.sample.v0.1.json
 
 # 3) Verify artifacts and hash integrity
 bash scripts/cloud_batch_verify.sh \
-  --run-id cus.batch.sample.v0_1 \
-  --service council-under-siege \
+  --run-id tdp.batch.sample.v0_1 \
+  --service thedivineparadox \
   --strictness hybrid
 
 # Optional: force a specific policy file
 bash scripts/cloud_batch_verify.sh \
-  --run-id cus.batch.sample.v0_1 \
-  --policy-file services/council-under-siege/cloud_batch.policy.v0.1.json
+  --run-id tdp.batch.sample.v0_1 \
+  --policy-file policies/cloud_batch_policy.v0.1.json
 
 # 4) Final governance validation gate
 bash scripts/validate_all.sh
 ```
 
-## 신규 서비스 온보딩 + Docker 확장 계약 (예: gongvue)
+## 신규 서비스 온보딩 (Contracts-Only)
 
 ```bash
-# 1) 외부 서비스 저장소 연결 (clone + symlink)
-git clone https://github.com/indoorlabs/gongvue /Users/wonyoung_choi/projects/gongvue
-ln -sfn /Users/wonyoung_choi/projects/gongvue /Users/wonyoung_choi/projects/governed-services/gongvue
-
-# 2) 양쪽 레지스트리 동기 검증
-bash scripts/validate_cross_registry.sh --mode required
-
+# 1) 서비스 계약 패키지 추가 (services/<service-id>)
+# 2) 중앙 레지스트리에 등록 (control/registry/services.v0.1.json)
 # 3) 중앙 계약 검증
 bash scripts/validate_all.sh
 ```
@@ -119,8 +120,12 @@ bash scripts/bridge_human_gate.sh phase2-backend-fastify-ts approve architect-ow
 # 3) Dispatch ready intents to executor packets
 bash scripts/bridge_dispatch.sh
 
-# 4) Consume dispatched packets into executor task queue (service repo)
-bash scripts/bridge_consume.sh
+# 4) Consume dispatched packets into local executor task queue (tmp/)
+bash scripts/bridge_consume.sh --executor codex
+
+# Optional: multi-executor queue
+bash scripts/bridge_consume.sh --executor gemini-flash
+bash scripts/bridge_consume.sh --executor claude-sonnet
 
 # 5) One-shot minimal-token mode (local PM + bridge pipeline)
 bash scripts/bridge_one_shot_local.sh tdp.phase2.ops_hardening tmp/pm_objective_ops_hardening.txt high true architect-owner

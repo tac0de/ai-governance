@@ -1,12 +1,11 @@
 # RUNBOOK
 
 ## Routine Validation
-- `bash scripts/validate_cross_registry.sh --mode required`
 - `bash scripts/validate_all.sh`
 - `bash scripts/test_determinism.sh`
+- (Optional/Deprecated) `bash scripts/validate_cross_registry.sh --mode auto`
 
 ## Onboarding Flow
-- governed-services에 `gongvue` 경로를 등록한다.
 - 중앙 레지스트리에 서비스 계약 패키지를 등록한다.
 - MCP 확장 요청은 `reports/governance/mcp-request-*.json`로 생성한다.
 

@@ -5,9 +5,9 @@
       "name": "Platform Operations",
       "owner": "platform-ops-owner",
       "portfolio_services": [
-        "council-under-siege",
-        "fairway-dynasty",
         "gongvue",
+        "kakao-study-groupbot",
+        "obsidian-mcp",
         "thedivineparadox"
       ]
     }

@@ -21,12 +21,18 @@ for file in "$bridge_dir"/queue/*.queue.json; do
   fi
 
   intent_id="$(jq -r '.intent_id' "$file")"
-  executor="$(jq -r '.intent.target_executor' "$file")"
-  if [[ "$executor" != "codex" ]]; then
-    continue
-  fi
-
-  dispatch_packet="$(jq -cS '{intent_id:.intent_id,intent_ref:.intent_ref,objective:.intent.objective,constraints:.intent.constraints,evidence_refs:.intent.evidence_refs,submitted_at:.submitted_at}' "$file")"
+  dispatch_packet="$(jq -cS '
+    {
+      intent_id:.intent_id,
+      intent_ref:.intent_ref,
+      target_executor:.intent.target_executor,
+      objective:.intent.objective,
+      constraints:.intent.constraints,
+      evidence_refs:.intent.evidence_refs,
+      submitted_at:.submitted_at
+    }
+    + (if (.intent|has("prompt_pack_id")) then {prompt_pack_id:.intent.prompt_pack_id} else {} end)
+  ' "$file")"
   printf '%s\n' "$dispatch_packet" > "$bridge_dir/dispatched/${intent_id}.dispatch.json"
 
   tmp="$(mktemp)"

@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PromptPack",
+  "type": "object",
+  "required": ["version", "id", "name", "purpose", "content", "expected_output_contract"],
+  "properties": {
+    "version": { "type": "string", "const": "v0.1" },
+    "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "name": { "type": "string", "minLength": 1 },
+    "purpose": { "type": "string", "minLength": 1 },
+    "content": { "type": "string", "minLength": 1 },
+    "expected_output_contract": { "type": "object" }
+  },
+  "additionalProperties": false
+}
+

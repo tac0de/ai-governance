@@ -1,8 +1,0 @@
-{
-  "simulation_version": "v0.1",
-  "input_snapshot_ref": "a9d1fd22399a12df963be30b734bf1401ee6220adda4139ddf9936ad3f5edba3",
-  "output_summary_ref": "ee5b9e2add189732f69ff556ac2c2f4a2d5edd7b61913197e58eb5d5602696ca",
-  "risk_level": "medium",
-  "verdict": "approved",
-  "verdict_hash": "225937f06da3bca364fdb2ddfb753a0f21250375bfd4d7ffc9cea58f0c83dc2e"
-}

@@ -2,42 +2,6 @@
   "version": "v0.1",
   "services": [
     {
-      "id": "thedivineparadox",
-      "name": "TheDivineParadox",
-      "owner": "platform-ops-owner",
-      "dept": "Platform Operations",
-      "ministry": "Ministry of Governance and Compliance",
-      "repo_path": "services/thedivineparadox",
-      "policy_profile_ref": "services/thedivineparadox/policy.profile.json",
-      "mcp_allowlist_path": "services/thedivineparadox/mcp.allowlist.json",
-      "docs_path": "services/thedivineparadox/docs",
-      "slo_contract_ref": "services/thedivineparadox/slo.contract.v0.1.json"
-    },
-    {
-      "id": "council-under-siege",
-      "name": "CouncilUnderSiege",
-      "owner": "platform-ops-owner",
-      "dept": "Platform Operations",
-      "ministry": "Ministry of Governance and Compliance",
-      "repo_path": "services/council-under-siege",
-      "policy_profile_ref": "services/council-under-siege/policy.profile.json",
-      "mcp_allowlist_path": "services/council-under-siege/mcp.allowlist.json",
-      "docs_path": "services/council-under-siege/docs",
-      "slo_contract_ref": "services/council-under-siege/slo.contract.v0.1.json"
-    },
-    {
-      "id": "fairway-dynasty",
-      "name": "FairwayDynasty",
-      "owner": "platform-ops-owner",
-      "dept": "Platform Operations",
-      "ministry": "Ministry of Governance and Compliance",
-      "repo_path": "services/fairway-dynasty",
-      "policy_profile_ref": "services/fairway-dynasty/policy.profile.json",
-      "mcp_allowlist_path": "services/fairway-dynasty/mcp.allowlist.json",
-      "docs_path": "services/fairway-dynasty/docs",
-      "slo_contract_ref": "services/fairway-dynasty/slo.contract.v0.1.json"
-    },
-    {
       "id": "gongvue",
       "name": "Gongvue",
       "owner": "platform-ops-owner",
@@ -48,6 +12,42 @@
       "mcp_allowlist_path": "services/gongvue/mcp.allowlist.json",
       "docs_path": "services/gongvue/docs",
       "slo_contract_ref": "services/gongvue/slo.contract.v0.1.json"
+    },
+    {
+      "id": "kakao-study-groupbot",
+      "name": "KakaoStudyGroupbot",
+      "owner": "platform-ops-owner",
+      "dept": "Platform Operations",
+      "ministry": "Ministry of Governance and Compliance",
+      "repo_path": "services/kakao-study-groupbot",
+      "policy_profile_ref": "services/kakao-study-groupbot/policy.profile.json",
+      "mcp_allowlist_path": "services/kakao-study-groupbot/mcp.allowlist.json",
+      "docs_path": "services/kakao-study-groupbot/docs",
+      "slo_contract_ref": "services/kakao-study-groupbot/slo.contract.v0.1.json"
+    },
+    {
+      "id": "obsidian-mcp",
+      "name": "ObsidianMcp",
+      "owner": "platform-ops-owner",
+      "dept": "Platform Operations",
+      "ministry": "Ministry of Governance and Compliance",
+      "repo_path": "services/obsidian-mcp",
+      "policy_profile_ref": "services/obsidian-mcp/policy.profile.json",
+      "mcp_allowlist_path": "services/obsidian-mcp/mcp.allowlist.json",
+      "docs_path": "services/obsidian-mcp/docs",
+      "slo_contract_ref": "services/obsidian-mcp/slo.contract.v0.1.json"
+    },
+    {
+      "id": "thedivineparadox",
+      "name": "TheDivineParadox",
+      "owner": "platform-ops-owner",
+      "dept": "Platform Operations",
+      "ministry": "Ministry of Governance and Compliance",
+      "repo_path": "services/thedivineparadox",
+      "policy_profile_ref": "services/thedivineparadox/policy.profile.json",
+      "mcp_allowlist_path": "services/thedivineparadox/mcp.allowlist.json",
+      "docs_path": "services/thedivineparadox/docs",
+      "slo_contract_ref": "services/thedivineparadox/slo.contract.v0.1.json"
     }
   ]
 }
