@@ -1,0 +1,20 @@
+{
+  "id": "core-experience-profile-mcp",
+  "version": "0.1.0",
+  "capabilities": [
+    "validate_theme_descriptor",
+    "validate_ritual_state_machine",
+    "check_phase_budget_profile",
+    "propose_safe_theme_rotation",
+    "verify_reveal_consistency",
+    "validate_form_spectrum_profile",
+    "validate_voice_revelation_policy",
+    "validate_gesture_sentence_table"
+  ],
+  "required_approval_tier": "high",
+  "pinned_ref_hash": "sha256:d237e34d4148088779728a538ab3dbebbd816bc4297908b1403aa80a3df1a22d",
+  "refs": {
+    "runtime_binding": "control/mcps/core-experience-profile-mcp/versions/runtime.binding.v0.1.json",
+    "schema": "schemas/trace_record.schema.json"
+  }
+}

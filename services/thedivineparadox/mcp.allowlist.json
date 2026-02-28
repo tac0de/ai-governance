@@ -25,6 +25,24 @@
         "select_fallback_policy",
         "emit_degrade_notice"
       ]
+    },
+    {
+      "mcp_id": "core-governance-journal-mcp",
+      "capabilities": [
+        "export_trace_bundle",
+        "append_governance_diary_entry",
+        "verify_export_receipt"
+      ]
+    },
+    {
+      "mcp_id": "core-experience-profile-mcp",
+      "capabilities": [
+        "validate_theme_descriptor",
+        "validate_ritual_state_machine",
+        "check_phase_budget_profile",
+        "propose_safe_theme_rotation",
+        "verify_reveal_consistency"
+      ]
     }
   ]
 }

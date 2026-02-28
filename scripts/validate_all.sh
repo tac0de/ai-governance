@@ -741,6 +741,65 @@ if json_ready "$SERVICES_REG_REL"; then
         done < <(jq -r '.integrations.allowed_mcp_ids[]?' "$ROOT_DIR/$contract_bundle_ref")
       fi
 
+      if ! jq -e '
+        if has("experience_contract") then
+          (
+            (.experience_contract.experience_model|type=="string" and length>0) and
+            (.experience_contract.primary_emotion_axis|type=="string" and length>0) and
+            (.experience_contract.interaction_axis|type=="string" and length>0) and
+            (.experience_contract.core_presence.summary|type=="string" and length>0) and
+            (.experience_contract.core_presence.persistent_cues|type=="array" and length>0) and
+            (.experience_contract.core_presence.relationship_distance_model|type=="string" and length>0) and
+            (.experience_contract.emotional_skins|type=="array" and length>0) and
+            (all(.experience_contract.emotional_skins[];
+              (.theme_id|type=="string" and test("^[a-z][a-z0-9-]*$")) and
+              (.display_name|type=="string" and length>0) and
+              (.emotion_profile|type=="array" and length>0) and
+              (.visual_profile.signature_motifs|type=="array" and length>0) and
+              (.visual_profile.dominant_layers|type=="array" and length>0) and
+              (.visual_profile.key_effect_bias|type=="array" and length>0 and length<=2) and
+              (.audio_profile.energy|type=="string" and length>0) and
+              (.audio_profile.texture|type=="string" and length>0) and
+              (.interaction_response_profile.invocation|type=="string" and length>0) and
+              (.interaction_response_profile.offering|type=="string" and length>0) and
+              (.interaction_response_profile.alignment|type=="string" and length>0) and
+              (.result_reveal_style|type=="string" and length>0) and
+              (.transition_rules|type=="array" and length>0)
+            )) and
+            ([.experience_contract.emotional_skins[].theme_id] | length == (unique | length)) and
+            (.experience_contract.interaction_ritual.loop|type=="array" and length>0) and
+            (.experience_contract.interaction_ritual.input_channels|type=="array" and length>0) and
+            (.experience_contract.interaction_ritual.state_machine|type=="array" and length>0) and
+            ([.experience_contract.interaction_ritual.state_machine[].state_id] | index("Dormant") != null) and
+            ([.experience_contract.interaction_ritual.state_machine[].state_id] | index("Awakening") != null) and
+            ([.experience_contract.interaction_ritual.state_machine[].state_id] | index("Attuning") != null) and
+            ([.experience_contract.interaction_ritual.state_machine[].state_id] | index("Offering") != null) and
+            ([.experience_contract.interaction_ritual.state_machine[].state_id] | index("JudgementBloom") != null) and
+            ([.experience_contract.interaction_ritual.state_machine[].state_id] | index("Revelation") != null) and
+            ([.experience_contract.interaction_ritual.state_machine[].state_id] | index("Afterglow") != null) and
+            (.experience_contract.scene_state_contract.required_fields|type=="array" and length>0) and
+            (.experience_contract.scene_state_contract.state_guarantees|type=="array" and length>0) and
+            (.experience_contract.interaction_event_model.event_types|type=="array" and length>0) and
+            ([.experience_contract.interaction_event_model.event_types[]] | index("invoke_start") != null) and
+            ([.experience_contract.interaction_event_model.event_types[]] | index("invoke_commit") != null) and
+            ([.experience_contract.interaction_event_model.event_types[]] | index("offering_move") != null) and
+            ([.experience_contract.interaction_event_model.event_types[]] | index("offering_commit") != null) and
+            ([.experience_contract.interaction_event_model.event_types[]] | index("alignment_shift") != null) and
+            ([.experience_contract.interaction_event_model.event_types[]] | index("reveal_accept") != null) and
+            ([.experience_contract.interaction_event_model.event_types[]] | index("reenter_ritual") != null) and
+            (.experience_contract.visual_modulation_contract.required_fields|type=="array" and length>0) and
+            (.experience_contract.visual_modulation_contract.rendering_layers|type=="array" and length>0) and
+            (.experience_contract.visual_modulation_contract.form_strategy|type=="array" and length>0) and
+            (.experience_contract.visual_modulation_contract.supporting_strategies|type=="array" and length>0) and
+            (.experience_contract.test_scenarios|type=="array" and length>0)
+          )
+        else
+          true
+        end
+      ' "$ROOT_DIR/$contract_bundle_ref" >/dev/null 2>&1; then
+        fail "$contract_bundle_ref" "invalid optional experience_contract"
+      fi
+
       if check_json "$mcp_allowlist_path"; then
         if ! jq -e \
           --slurpfile bundle "$ROOT_DIR/$contract_bundle_ref" \

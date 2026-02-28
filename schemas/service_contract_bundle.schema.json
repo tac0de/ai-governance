@@ -199,6 +199,242 @@
       },
       "additionalProperties": false
     },
+    "experience_contract": {
+      "type": "object",
+      "required": [
+        "experience_model",
+        "primary_emotion_axis",
+        "interaction_axis",
+        "core_presence",
+        "emotional_skins",
+        "interaction_ritual",
+        "scene_state_contract",
+        "interaction_event_model",
+        "visual_modulation_contract",
+        "test_scenarios"
+      ],
+      "properties": {
+        "experience_model": { "type": "string", "minLength": 1 },
+        "primary_emotion_axis": { "type": "string", "minLength": 1 },
+        "interaction_axis": { "type": "string", "minLength": 1 },
+        "core_presence": {
+          "type": "object",
+          "required": ["summary", "persistent_cues", "relationship_distance_model"],
+          "properties": {
+            "summary": { "type": "string", "minLength": 1 },
+            "persistent_cues": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "relationship_distance_model": { "type": "string", "minLength": 1 }
+          },
+          "additionalProperties": false
+        },
+        "emotional_skins": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "theme_id",
+              "display_name",
+              "emotion_profile",
+              "visual_profile",
+              "audio_profile",
+              "interaction_response_profile",
+              "result_reveal_style",
+              "transition_rules"
+            ],
+            "properties": {
+              "theme_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+              "display_name": { "type": "string", "minLength": 1 },
+              "emotion_profile": {
+                "type": "array",
+                "minItems": 1,
+                "items": { "type": "string", "minLength": 1 }
+              },
+              "visual_profile": {
+                "type": "object",
+                "required": ["signature_motifs", "dominant_layers", "key_effect_bias"],
+                "properties": {
+                  "signature_motifs": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "type": "string", "minLength": 1 }
+                  },
+                  "dominant_layers": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "type": "string", "minLength": 1 }
+                  },
+                  "key_effect_bias": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 2,
+                    "items": { "type": "string", "minLength": 1 }
+                  }
+                },
+                "additionalProperties": false
+              },
+              "audio_profile": {
+                "type": "object",
+                "required": ["energy", "texture"],
+                "properties": {
+                  "energy": { "type": "string", "minLength": 1 },
+                  "texture": { "type": "string", "minLength": 1 }
+                },
+                "additionalProperties": false
+              },
+              "interaction_response_profile": {
+                "type": "object",
+                "required": ["invocation", "offering", "alignment"],
+                "properties": {
+                  "invocation": { "type": "string", "minLength": 1 },
+                  "offering": { "type": "string", "minLength": 1 },
+                  "alignment": { "type": "string", "minLength": 1 }
+                },
+                "additionalProperties": false
+              },
+              "result_reveal_style": { "type": "string", "minLength": 1 },
+              "transition_rules": {
+                "type": "array",
+                "minItems": 1,
+                "items": { "type": "string", "minLength": 1 }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "interaction_ritual": {
+          "type": "object",
+          "required": ["loop", "input_channels", "state_machine"],
+          "properties": {
+            "loop": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "input_channels": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["channel_id", "semantic_role", "input_modes", "uses"],
+                "properties": {
+                  "channel_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+                  "semantic_role": { "type": "string", "minLength": 1 },
+                  "input_modes": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "type": "string", "minLength": 1 }
+                  },
+                  "uses": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "type": "string", "minLength": 1 }
+                  }
+                },
+                "additionalProperties": false
+              }
+            },
+            "state_machine": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "object",
+                "required": ["state_id", "purpose"],
+                "properties": {
+                  "state_id": { "type": "string", "pattern": "^[A-Z][A-Za-z]+$" },
+                  "purpose": { "type": "string", "minLength": 1 }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        "scene_state_contract": {
+          "type": "object",
+          "required": ["required_fields", "state_guarantees"],
+          "properties": {
+            "required_fields": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "state_guarantees": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            }
+          },
+          "additionalProperties": false
+        },
+        "interaction_event_model": {
+          "type": "object",
+          "required": ["event_types", "dispatch_rules"],
+          "properties": {
+            "event_types": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "pattern": "^[a-z][a-z0-9_]*$" }
+            },
+            "dispatch_rules": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            }
+          },
+          "additionalProperties": false
+        },
+        "visual_modulation_contract": {
+          "type": "object",
+          "required": ["required_fields", "rendering_layers", "form_strategy", "supporting_strategies"],
+          "properties": {
+            "required_fields": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "rendering_layers": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "form_strategy": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "supporting_strategies": {
+              "type": "array",
+              "minItems": 1,
+              "items": { "type": "string", "minLength": 1 }
+            }
+          },
+          "additionalProperties": false
+        },
+        "test_scenarios": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["id", "checks"],
+            "properties": {
+              "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+              "checks": {
+                "type": "array",
+                "minItems": 1,
+                "items": { "type": "string", "minLength": 1 }
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
     "slo_notes": {
       "type": "object",
       "required": ["common_kpi_set", "critical_metrics", "error_budget"],
