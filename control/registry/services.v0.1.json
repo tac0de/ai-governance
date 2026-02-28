@@ -36,6 +36,18 @@
       "mcp_allowlist_path": "services/thedivineparadox/mcp.allowlist.json",
       "contract_bundle_ref": "services/thedivineparadox/contract.bundle.v0.1.json",
       "slo_contract_ref": "services/thedivineparadox/slo.contract.v0.1.json"
+    },
+    {
+      "id": "personal-webnovel",
+      "name": "PersonalWebNovel",
+      "owner": "architect-owner",
+      "dept": "Platform Operations",
+      "ministry": "Ministry of Governance and Compliance",
+      "repo_path": "services/personal-webnovel",
+      "policy_profile_ref": "services/personal-webnovel/policy.profile.json",
+      "mcp_allowlist_path": "services/personal-webnovel/mcp.allowlist.json",
+      "contract_bundle_ref": "services/personal-webnovel/contract.bundle.v0.1.json",
+      "slo_contract_ref": "services/personal-webnovel/slo.contract.v0.1.json"
     }
   ]
 }

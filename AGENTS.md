@@ -2,82 +2,61 @@ This repository is architecturally governed.
 
 # Scope
 
-- This file defines repository governance for `ai-governance`.
-- These rules are model-agnostic and apply to any agent used in this repository.
+This repository is governance core only.
+It defines deterministic verdict logic, evidence contracts, and policy validation.
+
+Product runtime or real MCP implementations are out of scope.
 
 # Trust Boundary
 
-- This repository is governance core only.
-- Do not implement product runtime or real MCP implementations in this repository.
-- Accept only evidence contracts, replay fixtures, deterministic trace logic, and policy-bound validation.
+Accept only:
+- Evidence contracts
+- Replay fixtures
+- Deterministic trace logic
+- Policy-bound validation
 
-# Determinism Policy
+Reject:
+- Network-dependent verdict paths
+- Randomness or wall-clock dependent logic
 
-- Primary quality axis: same input + same evidence => same verdict.
-- Reject changes that add wall-clock, randomness, or network dependency to verdict path.
-- Keep trace append-only and hash-referenced.
+# Determinism
 
-# Closure Policy
+Primary quality axis:
+same input + same evidence => same verdict.
 
-- Prefer versioned closure over open-ended expansion.
-- Freeze opcode and schema versions for each release line.
-- New capabilities must be adapterized outside core and integrated through conformance artifacts.
+Trace must remain append-only and hash-referenced.
 
-# Repository Shape Freeze
+# Repository Structure
 
-- Keep the root top-level directory set stable.
-- Do not add, remove, or rename root-level directories without explicit human architect approval.
-- Place new artifacts under existing roots first; prefer `control/`, `policies/`, `schemas/`, `scripts/`, and `services/`.
-- Treat root-level structure changes as high-risk governance changes.
+Root directory set is frozen.
 
-# AGENTS Hierarchy
+Do not modify root-level structure without explicit human architect approval.
 
-- Repository root `AGENTS.md` is the only AGENTS file used in this repository.
-- Service-level `AGENTS.md` files are not used in this repository.
-- Human override authority remains centralized at root governance policy.
+Place artifacts under:
+- control/
+- policies/
+- schemas/
+- scripts/
+- services/
 
-# Execution Guardrails
+Governed artifacts must use JSON contracts.
+`docs/` is non-contract.
+Root `README.md` is the only human-facing Markdown.
 
-- Keep changes minimal, deterministic, and testable via shell scripts.
-- Prioritize API-level verification; use UI-level checks only when explicitly required.
-- For high-risk boundary changes, require explicit human architect approval.
-- Governed artifacts under `control/`, `policies/`, `schemas/`, `scripts/`, and `services/` must use JSON contracts.
-- `docs/` is a non-contract UI exception.
-- Root `README.md` is the only human-facing Markdown document.
+# Governance Routing
 
-# Default Reporting Format
+Work affecting governed artifacts must be trace-linked to:
+- intent
+- policy
+- evidence reference
 
-- Use the following report format as the default response structure, even when context changes:
-- `1. WHAT I DID`
-- `2. WHERE IT IS RUNNING`
-- `3. HUMAN REQUIRED (links + paths)`
-- `4. RISK / UNKNOWN`
-- Korean aliases are allowed and recommended in parallel:
-- `1. WHAT I DID (무엇을 했는가)`
-- `2. WHERE IT IS RUNNING (어디서 실행되는가)`
-- `3. HUMAN REQUIRED (links + paths) (사람 확인 필요: 링크 + 경로)`
-- `4. RISK / UNKNOWN (위험 / 미확정)`
-- Allow exceptions only for clearly exceptional cases.
-- Maintain partial autonomy while still preferring this format by default.
-- Prefer this exact numbered order unless an exceptional case is explicitly stated.
+Direct service-side bypass is not allowed.
 
-# Planning Gate and Autopilot
+# Approval Escalation
 
-- Prefer a single macro planning gate over repeated micro-approvals.
-- Planning gate must capture: objective, scope, forbidden actions, risk tier, completion criteria, and rollback condition.
-- After planning approval, agents should execute in autopilot mode within approved scope.
-- Do not require extra human approval for routine steps that stay in approved scope.
-- Trigger interrupt-and-ask only when one of the following occurs:
-- Scope deviation is required.
-- Risk tier increases beyond approved level.
-- Critical validation fails or rollback condition is hit.
-- In autopilot mode, keep human updates concise and decision-focused.
-- End each execution cycle with one final report using the default reporting format.
+Human architect approval required when:
+- Root structure changes
+- Risk tier increases
+- Deterministic guarantees are impacted
 
-# Mandatory Governance Path
-
-- All work must follow governance-enforced routing by default.
-- Direct service-side execution without governance contract linkage is not allowed.
-- Every execution unit must be trace-linked to intent, policy, and evidence references.
-- Service repositories may implement details, but must not bypass central governance gates.
-- Exceptions require explicit human architect override and must be recorded in trace artifacts.
+All other work may proceed within scope.
