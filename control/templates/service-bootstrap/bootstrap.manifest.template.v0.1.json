@@ -1,0 +1,13 @@
+{
+  "version": "v0.1",
+  "service_id": "example-service",
+  "service_name": "Example Service",
+  "bootstrap_profile": "standard",
+  "risk_tier": "medium",
+  "policy_profile": "balanced",
+  "include_prompt_strategy": true,
+  "include_plan_strategy": true,
+  "init_git": true,
+  "seed_source_ref": "none",
+  "target_repo_layout": "governance-rooted"
+}

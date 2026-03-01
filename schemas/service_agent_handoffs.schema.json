@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ServiceAgentHandoffs",
+  "type": "object",
+  "required": [
+    "version",
+    "service_id",
+    "start_roles",
+    "terminal_roles",
+    "handoffs"
+  ],
+  "properties": {
+    "version": { "type": "string", "const": "v0.1" },
+    "service_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "start_roles": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+      "uniqueItems": true
+    },
+    "terminal_roles": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+      "uniqueItems": true
+    },
+    "handoffs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "from_role",
+          "to_role",
+          "condition",
+          "state_transition_gate",
+          "required_policy_ref",
+          "evidence_gate"
+        ],
+        "properties": {
+          "from_role": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "to_role": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "condition": { "type": "string", "minLength": 1 },
+          "state_transition_gate": {
+            "type": "object",
+            "required": [
+              "from_states",
+              "to_states"
+            ],
+            "properties": {
+              "from_states": {
+                "type": "array",
+                "minItems": 1,
+                "items": { "type": "string", "minLength": 1 },
+                "uniqueItems": true
+              },
+              "to_states": {
+                "type": "array",
+                "minItems": 1,
+                "items": { "type": "string", "minLength": 1 },
+                "uniqueItems": true
+              }
+            },
+            "additionalProperties": false
+          },
+          "required_policy_ref": { "type": "string", "minLength": 1 },
+          "evidence_gate": { "type": "string", "minLength": 1 }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

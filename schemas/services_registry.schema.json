@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "ServicePortfolioRegistry",
+  "title": "ServiceSeedCatalog",
   "type": "object",
   "required": ["version", "services"],
   "properties": {
@@ -16,29 +16,54 @@
         "required": [
           "id",
           "name",
+          "catalog_role",
           "owner",
-          "dept",
-          "ministry",
-          "repo_path",
-          "policy_profile_ref",
-          "mcp_allowlist_path",
+          "seed_path",
+          "bootstrap_profile",
           "contract_bundle_ref",
-          "slo_contract_ref"
+          "agent_roles_ref",
+          "agent_handoffs_ref",
+          "default_policy_profile_ref",
+          "default_mcp_allowlist_ref",
+          "default_slo_contract_ref",
+          "notes"
         ],
         "properties": {
           "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
           "name": { "type": "string", "minLength": 1 },
+          "catalog_role": {
+            "type": "string",
+            "const": "archived-seed-example"
+          },
           "owner": { "type": "string", "minLength": 1 },
-          "dept": { "type": "string", "minLength": 1 },
-          "ministry": { "type": "string", "minLength": 1 },
-          "repo_path": { "type": "string", "minLength": 1 },
-          "policy_profile_ref": { "type": "string", "minLength": 1 },
-          "mcp_allowlist_path": { "type": "string", "minLength": 1 },
+          "seed_path": {
+            "type": "string",
+            "pattern": "^services/[a-z0-9][a-z0-9-]*$"
+          },
+          "bootstrap_profile": {
+            "type": "string",
+            "enum": ["standard", "ritual-uiux"]
+          },
           "contract_bundle_ref": {
             "type": "string",
             "pattern": "^services/[a-z0-9][a-z0-9-]*/contract\\.bundle\\.v0\\.1\\.json$"
           },
-          "slo_contract_ref": { "type": "string", "minLength": 1 }
+          "agent_roles_ref": {
+            "type": "string",
+            "pattern": "^services/[a-z0-9][a-z0-9-]*/agent-roles/agent\\.roles\\.v0\\.1\\.json$"
+          },
+          "agent_handoffs_ref": {
+            "type": "string",
+            "pattern": "^services/[a-z0-9][a-z0-9-]*/agent-roles/agent\\.handoffs\\.v0\\.1\\.json$"
+          },
+          "default_policy_profile_ref": { "type": "string", "minLength": 1 },
+          "default_mcp_allowlist_ref": { "type": "string", "minLength": 1 },
+          "default_slo_contract_ref": { "type": "string", "minLength": 1 },
+          "notes": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          }
         },
         "additionalProperties": false
       }

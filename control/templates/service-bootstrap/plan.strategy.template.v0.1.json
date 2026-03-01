@@ -1,0 +1,53 @@
+{
+  "version": "v0.1",
+  "service_id": "example-service",
+  "strategy_mode": "standard",
+  "phase_templates": [
+    {
+      "phase_id": "intake",
+      "title": "Intake",
+      "owner_role_id": "intake-cell",
+      "required_output_kinds": [
+        "intake-brief"
+      ],
+      "default_acceptance_checks": [
+        "The request scope is explicit and evidence-backed."
+      ]
+    },
+    {
+      "phase_id": "policy-review",
+      "title": "Policy Review",
+      "owner_role_id": "policy-safety-cell",
+      "required_output_kinds": [
+        "policy-verdict-note"
+      ],
+      "default_acceptance_checks": [
+        "The governing policy and escalation tier are explicit."
+      ]
+    },
+    {
+      "phase_id": "release-gate",
+      "title": "Release Gate",
+      "owner_role_id": "release-gate-cell",
+      "required_output_kinds": [
+        "release-gate-note"
+      ],
+      "default_acceptance_checks": [
+        "The final packet includes the required evidence chain."
+      ]
+    }
+  ],
+  "release_gate_defaults": {
+    "owner_role_id": "release-gate-cell",
+    "required_inputs": [
+      "intent_ref",
+      "policy_ref",
+      "evidence_ref",
+      "verdict_ref"
+    ],
+    "blocking_conditions": [
+      "Any high-tier change without a human gate.",
+      "Any packet with missing evidence references."
+    ]
+  }
+}

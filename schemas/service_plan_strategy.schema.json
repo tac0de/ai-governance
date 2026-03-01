@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ServicePlanStrategy",
+  "type": "object",
+  "required": [
+    "version",
+    "service_id",
+    "strategy_mode",
+    "phase_templates",
+    "release_gate_defaults"
+  ],
+  "properties": {
+    "version": { "type": "string", "const": "v0.1" },
+    "service_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "strategy_mode": { "type": "string", "enum": ["standard", "ritual-uiux"] },
+    "phase_templates": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "phase_id",
+          "title",
+          "owner_role_id",
+          "required_output_kinds",
+          "default_acceptance_checks"
+        ],
+        "properties": {
+          "phase_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "title": { "type": "string", "minLength": 1 },
+          "owner_role_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+          "required_output_kinds": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 },
+            "uniqueItems": true
+          },
+          "default_acceptance_checks": {
+            "type": "array",
+            "minItems": 1,
+            "items": { "type": "string", "minLength": 1 }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "release_gate_defaults": {
+      "type": "object",
+      "required": [
+        "owner_role_id",
+        "required_inputs",
+        "blocking_conditions"
+      ],
+      "properties": {
+        "owner_role_id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+        "required_inputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "blocking_conditions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

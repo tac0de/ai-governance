@@ -4,50 +4,74 @@
     {
       "id": "gongvue",
       "name": "Gongvue",
+      "catalog_role": "archived-seed-example",
       "owner": "architect-owner",
-      "dept": "Platform Operations",
-      "ministry": "Ministry of Governance and Compliance",
-      "repo_path": "services/gongvue",
-      "policy_profile_ref": "services/gongvue/policy.profile.json",
-      "mcp_allowlist_path": "services/gongvue/mcp.allowlist.json",
+      "seed_path": "services/gongvue",
+      "bootstrap_profile": "standard",
       "contract_bundle_ref": "services/gongvue/contract.bundle.v0.1.json",
-      "slo_contract_ref": "services/gongvue/slo.contract.v0.1.json"
+      "agent_roles_ref": "services/gongvue/agent-roles/agent.roles.v0.1.json",
+      "agent_handoffs_ref": "services/gongvue/agent-roles/agent.handoffs.v0.1.json",
+      "default_policy_profile_ref": "services/gongvue/policy.profile.json",
+      "default_mcp_allowlist_ref": "services/gongvue/mcp.allowlist.json",
+      "default_slo_contract_ref": "services/gongvue/slo.contract.v0.1.json",
+      "notes": [
+        "Legacy minimal seed example.",
+        "Long-term runtime home is an independent service repository."
+      ]
     },
     {
       "id": "obsidian-mcp",
       "name": "ObsidianMcp",
+      "catalog_role": "archived-seed-example",
       "owner": "architect-owner",
-      "dept": "Platform Operations",
-      "ministry": "Ministry of Governance and Compliance",
-      "repo_path": "services/obsidian-mcp",
-      "policy_profile_ref": "services/obsidian-mcp/policy.profile.json",
-      "mcp_allowlist_path": "services/obsidian-mcp/mcp.allowlist.json",
+      "seed_path": "services/obsidian-mcp",
+      "bootstrap_profile": "standard",
       "contract_bundle_ref": "services/obsidian-mcp/contract.bundle.v0.1.json",
-      "slo_contract_ref": "services/obsidian-mcp/slo.contract.v0.1.json"
+      "agent_roles_ref": "services/obsidian-mcp/agent-roles/agent.roles.v0.1.json",
+      "agent_handoffs_ref": "services/obsidian-mcp/agent-roles/agent.handoffs.v0.1.json",
+      "default_policy_profile_ref": "services/obsidian-mcp/policy.profile.json",
+      "default_mcp_allowlist_ref": "services/obsidian-mcp/mcp.allowlist.json",
+      "default_slo_contract_ref": "services/obsidian-mcp/slo.contract.v0.1.json",
+      "notes": [
+        "Legacy minimal seed example.",
+        "Long-term runtime home is an independent service repository."
+      ]
     },
     {
       "id": "thedivineparadox",
       "name": "TheDivineParadox",
+      "catalog_role": "archived-seed-example",
       "owner": "architect-owner",
-      "dept": "Platform Operations",
-      "ministry": "Ministry of Governance and Compliance",
-      "repo_path": "services/thedivineparadox",
-      "policy_profile_ref": "services/thedivineparadox/policy.profile.json",
-      "mcp_allowlist_path": "services/thedivineparadox/mcp.allowlist.json",
+      "seed_path": "services/thedivineparadox",
+      "bootstrap_profile": "ritual-uiux",
       "contract_bundle_ref": "services/thedivineparadox/contract.bundle.v0.1.json",
-      "slo_contract_ref": "services/thedivineparadox/slo.contract.v0.1.json"
+      "agent_roles_ref": "services/thedivineparadox/agent-roles/agent.roles.v0.1.json",
+      "agent_handoffs_ref": "services/thedivineparadox/agent-roles/agent.handoffs.v0.1.json",
+      "default_policy_profile_ref": "services/thedivineparadox/policy.profile.json",
+      "default_mcp_allowlist_ref": "services/thedivineparadox/mcp.allowlist.json",
+      "default_slo_contract_ref": "services/thedivineparadox/slo.contract.v0.1.json",
+      "notes": [
+        "Primary ritual-uiux seed example.",
+        "Long-term runtime home is an independent service repository."
+      ]
     },
     {
       "id": "personal-webnovel",
       "name": "PersonalWebNovel",
+      "catalog_role": "archived-seed-example",
       "owner": "architect-owner",
-      "dept": "Platform Operations",
-      "ministry": "Ministry of Governance and Compliance",
-      "repo_path": "services/personal-webnovel",
-      "policy_profile_ref": "services/personal-webnovel/policy.profile.json",
-      "mcp_allowlist_path": "services/personal-webnovel/mcp.allowlist.json",
+      "seed_path": "services/personal-webnovel",
+      "bootstrap_profile": "standard",
       "contract_bundle_ref": "services/personal-webnovel/contract.bundle.v0.1.json",
-      "slo_contract_ref": "services/personal-webnovel/slo.contract.v0.1.json"
+      "agent_roles_ref": "services/personal-webnovel/agent-roles/agent.roles.v0.1.json",
+      "agent_handoffs_ref": "services/personal-webnovel/agent-roles/agent.handoffs.v0.1.json",
+      "default_policy_profile_ref": "services/personal-webnovel/policy.profile.json",
+      "default_mcp_allowlist_ref": "services/personal-webnovel/mcp.allowlist.json",
+      "default_slo_contract_ref": "services/personal-webnovel/slo.contract.v0.1.json",
+      "notes": [
+        "Legacy minimal seed example.",
+        "Long-term runtime home is an independent service repository."
+      ]
     }
   ]
 }

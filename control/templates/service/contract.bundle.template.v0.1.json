@@ -114,7 +114,7 @@
   },
   "change_log": [
     {
-      "release_line": "v0.2",
+      "release_line": "v0.3",
       "change": "Initial JSON-only service contract bundle template.",
       "date_label": "2026-02-27"
     }

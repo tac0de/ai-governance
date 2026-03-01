@@ -1,0 +1,42 @@
+{
+  "version": "v0.1",
+  "service_id": "obsidian-mcp",
+  "start_roles": [
+    "intake-cell"
+  ],
+  "terminal_roles": [
+    "release-gate-cell"
+  ],
+  "handoffs": [
+    {
+      "from_role": "intake-cell",
+      "to_role": "policy-safety-cell",
+      "condition": "The request is summarized and evidence-backed.",
+      "state_transition_gate": {
+        "from_states": [
+          "Intake"
+        ],
+        "to_states": [
+          "Review"
+        ]
+      },
+      "required_policy_ref": "services/obsidian-mcp/policy.profile.json",
+      "evidence_gate": "intent_ref and evidence_ref are present."
+    },
+    {
+      "from_role": "policy-safety-cell",
+      "to_role": "release-gate-cell",
+      "condition": "The review packet records the escalation outcome.",
+      "state_transition_gate": {
+        "from_states": [
+          "Review"
+        ],
+        "to_states": [
+          "ReleaseGate"
+        ]
+      },
+      "required_policy_ref": "services/obsidian-mcp/policy.profile.json",
+      "evidence_gate": "proposal_ref and verdict_ref are present."
+    }
+  ]
+}

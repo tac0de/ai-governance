@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BootstrapManifest",
+  "type": "object",
+  "required": [
+    "version",
+    "service_id",
+    "service_name",
+    "bootstrap_profile",
+    "risk_tier",
+    "policy_profile",
+    "include_prompt_strategy",
+    "include_plan_strategy",
+    "init_git",
+    "seed_source_ref",
+    "target_repo_layout"
+  ],
+  "properties": {
+    "version": { "type": "string", "const": "v0.1" },
+    "service_id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]*$" },
+    "service_name": { "type": "string", "minLength": 1 },
+    "bootstrap_profile": { "type": "string", "enum": ["standard", "ritual-uiux"] },
+    "risk_tier": { "type": "string", "enum": ["low", "medium", "high"] },
+    "policy_profile": { "type": "string", "enum": ["strict", "balanced", "creative"] },
+    "include_prompt_strategy": { "type": "boolean" },
+    "include_plan_strategy": { "type": "boolean" },
+    "init_git": { "type": "boolean" },
+    "seed_source_ref": { "type": "string", "minLength": 1 },
+    "target_repo_layout": { "type": "string", "enum": ["governance-rooted"] }
+  },
+  "additionalProperties": false
+}

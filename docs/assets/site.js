@@ -601,7 +601,7 @@ async function runDemo(lang) {
 
   const result = buildDecision(state);
   const payload = {
-    version: "v0.2",
+    version: "v0.3",
     checked_at_utc: new Date().toISOString(),
     governance_path: "mandatory_bridge",
     scenario: scenarioLabel[state.scenario] || state.scenario,

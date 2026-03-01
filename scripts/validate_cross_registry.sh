@@ -107,15 +107,15 @@ check_service_paths() {
 
     expected_governance_repo_path="services/${id}"
     if ! jq -e --arg id "$id" --arg repo_path "$expected_governance_repo_path" \
-      '.services | any(.id==$id and .repo_path==$repo_path)' \
+      '.services | any(.id==$id and .seed_path==$repo_path)' \
       "$governance_registry" >/dev/null 2>&1; then
-      fail "$governance_registry" "service '$id' must map to repo_path '$expected_governance_repo_path'"
+      fail "$governance_registry" "service '$id' must map to seed_path '$expected_governance_repo_path'"
     fi
 
     if [[ ! -d "$ROOT_DIR/$expected_governance_repo_path" ]]; then
       fail "$ROOT_DIR/$expected_governance_repo_path" "governance service directory missing for service '$id'"
     fi
-  done < <(jq -r '.services[] | [.id, .repo_path] | @tsv' "$governed_registry")
+  done < <(jq -r '.services[] | [.id, (.repo_path // .seed_path)] | @tsv' "$governed_registry")
 }
 
 require jq

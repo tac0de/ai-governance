@@ -27,10 +27,19 @@
       "Unbounded experimental outputs"
     ],
     "dependencies": [
+      "control/agents/departments.v0.1.json",
       "policies/policy_profiles.v0.1.json",
       "policies/approval_tier_policy.v0.1.json",
+      "policies/agent_routing_policy.v0.1.json",
       "control/registry/mcps.v0.1.json",
-      "control/specs/trace_rules.v0.1.json"
+      "control/specs/trace_rules.v0.1.json",
+      "services/thedivineparadox/agent-roles/agent.roles.v0.1.json",
+      "services/thedivineparadox/agent-roles/agent.handoffs.v0.1.json",
+      "services/thedivineparadox/agent-roles/uiux.execution-plan.v0.1.json",
+      "services/thedivineparadox/agent-roles/proposal-packets/ritual-legibility-baseline.proposal.v0.1.json",
+      "services/thedivineparadox/agent-roles/proposal-packets/interaction-parity-package.proposal.v0.1.json",
+      "services/thedivineparadox/agent-roles/proposal-packets/visual-differentiation-pass.proposal.v0.1.json",
+      "services/thedivineparadox/agent-roles/proposal-packets/governance-release-check.proposal.v0.1.json"
     ],
     "primary_users": [
       "platform owners",
@@ -126,7 +135,11 @@
     "governance_interfaces": [
       "policies/policy_profiles.v0.1.json",
       "policies/approval_tier_policy.v0.1.json",
-      "control/specs/trace_rules.v0.1.json"
+      "control/specs/trace_rules.v0.1.json",
+      "schemas/service_agent_roles.schema.json",
+      "schemas/service_agent_handoffs.schema.json",
+      "schemas/service_agent_proposal.schema.json",
+      "schemas/service_agent_plan.schema.json"
     ],
     "extension_baseline": [
       "Experimental APIs are recommendation-only and never on the core verdict path.",
@@ -673,6 +686,21 @@
     ]
   },
   "change_log": [
+    {
+      "release_line": "v0.8",
+      "change": "Added deterministic UI and UX proposal packets for each governed phase and linked them to the thedivineparadox service contract.",
+      "date_label": "2026-03-01"
+    },
+    {
+      "release_line": "v0.7",
+      "change": "Expanded thedivineparadox agent departments for UI and UX planning, added output-contract schemas, and bound role and handoff states to the ritual experience model.",
+      "date_label": "2026-03-01"
+    },
+    {
+      "release_line": "v0.6",
+      "change": "Added a service-scoped agent department contract and deterministic handoff graph for thedivineparadox ritual planning flow.",
+      "date_label": "2026-03-01"
+    },
     {
       "release_line": "v0.5",
       "change": "Registered the experience profile MCP and elevated thedivineparadox interaction contract to explicit PC and mobile gesture parity with broader visual diversity requirements.",

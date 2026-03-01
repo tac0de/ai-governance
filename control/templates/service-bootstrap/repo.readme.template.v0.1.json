@@ -1,0 +1,18 @@
+{
+  "version": "v0.1",
+  "title_template": "{{service_name}} Governance Kit",
+  "sections": [
+    {
+      "heading": "Purpose",
+      "body": "This repository was bootstrapped from ai-governance v0.3 as a portable governance starter kit."
+    },
+    {
+      "heading": "Layout",
+      "body": "Governed artifacts live under `governance/`. Runtime implementation stays outside these contracts."
+    },
+    {
+      "heading": "Defaults",
+      "body": "This kit is designed to operate without ai-governance at runtime while preserving deterministic contracts."
+    }
+  ]
+}

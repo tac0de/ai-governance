@@ -154,6 +154,10 @@ SERVICE_PACKAGE_FIXED=(
   "slo.contract.v0.1.json"
 )
 
+SERVICE_PACKAGE_OPTIONAL=(
+  "agent-roles"
+)
+
 # Ensure all schema contracts exist and are valid JSON.
 for schema_rel in \
   schemas/envelope.schema.json \
@@ -164,8 +168,16 @@ for schema_rel in \
   schemas/agent_routing_policy.schema.json \
   schemas/org.schema.json \
   schemas/services_registry.schema.json \
+  schemas/bootstrap_manifest.schema.json \
+  schemas/bootstrap_receipt.schema.json \
   schemas/service_contract_bundle.schema.json \
   schemas/service_slo_contract.schema.json \
+  schemas/service_agent_roles.schema.json \
+  schemas/service_agent_handoffs.schema.json \
+  schemas/service_agent_proposal.schema.json \
+  schemas/service_agent_plan.schema.json \
+  schemas/service_prompt_strategy.schema.json \
+  schemas/service_plan_strategy.schema.json \
   schemas/mcps_registry.schema.json \
   schemas/mcp_allowlist.schema.json \
   schemas/mcp_manifest.schema.json \
@@ -208,6 +220,15 @@ check_exact_files_in_dir "control/specs" \
 
 check_exact_files_in_dir "control/templates/service" "contract.bundle.template.v0.1.json"
 check_exact_files_in_dir "control/templates/mcp" "contract.bundle.template.v0.1.json"
+check_exact_files_in_dir "control/templates/service-bootstrap" \
+  "bootstrap.manifest.template.v0.1.json" \
+  "service.contract.bundle.template.v0.1.json" \
+  "agent.roles.template.v0.1.json" \
+  "agent.handoffs.template.v0.1.json" \
+  "prompt.strategy.template.v0.1.json" \
+  "plan.strategy.template.v0.1.json" \
+  "bootstrap.receipt.template.v0.1.json" \
+  "repo.readme.template.v0.1.json"
 
 # Existing governance core validation contracts.
 validate_jq_contract "fixtures/intent.envelope.json" "schemas/envelope.schema.json" '
@@ -556,18 +577,20 @@ validate_jq_contract "$SERVICES_REG_REL" "schemas/services_registry.schema.json"
   (all(.services[];
     (.id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
     (.name|type=="string" and length>0) and
+    (.catalog_role=="archived-seed-example") and
     (.owner|type=="string" and length>0) and
-    (.dept|type=="string" and length>0) and
-    (.ministry|type=="string" and length>0) and
-    (.repo_path|type=="string" and length>0) and
-    (.policy_profile_ref|type=="string" and length>0) and
-    (.mcp_allowlist_path|type=="string" and length>0) and
+    (.seed_path|type=="string" and test("^services/[a-z0-9][a-z0-9-]*$")) and
+    (.bootstrap_profile=="standard" or .bootstrap_profile=="ritual-uiux") and
     (.contract_bundle_ref|type=="string" and length>0) and
-    (has("docs_path") | not) and
-    (.slo_contract_ref|type=="string" and length>0)
+    (.agent_roles_ref|type=="string" and length>0) and
+    (.agent_handoffs_ref|type=="string" and length>0) and
+    (.default_policy_profile_ref|type=="string" and length>0) and
+    (.default_mcp_allowlist_ref|type=="string" and length>0) and
+    (.default_slo_contract_ref|type=="string" and length>0) and
+    (.notes|type=="array" and length>0)
   )) and
   ([.services[].id] | length==(unique|length)) and
-  ([.services[].repo_path] | length==(unique|length)) and
+  ([.services[].seed_path] | length==(unique|length)) and
   ([.services[].contract_bundle_ref] | length==(unique|length))
 '
 
@@ -592,262 +615,39 @@ if [[ -d "$ROOT_DIR/packages/mcps" ]]; then
   fail "packages/mcps" "unsupported MCP root; use control/mcps/<mcp-name>"
 fi
 
-# Cross-registry consistency checks.
-if json_ready "$ORG_REG_REL" && json_ready "$SERVICES_REG_REL"; then
-  if ! jq -ne \
-    --slurpfile org "$ROOT_DIR/$ORG_REG_REL" \
-    --slurpfile services "$ROOT_DIR/$SERVICES_REG_REL" '
-      ($org[0].company_departments | map(.name)) as $dept_names |
-      ($org[0].government_ministries | map(.name)) as $ministry_names |
-      ($services[0].services | map(.id)) as $service_ids |
-      (all($services[0].services[];
-        .dept as $dept_name |
-        .ministry as $ministry_name |
-        ($dept_names | index($dept_name)) != null and
-        ($ministry_names | index($ministry_name)) != null
-      )) and
-      (all($org[0].company_departments[]?.portfolio_services[]?;
-        . as $portfolio_service |
-        ($service_ids | index($portfolio_service)) != null
-      ))
-    ' >/dev/null 2>&1; then
-    fail "$SERVICES_REG_REL" "department/ministry/portfolio references are inconsistent with ${ORG_REG_REL}"
-  fi
-fi
-
-# Validate each service contract package.
+# Seed catalog consistency checks.
 if json_ready "$SERVICES_REG_REL"; then
-  while IFS=$'\t' read -r service_id repo_path policy_profile_ref mcp_allowlist_path contract_bundle_ref slo_contract_ref; do
+  if ! jq -e '
+    ([.services[].id] | length == (unique | length)) and
+    ([.services[].seed_path] | length == (unique | length))
+  ' "$ROOT_DIR/$SERVICES_REG_REL" >/dev/null 2>&1; then
+    fail "$SERVICES_REG_REL" "seed ids and seed paths must be unique"
+  fi
+
+  while IFS=$'\t' read -r service_id seed_path contract_bundle_ref agent_roles_ref agent_handoffs_ref default_policy_profile_ref default_mcp_allowlist_ref default_slo_contract_ref; do
     [[ -n "$service_id" ]] || continue
 
-    check_dir "$repo_path"
-    check_exact_files_in_dir "$repo_path" "${SERVICE_PACKAGE_FIXED[@]}"
-    check_file "$policy_profile_ref"
-    check_file "$mcp_allowlist_path"
+    check_dir "$seed_path"
     check_file "$contract_bundle_ref"
-    check_file "$slo_contract_ref"
-
-    if check_json "$policy_profile_ref"; then
-      if ! jq -e '
-        (.policy_profile_file|type=="string" and length>0) and
-        (.policy_profile|type=="string" and length>0) and
-        (.governance_path=="mandatory_bridge")
-      ' "$ROOT_DIR/$policy_profile_ref" >/dev/null 2>&1; then
-        fail "$policy_profile_ref" "invalid policy profile contract"
-      else
-        policy_profile_file="$(jq -r '.policy_profile_file' "$ROOT_DIR/$policy_profile_ref")"
-        policy_profile_name="$(jq -r '.policy_profile' "$ROOT_DIR/$policy_profile_ref")"
-
-        check_file "$policy_profile_file"
-        if json_ready "$policy_profile_file"; then
-          if ! jq -e --arg p "$policy_profile_name" 'has($p)' "$ROOT_DIR/$policy_profile_file" >/dev/null 2>&1; then
-            fail "$policy_profile_ref" "policy profile '$policy_profile_name' not found in ${policy_profile_file}"
-          fi
-        fi
-      fi
-    fi
-
-    if check_json "$mcp_allowlist_path"; then
-      if ! jq -e '
-        (.service_id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
-        (.allowed_mcps|type=="array") and
-        (all(.allowed_mcps[]?;
-          (.mcp_id|type=="string" and test("^core-[a-z0-9][a-z0-9-]*$")) and
-          (.capabilities|type=="array" and length>0 and length==(unique|length) and all(.[]; type=="string" and length>0))
-        ))
-      ' "$ROOT_DIR/$mcp_allowlist_path" >/dev/null 2>&1; then
-        fail "$mcp_allowlist_path" "schema validation failed (schemas/mcp_allowlist.schema.json)"
-      fi
-
-      allowlist_service_id="$(jq -r '.service_id // ""' "$ROOT_DIR/$mcp_allowlist_path")"
-      if [[ "$allowlist_service_id" != "$service_id" ]]; then
-        fail "$mcp_allowlist_path" "service_id '$allowlist_service_id' does not match registry service id '$service_id'"
-      fi
-
-      if json_ready "$MCPS_REG_REL"; then
-        while IFS= read -r allowed_mcp_id; do
-          [[ -n "$allowed_mcp_id" ]] || continue
-          if ! jq -e --arg mcp_id "$allowed_mcp_id" '.mcps | any(.id==$mcp_id)' "$ROOT_DIR/$MCPS_REG_REL" >/dev/null 2>&1; then
-            fail "$mcp_allowlist_path" "unknown MCP id '$allowed_mcp_id' (not found in ${MCPS_REG_REL})"
-          fi
-        done < <(jq -r '.allowed_mcps[]?.mcp_id' "$ROOT_DIR/$mcp_allowlist_path")
-
-        while IFS=$'\t' read -r allowed_mcp_id capability; do
-          [[ -n "$allowed_mcp_id" && -n "$capability" ]] || continue
-          if ! jq -e --arg mcp_id "$allowed_mcp_id" --arg capability "$capability" '
-              .mcps | any(.id==$mcp_id and (.capabilities | index($capability) != null))
-            ' "$ROOT_DIR/$MCPS_REG_REL" >/dev/null 2>&1; then
-            fail "$mcp_allowlist_path" "capability '$capability' is not allowed for MCP '$allowed_mcp_id' in ${MCPS_REG_REL}"
-          fi
-        done < <(jq -r '.allowed_mcps[]? | .mcp_id as $mcp_id | .capabilities[]? | [$mcp_id, .] | @tsv' "$ROOT_DIR/$mcp_allowlist_path")
-      fi
-    fi
-
-    if check_json "$contract_bundle_ref"; then
-      if ! jq -e '
-        .version=="v0.1" and
-        (.service_id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
-        (.summary|type=="string" and length>0) and
-        (.purpose|type=="string" and length>0) and
-        (.owner_role=="architect-owner") and
-        (.governance_scope.execution_path=="mandatory_bridge") and
-        (.governance_scope.approval_boundary|type=="array" and length>0) and
-        (.governance_scope.forbidden_actions|type=="array" and length>0) and
-        (.governance_scope.scope_in|type=="array" and length>0) and
-        (.governance_scope.scope_out|type=="array" and length>0) and
-        (.governance_scope.dependencies|type=="array" and length>0) and
-        (.governance_scope.primary_users|type=="array" and length>0) and
-        (.runbook.start_conditions|type=="array" and length>0) and
-        (.runbook.steady_state|type=="array" and length>0) and
-        (.runbook.failure_response|type=="array" and length>0) and
-        (.runbook.rollback_reference|type=="array" and length>0) and
-        (.risk.tier=="low" or .risk.tier=="medium" or .risk.tier=="high") and
-        (.risk.failure_modes|type=="array" and length>0) and
-        (.risk.mandatory_controls|type=="array" and length>0) and
-        (.data_contract.classification|type=="string" and length>0) and
-        (.data_contract.pii_allowed|type=="boolean") and
-        (.data_contract.primary_artifacts|type=="array" and length>0) and
-        (.data_contract.retention_policy|type=="array" and length>0) and
-        (.data_contract.journal_export_policy.mode=="disabled" or .data_contract.journal_export_policy.mode=="conditional" or .data_contract.journal_export_policy.mode=="required") and
-        (.data_contract.journal_export_policy.conditions|type=="array" and length>0) and
-        (.data_contract.access_controls|type=="array" and length>0) and
-        (.integrations.allowed_mcp_ids|type=="array") and
-        (.integrations.external_runtime_refs|type=="array") and
-        (.integrations.governance_interfaces|type=="array" and length>0) and
-        (.slo_notes.common_kpi_set=="governance-core-v1") and
-        (.slo_notes.critical_metrics|type=="array" and length>0) and
-        (.slo_notes.error_budget|type=="array" and length>0) and
-        (.change_log|type=="array" and length>0)
-      ' "$ROOT_DIR/$contract_bundle_ref" >/dev/null 2>&1; then
-        fail "$contract_bundle_ref" "schema validation failed (schemas/service_contract_bundle.schema.json)"
-      fi
-
-      bundle_service_id="$(jq -r '.service_id // ""' "$ROOT_DIR/$contract_bundle_ref")"
-      if [[ "$bundle_service_id" != "$service_id" ]]; then
-        fail "$contract_bundle_ref" "service_id '$bundle_service_id' does not match registry service id '$service_id'"
-      fi
-
-      bundle_target_service="$(jq -r 'if .data_contract.journal_export_policy.target_service == null then "" else .data_contract.journal_export_policy.target_service end' "$ROOT_DIR/$contract_bundle_ref")"
-      if [[ -n "$bundle_target_service" && "$bundle_target_service" != "obsidian-mcp" ]]; then
-        fail "$contract_bundle_ref" "journal export target must be 'obsidian-mcp' when declared"
-      fi
-
-      if json_ready "$MCPS_REG_REL"; then
-        while IFS= read -r allowed_mcp_id; do
-          [[ -n "$allowed_mcp_id" ]] || continue
-          if ! jq -e --arg mcp_id "$allowed_mcp_id" '.mcps | any(.id==$mcp_id)' "$ROOT_DIR/$MCPS_REG_REL" >/dev/null 2>&1; then
-            fail "$contract_bundle_ref" "unknown MCP id '$allowed_mcp_id' in integrations.allowed_mcp_ids"
-          fi
-        done < <(jq -r '.integrations.allowed_mcp_ids[]?' "$ROOT_DIR/$contract_bundle_ref")
-      fi
-
-      if ! jq -e '
-        if has("experience_contract") then
-          (
-            (.experience_contract.experience_model|type=="string" and length>0) and
-            (.experience_contract.primary_emotion_axis|type=="string" and length>0) and
-            (.experience_contract.interaction_axis|type=="string" and length>0) and
-            (.experience_contract.core_presence.summary|type=="string" and length>0) and
-            (.experience_contract.core_presence.persistent_cues|type=="array" and length>0) and
-            (.experience_contract.core_presence.relationship_distance_model|type=="string" and length>0) and
-            (.experience_contract.emotional_skins|type=="array" and length>0) and
-            (all(.experience_contract.emotional_skins[];
-              (.theme_id|type=="string" and test("^[a-z][a-z0-9-]*$")) and
-              (.display_name|type=="string" and length>0) and
-              (.emotion_profile|type=="array" and length>0) and
-              (.visual_profile.signature_motifs|type=="array" and length>0) and
-              (.visual_profile.dominant_layers|type=="array" and length>0) and
-              (.visual_profile.key_effect_bias|type=="array" and length>0 and length<=2) and
-              (.audio_profile.energy|type=="string" and length>0) and
-              (.audio_profile.texture|type=="string" and length>0) and
-              (.interaction_response_profile.invocation|type=="string" and length>0) and
-              (.interaction_response_profile.offering|type=="string" and length>0) and
-              (.interaction_response_profile.alignment|type=="string" and length>0) and
-              (.result_reveal_style|type=="string" and length>0) and
-              (.transition_rules|type=="array" and length>0)
-            )) and
-            ([.experience_contract.emotional_skins[].theme_id] | length == (unique | length)) and
-            (.experience_contract.interaction_ritual.loop|type=="array" and length>0) and
-            (.experience_contract.interaction_ritual.input_channels|type=="array" and length>0) and
-            (.experience_contract.interaction_ritual.state_machine|type=="array" and length>0) and
-            ([.experience_contract.interaction_ritual.state_machine[].state_id] | index("Dormant") != null) and
-            ([.experience_contract.interaction_ritual.state_machine[].state_id] | index("Awakening") != null) and
-            ([.experience_contract.interaction_ritual.state_machine[].state_id] | index("Attuning") != null) and
-            ([.experience_contract.interaction_ritual.state_machine[].state_id] | index("Offering") != null) and
-            ([.experience_contract.interaction_ritual.state_machine[].state_id] | index("JudgementBloom") != null) and
-            ([.experience_contract.interaction_ritual.state_machine[].state_id] | index("Revelation") != null) and
-            ([.experience_contract.interaction_ritual.state_machine[].state_id] | index("Afterglow") != null) and
-            (.experience_contract.scene_state_contract.required_fields|type=="array" and length>0) and
-            (.experience_contract.scene_state_contract.state_guarantees|type=="array" and length>0) and
-            (.experience_contract.interaction_event_model.event_types|type=="array" and length>0) and
-            ([.experience_contract.interaction_event_model.event_types[]] | index("invoke_start") != null) and
-            ([.experience_contract.interaction_event_model.event_types[]] | index("invoke_commit") != null) and
-            ([.experience_contract.interaction_event_model.event_types[]] | index("offering_move") != null) and
-            ([.experience_contract.interaction_event_model.event_types[]] | index("offering_commit") != null) and
-            ([.experience_contract.interaction_event_model.event_types[]] | index("alignment_shift") != null) and
-            ([.experience_contract.interaction_event_model.event_types[]] | index("reveal_accept") != null) and
-            ([.experience_contract.interaction_event_model.event_types[]] | index("reenter_ritual") != null) and
-            (.experience_contract.visual_modulation_contract.required_fields|type=="array" and length>0) and
-            (.experience_contract.visual_modulation_contract.rendering_layers|type=="array" and length>0) and
-            (.experience_contract.visual_modulation_contract.form_strategy|type=="array" and length>0) and
-            (.experience_contract.visual_modulation_contract.supporting_strategies|type=="array" and length>0) and
-            (.experience_contract.test_scenarios|type=="array" and length>0)
-          )
-        else
-          true
-        end
-      ' "$ROOT_DIR/$contract_bundle_ref" >/dev/null 2>&1; then
-        fail "$contract_bundle_ref" "invalid optional experience_contract"
-      fi
-
-      if check_json "$mcp_allowlist_path"; then
-        if ! jq -e \
-          --slurpfile bundle "$ROOT_DIR/$contract_bundle_ref" \
-          '(([.allowed_mcps[]?.mcp_id] | sort) == (($bundle[0].integrations.allowed_mcp_ids // []) | sort))' \
-          "$ROOT_DIR/$mcp_allowlist_path" >/dev/null 2>&1; then
-          fail "$contract_bundle_ref" "integrations.allowed_mcp_ids must match ${mcp_allowlist_path}"
-        fi
-      fi
-    fi
-
-    if check_json "$slo_contract_ref"; then
-      if ! jq -e '
-        .version=="v0.1" and
-        .common_kpi_set=="governance-core-v1" and
-        (.kpis|type=="array" and length>=7) and
-        ([.kpis[].id] | index("explainability_coverage") != null) and
-        ([.kpis[].id] | index("validation_reliability") != null) and
-        ([.kpis[].id] | index("operational_latency_p95_ms") != null) and
-        ([.kpis[].id] | index("d1_return_rate") != null) and
-        ([.kpis[].id] | index("vote_completion_rate") != null) and
-        ([.kpis[].id] | index("post_vote_result_open_rate") != null) and
-        ([.kpis[].id] | index("llm_fallback_rate") != null)
-      ' "$ROOT_DIR/$slo_contract_ref" >/dev/null 2>&1; then
-        fail "$slo_contract_ref" "schema validation failed (schemas/service_slo_contract.schema.json)"
-      fi
-    fi
-
-    cloud_batch_policy_rel="services/${service_id}/cloud_batch.policy.v0.1.json"
-    if [[ -f "$ROOT_DIR/$cloud_batch_policy_rel" ]]; then
-      validate_jq_contract "$cloud_batch_policy_rel" "schemas/trace_record.schema.json" '
-        .version=="v0.1" and
-        (.thresholds.token_total|type=="number" and .>0) and
-        (.thresholds.max_latency_ms|type=="number" and .>0) and
-        (.thresholds.fail_rate|type=="number" and .>=0 and .<=1) and
-        (.mode_defaults.strictness=="hybrid" or .mode_defaults.strictness=="strict" or .mode_defaults.strictness=="soft")
-      '
-    fi
-  done < <(jq -r '.services[] | [.id, .repo_path, .policy_profile_ref, .mcp_allowlist_path, .contract_bundle_ref, .slo_contract_ref] | @tsv' "$ROOT_DIR/$SERVICES_REG_REL")
-fi
-
-# Every services/* directory must be in central services registry.
-if json_ready "$SERVICES_REG_REL" && [[ -d "$ROOT_DIR/services" ]]; then
-  while IFS= read -r service_dir; do
-    service_name="$(basename "$service_dir")"
-    if ! jq -e --arg repo_path "services/${service_name}" '.services | any(.repo_path==$repo_path)' "$ROOT_DIR/$SERVICES_REG_REL" >/dev/null 2>&1; then
-      fail "services/${service_name}" "service directory not registered in ${SERVICES_REG_REL}"
-    fi
-  done < <(find "$ROOT_DIR/services" -mindepth 1 -maxdepth 1 -type d | sort)
+    check_file "$agent_roles_ref"
+    check_file "$agent_handoffs_ref"
+    check_file "$default_policy_profile_ref"
+    check_file "$default_mcp_allowlist_ref"
+    check_file "$default_slo_contract_ref"
+  done < <(
+    jq -r '
+      .services[] | [
+        .id,
+        .seed_path,
+        .contract_bundle_ref,
+        .agent_roles_ref,
+        .agent_handoffs_ref,
+        .default_policy_profile_ref,
+        .default_mcp_allowlist_ref,
+        .default_slo_contract_ref
+      ] | @tsv
+    ' "$ROOT_DIR/$SERVICES_REG_REL"
+  )
 fi
 
 # Validate each MCP package contract.

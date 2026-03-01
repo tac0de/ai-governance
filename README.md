@@ -1,8 +1,8 @@
-# ai-governance v0.2
+# ai-governance v0.3
 
-Deterministic Trace 기반 중앙 거버넌스 코어 저장소.
+Deterministic Trace 기반 거버넌스 bootstrap compiler 저장소.
 
-Release line: `v0.2` (artifact file line remains `v0.1` for schema and contract closure).
+Release line: `v0.3` (artifact file line remains `v0.1` for schema and contract closure).
 
 ## Start Here (Core 4)
 
@@ -25,22 +25,24 @@ Release line: `v0.2` (artifact file line remains `v0.1` for schema and contract 
 
 ## One-Line Architecture
 
-`control/registry` -> `scripts/validate_all.sh` -> CI workflow -> `traces`
+`control/templates` -> bootstrap scripts -> exportable contracts -> independent services
 
-## Central Control Room
+## Bootstrap Control Room
 
-- Government: `policies/`, `schemas/`, `traces/`
-- Company: `control/registry/org.v0.1.json`, `control/registry/services.v0.1.json`, `services/`
+- Governance kernel: `policies/`, `schemas/`, `traces/`
+- Bootstrap inputs: `control/registry/org.v0.1.json`, `control/registry/services.v0.1.json`, `control/templates/`
 - Execution contracts: `control/registry/mcps.v0.1.json`, `control/mcps/`
-- Executor routing: `policies/agent_routing_policy.v0.1.json`
+- Seed / transition zone: `services/` (long-term runtime home is an independent service repo)
 
 ## Quick Start
 
 ```bash
 bash scripts/validate_all.sh
-bash scripts/run_intent.sh fixtures/intent.envelope.json traces/run1
-bash scripts/test_determinism.sh
-bash scripts/benchmark_gate.sh
+bash scripts/validate_seed_catalog.sh
+bash scripts/bootstrap_service.sh \
+  --service-id example-service \
+  --service-name "Example Service" \
+  --output-dir /tmp/example-service
 ```
 
 Legacy/Optional:
@@ -95,20 +97,44 @@ bash scripts/cloud_batch_verify.sh \
 bash scripts/validate_all.sh
 ```
 
-## 신규 서비스 온보딩 (Contracts-Only)
+## New Service Bootstrap (Bootstrap-Only)
 
 ```bash
-# 1) 서비스 계약 패키지 추가 (services/<service-id>/contract.bundle.v0.1.json)
-# 2) 중앙 레지스트리에 등록 (control/registry/services.v0.1.json)
-# 3) 중앙 계약 검증
+# 1) Validate the core compiler and archived seed catalog
 bash scripts/validate_all.sh
+bash scripts/validate_seed_catalog.sh
+
+# 2) Generate an independent service repo scaffold
+bash scripts/bootstrap_service.sh \
+  --service-id alpha-service \
+  --service-name "Alpha Service" \
+  --bootstrap-profile standard \
+  --risk-tier medium \
+  --policy-profile balanced \
+  --output-dir /tmp/alpha-service
+
+# 3) Validate the generated portable governance kit
+bash scripts/validate_bootstrap_output.sh /tmp/alpha-service
+
+# 4) The generated repo can operate without ai-governance at runtime
 ```
 
 - 확장 기본모델은 `Plugin + Sidecar`로 고정한다.
 - 코어 엔진은 Docker 내부 비공개(`opaque`)로 유지한다.
 - 경계 변경은 `high` + human gate를 요구한다.
+- 중앙 저장소는 지속 운영자가 아니라 초기 설계/정렬 역할에 머문다.
+- `services/`는 archived seed example zone이며, 장기 운영 위치가 아니다.
+
+## Seed Catalog
+
+- `control/registry/services.v0.1.json`는 active service registry가 아니라 archived seed catalog다.
+- `services/thedivineparadox/`는 `ritual-uiux` bootstrap profile 대표 seed example이다.
+- `services/gongvue/`, `services/obsidian-mcp/`, `services/personal-webnovel/`는 legacy minimal seed examples이다.
+- Seed examples는 `bash scripts/validate_seed_catalog.sh`로 별도 검증한다.
 
 ## PM <-> Executor Bridge (Deterministic Queue)
+
+Optional reusable governance lane for services that want to keep the bridge format.
 
 ```bash
 # 1) PM intent submit
@@ -158,7 +184,7 @@ This creates a local export packet and receipt skeleton under `traces/governance
 
 ## Appendix (Secondary Paths)
 
-- `control/templates/`: service/MCP JSON contract bundle templates
+- `control/templates/`: service bootstrap JSON contract templates
 - `control/playbooks/`: incident/change/onboarding JSON playbooks
 - `control/agents/`: central department assignment catalog
 - `control/prompts/`: generic governance prompt library
@@ -167,6 +193,7 @@ This creates a local export packet and receipt skeleton under `traces/governance
 - `fixtures/`: deterministic sample inputs
 - `docs/`: GitHub Pages showcase only
 - `traces/`: the only runtime scratch + governance diary space
+- `services/`: seed contracts and transition examples, not the mandatory long-term runtime home
 
 ## Legacy Archive
 

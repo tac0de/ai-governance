@@ -1,0 +1,19 @@
+{
+  "version": "v0.1",
+  "service_id": "example-service",
+  "source_release_line": "v0.3",
+  "bootstrap_manifest_ref": "0000000000000000000000000000000000000000000000000000000000000000",
+  "generated_artifacts": [
+    {
+      "path": "governance/service.contract.bundle.v0.1.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "kind": "service-contract"
+    }
+  ],
+  "export_mode": "folder-repo-init",
+  "git_initialized": true,
+  "seed_profile": "standard",
+  "notes": [
+    "Replace placeholder hashes with deterministic generated values."
+  ]
+}
