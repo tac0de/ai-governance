@@ -1,0 +1,31 @@
+{
+  "service": "thedivineparadox",
+  "artifact_version": "v0.1",
+  "intent_ref": "tdp-oracle-regenerate-daily",
+  "policy_ref": "services/thedivineparadox/policy.profile.json",
+  "operation": {
+    "provider": "google_cloud_scheduler",
+    "job_name": "tdp-oracle-regenerate-daily",
+    "location": "us-central1",
+    "schedule": "5 0 * * *",
+    "time_zone": "Etc/UTC",
+    "http_target": {
+      "method": "POST",
+      "uri": "https://thedivineparadox.com/api/admin/oracle/regenerate-today"
+    },
+    "auth": {
+      "mode": "oidc",
+      "service_account": "tdp-admin-caller@codex-engine-260213-2127.iam.gserviceaccount.com",
+      "audience": "https://thedivineparadox.com/api/admin/oracle/regenerate-today"
+    }
+  },
+  "deterministic_rule": {
+    "date_source": "server_utc_iso_slice_0_10",
+    "regeneration_scope": "current_day_only",
+    "manual_override_route": "/api/admin/oracle/regenerate"
+  },
+  "evidence": {
+    "api_enabled": "cloudscheduler.googleapis.com",
+    "job_state": "ENABLED"
+  }
+}
