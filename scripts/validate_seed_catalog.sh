@@ -124,7 +124,19 @@ while IFS=$'\t' read -r service_id seed_path contract_bundle_ref agent_roles_ref
   fi
 
   if [[ "$bootstrap_profile" == "ritual-uiux" ]]; then
+    prompt_rel="$seed_path/agent-roles/prompt.strategy.v0.1.json"
     plan_rel="$seed_path/agent-roles/uiux.execution-plan.v0.1.json"
+    if ! check_json "$prompt_rel"; then
+      :
+    elif ! jq -e --arg service_id "$service_id" '
+      .version=="v0.1" and
+      .service_id==$service_id and
+      .strategy_mode=="ritual-uiux" and
+      (.roles|type=="array" and length>0) and
+      (.global_guardrails|type=="array" and length>0)
+    ' "$ROOT_DIR/$prompt_rel" >/dev/null 2>&1; then
+      fail "$prompt_rel" "invalid ritual-uiux prompt strategy contract"
+    fi
     if ! check_json "$plan_rel"; then
       :
     elif ! jq -e --arg service_id "$service_id" '.service_id==$service_id' "$ROOT_DIR/$plan_rel" >/dev/null 2>&1; then

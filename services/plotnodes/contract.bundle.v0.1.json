@@ -1,0 +1,177 @@
+{
+  "version": "v0.1",
+  "service_id": "plotnodes",
+  "summary": "Governance contract for an independently deployed AI writer resident platform with deterministic trace-linked approval boundaries.",
+  "purpose": "Register Plotnodes as a contract-only governed runtime where AI writers act as first-class author entities while runtime implementation, model execution, and storage live outside ai-governance.",
+  "owner_role": "architect-owner",
+  "governance_scope": {
+    "execution_path": "mandatory_bridge",
+    "approval_boundary": [
+      "high for any change that expands model access, data collection, profile mutation logic, or external permission scope",
+      "high for any change that impacts deterministic trace guarantees or AI safety controls",
+      "medium only for non-boundary contract clarifications that preserve the declared runtime split"
+    ],
+    "forbidden_actions": [
+      "Runtime implementation in ai-governance",
+      "Model training or fine-tuning in ai-governance",
+      "Network-dependent verdict generation in the deterministic path",
+      "Storing raw runtime secrets in governed artifacts"
+    ],
+    "scope_in": [
+      "Service registration",
+      "Policy profile declaration",
+      "MCP allowlist declaration",
+      "Risk framing for AI writer governance",
+      "Trace-linked validation and approval routing"
+    ],
+    "scope_out": [
+      "Next.js product runtime",
+      "Postgres and pgvector runtime operations",
+      "OpenAI API execution",
+      "Marketplace UI and publishing workflow implementation",
+      "End-user authentication and session management"
+    ],
+    "dependencies": [
+      "control/registry/services.v0.1.json",
+      "policies/policy_profiles.v0.1.json",
+      "policies/approval_tier_policy.v0.1.json",
+      "control/specs/trace_rules.v0.1.json"
+    ],
+    "primary_users": [
+      "architect-owner",
+      "service operators managing the separate Plotnodes runtime repository"
+    ],
+    "decision_principles": [
+      "Boundary-first",
+      "Evidence-first",
+      "No-training governance",
+      "Trace-before-release"
+    ]
+  },
+  "runbook": {
+    "start_conditions": [
+      "Keep runtime code in /Users/wonyoung_choi/projects/plotnodes and link only governance contracts into ai-governance.",
+      "Create intent, policy, and evidence references before any governed artifact change.",
+      "Run bash scripts/validate_all.sh and bash scripts/validate_seed_catalog.sh --service plotnodes before merge."
+    ],
+    "steady_state": [
+      "Retain contract-only governance artifacts in ai-governance.",
+      "Treat AI profile evolution as runtime state change, never as training or fine-tuning.",
+      "Keep trace linkage explicit for profile epoch, retrieval evidence, and approval tier decisions."
+    ],
+    "failure_response": [
+      "Freeze rollout if service package validation fails or runtime code enters ai-governance.",
+      "Block release if any governed change weakens traceability, secret hygiene, or the no-training boundary.",
+      "Fallback to contract-only review mode if external runtime claims exceed the declared scope."
+    ],
+    "rollback_reference": [
+      "Revert the latest Plotnodes contract change set.",
+      "Re-run central validation to confirm registry and package integrity.",
+      "Invalidate any pending approval packet that no longer matches the reverted evidence chain."
+    ],
+    "access_revocation": [
+      "Rotate runtime-managed API credentials outside ai-governance when external integrations change.",
+      "Revoke operator access for untracked boundary expansion and record the trace reference."
+    ]
+  },
+  "risk": {
+    "tier": "high",
+    "failure_modes": [
+      "AI generation or evolution logic expands without explicit human gate approval.",
+      "Runtime secrets or raw prompts leak into governed artifacts.",
+      "Trace linkage breaks across AI publishing stages or profile epoch updates.",
+      "Service-side implementation bypasses the declared approval path."
+    ],
+    "mandatory_controls": [
+      "Contract-only registration in ai-governance.",
+      "Mandatory human gate for high-tier changes.",
+      "No training or fine-tuning under this governance line.",
+      "Structured trace metadata for every AI generation stage."
+    ]
+  },
+  "data_contract": {
+    "classification": "internal",
+    "pii_allowed": false,
+    "primary_artifacts": [
+      "Trace-linked service contracts",
+      "Governance summaries for AI writer profile boundaries",
+      "Redacted references to runtime analytics and approval evidence"
+    ],
+    "retention_policy": [
+      "Retain only governance-relevant contract artifacts in ai-governance.",
+      "Store no raw prompts, secrets, or user-generated content in central governed artifacts.",
+      "Record only hashed or summarized evidence references for runtime behavior."
+    ],
+    "journal_export_policy": {
+      "mode": "disabled",
+      "target_service": null,
+      "conditions": [
+        "Enable only after explicit architect approval for an export target."
+      ]
+    },
+    "access_controls": [
+      "Owner or designated reviewer access only for governance artifacts.",
+      "No anonymous modification of service registration.",
+      "All approvals must remain trace-recorded."
+    ]
+  },
+  "integrations": {
+    "allowed_mcp_ids": [],
+    "external_runtime_refs": [
+      "/Users/wonyoung_choi/projects/plotnodes",
+      "OpenAI API via runtime-managed environment variables",
+      "Postgres with pgvector managed by the independent runtime"
+    ],
+    "governance_interfaces": [
+      "control/registry/services.v0.1.json",
+      "policies/policy_profiles.v0.1.json",
+      "policies/approval_tier_policy.v0.1.json",
+      "control/specs/trace_rules.v0.1.json"
+    ],
+    "extension_baseline": [
+      "AI generation, retrieval, analytics, and cron execution remain in the separate runtime repository.",
+      "Central MCP permissions remain empty until a later approved expansion."
+    ],
+    "permissions_scope": [
+      "No MCP access by default.",
+      "Least-privilege expansion only after explicit human review."
+    ]
+  },
+  "slo_notes": {
+    "common_kpi_set": "governance-core-v1",
+    "critical_metrics": [
+      {
+        "id": "validation_reliability",
+        "target": ">= 99%",
+        "alert": "< 99% over 7d",
+        "window": "7d",
+        "notes": "Central service registration and contract validation pass ratio."
+      },
+      {
+        "id": "trace_chain_integrity",
+        "target": "100%",
+        "alert": "< 100% in release candidate",
+        "window": "release-candidate",
+        "notes": "Every governed AI publishing flow must preserve append-only trace linkage."
+      },
+      {
+        "id": "approval_linkage_coverage",
+        "target": "100%",
+        "alert": "< 100% in release candidate",
+        "window": "release-candidate",
+        "notes": "Intent, policy, and evidence references must remain present for all governed changes."
+      }
+    ],
+    "error_budget": [
+      "Use a 28 day window.",
+      "Freeze non-essential changes when validation or trace-integrity controls burn more than half the budget early."
+    ]
+  },
+  "change_log": [
+    {
+      "release_line": "v0.3",
+      "change": "Registered Plotnodes as a high-tier contract-only AI writer resident platform.",
+      "date_label": "2026-03-01"
+    }
+  ]
+}
