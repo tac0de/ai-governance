@@ -1,0 +1,737 @@
+{
+  "version": "v0.1",
+  "service_id": "thedivineparadox",
+  "summary": "Governance contract for evidence-based strategic insight workflows with deterministic validation boundaries.",
+  "purpose": "Provide governance-grade strategic insight contracts while ensuring every approved output remains explainable, policy-bound, and trace-linked.",
+  "owner_role": "architect-owner",
+  "governance_scope": {
+    "execution_path": "mandatory_bridge",
+    "approval_boundary": [
+      "medium for approved API-surface tuning within the existing boundary",
+      "high for experimental API expansion, data-boundary change, or external permission escalation"
+    ],
+    "forbidden_actions": [
+      "Product runtime execution logic in ai-governance",
+      "Network-dependent verdict generation in the deterministic path",
+      "Autonomous high-risk decision execution"
+    ],
+    "scope_in": [
+      "Evidence summarization contracts",
+      "Policy-conflict narrative generation contracts",
+      "Scenario recommendation drafting contracts",
+      "Governance documentation for approved paths"
+    ],
+    "scope_out": [
+      "Product runtime behavior",
+      "Untracked external API use",
+      "Unbounded experimental outputs"
+    ],
+    "dependencies": [
+      "control/agents/departments.v0.1.json",
+      "policies/policy_profiles.v0.1.json",
+      "policies/approval_tier_policy.v0.1.json",
+      "policies/agent_routing_policy.v0.1.json",
+      "control/registry/mcps.v0.1.json",
+      "control/specs/trace_rules.v0.1.json",
+      "services/thedivineparadox/agent-roles/agent.roles.v0.1.json",
+      "services/thedivineparadox/agent-roles/agent.handoffs.v0.1.json",
+      "services/thedivineparadox/agent-roles/prompt.strategy.v0.1.json",
+      "services/thedivineparadox/agent-roles/uiux.execution-plan.v0.1.json",
+      "services/thedivineparadox/agent-roles/proposal-packets/ritual-legibility-baseline.proposal.v0.1.json",
+      "services/thedivineparadox/agent-roles/proposal-packets/interaction-parity-package.proposal.v0.1.json",
+      "services/thedivineparadox/agent-roles/proposal-packets/visual-differentiation-pass.proposal.v0.1.json",
+      "services/thedivineparadox/agent-roles/proposal-packets/governance-release-check.proposal.v0.1.json"
+    ],
+    "primary_users": [
+      "platform owners",
+      "architects approving policy and risk decisions"
+    ],
+    "decision_principles": [
+      "Evidence-first",
+      "Explainability-first",
+      "Policy-first"
+    ]
+  },
+  "runbook": {
+    "start_conditions": [
+      "Update service contracts and policy contracts in a single change set.",
+      "When evolving the ritual surface, preserve the current passive behavior oracle shell as a deterministic fallback until runtime migration is validated.",
+      "Run bash scripts/validate_all.sh, bash scripts/test_determinism.sh, and bash scripts/benchmark_gate.sh before merge."
+    ],
+    "steady_state": [
+      "Preserve evidence refs and trace refs for every approved insight.",
+      "Keep external API use limited to the declared and approved surface."
+    ],
+    "failure_response": [
+      "Freeze release on failed validation, moderation violations, missing evidence refs, or benchmark regressions.",
+      "Disable experimental path outputs and route back to deterministic baseline flow.",
+      "If external API path is degraded, emit governance-safe fallback notes instead of an autonomous verdict."
+    ],
+    "rollback_reference": [
+      "Revert the latest service contract change set.",
+      "Re-run validation and determinism checks to confirm baseline restoration."
+    ],
+    "access_revocation": [
+      "Rotate external API credentials according to incident severity.",
+      "Remove access for non-compliant operators and record revocation trace refs."
+    ]
+  },
+  "risk": {
+    "tier": "medium",
+    "failure_modes": [
+      "External API expansion introduces unreviewed capability drift.",
+      "Evidence bundles include sensitive metadata.",
+      "Asynchronous batch runs hide failures and reduce explainability.",
+      "Untracked external API usage creates contractual or regional exposure."
+    ],
+    "mandatory_controls": [
+      "Allowlist-only external API surface.",
+      "Moderation gates before and after release paths.",
+      "Fallback to deterministic local validation when async paths fail.",
+      "Architect review for high-tier boundary changes."
+    ]
+  },
+  "data_contract": {
+    "classification": "internal",
+    "pii_allowed": false,
+    "primary_artifacts": [
+      "Evidence summaries linked by hash.",
+      "Trace-linked strategic insight outputs.",
+      "Incident records required by governance incident playbook."
+    ],
+    "retention_policy": [
+      "Retain evidence summaries by trace reference policy.",
+      "Retain derived strategic insights only with linked evidence and trace refs.",
+      "Retain incident records according to the governance incident playbook."
+    ],
+    "journal_export_policy": {
+      "mode": "conditional",
+      "target_service": "obsidian-mcp",
+      "conditions": [
+        "Export only validated long-lived governance diary entries.",
+        "Redact any unexpected sensitive data before export."
+      ]
+    },
+    "access_controls": [
+      "RBAC for service owners and designated reviewers only.",
+      "All access and approvals must be trace-recorded.",
+      "No anonymous or unmanaged external access."
+    ]
+  },
+  "integrations": {
+    "allowed_mcp_ids": [
+      "core-analytics-mcp",
+      "core-experiment-mcp",
+      "core-safety-fallback-mcp",
+      "core-governance-journal-mcp",
+      "core-experience-profile-mcp"
+    ],
+    "external_runtime_refs": [
+      "OpenAI responses",
+      "OpenAI embeddings",
+      "OpenAI moderation",
+      "OpenAI files",
+      "OpenAI batches"
+    ],
+    "governance_interfaces": [
+      "policies/policy_profiles.v0.1.json",
+      "policies/approval_tier_policy.v0.1.json",
+      "control/specs/trace_rules.v0.1.json",
+      "schemas/service_agent_roles.schema.json",
+      "schemas/service_agent_handoffs.schema.json",
+      "schemas/service_agent_proposal.schema.json",
+      "schemas/service_agent_plan.schema.json",
+      "schemas/service_prompt_strategy.schema.json"
+    ],
+    "extension_baseline": [
+      "Experimental APIs are recommendation-only and never on the core verdict path.",
+      "Replace placeholder MCP bootstrap only after registry onboarding and conformance artifacts.",
+      "Current runtime is a passive behavior oracle shell with local-shell degradation when backend is unavailable; ritual-choice expansion must preserve that fallback."
+    ],
+    "permissions_scope": [
+      "Least-privilege declared MCP capabilities and approved external API surfaces only.",
+      "Escalate to high tier for experimental API, data-boundary, or external permission expansion."
+    ]
+  },
+  "experience_contract": {
+    "experience_model": "multi-emotional-persona-ritual-space",
+    "primary_emotion_axis": "blended",
+    "interaction_axis": "pc-mobile-gesture ritual interaction layered over passive-behavior-observation",
+    "input_modalities": {
+      "desktop": [
+        "pointer invocation",
+        "drag offering",
+        "cursor alignment"
+      ],
+      "mobile": [
+        "tap or long press invocation",
+        "swipe or flick offering",
+        "pinch, touch drift, or device tilt alignment"
+      ],
+      "normalization_rule": "Desktop pointer and mobile touch or motion inputs must map into the same invocation, offering, and alignment channels before scene logic."
+    },
+    "form_spectrum_policy": {
+      "default_mode": "phenomenon",
+      "allowed_modes": [
+        "phenomenon",
+        "proto_body",
+        "revealed_figure"
+      ],
+      "rules": [
+        "Phenomenon remains the baseline manifestation in every theme.",
+        "Proto-body may appear during attunement or stronger gesture charge.",
+        "Revealed figure is a bounded reveal privilege and must not remain permanently locked on."
+      ]
+    },
+    "voice_policy": {
+      "default_mode": "silent-only",
+      "voice_revelation_mode": "disabled",
+      "allowed_states": [
+        "Revelation",
+        "Afterglow"
+      ],
+      "microphone_policy": "inactive_reserved_path",
+      "controls": [
+        "Voice offering capability is retained only as a dormant reserved path and is not exposed in the public runtime.",
+        "No browser microphone permission may be requested in the default or production ritual surface.",
+        "Public release line remains microphone-free even if the backend reserved path still exists."
+      ]
+    },
+    "openai_boundary": {
+      "allowed_default_paths": [
+        "POST /v1/responses for session-close revelation adaptation",
+        "POST /v1/responses for daily declaration synthesis",
+        "POST /v1/files and /v1/batches for offline batch work"
+      ],
+      "disallowed_default_paths": [
+        "Always-on voice conversation",
+        "Open microphone streaming",
+        "Real-time speech loop on the ritual surface"
+      ],
+      "voice_expansion_rule": "If speech-to-text is introduced later, it must remain opt-in, bounded to a single voice offering, and outside the default ritual loop.",
+      "release_line_guard": "No voice-bound OpenAI path is active in the public runtime for this release line."
+    },
+    "core_presence": {
+      "summary": "A single divine presence manifests as a responsive field rather than a fixed body, preserving identity while changing emotional temperature by scene.",
+      "persistent_cues": [
+        "Breathing pulse cadence anchors every state.",
+        "A gaze-like focal point persists even when form disperses.",
+        "All reveals stay traceable to the same singular divine actor."
+      ],
+      "relationship_distance_model": "The presence shifts closeness through response timing, scale, and enclosure instead of replacing the core entity."
+    },
+    "emotional_skins": [
+      {
+        "theme_id": "ember-mercy",
+        "display_name": "Ember Mercy",
+        "emotion_profile": [
+          "warmth",
+          "assurance",
+          "recovery"
+        ],
+        "visual_profile": {
+          "signature_motifs": [
+            "soft particles",
+            "opening veil",
+            "coral ember glow"
+          ],
+          "dominant_layers": [
+            "base_motion",
+            "atmospheric_field"
+          ],
+          "key_effect_bias": [
+            "gpu_particles",
+            "depth_layered_fog_cards"
+          ]
+        },
+        "audio_profile": {
+          "energy": "low",
+          "texture": "breathing warmth and padded resonance"
+        },
+        "interaction_response_profile": {
+          "invocation": "The presence approaches slowly and stabilizes the focal point.",
+          "offering": "Selected intent is enclosed by a gentle veil before confirmation.",
+          "alignment": "Cursor or device drift tightens a cocoon-like field around the user line."
+        },
+        "result_reveal_style": "Results appear as a protective opening that resolves tension before exposing meaning.",
+        "transition_rules": [
+          "Prefer when the previous ritual ended in tension and the next entry needs reassurance.",
+          "Use as the default recovery theme after fallback or invalid input absorption."
+        ]
+      },
+      {
+        "theme_id": "festival-pulse",
+        "display_name": "Festival Pulse",
+        "emotion_profile": [
+          "release",
+          "joy",
+          "playful exaltation"
+        ],
+        "visual_profile": {
+          "signature_motifs": [
+            "ribbon bursts",
+            "rhythmic chroma shifts",
+            "elastic clusters"
+          ],
+          "dominant_layers": [
+            "reactive_accent",
+            "symbolic_overlay"
+          ],
+          "key_effect_bias": [
+            "curves_trails_ribbons",
+            "instanced_organic_clusters"
+          ]
+        },
+        "audio_profile": {
+          "energy": "high",
+          "texture": "percussive pulse and bright harmonic swells"
+        },
+        "interaction_response_profile": {
+          "invocation": "Invocation triggers immediate rhythm lock and color ascent.",
+          "offering": "Placed offerings cause a celebratory burst that confirms commitment.",
+          "alignment": "Alignment shifts re-time the scene tempo and amplify the chorus response."
+        },
+        "result_reveal_style": "Results bloom as a celebratory expansion that rewards completion and invites replay.",
+        "transition_rules": [
+          "Prefer when the user re-enters after a successful reveal.",
+          "Use when experimentation flags allow a high-energy loop without changing core verdict logic."
+        ]
+      },
+      {
+        "theme_id": "storybook-spark",
+        "display_name": "Storybook Spark",
+        "emotion_profile": [
+          "delight",
+          "wonder",
+          "buoyancy"
+        ],
+        "visual_profile": {
+          "signature_motifs": [
+            "cel-shaded glow",
+            "outlined silhouette",
+            "comic arc bounce"
+          ],
+          "dominant_layers": [
+            "reactive_accent",
+            "base_motion"
+          ],
+          "key_effect_bias": [
+            "shader_band_quantization",
+            "silhouette_shell_bounce"
+          ]
+        },
+        "audio_profile": {
+          "energy": "medium",
+          "texture": "bright harmonic uplift with soft rhythmic spring"
+        },
+        "interaction_response_profile": {
+          "invocation": "The field gathers, pops into focus, and brightens the gaze cluster.",
+          "offering": "Offerings land with a buoyant bounce before opening into a clear reveal arc.",
+          "alignment": "Alignment tilts the scene into a playful settle and bright edge highlight."
+        },
+        "result_reveal_style": "Results appear as a cel-shaded opening with strong edges, warm contrast, and a friendly but still sacred bounce.",
+        "transition_rules": [
+          "Prefer for mid-intensity offering loops that should feel playful without collapsing into triviality.",
+          "Use to widen emotional accessibility while preserving the same ritual semantics."
+        ]
+      },
+      {
+        "theme_id": "quiet-orbit",
+        "display_name": "Quiet Orbit",
+        "emotion_profile": [
+          "sublimity",
+          "contemplation",
+          "ordered distance"
+        ],
+        "visual_profile": {
+          "signature_motifs": [
+            "slow orbital lines",
+            "stellar lattice",
+            "deep depth haze"
+          ],
+          "dominant_layers": [
+            "atmospheric_field",
+            "symbolic_overlay"
+          ],
+          "key_effect_bias": [
+            "depth_layered_fog_cards",
+            "shader_noise_modulation"
+          ]
+        },
+        "audio_profile": {
+          "energy": "low",
+          "texture": "sustained drone with restrained spatial shimmer"
+        },
+        "interaction_response_profile": {
+          "invocation": "The space becomes silent before orbital structures align.",
+          "offering": "Offerings are absorbed into a measured orbit instead of exploding immediately.",
+          "alignment": "Alignment sharpens symmetry and lowers visual noise."
+        },
+        "result_reveal_style": "Results unfold through quiet ordering, emphasizing interpretation over spectacle.",
+        "transition_rules": [
+          "Prefer when the user lingers without committing quickly.",
+          "Use to preserve awe without defaulting to fear-heavy visual language."
+        ]
+      },
+      {
+        "theme_id": "mischief-bloom",
+        "display_name": "Mischief Bloom",
+        "emotion_profile": [
+          "curiosity",
+          "lightness",
+          "affectionate unpredictability"
+        ],
+        "visual_profile": {
+          "signature_motifs": [
+            "twisting bloom",
+            "skipping shards",
+            "smiling distortions"
+          ],
+          "dominant_layers": [
+            "reactive_accent",
+            "base_motion"
+          ],
+          "key_effect_bias": [
+            "shader_noise_modulation",
+            "instanced_organic_clusters"
+          ]
+        },
+        "audio_profile": {
+          "energy": "medium",
+          "texture": "flickering tones with short mischievous accents"
+        },
+        "interaction_response_profile": {
+          "invocation": "The first response feints before revealing the true focal point.",
+          "offering": "Offerings wobble through a playful detour before settling.",
+          "alignment": "Alignment invites nonlinear motion that still converges to a valid state."
+        },
+        "result_reveal_style": "Results arrive through a brief fake-out, then resolve into clear feedback.",
+        "transition_rules": [
+          "Prefer when repeated sessions need freshness without adding new input verbs.",
+          "Keep outputs bounded so surprise never hides the final reveal."
+        ]
+      },
+      {
+        "theme_id": "storm-witness",
+        "display_name": "Storm Witness",
+        "emotion_profile": [
+          "tension",
+          "pressure",
+          "awe"
+        ],
+        "visual_profile": {
+          "signature_motifs": [
+            "torn volume",
+            "immense gaze",
+            "hard contrast"
+          ],
+          "dominant_layers": [
+            "base_motion",
+            "reactive_accent"
+          ],
+          "key_effect_bias": [
+            "shader_noise_modulation",
+            "postprocess_theme_presets"
+          ]
+        },
+        "audio_profile": {
+          "energy": "high",
+          "texture": "delayed impact swells and stark low-end pressure"
+        },
+        "interaction_response_profile": {
+          "invocation": "The scene holds an intentional silence before the rupture begins.",
+          "offering": "Offerings trigger a heavy reaction burst after a suspenseful delay.",
+          "alignment": "Alignment pulls the gaze structure closer and increases intensity contrast."
+        },
+        "result_reveal_style": "Results break through tension with a forceful opening, preserving the legacy cosmic edge as one bounded theme.",
+        "transition_rules": [
+          "Use as the sole dedicated cosmic-horror-adjacent phase instead of the default global tone.",
+          "Restrict to bounded moments of stakes, escalation, or dramatic contrast."
+        ]
+      }
+    ],
+    "interaction_ritual": {
+      "loop": [
+        "User approaches the scene and the space senses presence.",
+        "A single ritual act is performed through invocation, offering, or alignment across desktop and mobile gesture surfaces.",
+        "The divine phase responds emotionally and symbolically.",
+        "The result is revealed as the completion of the ritual.",
+        "Afterglow invites replay without collapsing into menu-only interaction."
+      ],
+      "input_channels": [
+        {
+          "channel_id": "invocation",
+          "semantic_role": "Call the presence into focus rather than pressing a generic button.",
+          "input_modes": [
+            "tap",
+            "click",
+            "hold",
+            "long press"
+          ],
+          "uses": [
+            "wake the presence",
+            "request response"
+          ]
+        },
+        {
+          "channel_id": "offering",
+          "semantic_role": "Place intent into the center as a ritual offering.",
+          "input_modes": [
+            "drag",
+            "drop",
+            "swipe",
+            "flick"
+          ],
+          "uses": [
+            "select emotion",
+            "select question",
+            "commit stance"
+          ]
+        },
+        {
+          "channel_id": "alignment",
+          "semantic_role": "Tune resonance through direction and drift.",
+          "input_modes": [
+            "cursor movement",
+            "device tilt",
+            "touch drift",
+            "pinch"
+          ],
+          "uses": [
+            "adjust resonance",
+            "shape reveal intensity"
+          ]
+        }
+      ],
+      "state_machine": [
+        {
+          "state_id": "Dormant",
+          "purpose": "Background space breathes without demanding input."
+        },
+        {
+          "state_id": "Awakening",
+          "purpose": "Presence detection acknowledges the user and prepares the focal point."
+        },
+        {
+          "state_id": "Attuning",
+          "purpose": "The system synchronizes the user rhythm with the active phase."
+        },
+        {
+          "state_id": "Offering",
+          "purpose": "The user performs the core choice or vote as a ritual placement."
+        },
+        {
+          "state_id": "JudgementBloom",
+          "purpose": "The chosen input is interpreted and amplified into an emotional response."
+        },
+        {
+          "state_id": "Revelation",
+          "purpose": "Result, message, or vision is opened as a ceremonial payoff."
+        },
+        {
+          "state_id": "Afterglow",
+          "purpose": "The scene holds a readable after-state that encourages re-entry."
+        }
+      ]
+    },
+    "scene_state_contract": {
+      "required_fields": [
+        "currentState",
+        "activeThemeId",
+        "ritualProgress",
+        "userIntentSignal",
+        "resonanceScore",
+        "pendingReveal",
+        "cooldownMs"
+      ],
+        "state_guarantees": [
+        "Input, animation, and reveal timing must be coordinated through a single scene-state contract.",
+        "Vote or selection completion must route through the ritual state machine rather than bypassing directly to a result UI.",
+        "The active phase may change presentation, but the same input always maps to a deterministic semantic event.",
+        "If the oracle backend is unavailable, the surface must degrade to a readable local-shell state instead of failing silently.",
+        "Desktop pointer gestures and mobile touch or motion gestures must resolve into the same semantic interaction channels.",
+        "Public runtime must remain microphone-free in this release line."
+      ]
+    },
+    "interaction_event_model": {
+      "event_types": [
+        "invoke_start",
+        "invoke_commit",
+        "offering_move",
+        "offering_commit",
+        "alignment_shift",
+        "reveal_accept",
+        "reenter_ritual"
+      ],
+      "dispatch_rules": [
+        "Raw mouse, touch, and keyboard signals must be normalized into semantic ritual events before scene logic consumes them.",
+        "Every accepted event must produce visible or spatial feedback within the active theme.",
+        "Invalid timing or malformed input should degrade into ritual wobble feedback instead of dead failure.",
+        "Mobile gesture aliases such as swipe, pinch, long press, and tilt must normalize into the same deterministic event vocabulary."
+      ]
+    },
+    "visual_modulation_contract": {
+      "required_fields": [
+        "motionTempo",
+        "spatialDensity",
+        "edgeSoftness",
+        "luminanceBehavior",
+        "responseElasticity",
+        "gazeDistance",
+        "formCoherence",
+        "particleSpread",
+        "glowIntensity",
+        "distortionAmount",
+        "ambientDrift"
+      ],
+      "rendering_layers": [
+        "Base Motion Layer",
+        "Reactive Accent Layer",
+        "Atmospheric Field",
+        "Symbolic Overlay"
+      ],
+      "form_strategy": [
+        "Prioritize field-like phenomena over rigid humanoid meshes.",
+        "Combine particle swarms, noise-deformed mass, ribbons, veils, and gaze focal points.",
+        "Reserve fixed silhouette coherence for brief reveal beats only."
+      ],
+      "supporting_strategies": [
+        "GPU particle systems",
+        "Instancing-based organic clusters",
+        "Shader noise modulation",
+        "Theme-specific postprocess presets",
+        "Curves, trails, and ribbons",
+        "Depth layered fog cards",
+        "Gesture-responsive visual modulation that scales across desktop pointer and mobile touch density."
+      ]
+    },
+    "test_scenarios": [
+      {
+        "id": "emotion-differentiation",
+        "checks": [
+          "Each phase should remain visually distinguishable from a single screenshot.",
+          "Storm Witness must not re-dominate the full experience as the default tone.",
+          "Warm phases must not inherit excessive threat cues."
+        ]
+      },
+      {
+        "id": "interaction-legibility",
+        "checks": [
+          "A first-time user should infer the ritual action within the first 10 seconds.",
+          "Every accepted input should return clear feedback in one interaction cycle.",
+          "Mistimed input should read as ritual drift rather than a hard failure."
+        ]
+      },
+      {
+        "id": "reveal-retention",
+        "checks": [
+          "The transition from Offering to Revelation should maintain anticipation without dead air.",
+          "Result opening should feel like ritual completion rather than plain text output.",
+          "Afterglow should create a reason to re-enter the loop."
+        ]
+      },
+      {
+        "id": "rendering-budget",
+        "checks": [
+          "Theme transitions should not cause severe frame drops on mid-tier GPUs.",
+          "Particle and postprocess intensity must degrade gracefully on constrained devices.",
+          "All phases should fit inside a common rendering budget."
+        ]
+      },
+      {
+        "id": "gesture-parity",
+        "checks": [
+          "Core ritual semantics should remain legible on both PC pointer input and mobile touch or motion input.",
+          "Swipe, pinch, long press, and tilt should map to bounded semantic channels without adding extra hidden states.",
+          "Visual diversity should increase under gesture input without collapsing into platform-specific divergence."
+        ]
+      },
+      {
+        "id": "identity-coherence",
+        "checks": [
+          "The experience must still feel like communion with a divine presence rather than a disconnected toy.",
+          "UI copy and overlays must stay suggestive enough to avoid breaking immersion.",
+          "Broader emotional range must not fragment the world identity."
+        ]
+      }
+    ]
+  },
+  "slo_notes": {
+    "common_kpi_set": "governance-core-v1",
+    "critical_metrics": [
+      {
+        "id": "explainability_coverage",
+        "target": "100%",
+        "alert": "< 100% in any release candidate",
+        "window": "release-candidate",
+        "notes": "Every shipped change must include evidence and trace refs."
+      },
+      {
+        "id": "validation_reliability",
+        "target": ">= 99%",
+        "alert": "< 99% over 7d",
+        "window": "7d",
+        "notes": "Governance validation pass ratio."
+      },
+      {
+        "id": "llm_fallback_rate",
+        "target": "<= 8%",
+        "alert": "> 12% over 24h",
+        "window": "24h",
+        "notes": "Share of recompute events ending with degraded LLM status."
+      }
+    ],
+    "error_budget": [
+      "Use a 28 day window.",
+      "Track burn by explainability and validation misses.",
+      "Freeze non-essential changes when burn exceeds 50 percent before mid-window."
+    ]
+  },
+  "change_log": [
+    {
+      "release_line": "v0.9",
+      "change": "Added a dedicated ritual-uiux prompt strategy contract for thedivineparadox agent roles.",
+      "date_label": "2026-03-01"
+    },
+    {
+      "release_line": "v0.8",
+      "change": "Added deterministic UI and UX proposal packets for each governed phase and linked them to the thedivineparadox service contract.",
+      "date_label": "2026-03-01"
+    },
+    {
+      "release_line": "v0.7",
+      "change": "Expanded thedivineparadox agent departments for UI and UX planning, added output-contract schemas, and bound role and handoff states to the ritual experience model.",
+      "date_label": "2026-03-01"
+    },
+    {
+      "release_line": "v0.6",
+      "change": "Added a service-scoped agent department contract and deterministic handoff graph for thedivineparadox ritual planning flow.",
+      "date_label": "2026-03-01"
+    },
+    {
+      "release_line": "v0.5",
+      "change": "Registered the experience profile MCP and elevated thedivineparadox interaction contract to explicit PC and mobile gesture parity with broader visual diversity requirements.",
+      "date_label": "2026-02-28"
+    },
+    {
+      "release_line": "v0.4",
+      "change": "Aligned thedivineparadox governance with observed passive-oracle runtime behavior, added governance journal MCP access, and recorded the next MCP expansion request in traces.",
+      "date_label": "2026-02-28"
+    },
+    {
+      "release_line": "v0.3",
+      "change": "Added an optional ritual experience contract for multi-phase emotional presentation and deterministic interaction semantics.",
+      "date_label": "2026-02-28"
+    },
+    {
+      "release_line": "v0.2",
+      "change": "Collapsed thedivineparadox governance docs into a single JSON contract bundle.",
+      "date_label": "2026-02-27"
+    },
+    {
+      "release_line": "v0.1",
+      "change": "Introduced thedivineparadox governance service contract and approved external API usage scope.",
+      "date_label": "2026-02-22"
+    }
+  ]
+}

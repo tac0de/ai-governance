@@ -44,9 +44,5 @@
         "verify_reveal_consistency"
       ]
     }
-  ],
-  "notes": [
-    "MCP access remains advisory and policy-bound.",
-    "Oracle text generation still uses the server-side OpenAI SDK in the dedicated runtime repository, not an MCP path."
   ]
 }

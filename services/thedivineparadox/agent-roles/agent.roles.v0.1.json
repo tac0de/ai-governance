@@ -5,18 +5,19 @@
     "control/agents/departments.v0.1.json",
     "policies/agent_routing_policy.v0.1.json",
     "policies/approval_tier_policy.v0.1.json",
-    "services/thedivineparadox/contract.bundle.v0.1.json"
+    "services/thedivineparadox/contract.bundle.v0.1.json",
+    "services/thedivineparadox/policy.profile.json"
   ],
   "roles": [
     {
-      "role_id": "ritual-narrative-cell",
-      "title": "Ritual Narrative Cell",
+      "role_id": "rebuild-intent-cell",
+      "title": "Rebuild Intent Cell",
       "governance_department_id": "service-review",
-      "mission": "Draft deterministic narrative framing for a requested ritual or content change without introducing runtime-only behavior.",
+      "mission": "Define the rebuild scope, archive posture, and trace packet requirements before any contract or runtime work proceeds.",
       "bounded_state_scope": [
-        "Dormant",
-        "Awakening",
-        "Attuning"
+        "Reset",
+        "Archive",
+        "Baseline"
       ],
       "required_inputs": [
         "intent_ref",
@@ -24,46 +25,44 @@
         "evidence_ref"
       ],
       "allowed_outputs": [
-        "narrative-brief",
-        "tone-guardrail-note"
+        "rebuild-intent-note",
+        "archive-boundary-note"
       ],
       "output_contract_refs": [
         "schemas/service_agent_proposal.schema.json"
       ],
       "allowed_actions": [
-        "propose ritual language",
-        "summarize evidence-backed emotional intent"
+        "pin archive scope",
+        "define runtime ownership boundary"
       ],
       "forbidden_actions": [
-        "approve production release",
-        "introduce untracked API usage",
+        "touch runtime code inside ai-governance",
+        "skip seed archiving",
         "bypass trace linkage"
       ],
       "evidence_requirements": [
-        "Every proposal must cite the triggering intent and at least one evidence ref.",
-        "Narrative language must remain explainable against the current contract bundle."
+        "Every rebuild packet must cite the runtime repo path and archive destination.",
+        "Any replacement contract must reference a trace packet in traces/local."
       ],
       "policy_refs": [
         "policies/agent_routing_policy.v0.1.json",
-        "policies/approval_tier_policy.v0.1.json"
+        "policies/approval_tier_policy.v0.1.json",
+        "services/thedivineparadox/policy.profile.json"
       ],
       "handoff_targets": [
-        "ux-research-cell"
+        "state-contract-cell"
       ]
     },
     {
-      "role_id": "ux-research-cell",
-      "title": "UX Research Cell",
+      "role_id": "state-contract-cell",
+      "title": "State Contract Cell",
       "governance_department_id": "service-review",
-      "mission": "Turn approved narrative intent into deterministic UI and interaction evidence briefs, user-friction hypotheses, and a governed execution plan.",
+      "mission": "Define deterministic state derivation, vote constraints, trace fields, and the public API contract for the runtime rebuild.",
       "bounded_state_scope": [
-        "Dormant",
-        "Awakening",
-        "Attuning",
-        "Offering",
-        "JudgementBloom",
-        "Revelation",
-        "Afterglow"
+        "Baseline",
+        "QuestionOpen",
+        "ChoiceLocked",
+        "OracleCached"
       ],
       "required_inputs": [
         "intent_ref",
@@ -72,7 +71,7 @@
         "trace_ref"
       ],
       "allowed_outputs": [
-        "ui-ux-evidence-brief",
+        "state-contract-note",
         "uiux-execution-plan"
       ],
       "output_contract_refs": [
@@ -80,36 +79,36 @@
         "schemas/service_agent_plan.schema.json"
       ],
       "allowed_actions": [
-        "map friction points to ritual states",
-        "prioritize first-session clarity and re-entry retention"
+        "define deterministic derived-state inputs",
+        "bind API contracts to trace metadata"
       ],
       "forbidden_actions": [
-        "invent unguided user research outside evidence inputs",
-        "bypass policy review",
-        "treat aesthetic novelty as a release criterion"
+        "allow free-form prompt input in the MVP",
+        "store raw IP addresses in logs",
+        "skip idempotency design"
       ],
       "evidence_requirements": [
-        "Each UX claim must map to a named ritual state or test scenario.",
-        "The execution plan must keep product-runtime implementation out of scope."
+        "State derivation must remain reproducible from question text, option labels, and counts.",
+        "The plan must name cache and regeneration boundaries."
       ],
       "policy_refs": [
         "policies/approval_tier_policy.v0.1.json",
         "services/thedivineparadox/policy.profile.json"
       ],
       "handoff_targets": [
-        "interaction-orchestration-cell"
+        "experience-systems-cell"
       ]
     },
     {
-      "role_id": "interaction-orchestration-cell",
-      "title": "Interaction Orchestration Cell",
+      "role_id": "experience-systems-cell",
+      "title": "Experience Systems Cell",
       "governance_department_id": "service-review",
-      "mission": "Package UI ritual flows, input semantics, and state-entry constraints for desktop and mobile interaction parity.",
+      "mission": "Package the mobile-first ritual surface, interaction semantics, and Three.js performance guardrails for the v2 runtime.",
       "bounded_state_scope": [
-        "Awakening",
-        "Attuning",
-        "Offering",
-        "JudgementBloom"
+        "QuestionOpen",
+        "ChoiceLocked",
+        "OracleCached",
+        "ArchiveView"
       ],
       "required_inputs": [
         "intent_ref",
@@ -120,92 +119,42 @@
       ],
       "allowed_outputs": [
         "interaction-flow-spec",
-        "state-entry-constraint-note"
+        "visual-budget-note"
       ],
       "output_contract_refs": [
         "schemas/service_agent_proposal.schema.json"
       ],
       "allowed_actions": [
-        "assign gesture semantics to bounded ritual states",
-        "propose interaction pacing and feedback loops"
+        "map state vectors to bounded visual parameters",
+        "define downgrade behavior for reduced motion and low-power devices"
       ],
       "forbidden_actions": [
-        "add hidden ritual states",
-        "break desktop-mobile semantic parity",
-        "specify runtime implementation details"
+        "depend on uncontrolled assets",
+        "break mobile-first layout assumptions",
+        "ignore performance budgets"
       ],
       "evidence_requirements": [
-        "Interaction changes must preserve the declared state machine.",
-        "Each proposed input channel change must tie to an existing acceptance check."
+        "Every visual behavior must be linked to a deterministic state input.",
+        "Fallback modes must be explicit and testable."
       ],
       "policy_refs": [
-        "policies/approval_tier_policy.v0.1.json",
-        "control/specs/trace_rules.v0.1.json"
+        "control/specs/trace_rules.v0.1.json",
+        "services/thedivineparadox/policy.profile.json"
       ],
       "handoff_targets": [
-        "visual-systems-cell"
+        "runtime-safety-cell"
       ]
     },
     {
-      "role_id": "visual-systems-cell",
-      "title": "Visual Systems Cell",
-      "governance_department_id": "service-review",
-      "mission": "Define bounded visual modulation changes that strengthen emotional differentiation, legibility, and rendering-budget discipline.",
-      "bounded_state_scope": [
-        "Awakening",
-        "Attuning",
-        "JudgementBloom",
-        "Revelation",
-        "Afterglow"
-      ],
-      "required_inputs": [
-        "intent_ref",
-        "policy_ref",
-        "evidence_ref",
-        "trace_ref",
-        "proposal_ref"
-      ],
-      "allowed_outputs": [
-        "visual-modulation-brief",
-        "state-differentiation-note"
-      ],
-      "output_contract_refs": [
-        "schemas/service_agent_proposal.schema.json"
-      ],
-      "allowed_actions": [
-        "map emotional skins to rendering-layer emphasis",
-        "propose bounded visual deltas that preserve performance budgets"
-      ],
-      "forbidden_actions": [
-        "collapse emotional skins into one default mood",
-        "break rendering budget assumptions",
-        "redefine the core divine presence"
-      ],
-      "evidence_requirements": [
-        "Visual changes must cite visual modulation fields or test scenarios.",
-        "State differentiation must remain legible from a single snapshot."
-      ],
-      "policy_refs": [
-        "services/thedivineparadox/policy.profile.json",
-        "control/specs/trace_rules.v0.1.json"
-      ],
-      "handoff_targets": [
-        "policy-safety-cell"
-      ]
-    },
-    {
-      "role_id": "policy-safety-cell",
-      "title": "Policy Safety Cell",
+      "role_id": "runtime-safety-cell",
+      "title": "Runtime Safety Cell",
       "governance_department_id": "policy-ops",
-      "mission": "Review proposed service changes against approval tier, routing policy, and deterministic evidence requirements before release consideration.",
+      "mission": "Validate rate limits, safe fallback logic, admin regeneration boundaries, and structured logging requirements before release.",
       "bounded_state_scope": [
-        "Dormant",
-        "Awakening",
-        "Attuning",
-        "Offering",
-        "JudgementBloom",
-        "Revelation",
-        "Afterglow"
+        "ChoiceLocked",
+        "OracleCached",
+        "Fallback",
+        "IncidentReview"
       ],
       "required_inputs": [
         "intent_ref",
@@ -222,22 +171,22 @@
         "schemas/service_agent_proposal.schema.json"
       ],
       "allowed_actions": [
-        "check policy conflicts",
-        "escalate risk tier when the boundary changes"
+        "check content guardrails",
+        "verify deterministic fallback and cache rules"
       ],
       "forbidden_actions": [
-        "silence a required human gate",
-        "accept evidence-free changes",
-        "approve runtime-side bypass"
+        "approve unbounded generation",
+        "permit raw IP logging",
+        "skip moderation or schema validation"
       ],
       "evidence_requirements": [
-        "All escalations must name the triggering policy clause.",
-        "Rejected proposals must preserve the trace path for replay."
+        "Unsafe output handling must cite the exact fallback path.",
+        "Rate limiting and idempotency expectations must be explicit."
       ],
       "policy_refs": [
-        "policies/agent_routing_policy.v0.1.json",
         "policies/approval_tier_policy.v0.1.json",
-        "policies/policy_profiles.v0.1.json"
+        "policies/agent_routing_policy.v0.1.json",
+        "services/thedivineparadox/policy.profile.json"
       ],
       "handoff_targets": [
         "release-gate-cell"
@@ -247,10 +196,10 @@
       "role_id": "release-gate-cell",
       "title": "Release Gate Cell",
       "governance_department_id": "governance-council",
-      "mission": "Decide whether the prepared contract change set is eligible to proceed through the mandatory bridge with the required human approval posture.",
+      "mission": "Decide whether the replaced seed, runtime evidence, and validation logs are coherent enough for governed release and cutover review.",
       "bounded_state_scope": [
-        "Revelation",
-        "Afterglow"
+        "OracleCached",
+        "ReleaseReady"
       ],
       "required_inputs": [
         "intent_ref",
@@ -260,28 +209,28 @@
         "verdict_ref"
       ],
       "allowed_outputs": [
-        "bridge-ready-change-set",
-        "hold-order"
+        "release-candidate-verdict",
+        "hold-notice"
       ],
       "output_contract_refs": [
         "schemas/service_agent_proposal.schema.json"
       ],
       "allowed_actions": [
-        "confirm trace completeness",
-        "require explicit human architect gate for high-tier changes"
+        "confirm release eligibility",
+        "hold for human architect gate"
       ],
       "forbidden_actions": [
-        "direct service-side deployment",
-        "override mandatory bridge routing",
-        "strip policy refs from final artifacts"
+        "waive missing archive evidence",
+        "ignore runtime validation gaps",
+        "merge without rollback context"
       ],
       "evidence_requirements": [
-        "Every final package must retain intent, policy, and evidence linkage.",
-        "High-tier changes must remain held until the human gate is satisfied."
+        "Release verdicts must cite runtime path, validation commands, and archive refs.",
+        "Any hold notice must point to a concrete remediation path."
       ],
       "policy_refs": [
-        "policies/agent_routing_policy.v0.1.json",
-        "control/specs/trace_rules.v0.1.json"
+        "policies/approval_tier_policy.v0.1.json",
+        "services/thedivineparadox/policy.profile.json"
       ],
       "handoff_targets": []
     }

@@ -1,0 +1,126 @@
+{
+  "version": "v0.1",
+  "service_id": "thedivineparadox",
+  "strategy_mode": "ritual-uiux",
+  "roles": [
+    {
+      "role_id": "ritual-narrative-cell",
+      "prompt_mode": "ritual-narrative-framing",
+      "allowed_prompt_scopes": [
+        "narrative framing",
+        "tone guardrails",
+        "emotion-preserving story beats"
+      ],
+      "forbidden_prompt_patterns": [
+        "runtime-code-generation",
+        "untracked-api-expansion",
+        "trace-bypass"
+      ],
+      "required_refs": [
+        "services/thedivineparadox/contract.bundle.v0.1.json",
+        "policies/agent_routing_policy.v0.1.json",
+        "policies/approval_tier_policy.v0.1.json"
+      ]
+    },
+    {
+      "role_id": "ux-research-cell",
+      "prompt_mode": "ritual-ux-evidence-briefing",
+      "allowed_prompt_scopes": [
+        "friction mapping",
+        "first-session clarity",
+        "re-entry retention"
+      ],
+      "forbidden_prompt_patterns": [
+        "unguided-user-research",
+        "aesthetic-novelty-as-gate",
+        "policy-review-bypass"
+      ],
+      "required_refs": [
+        "services/thedivineparadox/contract.bundle.v0.1.json",
+        "services/thedivineparadox/agent-roles/uiux.execution-plan.v0.1.json",
+        "services/thedivineparadox/policy.profile.json"
+      ]
+    },
+    {
+      "role_id": "interaction-orchestration-cell",
+      "prompt_mode": "ritual-interaction-packaging",
+      "allowed_prompt_scopes": [
+        "gesture semantics",
+        "interaction pacing",
+        "desktop-mobile parity"
+      ],
+      "forbidden_prompt_patterns": [
+        "hidden-state-addition",
+        "platform-divergence",
+        "runtime-implementation-detail"
+      ],
+      "required_refs": [
+        "services/thedivineparadox/contract.bundle.v0.1.json",
+        "control/specs/trace_rules.v0.1.json",
+        "services/thedivineparadox/agent-roles/uiux.execution-plan.v0.1.json"
+      ]
+    },
+    {
+      "role_id": "visual-systems-cell",
+      "prompt_mode": "visual-modulation-briefing",
+      "allowed_prompt_scopes": [
+        "visual differentiation",
+        "rendering budget guardrails",
+        "emotional skin mapping"
+      ],
+      "forbidden_prompt_patterns": [
+        "identity-fragmentation",
+        "rendering-budget-break",
+        "core-presence-redefinition"
+      ],
+      "required_refs": [
+        "services/thedivineparadox/contract.bundle.v0.1.json",
+        "services/thedivineparadox/policy.profile.json",
+        "services/thedivineparadox/agent-roles/uiux.execution-plan.v0.1.json"
+      ]
+    },
+    {
+      "role_id": "policy-safety-cell",
+      "prompt_mode": "policy-conflict-review",
+      "allowed_prompt_scopes": [
+        "policy conflict review",
+        "risk escalation",
+        "human gate triggers"
+      ],
+      "forbidden_prompt_patterns": [
+        "silent-escalation-suppression",
+        "evidence-free-approval",
+        "runtime-side-bypass"
+      ],
+      "required_refs": [
+        "policies/agent_routing_policy.v0.1.json",
+        "policies/approval_tier_policy.v0.1.json",
+        "policies/policy_profiles.v0.1.json"
+      ]
+    },
+    {
+      "role_id": "release-gate-cell",
+      "prompt_mode": "release-gate-verdict",
+      "allowed_prompt_scopes": [
+        "bridge readiness",
+        "hold order",
+        "final evidence completeness"
+      ],
+      "forbidden_prompt_patterns": [
+        "mandatory-bridge-override",
+        "policy-ref-stripping",
+        "direct-deployment"
+      ],
+      "required_refs": [
+        "policies/agent_routing_policy.v0.1.json",
+        "control/specs/trace_rules.v0.1.json",
+        "services/thedivineparadox/agent-roles/uiux.execution-plan.v0.1.json"
+      ]
+    }
+  ],
+  "global_guardrails": [
+    "All role prompts must remain deterministic and evidence-linked.",
+    "Prompt strategies must not introduce runtime implementation instructions.",
+    "Every prompt flow must preserve the declared ritual state model and approval boundary."
+  ]
+}

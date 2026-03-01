@@ -51,8 +51,8 @@
       "default_mcp_allowlist_ref": "services/thedivineparadox/mcp.allowlist.json",
       "default_slo_contract_ref": "services/thedivineparadox/slo.contract.v0.1.json",
       "notes": [
-        "Primary ritual-uiux seed example.",
-        "Long-term runtime home is an independent service repository."
+        "Primary ritual-uiux seed example with a 2026-03-01 v2 reset.",
+        "Long-term runtime home is /Users/wonyoung_choi/projects/thedivineparadox after the 2026-03-01 cutover, and the pre-v2 seed is archived under services/thedivineparadox/archive/2026-03-01-pre-v2."
       ]
     },
     {
@@ -70,6 +70,24 @@
       "default_slo_contract_ref": "services/personal-webnovel/slo.contract.v0.1.json",
       "notes": [
         "Legacy minimal seed example.",
+        "Long-term runtime home is an independent service repository."
+      ]
+    },
+    {
+      "id": "plotnodes",
+      "name": "Plotnodes",
+      "catalog_role": "archived-seed-example",
+      "owner": "architect-owner",
+      "seed_path": "services/plotnodes",
+      "bootstrap_profile": "standard",
+      "contract_bundle_ref": "services/plotnodes/contract.bundle.v0.1.json",
+      "agent_roles_ref": "services/plotnodes/agent-roles/agent.roles.v0.1.json",
+      "agent_handoffs_ref": "services/plotnodes/agent-roles/agent.handoffs.v0.1.json",
+      "default_policy_profile_ref": "services/plotnodes/policy.profile.json",
+      "default_mcp_allowlist_ref": "services/plotnodes/mcp.allowlist.json",
+      "default_slo_contract_ref": "services/plotnodes/slo.contract.v0.1.json",
+      "notes": [
+        "High-tier governance seed for an AI writer resident platform.",
         "Long-term runtime home is an independent service repository."
       ]
     }

@@ -2,95 +2,78 @@
   "version": "v0.1",
   "service_id": "thedivineparadox",
   "start_roles": [
-    "ritual-narrative-cell"
+    "rebuild-intent-cell"
   ],
   "terminal_roles": [
     "release-gate-cell"
   ],
   "handoffs": [
     {
-      "from_role": "ritual-narrative-cell",
-      "to_role": "ux-research-cell",
-      "condition": "Narrative framing is trace-linked and the requested scope stays inside the current service contract boundary.",
+      "from_role": "rebuild-intent-cell",
+      "to_role": "state-contract-cell",
+      "condition": "The archive destination, runtime repo path, and intent trace are explicitly recorded.",
       "state_transition_gate": {
         "from_states": [
-          "Dormant",
-          "Awakening"
+          "Reset",
+          "Archive"
         ],
         "to_states": [
-          "Awakening",
-          "Attuning"
+          "Archive",
+          "Baseline"
         ]
       },
       "required_policy_ref": "policies/approval_tier_policy.v0.1.json",
-      "evidence_gate": "intent_ref and evidence_ref are both present."
+      "evidence_gate": "intent_ref, policy_ref, and archive evidence are all present."
     },
     {
-      "from_role": "ux-research-cell",
-      "to_role": "interaction-orchestration-cell",
-      "condition": "The UX evidence brief and planning packet name target states, friction points, and first-session clarity checks.",
+      "from_role": "state-contract-cell",
+      "to_role": "experience-systems-cell",
+      "condition": "The API contract, deterministic state inputs, and one-vote-per-day rules are defined.",
       "state_transition_gate": {
         "from_states": [
-          "Awakening",
-          "Attuning"
+          "Baseline",
+          "QuestionOpen"
         ],
         "to_states": [
-          "Attuning",
-          "Offering"
+          "QuestionOpen",
+          "ChoiceLocked"
         ]
       },
       "required_policy_ref": "services/thedivineparadox/policy.profile.json",
-      "evidence_gate": "trace_ref captures the proposed interaction delta."
+      "evidence_gate": "trace_ref captures the state contract and cache boundary."
     },
     {
-      "from_role": "interaction-orchestration-cell",
-      "to_role": "visual-systems-cell",
-      "condition": "Interaction flow proposals preserve the existing ritual state machine and keep desktop-mobile parity bounded.",
+      "from_role": "experience-systems-cell",
+      "to_role": "runtime-safety-cell",
+      "condition": "The mobile-first ritual surface, visual budget, and fallback modes are explicit.",
       "state_transition_gate": {
         "from_states": [
-          "Attuning",
-          "Offering"
+          "QuestionOpen",
+          "ChoiceLocked"
         ],
         "to_states": [
-          "JudgementBloom",
-          "Revelation"
+          "ChoiceLocked",
+          "OracleCached"
         ]
       },
       "required_policy_ref": "control/specs/trace_rules.v0.1.json",
-      "evidence_gate": "proposal_ref includes the interaction flow spec."
+      "evidence_gate": "proposal_ref includes the interaction and visual budget package."
     },
     {
-      "from_role": "visual-systems-cell",
-      "to_role": "policy-safety-cell",
-      "condition": "Visual modulation changes remain inside rendering budget and preserve emotional differentiation across the declared states.",
-      "state_transition_gate": {
-        "from_states": [
-          "JudgementBloom",
-          "Revelation"
-        ],
-        "to_states": [
-          "Revelation",
-          "Afterglow"
-        ]
-      },
-      "required_policy_ref": "services/thedivineparadox/policy.profile.json",
-      "evidence_gate": "proposal_ref includes the visual modulation brief."
-    },
-    {
-      "from_role": "policy-safety-cell",
+      "from_role": "runtime-safety-cell",
       "to_role": "release-gate-cell",
-      "condition": "Approval tier is confirmed and any escalation or human gate requirement is explicitly recorded.",
+      "condition": "Validation, fallback policy, and release evidence are complete and any escalation is explicit.",
       "state_transition_gate": {
         "from_states": [
-          "Revelation",
-          "Afterglow"
+          "OracleCached",
+          "IncidentReview"
         ],
         "to_states": [
-          "Afterglow"
+          "ReleaseReady"
         ]
       },
       "required_policy_ref": "policies/agent_routing_policy.v0.1.json",
-      "evidence_gate": "proposal_ref and policy verdict are both attached."
+      "evidence_gate": "proposal_ref, policy verdict, and validation evidence are all attached."
     }
   ]
 }
