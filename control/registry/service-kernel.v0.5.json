@@ -1,0 +1,87 @@
+{
+  "version": "v0.5",
+  "model": "linked-service-kernel",
+  "purpose": "Define the minimal governance-facing root kernel every independent service should expose while leaving implementation layout flexible.",
+  "required_root_entries": [
+    {
+      "path": "README.md",
+      "entry_type": "file"
+    },
+    {
+      "path": "service.yaml",
+      "entry_type": "file"
+    },
+    {
+      "path": "governance",
+      "entry_type": "directory"
+    },
+    {
+      "path": ".gitignore",
+      "entry_type": "file"
+    }
+  ],
+  "required_governance_entries": [
+    {
+      "path": "governance/service.contract.json",
+      "entry_type": "file"
+    },
+    {
+      "path": "governance/links",
+      "entry_type": "directory"
+    },
+    {
+      "path": "governance/evidence",
+      "entry_type": "directory"
+    },
+    {
+      "path": "governance/reviews",
+      "entry_type": "directory"
+    }
+  ],
+  "profiles": [
+    {
+      "profile_id": "web-runtime",
+      "recommended_entries": [
+        "app",
+        "src",
+        "public",
+        "tests"
+      ],
+      "notes": [
+        "app and src are alternatives; at least one is typically expected.",
+        "Implementation folders remain service-local choices."
+      ]
+    },
+    {
+      "profile_id": "tool-runtime",
+      "recommended_entries": [
+        "src",
+        "tests",
+        "bin",
+        "tools"
+      ],
+      "notes": [
+        "bin and tools are alternatives.",
+        "The governance kernel does not force a packaging strategy."
+      ]
+    },
+    {
+      "profile_id": "worker-runtime",
+      "recommended_entries": [
+        "workers",
+        "jobs",
+        "tests",
+        "ops"
+      ],
+      "notes": [
+        "workers and jobs are alternatives.",
+        "ops is recommended when release handling is queue or batch oriented."
+      ]
+    }
+  ],
+  "rules": [
+    "The governance kernel is mandatory for independently linked services.",
+    "Implementation folders outside the governance kernel are not centrally fixed.",
+    "A linked service may be marked planned before the kernel is fully present, but the contract path must still be declared."
+  ]
+}

@@ -8,15 +8,17 @@
     "A new core MCP contract is introduced."
   ],
   "required_inputs": [
-    "Template-aligned JSON contract bundle or capability contract.",
-    "Registry entry update in linked-services or capabilities.",
+    "Template-aligned capability contract or linked-service contract metadata.",
+    "Registry entry update in linked-services, service-kernel, or capabilities.",
+    "Service-root profile declaration plus governance kernel path.",
     "Policy profile and allowlist artifacts."
   ],
   "execution_steps": [
-    "Prefer registering the runtime in control/registry/linked-services.v0.4.json instead of adding a new services/<service-id>/ seed folder.",
-    "Use control/registry/services.v0.1.json only for approved legacy seed preservation, not as the default onboarding path.",
+    "Prefer registering the runtime in control/registry/linked-services.v0.5.json instead of adding a new services/<service-id>/ seed folder.",
+    "Declare a service-root profile and governance kernel path using control/registry/service-kernel.v0.5.json.",
+    "Use control/registry/services.v0.1.json only for approved legacy seed preservation, never as the default onboarding path.",
     "Register leaseable capability contracts in control/registry/capabilities.v0.4.json or, for legacy compatibility, control/registry/mcps.v0.1.json.",
-    "Issue a temporary-link request and review receipt before treating the service as governed.",
+    "Complete intake-scan and pre-exec-scan before treating the service as governed.",
     "Pass scripts/validate_all.sh before merge."
   ],
   "rollback_condition": [
@@ -26,7 +28,7 @@
   ],
   "evidence_outputs": [
     "Linked-service or capability registry entry.",
-    "Validated contract bundle or link receipt.",
+    "Validated contract bundle, link receipt, or service kernel declaration.",
     "Validation pass artifact."
   ]
 }

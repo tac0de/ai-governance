@@ -188,6 +188,10 @@ for schema_rel in \
   schemas/trace_rules.schema.json \
   schemas/mcp_ownership_policy.schema.json \
   schemas/version_promotion_policy.schema.json \
+  schemas/link_scan_points.schema.json \
+  schemas/department_flow.schema.json \
+  schemas/service_kernel.schema.json \
+  schemas/launch_readiness.schema.json \
   schemas/cloud_batch_jobs_manifest.schema.json \
   schemas/cloud_batch_results_manifest.schema.json \
   schemas/cloud_batch_verify_verdict.schema.json
@@ -197,11 +201,19 @@ done
 
 for governance_rel in \
   control/agents/role.catalog.v0.4.json \
+  control/agents/departments.v0.5.json \
+  control/agents/role.catalog.v0.5.json \
   control/registry/lanes.v0.4.json \
   control/registry/temporary-links.v0.4.json \
   control/registry/linked-services.v0.4.json \
   control/registry/capabilities.v0.4.json \
-  control/registry/version-promotion.v0.4.json
+  control/registry/version-promotion.v0.4.json \
+  control/registry/link-scan-points.v0.5.json \
+  control/registry/temporary-links.v0.5.json \
+  control/registry/department-flow.v0.5.json \
+  control/registry/service-kernel.v0.5.json \
+  control/registry/linked-services.v0.5.json \
+  control/registry/launch-readiness.v0.5.json
   do
   check_json "$governance_rel"
 done
@@ -215,7 +227,13 @@ check_exact_files_in_dir "control/registry" \
   "temporary-links.v0.4.json" \
   "linked-services.v0.4.json" \
   "capabilities.v0.4.json" \
-  "version-promotion.v0.4.json"
+  "version-promotion.v0.4.json" \
+  "link-scan-points.v0.5.json" \
+  "temporary-links.v0.5.json" \
+  "department-flow.v0.5.json" \
+  "service-kernel.v0.5.json" \
+  "linked-services.v0.5.json" \
+  "launch-readiness.v0.5.json"
 
 check_exact_files_in_dir "control/playbooks" \
   "incident.v0.1.json" \
@@ -227,7 +245,9 @@ check_exact_files_in_dir "control/benchmarks" \
 
 check_exact_files_in_dir "control/agents" \
   "departments.v0.1.json" \
-  "role.catalog.v0.4.json"
+  "role.catalog.v0.4.json" \
+  "departments.v0.5.json" \
+  "role.catalog.v0.5.json"
 
 check_exact_files_in_dir "control/prompts" \
   "library.v0.1.json"
@@ -650,6 +670,203 @@ validate_jq_contract "control/registry/version-promotion.v0.4.json" "schemas/ver
   (.promotion_flow|type=="array" and length>0) and
   (.anti_patterns|type=="array" and length>0)
 '
+
+validate_jq_contract "control/registry/link-scan-points.v0.5.json" "schemas/link_scan_points.schema.json" '
+  .version=="v0.5" and
+  (.model=="link-scan-catalog") and
+  (.scan_points|type=="array" and length==4) and
+  ([.scan_points[].id] | length==(unique|length)) and
+  ([.scan_points[].order] | length==(unique|length)) and
+  ([.scan_points[].id]) as $scan_ids |
+  (all(.lane_minimums.exploration[]; $scan_ids | index(.) != null)) and
+  (all(.lane_minimums.production[]; $scan_ids | index(.) != null)) and
+  ((.lane_minimums.production | index("pre-release-scan")) != null)
+'
+
+if check_json "control/registry/temporary-links.v0.5.json"; then
+  if ! jq -e '
+    .version=="v0.5" and
+    (.link_contract.phases | type=="array" and length==5) and
+    (.link_contract.phase_scan_map | type=="array" and length==5) and
+    ([.link_contract.phase_scan_map[].phase] | length==(unique|length)) and
+    (all(.link_contract.phase_scan_map[];
+      (.phase=="request" or .phase=="grant" or .phase=="execute-local" or .phase=="review" or .phase=="release") and
+      (.required_scans | type=="array" and length>0 and all(.[]; .=="intake-scan" or .=="pre-exec-scan" or .=="post-exec-scan" or .=="pre-release-scan"))
+    )) and
+    (.link_contract.completion_rule.missing_scan_status=="incomplete") and
+    (.link_contract.completion_rule.production_requires_scan=="pre-release-scan") and
+    (.link_contract.completion_rule.required_scans_for_completed | type=="array" and length==4) and
+    ((.link_contract.completion_rule.required_scans_for_completed | index("intake-scan")) != null) and
+    ((.link_contract.completion_rule.required_scans_for_completed | index("pre-exec-scan")) != null) and
+    ((.link_contract.completion_rule.required_scans_for_completed | index("post-exec-scan")) != null) and
+    ((.link_contract.completion_rule.required_scans_for_completed | index("pre-release-scan")) != null) and
+    (.link_contract.residue_policy.link_residue_check_must_be=="none") and
+    (.link_contract.residue_policy.incomplete_blocks_release==true) and
+    (.link_contract.residue_policy.open_residue_blocks_release==true) and
+    (.link_contract.defaults.link_scope=="ephemeral") and
+    (.link_contract.defaults.runtime_log_owner=="service-local") and
+    (.link_contract.defaults.central_receives_raw_logs==false) and
+    (.link_contract.defaults.initial_status=="requested") and
+    (.link_contract.hard_rules | type=="array" and length>=5)
+  ' "$ROOT_DIR/control/registry/temporary-links.v0.5.json" >/dev/null 2>&1; then
+    fail "control/registry/temporary-links.v0.5.json" "schema validation failed (inline v0.5 temporary-link rules)"
+  fi
+fi
+
+if check_json "control/agents/departments.v0.5.json"; then
+  if ! jq -e '
+    .version=="v0.5" and
+    (.model=="department-state-machine") and
+    (.departments | type=="array" and length==5) and
+    ([.departments[].id] | length==(unique|length)) and
+    (all(.departments[];
+      (.id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+      (.name|type=="string" and length>0) and
+      (.purpose|type=="string" and length>0) and
+      (.default_prompt_set|type=="string" and length>0) and
+      (.supports_roles|type=="array" and length>0) and
+      (.allowed_outputs|type=="array" and length>0)
+    ))
+  ' "$ROOT_DIR/control/agents/departments.v0.5.json" >/dev/null 2>&1; then
+    fail "control/agents/departments.v0.5.json" "schema validation failed (inline v0.5 department rules)"
+  fi
+fi
+
+if check_json "control/agents/role.catalog.v0.5.json"; then
+  if ! jq -e '
+    .version=="v0.5" and
+    (.model=="casting-director-stateful") and
+    (.roles | type=="array" and length==6) and
+    ([.roles[].id] | length==(unique|length)) and
+    (all(.roles[];
+      (.id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+      (.name|type=="string" and length>0) and
+      (.mission|type=="string" and length>0) and
+      (.default_lane=="exploration" or .default_lane=="production") and
+      (.leaseable|type=="boolean") and
+      (.home_department|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+      (.allowed_departments|type=="array" and length>0) and
+      (.outputs|type=="array" and length>0)
+    ))
+  ' "$ROOT_DIR/control/agents/role.catalog.v0.5.json" >/dev/null 2>&1; then
+    fail "control/agents/role.catalog.v0.5.json" "schema validation failed (inline v0.5 role rules)"
+  fi
+fi
+
+validate_jq_contract "control/registry/department-flow.v0.5.json" "schemas/department_flow.schema.json" '
+  .version=="v0.5" and
+  (.model=="department-handoff-graph") and
+  (.terminal_states | type=="array" and length==1) and
+  ((.terminal_states | index("released")) != null) and
+  (.max_same_department_reentries_before_human_approval==2) and
+  (.allowed_transitions | type=="array" and length==10) and
+  (.forbidden_shortcuts | type=="array" and length==3) and
+  (.human_override_conditions | type=="array" and length>0)
+'
+
+validate_jq_contract "control/registry/service-kernel.v0.5.json" "schemas/service_kernel.schema.json" '
+  .version=="v0.5" and
+  (.model=="linked-service-kernel") and
+  (.required_root_entries | type=="array" and length==4) and
+  (.required_governance_entries | type=="array" and length==4) and
+  (.profiles | type=="array" and length==3) and
+  ([.profiles[].profile_id] | length==(unique|length)) and
+  ((.profiles | map(.profile_id) | index("web-runtime")) != null) and
+  ((.profiles | map(.profile_id) | index("tool-runtime")) != null) and
+  ((.profiles | map(.profile_id) | index("worker-runtime")) != null) and
+  (.rules | type=="array" and length>0)
+'
+
+if check_json "control/registry/linked-services.v0.5.json"; then
+  if ! jq -e '
+    .version=="v0.5" and
+    (.model=="linked-service-catalog") and
+    (.services | type=="array" and length>0) and
+    ([.services[].id] | length==(unique|length)) and
+    (all(.services[];
+      (.id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+      (.owner_role|type=="string" and length>0) and
+      (.runtime_repo_path|type=="string" and length>0) and
+      (.log_owner=="service-local") and
+      (.governance_relationship=="temporary-link-preferred") and
+      (.service_root_profile|type=="string" and length>0) and
+      (.service_contract_ref|type=="string" and length>0) and
+      (.governance_kernel_status=="planned" or .governance_kernel_status=="present" or .governance_kernel_status=="incomplete") and
+      (.last_link_scan_ref=="none" or (.last_link_scan_ref|type=="string" and length>0)) and
+      (.launch_readiness_ref==null or (.launch_readiness_ref|type=="string" and length>0)) and
+      (.notes|type=="array" and length>0)
+    ))
+  ' "$ROOT_DIR/control/registry/linked-services.v0.5.json" >/dev/null 2>&1; then
+    fail "control/registry/linked-services.v0.5.json" "schema validation failed (inline v0.5 linked-service rules)"
+  fi
+fi
+
+validate_jq_contract "control/registry/launch-readiness.v0.5.json" "schemas/launch_readiness.schema.json" '
+  .version=="v0.5" and
+  (.policy_id=="launch-readiness") and
+  (.definition.pre_launch|type=="string" and length>0) and
+  (.definition.launch_ready|type=="string" and length>0) and
+  (.gates.required_all|type=="array" and length>=4) and
+  (.gates.required_checks|type=="array" and length>=3) and
+  (.gates.freshness_window_days|type=="number" and .>0) and
+  (.promotion_effect.allows_release_review_signal=="promotable") and
+  (.promotion_effect.blocks_v1_without_version_promotion==true) and
+  (.anti_patterns|type=="array" and length>0)
+'
+
+if json_ready "control/agents/departments.v0.5.json" && json_ready "control/agents/role.catalog.v0.5.json"; then
+  if ! jq -n \
+    --slurpfile departments "$ROOT_DIR/control/agents/departments.v0.5.json" \
+    --slurpfile roles "$ROOT_DIR/control/agents/role.catalog.v0.5.json" '
+      ($departments[0].departments | map(.id)) as $dept_ids |
+      all($roles[0].roles[];
+        . as $role |
+        ($role.home_department as $home | ($dept_ids | index($home)) != null) and
+        ($role.allowed_departments | all(.[]; . as $allowed | ($dept_ids | index($allowed)) != null))
+      )
+    ' >/dev/null 2>&1; then
+    fail "control/agents/role.catalog.v0.5.json" "role departments must resolve against departments.v0.5.json"
+  fi
+fi
+
+if json_ready "control/agents/departments.v0.5.json" && json_ready "control/registry/department-flow.v0.5.json"; then
+  if ! jq -n \
+    --slurpfile departments "$ROOT_DIR/control/agents/departments.v0.5.json" \
+    --slurpfile flow "$ROOT_DIR/control/registry/department-flow.v0.5.json" '
+      ($departments[0].departments | map(.id)) as $dept_ids |
+      ($flow[0].terminal_states) as $terminal |
+      all($flow[0].allowed_transitions[];
+        .from as $from |
+        .to as $to |
+        ($dept_ids | index($from)) != null and
+        ((($dept_ids + $terminal) | index($to)) != null)
+      ) and
+      all($flow[0].forbidden_shortcuts[];
+        .from as $from |
+        .to as $to |
+        ($dept_ids | index($from)) != null and
+        ((($dept_ids + $terminal) | index($to)) != null)
+      )
+    ' >/dev/null 2>&1; then
+    fail "control/registry/department-flow.v0.5.json" "department flow references must resolve against departments.v0.5.json"
+  fi
+fi
+
+if json_ready "control/registry/service-kernel.v0.5.json" && json_ready "control/registry/linked-services.v0.5.json"; then
+  if ! jq -n \
+    --slurpfile kernel "$ROOT_DIR/control/registry/service-kernel.v0.5.json" \
+    --slurpfile services "$ROOT_DIR/control/registry/linked-services.v0.5.json" '
+      ($kernel[0].profiles | map(.profile_id)) as $profile_ids |
+      all($services[0].services[];
+        .service_root_profile as $profile |
+        .service_contract_ref as $contract_ref |
+        ($profile_ids | index($profile)) != null and
+        ($contract_ref == "governance/service.contract.json")
+      )
+    ' >/dev/null 2>&1; then
+    fail "control/registry/linked-services.v0.5.json" "linked service profiles must resolve against service-kernel.v0.5.json"
+  fi
+fi
 
 if [[ -d "$ROOT_DIR/packages/mcps" ]]; then
   fail "packages/mcps" "unsupported MCP root; use control/mcps/<mcp-name>"

@@ -1,0 +1,77 @@
+{
+  "version": "v0.5",
+  "policy_id": "launch-readiness",
+  "definition": {
+    "pre_launch": "A governed service remains pre-launch while operational readiness is incomplete, even if the implementation appears feature complete.",
+    "launch_ready": "A governed service may be called launch-ready only when rollback, operator ownership, and current evidence are all in place for production exposure."
+  },
+  "gates": {
+    "required_all": [
+      {
+        "gate_id": "runbook-ready",
+        "evidence_type": "runbook-receipt",
+        "rule": "must-exist",
+        "notes": [
+          "The service must have an operational runbook reference that is current enough to trust."
+        ]
+      },
+      {
+        "gate_id": "rollback-ready",
+        "evidence_type": "rollback-plan-receipt",
+        "rule": "must-exist",
+        "notes": [
+          "A rollback path must already be written and reviewable before launch-ready is granted."
+        ]
+      },
+      {
+        "gate_id": "operator-owned",
+        "evidence_type": "operator-ownership-receipt",
+        "rule": "must-exist",
+        "notes": [
+          "A named operator must actively own the service at launch time."
+        ]
+      },
+      {
+        "gate_id": "fresh-evidence",
+        "evidence_type": "evidence-freshness-receipt",
+        "rule": "must-exist",
+        "notes": [
+          "The evidence packet must be recent enough that the launch verdict is not stale."
+        ]
+      }
+    ],
+    "required_checks": [
+      {
+        "check_id": "pre-release-scan-passed",
+        "rule": "must-pass",
+        "notes": [
+          "Production work must have a valid pre-release-scan before launch-ready can be granted."
+        ]
+      },
+      {
+        "check_id": "kernel-declared",
+        "rule": "must-pass",
+        "notes": [
+          "The linked service must declare a governance kernel path and profile."
+        ]
+      },
+      {
+        "check_id": "no-blocking-risk",
+        "rule": "must-pass",
+        "notes": [
+          "No unresolved blocking risk may remain when the launch-ready verdict is issued."
+        ]
+      }
+    ],
+    "freshness_window_days": 7
+  },
+  "promotion_effect": {
+    "allows_release_review_signal": "promotable",
+    "blocks_v1_without_version_promotion": true
+  },
+  "anti_patterns": [
+    "Calling a service launch-ready because the UI looks finished while operational ownership is still unclear.",
+    "Calling a service launch-ready without a rollback plan.",
+    "Using launch-ready as a substitute for market proof."
+  ]
+}

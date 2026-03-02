@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Legacy compatibility bootstrap only.
+# New linked-service onboarding should use service-root kernel contracts, not seed expansion.
+
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SERVICES_REG_REL="control/registry/services.v0.1.json"
 LEGACY_BOOTSTRAP_APPROVED="${LEGACY_SEED_BOOTSTRAP_APPROVED:-0}"
@@ -60,7 +63,7 @@ if [[ $# -eq 0 ]]; then
 fi
 
 if [[ "$LEGACY_BOOTSTRAP_APPROVED" != "1" ]]; then
-  echo "LEGACY_BOOTSTRAP_DISABLED use control/registry/linked-services.v0.4.json and control/registry/temporary-links.v0.4.json instead" >&2
+  echo "LEGACY_BOOTSTRAP_DISABLED use control/registry/linked-services.v0.5.json, control/registry/service-kernel.v0.5.json, and control/registry/temporary-links.v0.5.json instead" >&2
   echo "To use this script intentionally for seed-era compatibility, run with LEGACY_SEED_BOOTSTRAP_APPROVED=1." >&2
   exit 1
 fi

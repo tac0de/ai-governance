@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DepartmentFlow",
+  "type": "object",
+  "required": [
+    "version",
+    "model",
+    "terminal_states",
+    "max_same_department_reentries_before_human_approval",
+    "allowed_transitions",
+    "forbidden_shortcuts",
+    "human_override_conditions"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "v0.5"
+    },
+    "model": {
+      "type": "string",
+      "const": "department-handoff-graph"
+    },
+    "terminal_states": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-]*$"
+      }
+    },
+    "max_same_department_reentries_before_human_approval": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "allowed_transitions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "from",
+          "to",
+          "reason"
+        ],
+        "properties": {
+          "from": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "to": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "forbidden_shortcuts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "from",
+          "to"
+        ],
+        "properties": {
+          "from": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "to": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "human_override_conditions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "additionalProperties": false
+}

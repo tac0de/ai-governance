@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Legacy compatibility validator for archived seed catalogs only.
+
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SERVICES_REG_REL="control/registry/services.v0.1.json"
 target_service=""

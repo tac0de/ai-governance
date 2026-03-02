@@ -1,233 +1,230 @@
-# ai-governance v0.4
+# ai-governance v0.5
 
-Deterministic governance kernel for `casting director` style architecture.
+Deterministic governance kernel for a `casting director` architecture with linked services.
 
-Release line: `v0.4`
+Release line: `v0.5`
 
 ## Core Identity
 
-`ai-governance` is no longer the place where services are centrally managed.
+`ai-governance` is the central contract layer.
 
-It is the central place where:
-- roles are defined
-- governance lanes are defined
-- leaseable capabilities are cataloged
-- temporary link rules are issued
-- evidence and review contracts are validated
+It defines:
+- role and department structure
+- governance lanes
+- temporary-link scan gates
+- linked-service kernel expectations
+- launch and version promotion gates
+- deterministic validation logic
 
-It is not the place where:
-- runtime implementations live
-- service logs are centrally stored
-- product UX or application logic is developed
-- long-lived service state is coordinated
+It does not own:
+- runtime implementations
+- service-local logs
+- product UX
+- long-lived execution state
+- real MCP runtimes
 
-## v0.4 Architectural Shift
+## What Changed in v0.5
 
-The repository now targets a `casting director` model:
+`v0.5` closes the gap between `v0.4` direction and actual operating rules.
 
-- Central decides **who should act**
-- Central decides **which lane the work belongs to**
-- Central decides **which capability may be temporarily linked**
-- Services execute locally in their own repositories
-- Services own their own logs, runtime traces, and operational memory
-- Central receives only reviewable evidence contracts and link receipts
+The three primary upgrades are:
+1. `temporary linking` is now governed by mandatory scan points, not just a loose handshake
+2. flow is modeled as `role -> department -> department transition`, not only role lists
+3. every independent service is expected to expose a minimal governance-facing root kernel while keeping implementation folders free
 
-This replaces the older `bootstrap compiler + seed catalog` emphasis as the primary mental model.
+## Central Ownership Boundary
 
-## What Central Owns
-
-Central ownership is limited to:
-- governance registries under `control/registry/`
-- role and department catalogs under `control/agents/`
-- MCP capability contracts under `control/mcps/`
+Central owns only:
+- JSON contracts under `control/`
+- validation schemas under `schemas/`
 - policies under `policies/`
-- schemas under `schemas/`
-- minimal validators and packagers under `scripts/`
+- deterministic validators under `scripts/`
 
 Central does not own:
-- runtime service repositories
-- runtime logs
-- real MCP implementations
-- service-local experimentation context
+- runtime repositories
+- service-local evidence logs
+- app code
+- service-specific build structure
 
 ## File Philosophy
 
-Preferred artifact types in this repository:
-- `README.md` for the single human-facing root explanation
-- `json` for governed contracts and registries
-- `yaml` only where CI or external tooling specifically benefits
-- minimal shell validators in `scripts/` for deterministic checking
-
-`AGENTS.md` is intentionally removed in v0.4.
-Its intent is absorbed into this `README.md`.
+Preferred artifacts in this repository:
+- `README.md` for the single human-facing explanation
+- `json` for governed contracts
+- `yaml` only when an external tool materially benefits
+- shell validators in `scripts/` only when they stay deterministic and local
 
 ## Start Here
 
-1. `control/agents/role.catalog.v0.4.json`
-- canonical role catalog for specialist assignment
+1. `control/registry/link-scan-points.v0.5.json`
+- mandatory 4-stage scan gates for temporary linking
 
-2. `control/registry/lanes.v0.4.json`
-- separates `exploration` and `production`
+2. `control/registry/temporary-links.v0.5.json`
+- completion, incomplete, and residue rules for linked work
 
-3. `control/registry/temporary-links.v0.4.json`
-- defines the temporary-link handshake between central governance and independent services
+3. `control/agents/departments.v0.5.json`
+- the canonical department state model
 
-4. `control/registry/linked-services.v0.4.json`
-- optional map of externally owned services known to central governance
+4. `control/registry/department-flow.v0.5.json`
+- the allowed department-to-department handoff graph
 
-5. `control/registry/capabilities.v0.4.json`
-- canonical leaseable capability registry for the casting-director model
+5. `control/agents/role.catalog.v0.5.json`
+- role catalog with department placement
 
-6. `control/registry/version-promotion.v0.4.json`
-- deterministic rule for when a governed service is allowed to call itself `v1.0`
+6. `control/registry/service-kernel.v0.5.json`
+- the common governance-facing root kernel for independent services
 
-7. `control/registry/mcps.v0.1.json`
-- legacy MCP registry retained for compatibility
+7. `control/registry/linked-services.v0.5.json`
+- the primary linked service catalog for new work
 
-8. `scripts/validate_all.sh`
-- deterministic validation gate for the current governed surface
+8. `control/registry/launch-readiness.v0.5.json`
+- operational readiness gate before a service can be treated as launch-ready
+
+9. `control/registry/version-promotion.v0.4.json`
+- the still-active `v1.0` business-use gate
+
+10. `scripts/validate_all.sh`
+- deterministic validation gate for the governed surface
 
 ## One-Line Architecture
 
-`roles + lanes + capability contracts + temporary links -> local service execution -> evidence contract review`
+`intake scan -> scoped temporary link -> service-local execution -> review gate -> launch readiness -> version promotion`
 
 ## Governance Model
 
-### 1. Dual Lane
+### 1. Four-Stage Scan Gate
 
-- `exploration`
-  - used for discovery, creative work, early architecture, visual R&D
-  - low-friction, temporary link by default
-  - contracts are lighter and allowed to evolve
+Temporary linking is now closed by required scans:
+- `intake-scan`
+- `pre-exec-scan`
+- `post-exec-scan`
+- `pre-release-scan`
 
-- `production`
-  - used for deploy, policy, data, security, irreversible changes
-  - stricter gates and stronger evidence
-  - contracts are expected to be stable and reviewable
+Rules:
+- `exploration` requires at least the first three
+- `production` requires all four
+- missing required scans leave the link `incomplete`
+- incomplete links cannot be treated as releasable
 
-### 2. Capability Leasing
+### 2. Department-State Flow
 
-MCPs and specialist roles are treated as leaseable capabilities, not centrally hosted runtime dependencies.
+The primary control surface is now the department graph, not free-form role assignment.
 
-Examples:
-- `visual-critic`
-- `temporary-link-routing`
-- `release-review`
-- `core-analytics-mcp`
-- `core-experiment-mcp`
-- `core-safety-fallback-mcp`
-- `core-governance-journal-mcp`
-- `core-experience-profile-mcp`
+Core departments:
+- `intake-routing`
+- `build-execution`
+- `specialist-studio`
+- `review-gate`
+- `release-council`
 
-The real implementation may live elsewhere.
-Central keeps the contract, capability definition, and approval rules.
-`control/registry/capabilities.v0.4.json` is the preferred source of truth.
-`control/registry/mcps.v0.1.json` remains as a compatibility surface for older bootstrap flows.
+Meaning:
+- roles are assignable people/capabilities
+- departments are stable state buckets
+- handoffs are governed between departments, not negotiated ad hoc between individuals
 
-### 3. Version Promotion
+### 3. Linked Service Kernel
 
-`v1.0` is not a completeness badge.
-In v0.4, `v1.0` means:
-- market usefulness is evidenced
+Every independent service should expose a minimal governance-facing root kernel:
+- `README.md`
+- `service.yaml`
+- `governance/service.contract.json`
+- `governance/links/`
+- `governance/evidence/`
+- `governance/reviews/`
+- `.gitignore`
+
+This keeps governance interfaces consistent while allowing app code layout to remain free.
+
+Implementation folders such as:
+- `app/`
+- `src/`
+- `server/`
+- `packages/`
+- `workers/`
+- `tools/`
+
+remain service-local decisions.
+
+### 4. Launch Ready vs v1.0
+
+`launch-ready` and `v1.0` are intentionally different.
+
+`launch-ready` means:
+- operational runbook exists
+- rollback exists
+- operator ownership exists
+- evidence is fresh enough
+- pre-release scan passed
+
+`v1.0` still means:
+- market proof exists
 - the human architect actively uses the service as a business instrument
-- production review is stable enough to justify the label
+- production stability is proven
 
-The canonical gate is:
-- `control/registry/version-promotion.v0.4.json`
+So the ladder is:
+- `pre-launch`
+- `launch-ready`
+- `v1.0`
 
-### 4. Temporary Linking
+## Services in v0.5
 
-Services should link to central governance temporarily:
-- request role/capability
-- receive lane constraints
-- execute locally
-- return evidence
-- release the link
+`services/` is no longer an active onboarding surface.
 
-This avoids over-constraining creative and service-local work while preserving reviewability.
+In `v0.5`:
+- no new service should be onboarded by adding a new `services/<id>/` seed
+- `control/registry/services.v0.1.json` is a legacy-only seed catalog
+- `scripts/validate_seed_catalog.sh` remains for compatibility
+- `scripts/bootstrap_service.sh` remains disabled unless explicitly overridden
 
-### 5. Review-First
+Current onboarding should prefer:
+- `control/registry/linked-services.v0.5.json`
+- `control/registry/service-kernel.v0.5.json`
+- `control/registry/temporary-links.v0.5.json`
 
-Central should prefer:
-- review contracts
-- evidence validation
-- failure pattern detection
+## Practical Rule of Thumb
 
-Central should avoid:
-- dictating implementation details too early
-- owning service runtime memory
-- becoming a cross-service orchestration bottleneck
+If a service asks:
+- "Who should work on this?" -> consult `role.catalog.v0.5`
+- "Which state should this work enter next?" -> consult `department-flow.v0.5`
+- "Can central help temporarily?" -> consult `temporary-links.v0.5`
+- "What minimum structure must the service expose?" -> consult `service-kernel.v0.5`
+- "Can this go live?" -> consult `launch-readiness.v0.5`
+- "Can this be called v1?" -> consult `version-promotion.v0.4`
 
-## Services in v0.4
+If the question is:
+- "Where should logs live?" -> in the service repo
+- "Where should runtime code live?" -> in the service repo
+- "Where should experiments happen?" -> in the service repo
 
-`services/` is no longer a required long-term concept.
+## Validation
 
-Current rule:
-- `services/` is legacy seed/archive territory only
-- it is not the preferred center of gravity for new governance work
-- service-local logs belong to each service repository, not here
-
-Near-term transition rule:
-- existing `services/` content remains for backward compatibility
-- new architecture should prefer `linked-services.v0.4.json` over adding new seed-heavy service folders
-
-Planned direction:
-- shrink `services/`
-- keep only legacy references or migration archives as needed
-- move the central model toward role/capability/lane contracts
-
-## Quick Validation
+Primary validation:
 
 ```bash
 bash scripts/validate_all.sh
 ```
 
-Legacy compatibility checks still exist while seed-era assets remain:
+Legacy seed compatibility:
 
 ```bash
 bash scripts/validate_seed_catalog.sh
 ```
 
-Legacy bootstrap remains available only by explicit override:
+Legacy seed bootstrap override only:
 
 ```bash
 LEGACY_SEED_BOOTSTRAP_APPROVED=1 bash scripts/bootstrap_service.sh ...
 ```
 
-## Current v0.4 Contract Surface
-
-- `control/agents/departments.v0.1.json`
-- `control/agents/role.catalog.v0.4.json`
-- `control/registry/org.v0.1.json`
-- `control/registry/mcps.v0.1.json`
-- `control/registry/services.v0.1.json` (legacy seed catalog)
-- `control/registry/linked-services.v0.4.json`
-- `control/registry/lanes.v0.4.json`
-- `control/registry/temporary-links.v0.4.json`
-- `control/registry/capabilities.v0.4.json`
-- `control/registry/version-promotion.v0.4.json`
-
-## Practical Rule of Thumb
-
-If a service asks:
-- "Who should work on this?" -> consult role catalog
-- "How constrained is this work?" -> consult lane policy
-- "Can central help temporarily?" -> consult temporary link contract
-- "What capability can be borrowed?" -> consult capability registry first, MCP registry second for compatibility
-- "Is this ready to be called v1?" -> consult version-promotion policy
-
-If the question is:
-- "Where should logs live?" -> in the service repo
-- "Where should runtime code live?" -> in the service repo
-- "Where should experimental implementation happen?" -> in the service repo
-
 ## Status
 
-v0.4 is the architectural direction line.
+`v0.5` is the operating architecture line.
 
-Backward compatibility remains for:
-- legacy seed-oriented service catalog contracts
-- existing validation scripts that still reference `services/`
-- explicit opt-in seed bootstrap via `scripts/bootstrap_service.sh`
+It is the version where:
+- central looks like a real governance kernel
+- linked services have a standard governance-facing shape
+- flow control is explicit enough to scale
 
-Future cleanup can remove more seed-era assumptions after the new role/lane/link model is fully adopted.
+It is not yet `v1.0`.
+
+`v1.0` starts only when the service is actually useful in the market and actively used in the architect's business work.

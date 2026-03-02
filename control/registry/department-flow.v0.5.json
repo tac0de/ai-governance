@@ -1,0 +1,79 @@
+{
+  "version": "v0.5",
+  "model": "department-handoff-graph",
+  "terminal_states": [
+    "released"
+  ],
+  "max_same_department_reentries_before_human_approval": 2,
+  "allowed_transitions": [
+    {
+      "from": "intake-routing",
+      "to": "build-execution",
+      "reason": "Standard implementation path after routing."
+    },
+    {
+      "from": "intake-routing",
+      "to": "specialist-studio",
+      "reason": "Direct specialist routing for high-skill work."
+    },
+    {
+      "from": "build-execution",
+      "to": "specialist-studio",
+      "reason": "Escalate to a specialist when implementation hits a domain wall."
+    },
+    {
+      "from": "specialist-studio",
+      "to": "build-execution",
+      "reason": "Return specialist output for integration."
+    },
+    {
+      "from": "build-execution",
+      "to": "review-gate",
+      "reason": "Send build output to structured review."
+    },
+    {
+      "from": "specialist-studio",
+      "to": "review-gate",
+      "reason": "Send specialist output to structured review."
+    },
+    {
+      "from": "review-gate",
+      "to": "build-execution",
+      "reason": "Re-enter execution for fixes after review."
+    },
+    {
+      "from": "review-gate",
+      "to": "release-council",
+      "reason": "Advance reviewed work to release decision."
+    },
+    {
+      "from": "release-council",
+      "to": "build-execution",
+      "reason": "Return to execution when release is blocked and remediation is required."
+    },
+    {
+      "from": "release-council",
+      "to": "released",
+      "reason": "Finalize the governed flow."
+    }
+  ],
+  "forbidden_shortcuts": [
+    {
+      "from": "intake-routing",
+      "to": "release-council"
+    },
+    {
+      "from": "specialist-studio",
+      "to": "released"
+    },
+    {
+      "from": "build-execution",
+      "to": "released"
+    }
+  ],
+  "human_override_conditions": [
+    "More than two same-department re-entries.",
+    "A requested transition is not in the allowed graph.",
+    "A release-council decision needs to bypass a blocked review state."
+  ]
+}
