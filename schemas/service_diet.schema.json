@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ServiceDietPolicy",
+  "type": "object",
+  "required": [
+    "version",
+    "model",
+    "purpose",
+    "scan_axes",
+    "required_outputs",
+    "archive_policy",
+    "completion_rule",
+    "hard_rules"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "v0.5"
+    },
+    "model": {
+      "type": "string",
+      "const": "linked-service-diet"
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scan_axes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "axis_id",
+          "question"
+        ],
+        "properties": {
+          "axis_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "required_outputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9_-]*$"
+      }
+    },
+    "archive_policy": {
+      "type": "object",
+      "required": [
+        "allowed_actions",
+        "forbidden_actions"
+      ],
+      "properties": {
+        "allowed_actions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          }
+        },
+        "forbidden_actions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "completion_rule": {
+      "type": "object",
+      "required": [
+        "required_status",
+        "linked_service_fields"
+      ],
+      "properties": {
+        "required_status": {
+          "type": "string",
+          "const": "diet-scanned"
+        },
+        "linked_service_fields": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]*$"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "hard_rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "additionalProperties": false
+}

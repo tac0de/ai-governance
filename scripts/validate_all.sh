@@ -192,6 +192,8 @@ for schema_rel in \
   schemas/department_flow.schema.json \
   schemas/service_kernel.schema.json \
   schemas/launch_readiness.schema.json \
+  schemas/service_normalization.schema.json \
+  schemas/service_diet.schema.json \
   schemas/cloud_batch_jobs_manifest.schema.json \
   schemas/cloud_batch_results_manifest.schema.json \
   schemas/cloud_batch_verify_verdict.schema.json
@@ -213,7 +215,9 @@ for governance_rel in \
   control/registry/department-flow.v0.5.json \
   control/registry/service-kernel.v0.5.json \
   control/registry/linked-services.v0.5.json \
-  control/registry/launch-readiness.v0.5.json
+  control/registry/launch-readiness.v0.5.json \
+  control/registry/service-normalization.v0.5.json \
+  control/registry/service-diet.v0.5.json
   do
   check_json "$governance_rel"
 done
@@ -233,7 +237,9 @@ check_exact_files_in_dir "control/registry" \
   "department-flow.v0.5.json" \
   "service-kernel.v0.5.json" \
   "linked-services.v0.5.json" \
-  "launch-readiness.v0.5.json"
+  "launch-readiness.v0.5.json" \
+  "service-normalization.v0.5.json" \
+  "service-diet.v0.5.json"
 
 check_exact_files_in_dir "control/playbooks" \
   "incident.v0.1.json" \
@@ -792,6 +798,10 @@ if check_json "control/registry/linked-services.v0.5.json"; then
       (.service_root_profile|type=="string" and length>0) and
       (.service_contract_ref|type=="string" and length>0) and
       (.governance_kernel_status=="planned" or .governance_kernel_status=="present" or .governance_kernel_status=="incomplete") and
+      (.normalization_status=="pending" or .normalization_status=="normalized" or .normalization_status=="incomplete") and
+      (.normalization_receipt_ref==null or (.normalization_receipt_ref|type=="string" and length>0)) and
+      (.diet_status=="pending" or .diet_status=="diet-scanned" or .diet_status=="incomplete") and
+      (.archive_candidates_ref==null or (.archive_candidates_ref|type=="string" and length>0)) and
       (.last_link_scan_ref=="none" or (.last_link_scan_ref|type=="string" and length>0)) and
       (.launch_readiness_ref==null or (.launch_readiness_ref|type=="string" and length>0)) and
       (.notes|type=="array" and length>0)
@@ -812,6 +822,32 @@ validate_jq_contract "control/registry/launch-readiness.v0.5.json" "schemas/laun
   (.promotion_effect.allows_release_review_signal=="promotable") and
   (.promotion_effect.blocks_v1_without_version_promotion==true) and
   (.anti_patterns|type=="array" and length>0)
+'
+
+validate_jq_contract "control/registry/service-normalization.v0.5.json" "schemas/service_normalization.schema.json" '
+  .version=="v0.5" and
+  (.model=="one-time-service-normalization") and
+  (.required_phases|type=="array" and length==4) and
+  ([.required_phases[].phase_id] | length==(unique|length)) and
+  ((.required_phases | map(.phase_id) | index("intake")) != null) and
+  ((.required_phases | map(.phase_id) | index("kernel-alignment")) != null) and
+  ((.required_phases | map(.phase_id) | index("evidence-alignment")) != null) and
+  ((.required_phases | map(.phase_id) | index("release")) != null) and
+  (.completion_rule.required_status=="normalized") and
+  (.completion_rule.repeat_mode=="one-time-by-default") and
+  (.hard_rules|type=="array" and length>0)
+'
+
+validate_jq_contract "control/registry/service-diet.v0.5.json" "schemas/service_diet.schema.json" '
+  .version=="v0.5" and
+  (.model=="linked-service-diet") and
+  (.scan_axes|type=="array" and length>=4) and
+  (.required_outputs|type=="array" and length>=4) and
+  (.archive_policy.allowed_actions|type=="array" and length>0) and
+  (.archive_policy.forbidden_actions|type=="array" and length>0) and
+  (.completion_rule.required_status=="diet-scanned") and
+  (.completion_rule.linked_service_fields|type=="array" and length==2) and
+  (.hard_rules|type=="array" and length>0)
 '
 
 if json_ready "control/agents/departments.v0.5.json" && json_ready "control/agents/role.catalog.v0.5.json"; then
@@ -865,6 +901,44 @@ if json_ready "control/registry/service-kernel.v0.5.json" && json_ready "control
       )
     ' >/dev/null 2>&1; then
     fail "control/registry/linked-services.v0.5.json" "linked service profiles must resolve against service-kernel.v0.5.json"
+  fi
+fi
+
+if json_ready "control/registry/service-normalization.v0.5.json" && json_ready "control/registry/linked-services.v0.5.json"; then
+  if ! jq -n \
+    --slurpfile normalization "$ROOT_DIR/control/registry/service-normalization.v0.5.json" \
+    --slurpfile services "$ROOT_DIR/control/registry/linked-services.v0.5.json" '
+      ($normalization[0].completion_rule.linked_service_fields) as $required_fields |
+      all($services[0].services[];
+        . as $svc |
+        (all($required_fields[]; . as $field | ($svc | has($field)))) and
+        (
+          ($svc.normalization_status == "pending" and $svc.normalization_receipt_ref == null) or
+          ($svc.normalization_status == "incomplete") or
+          ($svc.normalization_status == "normalized" and ($svc.normalization_receipt_ref|type=="string" and length>0))
+        )
+      )
+    ' >/dev/null 2>&1; then
+    fail "control/registry/linked-services.v0.5.json" "linked services must align with service-normalization.v0.5.json"
+  fi
+fi
+
+if json_ready "control/registry/service-diet.v0.5.json" && json_ready "control/registry/linked-services.v0.5.json"; then
+  if ! jq -n \
+    --slurpfile diet "$ROOT_DIR/control/registry/service-diet.v0.5.json" \
+    --slurpfile services "$ROOT_DIR/control/registry/linked-services.v0.5.json" '
+      ($diet[0].completion_rule.linked_service_fields) as $required_fields |
+      all($services[0].services[];
+        . as $svc |
+        (all($required_fields[]; . as $field | ($svc | has($field)))) and
+        (
+          ($svc.diet_status == "pending" and $svc.archive_candidates_ref == null) or
+          ($svc.diet_status == "incomplete") or
+          ($svc.diet_status == "diet-scanned" and ($svc.archive_candidates_ref|type=="string" and length>0))
+        )
+      )
+    ' >/dev/null 2>&1; then
+    fail "control/registry/linked-services.v0.5.json" "linked services must align with service-diet.v0.5.json"
   fi
 fi
 

@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ServiceNormalizationPolicy",
+  "type": "object",
+  "required": [
+    "version",
+    "model",
+    "purpose",
+    "applies_to",
+    "required_phases",
+    "completion_rule",
+    "hard_rules"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "v0.5"
+    },
+    "model": {
+      "type": "string",
+      "const": "one-time-service-normalization"
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "applies_to": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "required_phases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "phase_id",
+          "required_artifacts",
+          "outcome"
+        ],
+        "properties": {
+          "phase_id": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          },
+          "required_artifacts": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9_-]*$"
+            }
+          },
+          "outcome": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "completion_rule": {
+      "type": "object",
+      "required": [
+        "required_status",
+        "linked_service_fields",
+        "repeat_mode"
+      ],
+      "properties": {
+        "required_status": {
+          "type": "string",
+          "const": "normalized"
+        },
+        "linked_service_fields": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9_-]*$"
+          }
+        },
+        "repeat_mode": {
+          "type": "string",
+          "const": "one-time-by-default"
+        }
+      },
+      "additionalProperties": false
+    },
+    "hard_rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "additionalProperties": false
+}

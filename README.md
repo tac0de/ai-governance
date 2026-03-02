@@ -80,10 +80,16 @@ Preferred artifacts in this repository:
 8. `control/registry/launch-readiness.v0.5.json`
 - operational readiness gate before a service can be treated as launch-ready
 
-9. `control/registry/version-promotion.v0.4.json`
+9. `control/registry/service-normalization.v0.5.json`
+- one-time pass for bringing an existing independent service into the v0.5 governance shape
+
+10. `control/registry/service-diet.v0.5.json`
+- scan-and-archive pass for trimming unnecessary surfaces in an already linked independent service
+
+11. `control/registry/version-promotion.v0.4.json`
 - the still-active `v1.0` business-use gate
 
-10. `scripts/validate_all.sh`
+12. `scripts/validate_all.sh`
 - deterministic validation gate for the governed surface
 
 ## One-Line Architecture
@@ -166,6 +172,34 @@ So the ladder is:
 - `launch-ready`
 - `v1.0`
 
+### 5. One-Time Service Normalization
+
+Existing independent services do not need to be permanently reowned by central governance.
+
+Instead, central can run a one-time `service normalization pass`:
+- temporarily link to the service
+- align the minimum governance-facing root
+- align evidence and review receipts
+- mark the service as `normalized`
+- release the link
+
+This is how older independent services can be cleaned up without turning central governance into a permanent runtime dependency.
+
+### 6. Service Diet
+
+Normalization makes a service legible to governance.
+`service diet` makes a service lighter.
+
+This is the scan used to:
+- identify dead surfaces
+- identify duplicated surfaces
+- identify stale governance leftovers
+- decide what is safe to archive
+
+Central still does not take custody of the runtime.
+It only issues the scan logic and the archive decision surface.
+The service archives its own unnecessary material.
+
 ## Services in v0.5
 
 `services/` is no longer an active onboarding surface.
@@ -180,6 +214,8 @@ Current onboarding should prefer:
 - `control/registry/linked-services.v0.5.json`
 - `control/registry/service-kernel.v0.5.json`
 - `control/registry/temporary-links.v0.5.json`
+- `control/registry/service-normalization.v0.5.json` for existing services that need cleanup
+- `control/registry/service-diet.v0.5.json` when an existing service needs clutter reduction
 
 ## Practical Rule of Thumb
 
