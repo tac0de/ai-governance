@@ -1,0 +1,36 @@
+{
+  "version": "v0.4",
+  "lanes": [
+    {
+      "id": "exploration",
+      "purpose": "Fast local experimentation, creative iteration, early architecture, and reversible implementation work.",
+      "default_link_mode": "temporary",
+      "human_gate_required_by_default": false,
+      "required_evidence": [
+        "intent",
+        "local verification note"
+      ],
+      "forbidden": [
+        "treating exploratory contracts as production-frozen truth",
+        "using central governance as a runtime dependency"
+      ]
+    },
+    {
+      "id": "production",
+      "purpose": "Deployment, policy changes, data/security-affecting changes, and other non-trivial irreversible moves.",
+      "default_link_mode": "temporary",
+      "human_gate_required_by_default": true,
+      "required_evidence": [
+        "intent",
+        "validation evidence",
+        "review result",
+        "rollback note"
+      ],
+      "forbidden": [
+        "shipping without reviewable evidence",
+        "using undefined specialist roles",
+        "bypassing central gate rules"
+      ]
+    }
+  ]
+}

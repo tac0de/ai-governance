@@ -16,7 +16,8 @@
       "default_slo_contract_ref": "services/gongvue/slo.contract.v0.1.json",
       "notes": [
         "Legacy minimal seed example.",
-        "Long-term runtime home is an independent service repository."
+        "Long-term runtime home is an independent service repository.",
+        "No new central onboarding should default to this seed catalog in v0.4; prefer linked-services.v0.4.json."
       ]
     },
     {
@@ -34,7 +35,8 @@
       "default_slo_contract_ref": "services/obsidian-mcp/slo.contract.v0.1.json",
       "notes": [
         "Legacy minimal seed example.",
-        "Long-term runtime home is an independent service repository."
+        "Long-term runtime home is an independent service repository.",
+        "No new central onboarding should default to this seed catalog in v0.4; prefer linked-services.v0.4.json."
       ]
     },
     {
@@ -52,7 +54,8 @@
       "default_slo_contract_ref": "services/thedivineparadox/slo.contract.v0.1.json",
       "notes": [
         "Primary ritual-uiux seed example with a 2026-03-01 v2 reset.",
-        "Long-term runtime home is /Users/wonyoung_choi/projects/thedivineparadox after the 2026-03-01 cutover, and the pre-v2 seed is archived under services/thedivineparadox/archive/2026-03-01-pre-v2."
+        "Long-term runtime home is /Users/wonyoung_choi/projects/thedivineparadox after the 2026-03-01 cutover, and the pre-v2 seed is archived under services/thedivineparadox/archive/2026-03-01-pre-v2.",
+        "No new central onboarding should default to this seed catalog in v0.4; prefer linked-services.v0.4.json."
       ]
     },
     {
@@ -70,7 +73,8 @@
       "default_slo_contract_ref": "services/personal-webnovel/slo.contract.v0.1.json",
       "notes": [
         "Legacy minimal seed example.",
-        "Long-term runtime home is an independent service repository."
+        "Long-term runtime home is an independent service repository.",
+        "No new central onboarding should default to this seed catalog in v0.4; prefer linked-services.v0.4.json."
       ]
     },
     {
@@ -88,7 +92,8 @@
       "default_slo_contract_ref": "services/plotnodes/slo.contract.v0.1.json",
       "notes": [
         "High-tier governance seed for an AI writer resident platform.",
-        "Long-term runtime home is an independent service repository."
+        "Long-term runtime home is an independent service repository.",
+        "No new central onboarding should default to this seed catalog in v0.4; prefer linked-services.v0.4.json."
       ]
     }
   ]

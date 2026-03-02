@@ -3,6 +3,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SERVICES_REG_REL="control/registry/services.v0.1.json"
+LEGACY_BOOTSTRAP_APPROVED="${LEGACY_SEED_BOOTSTRAP_APPROVED:-0}"
 
 service_id=""
 service_name=""
@@ -23,7 +24,7 @@ require() {
 }
 
 usage() {
-  echo "Usage: $0 --service-id <id> --service-name <name> --output-dir <path> [--bootstrap-profile <standard|ritual-uiux>] [--risk-tier <low|medium|high>] [--policy-profile <strict|balanced|creative>] [--seed-source <catalog-id|none>] [--include-prompt-strategy <true|false>] [--include-plan-strategy <true|false>] [--init-git <true|false>]" >&2
+  echo "Usage: LEGACY_SEED_BOOTSTRAP_APPROVED=1 $0 --service-id <id> --service-name <name> --output-dir <path> [--bootstrap-profile <standard|ritual-uiux>] [--risk-tier <low|medium|high>] [--policy-profile <strict|balanced|creative>] [--seed-source <catalog-id|none>] [--include-prompt-strategy <true|false>] [--include-plan-strategy <true|false>] [--init-git <true|false>]" >&2
   exit 1
 }
 
@@ -56,6 +57,12 @@ render_readme() {
 
 if [[ $# -eq 0 ]]; then
   usage
+fi
+
+if [[ "$LEGACY_BOOTSTRAP_APPROVED" != "1" ]]; then
+  echo "LEGACY_BOOTSTRAP_DISABLED use control/registry/linked-services.v0.4.json and control/registry/temporary-links.v0.4.json instead" >&2
+  echo "To use this script intentionally for seed-era compatibility, run with LEGACY_SEED_BOOTSTRAP_APPROVED=1." >&2
+  exit 1
 fi
 
 while [[ $# -gt 0 ]]; do

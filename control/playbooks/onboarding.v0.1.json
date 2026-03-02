@@ -2,31 +2,31 @@
   "version": "v0.1",
   "playbook_id": "onboarding",
   "title": "Onboarding Playbook",
-  "objective": "Onboard new services and MCPs using closed JSON contracts only.",
+  "objective": "Onboard new linked services and leaseable capabilities using closed JSON contracts only.",
   "trigger_conditions": [
-    "A new governed service is introduced.",
+    "A new externally owned linked service is introduced.",
     "A new core MCP contract is introduced."
   ],
   "required_inputs": [
-    "Template-aligned JSON contract bundle.",
-    "Registry entry update.",
+    "Template-aligned JSON contract bundle or capability contract.",
+    "Registry entry update in linked-services or capabilities.",
     "Policy profile and allowlist artifacts."
   ],
   "execution_steps": [
-    "Create services/<service-id>/ using the JSON service contract bundle template.",
-    "Register the service in control/registry/services.v0.1.json and add policy/allowlist/SLO files.",
-    "Create control/mcps/<mcp-id>/ with manifest, contract bundle, and runtime binding.",
-    "Register the MCP in control/registry/mcps.v0.1.json and map capabilities plus approval tier.",
+    "Prefer registering the runtime in control/registry/linked-services.v0.4.json instead of adding a new services/<service-id>/ seed folder.",
+    "Use control/registry/services.v0.1.json only for approved legacy seed preservation, not as the default onboarding path.",
+    "Register leaseable capability contracts in control/registry/capabilities.v0.4.json or, for legacy compatibility, control/registry/mcps.v0.1.json.",
+    "Issue a temporary-link request and review receipt before treating the service as governed.",
     "Pass scripts/validate_all.sh before merge."
   ],
   "rollback_condition": [
     "Registry and file layout drift from the fixed JSON shape.",
     "Validation does not pass.",
-    "Capabilities or approval mapping are incomplete."
+    "Capabilities, temporary-link, or approval mapping are incomplete."
   ],
   "evidence_outputs": [
-    "Service or MCP registry entry.",
-    "Validated contract bundle.",
+    "Linked-service or capability registry entry.",
+    "Validated contract bundle or link receipt.",
     "Validation pass artifact."
   ]
 }

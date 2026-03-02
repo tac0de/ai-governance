@@ -187,6 +187,7 @@ for schema_rel in \
   schemas/control_playbook.schema.json \
   schemas/trace_rules.schema.json \
   schemas/mcp_ownership_policy.schema.json \
+  schemas/version_promotion_policy.schema.json \
   schemas/cloud_batch_jobs_manifest.schema.json \
   schemas/cloud_batch_results_manifest.schema.json \
   schemas/cloud_batch_verify_verdict.schema.json
@@ -194,11 +195,27 @@ for schema_rel in \
   check_json "$schema_rel"
 done
 
+for governance_rel in \
+  control/agents/role.catalog.v0.4.json \
+  control/registry/lanes.v0.4.json \
+  control/registry/temporary-links.v0.4.json \
+  control/registry/linked-services.v0.4.json \
+  control/registry/capabilities.v0.4.json \
+  control/registry/version-promotion.v0.4.json
+  do
+  check_json "$governance_rel"
+done
+
 # Control room fixed document sets (freeze line).
 check_exact_files_in_dir "control/registry" \
   "org.v0.1.json" \
   "services.v0.1.json" \
-  "mcps.v0.1.json"
+  "mcps.v0.1.json" \
+  "lanes.v0.4.json" \
+  "temporary-links.v0.4.json" \
+  "linked-services.v0.4.json" \
+  "capabilities.v0.4.json" \
+  "version-promotion.v0.4.json"
 
 check_exact_files_in_dir "control/playbooks" \
   "incident.v0.1.json" \
@@ -209,7 +226,8 @@ check_exact_files_in_dir "control/benchmarks" \
   "efficiency_benchmark_spec.v0.1.json"
 
 check_exact_files_in_dir "control/agents" \
-  "departments.v0.1.json"
+  "departments.v0.1.json" \
+  "role.catalog.v0.4.json"
 
 check_exact_files_in_dir "control/prompts" \
   "library.v0.1.json"
@@ -609,6 +627,28 @@ validate_jq_contract "$MCPS_REG_REL" "schemas/mcps_registry.schema.json" '
   )) and
   ([.mcps[].id] | length==(unique|length)) and
   ([.mcps[].root_path] | length==(unique|length))
+'
+
+validate_jq_contract "control/registry/version-promotion.v0.4.json" "schemas/version_promotion_policy.schema.json" '
+  .version=="v0.4" and
+  (.policy_id=="version-promotion") and
+  (.definition.pre_v1|type=="string" and length>0) and
+  (.definition.v1_0|type=="string" and length>0) and
+  (.gates.required_all|type=="array" and length>=3) and
+  (all(.gates.required_all[];
+    (.gate_id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+    (.evidence_type|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+    (.rule=="at_least_one") and
+    (.notes|type=="array" and length>0)
+  )) and
+  (.gates.required_metrics|type=="array" and length>=2) and
+  (all(.gates.required_metrics[];
+    (.metric_id|type=="string" and test("^[a-z0-9][a-z0-9-]*$")) and
+    (.operator==">=" or .operator=="==") and
+    (.value|type=="number")
+  )) and
+  (.promotion_flow|type=="array" and length>0) and
+  (.anti_patterns|type=="array" and length>0)
 '
 
 if [[ -d "$ROOT_DIR/packages/mcps" ]]; then

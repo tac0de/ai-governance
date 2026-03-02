@@ -1,0 +1,97 @@
+{
+  "version": "v0.4",
+  "model": "leaseable-capability-registry",
+  "purpose": "Defines centrally governed capabilities that may be temporarily linked by independent services without central runtime ownership.",
+  "capabilities": [
+    {
+      "capability_id": "visual-critic",
+      "kind": "deterministic-review-gate",
+      "preferred_runtime_ownership": "service-local",
+      "central_contract_only": true,
+      "default_roles": [
+        "threejs-visual-specialist",
+        "visual-critic",
+        "release-review"
+      ],
+      "allowed_lanes": [
+        "exploration",
+        "production"
+      ],
+      "required_receipts": [
+        "evidence_contract",
+        "review_result",
+        "link_receipt"
+      ],
+      "forbidden": [
+        "network-dependent verdict path",
+        "wall-clock-dependent verdict logic",
+        "central mandatory runtime hop"
+      ]
+    },
+    {
+      "capability_id": "policy-validation",
+      "kind": "deterministic-validation-gate",
+      "preferred_runtime_ownership": "central-or-service-local",
+      "central_contract_only": false,
+      "default_roles": [
+        "policy-ops",
+        "release-review"
+      ],
+      "allowed_lanes": [
+        "production"
+      ],
+      "required_receipts": [
+        "evidence_contract",
+        "review_result"
+      ],
+      "forbidden": [
+        "non-deterministic acceptance rule",
+        "implicit role escalation"
+      ]
+    },
+    {
+      "capability_id": "temporary-link-routing",
+      "kind": "governance-routing-decision",
+      "preferred_runtime_ownership": "central-contract-service-local-execution",
+      "central_contract_only": true,
+      "default_roles": [
+        "architect-owner",
+        "policy-ops"
+      ],
+      "allowed_lanes": [
+        "exploration",
+        "production"
+      ],
+      "required_receipts": [
+        "link_receipt",
+        "review_result"
+      ],
+      "forbidden": [
+        "permanent hidden dependency",
+        "unreleased temporary link"
+      ]
+    },
+    {
+      "capability_id": "release-review",
+      "kind": "final-gate",
+      "preferred_runtime_ownership": "central-contract-service-local-evidence",
+      "central_contract_only": true,
+      "default_roles": [
+        "release-review",
+        "architect-owner"
+      ],
+      "allowed_lanes": [
+        "production"
+      ],
+      "required_receipts": [
+        "evidence_contract",
+        "review_result",
+        "policy_reference"
+      ],
+      "forbidden": [
+        "missing evidence hash",
+        "missing policy reference"
+      ]
+    }
+  ]
+}

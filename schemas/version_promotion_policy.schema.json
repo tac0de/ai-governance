@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "VersionPromotionPolicy",
+  "type": "object",
+  "required": [
+    "version",
+    "policy_id",
+    "definition",
+    "gates",
+    "promotion_flow",
+    "anti_patterns"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "v0.4"
+    },
+    "policy_id": {
+      "type": "string",
+      "const": "version-promotion"
+    },
+    "definition": {
+      "type": "object",
+      "required": [
+        "pre_v1",
+        "v1_0"
+      ],
+      "properties": {
+        "pre_v1": {
+          "type": "string",
+          "minLength": 1
+        },
+        "v1_0": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "gates": {
+      "type": "object",
+      "required": [
+        "required_all",
+        "required_metrics"
+      ],
+      "properties": {
+        "required_all": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "gate_id",
+              "evidence_type",
+              "rule",
+              "notes"
+            ],
+            "properties": {
+              "gate_id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]*$"
+              },
+              "evidence_type": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]*$"
+              },
+              "rule": {
+                "type": "string",
+                "const": "at_least_one"
+              },
+              "notes": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "required_metrics": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "metric_id",
+              "operator",
+              "value"
+            ],
+            "properties": {
+              "metric_id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]*$"
+              },
+              "operator": {
+                "type": "string",
+                "enum": [
+                  ">=",
+                  "=="
+                ]
+              },
+              "value": {
+                "type": "number"
+              }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "promotion_flow": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "anti_patterns": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "additionalProperties": false
+}

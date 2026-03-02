@@ -1,210 +1,233 @@
-# ai-governance v0.3
+# ai-governance v0.4
 
-Deterministic Trace 기반 거버넌스 bootstrap compiler 저장소.
+Deterministic governance kernel for `casting director` style architecture.
 
-Release line: `v0.3` (artifact file line remains `v0.1` for schema and contract closure).
+Release line: `v0.4`
 
-## Start Here (Core 4)
+## Core Identity
 
-1. `control/registry/`
-- 조직/서비스/MCP의 단일 진실 소스.
+`ai-governance` is no longer the place where services are centrally managed.
 
-2. `schemas/` (특히 중앙 통제 스키마)
-- `org.schema.json`
-- `services_registry.schema.json`
-- `mcps_registry.schema.json`
-- `mcp_allowlist.schema.json`
-- `mcp_manifest.schema.json`
+It is the central place where:
+- roles are defined
+- governance lanes are defined
+- leaseable capabilities are cataloged
+- temporary link rules are issued
+- evidence and review contracts are validated
 
-3. `scripts/validate_all.sh`
-- 중앙 설계 강제 지점.
-- JSON contract bundle, 레지스트리 정합성, 정책 프로파일, MCP allowlist/manifest, executor routing policy를 검증.
+It is not the place where:
+- runtime implementations live
+- service logs are centrally stored
+- product UX or application logic is developed
+- long-lived service state is coordinated
 
-4. `.github/workflows/deterministic-governance.yml`
-- CI에서 `validate_all.sh` + 결정성/벤치마크 게이트를 실행.
+## v0.4 Architectural Shift
+
+The repository now targets a `casting director` model:
+
+- Central decides **who should act**
+- Central decides **which lane the work belongs to**
+- Central decides **which capability may be temporarily linked**
+- Services execute locally in their own repositories
+- Services own their own logs, runtime traces, and operational memory
+- Central receives only reviewable evidence contracts and link receipts
+
+This replaces the older `bootstrap compiler + seed catalog` emphasis as the primary mental model.
+
+## What Central Owns
+
+Central ownership is limited to:
+- governance registries under `control/registry/`
+- role and department catalogs under `control/agents/`
+- MCP capability contracts under `control/mcps/`
+- policies under `policies/`
+- schemas under `schemas/`
+- minimal validators and packagers under `scripts/`
+
+Central does not own:
+- runtime service repositories
+- runtime logs
+- real MCP implementations
+- service-local experimentation context
+
+## File Philosophy
+
+Preferred artifact types in this repository:
+- `README.md` for the single human-facing root explanation
+- `json` for governed contracts and registries
+- `yaml` only where CI or external tooling specifically benefits
+- minimal shell validators in `scripts/` for deterministic checking
+
+`AGENTS.md` is intentionally removed in v0.4.
+Its intent is absorbed into this `README.md`.
+
+## Start Here
+
+1. `control/agents/role.catalog.v0.4.json`
+- canonical role catalog for specialist assignment
+
+2. `control/registry/lanes.v0.4.json`
+- separates `exploration` and `production`
+
+3. `control/registry/temporary-links.v0.4.json`
+- defines the temporary-link handshake between central governance and independent services
+
+4. `control/registry/linked-services.v0.4.json`
+- optional map of externally owned services known to central governance
+
+5. `control/registry/capabilities.v0.4.json`
+- canonical leaseable capability registry for the casting-director model
+
+6. `control/registry/version-promotion.v0.4.json`
+- deterministic rule for when a governed service is allowed to call itself `v1.0`
+
+7. `control/registry/mcps.v0.1.json`
+- legacy MCP registry retained for compatibility
+
+8. `scripts/validate_all.sh`
+- deterministic validation gate for the current governed surface
 
 ## One-Line Architecture
 
-`control/templates` -> bootstrap scripts -> exportable contracts -> independent services
+`roles + lanes + capability contracts + temporary links -> local service execution -> evidence contract review`
 
-## Bootstrap Control Room
+## Governance Model
 
-- Governance kernel: `policies/`, `schemas/`, `traces/`
-- Bootstrap inputs: `control/registry/org.v0.1.json`, `control/registry/services.v0.1.json`, `control/templates/`
-- Execution contracts: `control/registry/mcps.v0.1.json`, `control/mcps/`
-- Seed / transition zone: `services/` (long-term runtime home is an independent service repo)
+### 1. Dual Lane
 
-## Quick Start
+- `exploration`
+  - used for discovery, creative work, early architecture, visual R&D
+  - low-friction, temporary link by default
+  - contracts are lighter and allowed to evolve
+
+- `production`
+  - used for deploy, policy, data, security, irreversible changes
+  - stricter gates and stronger evidence
+  - contracts are expected to be stable and reviewable
+
+### 2. Capability Leasing
+
+MCPs and specialist roles are treated as leaseable capabilities, not centrally hosted runtime dependencies.
+
+Examples:
+- `visual-critic`
+- `temporary-link-routing`
+- `release-review`
+- `core-analytics-mcp`
+- `core-experiment-mcp`
+- `core-safety-fallback-mcp`
+- `core-governance-journal-mcp`
+- `core-experience-profile-mcp`
+
+The real implementation may live elsewhere.
+Central keeps the contract, capability definition, and approval rules.
+`control/registry/capabilities.v0.4.json` is the preferred source of truth.
+`control/registry/mcps.v0.1.json` remains as a compatibility surface for older bootstrap flows.
+
+### 3. Version Promotion
+
+`v1.0` is not a completeness badge.
+In v0.4, `v1.0` means:
+- market usefulness is evidenced
+- the human architect actively uses the service as a business instrument
+- production review is stable enough to justify the label
+
+The canonical gate is:
+- `control/registry/version-promotion.v0.4.json`
+
+### 4. Temporary Linking
+
+Services should link to central governance temporarily:
+- request role/capability
+- receive lane constraints
+- execute locally
+- return evidence
+- release the link
+
+This avoids over-constraining creative and service-local work while preserving reviewability.
+
+### 5. Review-First
+
+Central should prefer:
+- review contracts
+- evidence validation
+- failure pattern detection
+
+Central should avoid:
+- dictating implementation details too early
+- owning service runtime memory
+- becoming a cross-service orchestration bottleneck
+
+## Services in v0.4
+
+`services/` is no longer a required long-term concept.
+
+Current rule:
+- `services/` is legacy seed/archive territory only
+- it is not the preferred center of gravity for new governance work
+- service-local logs belong to each service repository, not here
+
+Near-term transition rule:
+- existing `services/` content remains for backward compatibility
+- new architecture should prefer `linked-services.v0.4.json` over adding new seed-heavy service folders
+
+Planned direction:
+- shrink `services/`
+- keep only legacy references or migration archives as needed
+- move the central model toward role/capability/lane contracts
+
+## Quick Validation
 
 ```bash
 bash scripts/validate_all.sh
+```
+
+Legacy compatibility checks still exist while seed-era assets remain:
+
+```bash
 bash scripts/validate_seed_catalog.sh
-bash scripts/bootstrap_service.sh \
-  --service-id example-service \
-  --service-name "Example Service" \
-  --output-dir /tmp/example-service
 ```
 
-Legacy/Optional:
-```bash
-# DEPRECATED: cross-repo registry sync helper (governed-services)
-bash scripts/validate_cross_registry.sh --mode auto
-```
-
-## Macro Planmode (Goal-Only Input)
+Legacy bootstrap remains available only by explicit override:
 
 ```bash
-# 1) Write one human goal
-cat > traces/local/pm_objective_tdp_macro_v0_1.txt <<'TXT'
-과금 UX 신뢰성 유지 조건에서 30일 운영 플랜을 확정한다.
-TXT
-
-# 2) Generate macro plan pack (Korean brief + minimal evidence JSON)
-bash scripts/macro_plan_pack.sh thedivineparadox traces/local/pm_objective_tdp_macro_v0_1.txt high high true architect-owner
-
-# 3) Run governance validation
-bash scripts/validate_all.sh
+LEGACY_SEED_BOOTSTRAP_APPROVED=1 bash scripts/bootstrap_service.sh ...
 ```
 
-## Cloud Batch L1 Core (Provider-Agnostic)
+## Current v0.4 Contract Surface
 
-```bash
-# 1) Submit jobs manifest into deterministic trace batch folder
-bash scripts/cloud_batch_submit.sh \
-  --service thedivineparadox \
-  --jobs-manifest fixtures/cloud_batch/jobs.sample.v0.1.json \
-  --run-id tdp.batch.sample.v0_1 \
-  --provider manifest
+- `control/agents/departments.v0.1.json`
+- `control/agents/role.catalog.v0.4.json`
+- `control/registry/org.v0.1.json`
+- `control/registry/mcps.v0.1.json`
+- `control/registry/services.v0.1.json` (legacy seed catalog)
+- `control/registry/linked-services.v0.4.json`
+- `control/registry/lanes.v0.4.json`
+- `control/registry/temporary-links.v0.4.json`
+- `control/registry/capabilities.v0.4.json`
+- `control/registry/version-promotion.v0.4.json`
 
-# 2) Collect results manifest (from provider output or local fixture)
-bash scripts/cloud_batch_collect.sh \
-  --run-id tdp.batch.sample.v0_1 \
-  --provider manifest \
-  --results-manifest fixtures/cloud_batch/results.sample.v0.1.json
+## Practical Rule of Thumb
 
-# 3) Verify artifacts and hash integrity
-bash scripts/cloud_batch_verify.sh \
-  --run-id tdp.batch.sample.v0_1 \
-  --service thedivineparadox \
-  --strictness hybrid
+If a service asks:
+- "Who should work on this?" -> consult role catalog
+- "How constrained is this work?" -> consult lane policy
+- "Can central help temporarily?" -> consult temporary link contract
+- "What capability can be borrowed?" -> consult capability registry first, MCP registry second for compatibility
+- "Is this ready to be called v1?" -> consult version-promotion policy
 
-# Optional: force a specific policy file
-bash scripts/cloud_batch_verify.sh \
-  --run-id tdp.batch.sample.v0_1 \
-  --policy-file policies/cloud_batch_policy.v0.1.json
+If the question is:
+- "Where should logs live?" -> in the service repo
+- "Where should runtime code live?" -> in the service repo
+- "Where should experimental implementation happen?" -> in the service repo
 
-# 4) Final governance validation gate
-bash scripts/validate_all.sh
-```
+## Status
 
-## New Service Bootstrap (Bootstrap-Only)
+v0.4 is the architectural direction line.
 
-```bash
-# 1) Validate the core compiler and archived seed catalog
-bash scripts/validate_all.sh
-bash scripts/validate_seed_catalog.sh
+Backward compatibility remains for:
+- legacy seed-oriented service catalog contracts
+- existing validation scripts that still reference `services/`
+- explicit opt-in seed bootstrap via `scripts/bootstrap_service.sh`
 
-# 2) Generate an independent service repo scaffold
-bash scripts/bootstrap_service.sh \
-  --service-id alpha-service \
-  --service-name "Alpha Service" \
-  --bootstrap-profile standard \
-  --risk-tier medium \
-  --policy-profile balanced \
-  --output-dir /tmp/alpha-service
-
-# 3) Validate the generated portable governance kit
-bash scripts/validate_bootstrap_output.sh /tmp/alpha-service
-
-# 4) The generated repo can operate without ai-governance at runtime
-```
-
-- 확장 기본모델은 `Plugin + Sidecar`로 고정한다.
-- 코어 엔진은 Docker 내부 비공개(`opaque`)로 유지한다.
-- 경계 변경은 `high` + human gate를 요구한다.
-- 중앙 저장소는 지속 운영자가 아니라 초기 설계/정렬 역할에 머문다.
-- `services/`는 archived seed example zone이며, 장기 운영 위치가 아니다.
-
-## Seed Catalog
-
-- `control/registry/services.v0.1.json`는 active service registry가 아니라 archived seed catalog다.
-- `services/thedivineparadox/`는 `ritual-uiux` bootstrap profile 대표 seed example이다.
-- `services/gongvue/`, `services/obsidian-mcp/`, `services/personal-webnovel/`는 legacy minimal seed examples이다.
-- Seed examples는 `bash scripts/validate_seed_catalog.sh`로 별도 검증한다.
-
-## PM <-> Executor Bridge (Deterministic Queue)
-
-Optional reusable governance lane for services that want to keep the bridge format.
-
-```bash
-# 1) PM intent submit
-bash scripts/bridge_submit.sh fixtures/bridge/pm_intent.sample.json
-
-# 2) Optional human gate (required when status=awaiting_human_gate)
-bash scripts/bridge_human_gate.sh phase2-backend-fastify-ts approve architect-owner
-
-# 3) Dispatch ready intents to executor packets
-bash scripts/bridge_dispatch.sh
-
-# 4) Consume dispatched packets into local executor task queue (traces/)
-bash scripts/bridge_consume.sh --executor service-review
-
-# Optional: alternate governance lanes
-bash scripts/bridge_consume.sh --executor policy-ops
-bash scripts/bridge_consume.sh --executor governance-council
-
-# 5) One-shot minimal-token mode (local PM + bridge pipeline)
-bash scripts/bridge_one_shot_local.sh tdp.phase2.ops_hardening traces/local/pm_objective_ops_hardening.txt high true architect-owner
-```
-
-## Local PM Integration (No External API)
-
-```bash
-# 1) Prepare objective text (free-form)
-cat > traces/local/pm_objective.txt <<'TXT'
-Plan and package a high-tier backend architecture migration with deterministic safeguards.
-TXT
-
-# 2) Generate PM intent JSON locally and auto-submit/dispatch
-bash scripts/bridge_local_pm.sh tdp.phase2.backend_fastify_ts_strict traces/local/pm_objective.txt traces/local/pm_intent.local.json high true --auto
-```
-
-Notes:
-- If generated intent is `high` tier or `human_gate_required=true`, dispatch is held (`awaiting_human_gate`) until:
-  - `bash scripts/bridge_human_gate.sh <intent_id> approve <actor>`
-
-## Governance Journal Export
-
-```bash
-# Prepare a deterministic export packet for the external Obsidian governance diary
-bash scripts/export_governance_journal.sh traces/bridge
-```
-
-This creates a local export packet and receipt skeleton under `traces/governance-journal/`.
-
-## Appendix (Secondary Paths)
-
-- `control/templates/`: service bootstrap JSON contract templates
-- `control/playbooks/`: incident/change/onboarding JSON playbooks
-- `control/agents/`: central department assignment catalog
-- `control/prompts/`: generic governance prompt library
-- `control/specs/`: opcode set, JSON trace rules
-- `control/benchmarks/`: efficiency benchmark spec
-- `fixtures/`: deterministic sample inputs
-- `docs/`: GitHub Pages showcase only
-- `traces/`: the only runtime scratch + governance diary space
-- `services/`: seed contracts and transition examples, not the mandatory long-term runtime home
-
-## Legacy Archive
-
-Current pre-rebuild implementation is archived in branch:
-- `legacy/archive-2026-02-21`
-
-## GitHub Pages Showcase
-
-- Multilingual showcase site source: `docs/index.html`
-- Assets: `docs/assets/site.css`, `docs/assets/site.js`
-- Favicon: `docs/favicon.ico`
-- Default language: browser locale auto-detect (`navigator.languages`/`navigator.language`), then stored preference
-- Public contact: `wonyoungchoiseoul@gmail.com`
-- Deploy workflow: `.github/workflows/github-pages-showcase.yml`
+Future cleanup can remove more seed-era assumptions after the new role/lane/link model is fully adopted.

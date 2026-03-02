@@ -1,0 +1,84 @@
+{
+  "version": "v0.4",
+  "model": "casting-director",
+  "roles": [
+    {
+      "id": "architect-owner",
+      "name": "Architect Owner",
+      "class": "governance",
+      "mission": "Own the macro direction, approve boundary changes, and resolve final tradeoffs.",
+      "default_lane": "production",
+      "leaseable": false,
+      "outputs": [
+        "architecture decision",
+        "approval gate decision",
+        "scope freeze"
+      ]
+    },
+    {
+      "id": "service-builder",
+      "name": "Service Builder",
+      "class": "runtime",
+      "mission": "Implement service-local code and operational changes inside the independent service repository.",
+      "default_lane": "exploration",
+      "leaseable": true,
+      "outputs": [
+        "runtime implementation",
+        "integration change",
+        "local release candidate"
+      ]
+    },
+    {
+      "id": "threejs-visual-specialist",
+      "name": "Three.js Visual Specialist",
+      "class": "specialist",
+      "mission": "Own real-time scene composition, shader direction, camera, materials, and visual performance tradeoffs.",
+      "default_lane": "exploration",
+      "leaseable": true,
+      "outputs": [
+        "scene prototype",
+        "rendering pass change",
+        "visual tuning package"
+      ]
+    },
+    {
+      "id": "visual-critic",
+      "name": "Visual Critic",
+      "class": "review",
+      "mission": "Score composition, detect failure patterns, and block childish or low-legibility visual regressions.",
+      "default_lane": "exploration",
+      "leaseable": true,
+      "outputs": [
+        "visual review packet",
+        "failure classification",
+        "acceptance gate signal"
+      ]
+    },
+    {
+      "id": "policy-ops",
+      "name": "Policy Operations",
+      "class": "governance",
+      "mission": "Maintain validation logic, lane policy, and contract integrity.",
+      "default_lane": "production",
+      "leaseable": false,
+      "outputs": [
+        "policy revision",
+        "validator change",
+        "contract update"
+      ]
+    },
+    {
+      "id": "release-review",
+      "name": "Release Review",
+      "class": "review",
+      "mission": "Assess whether evidence and gates are coherent enough for production-facing release.",
+      "default_lane": "production",
+      "leaseable": true,
+      "outputs": [
+        "release review decision",
+        "risk note",
+        "rollback recommendation"
+      ]
+    }
+  ]
+}
