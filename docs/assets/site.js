@@ -12,28 +12,28 @@ const copy = {
     ],
     hierarchySubTitle: "2) Sub Components",
     hierarchySub: [
-      "Registry: allowed service/MCP topology",
-      "Schema: contract validity and structure",
-      "Policy: risk tiers and approval modes"
+      "Registry: allowed service and MCP contracts",
+      "Schema: deterministic contract structure",
+      "Policy: execution boundary for external MCP use"
     ],
     hierarchyFlowTitle: "3) Real Application Flow",
     hierarchyFlow: [
-      "Agent proposes with evidence refs",
-      "Governance validates policy + schema + scope",
-      "Output is auto proceed or human-gated release"
+      "Service work enters a temporary link",
+      "Governance validates schema + DTP + scope",
+      "Output is release hold or human-gated release"
     ],
     languageLabel: "Language",
     whatTitle: "What It Is",
     what: [
       "A central governance core shared across all services",
-      "A deterministic validation path for policy, schema, and trace",
-      "A human-gated operating model for high-risk changes"
+      "A deterministic validation path for schema, trace, and release gates",
+      "A human-gated operating model for release decisions"
     ],
     howTitle: "How It Works",
     how: [
-      "Registries define allowed services and MCPs",
+      "Registries define linked-service and MCP boundaries",
       "Validation scripts enforce repository contracts in CI",
-      "Risk tier decides whether mandatory human approval is required"
+      "Temporary-link scans decide whether release can proceed"
     ],
     whyTitle: "Why It Is Innovative",
     why: [
@@ -43,10 +43,10 @@ const copy = {
     ],
     flowTitle: "Code Flow Overview",
     flow: [
-      "Input arrives as intent + evidence refs",
-      "Schema and policy contracts are validated by scripts",
-      "Registry/allowlist gates evaluate service and MCP scope",
-      "Risk tier outputs: auto / policy+owner / mandatory human gate"
+      "Input enters the temporary-link scan path",
+      "Schema and DTP contracts are validated by scripts",
+      "Registry gates evaluate service and MCP scope",
+      "Release outputs: proceed / hold / human gate"
     ],
     demoTitle: "Interactive Governance Simulator",
     demoButton: "Refresh",
@@ -73,46 +73,17 @@ const copy = {
     recommendationBlock: "Recommendation: block release now. Fix deterministic path before retry.",
     deltaPrefix: "Compared with previous run:",
     deltaNone: "no meaningful change",
-    traceRuleDetFail: "deterministic_trace failed -> immediate block",
-    traceRuleHighRisk: "risk tier escalated to high -> human gate required",
+    traceRuleDetFail: "dtp_contract failed -> immediate block",
+    traceRuleHighRisk: "release risk escalated -> human gate required",
     traceRuleExternal: "external dependency detected -> review warning added",
     traceRulePii: "sensitive data path detected -> data sensitivity warning",
     traceRuleProceed: "all mandatory checks passed -> proceed candidate",
     traceRuleHuman: "no hard fail, but high-risk path -> await_human_approval",
     traceRuleBlock: "at least one hard fail exists -> block candidate",
-    blogTitle: "Short Essays",
-    blogs: [
-      {
-        title: "What This Design Actually Is",
-        body: "This is not just documentation. It is an operating system for decisions. Every service and MCP must pass the same contract checks, so architecture intent stays enforceable, not aspirational."
-      },
-      {
-        title: "Why This Matters Now",
-        body: "AI teams are moving fast, but speed without boundaries causes quality drift. Your model keeps speed while preserving control by separating proposal power (agent) from release power (human)."
-      },
-      {
-        title: "How To Understand The Operating Model",
-        body: "You do not need code access to read the logic. Follow this order: proposal comes in, governance checks contracts, risk tier decides approval mode, then human gate closes high-risk releases."
-      }
-    ],
-    contactTitle: "Contact",
-    contactText: "If you want to collaborate on this governance architecture, email directly.",
-    caseTitle: "One Practical Example",
-    caseSummary: "In one production path, governance gates prevented a secret/config mismatch from shipping silently. The issue was detected at validation and deployment checkpoints before user-facing impact.",
-    caseMetric1Label: "Detected At",
-    caseMetric1Value: "1 pre-release block",
-    caseMetric2Label: "MTTR Improvement",
-    caseMetric2Value: "43% faster recovery",
-    caseMetric3Label: "Production Incidents",
-    caseMetric3Value: "0 from this class",
-    ctaTitle: "Next Actions",
-    ctaText: "If this architecture is relevant to your team, take one concrete next step.",
-    ctaWhitepaper: "Download Whitepaper",
-    ctaDiagram: "Download Diagram",
     quickstartTitle: "Governance Quickstart (3 steps)",
     quickstartStep1: "Define service + MCP scope in registry first.",
-    quickstartStep2: "Attach schema contracts and deterministic trace refs.",
-    quickstartStep3: "Wire CI validation and keep human gate for high risk.",
+    quickstartStep2: "Attach schema contracts and deterministic DTP refs.",
+    quickstartStep3: "Wire CI validation and keep the release gate explicit.",
     footer: "Human System Architect remains final release authority."
   },
   ko: {
@@ -128,28 +99,28 @@ const copy = {
     ],
     hierarchySubTitle: "2) 하위 구성요소",
     hierarchySub: [
-      "Registry: 허용 서비스/MCP 토폴로지",
-      "Schema: 계약 구조와 유효성",
-      "Policy: 리스크 등급과 승인 방식"
+      "Registry: 허용 서비스와 MCP 계약",
+      "Schema: 결정적 계약 구조",
+      "Policy: 외부 MCP 실행 경계"
     ],
     hierarchyFlowTitle: "3) 실제 적용 흐름",
     hierarchyFlow: [
-      "에이전트가 증거 참조와 함께 변경 제안",
-      "거버넌스가 정책+스키마+범위를 검증",
-      "자동 진행 또는 인간 승인 대기 판정 출력"
+      "서비스 작업이 temporary link로 진입",
+      "거버넌스가 스키마+DTP+범위를 검증",
+      "출력은 릴리스 보류 또는 인간 승인 대기"
     ],
     languageLabel: "언어",
     whatTitle: "무엇인가",
     what: [
       "모든 서비스가 공유하는 중앙 거버넌스 코어",
-      "정책/스키마/트레이스를 결정적으로 검증하는 경로",
-      "고위험 변경에 대해 인간 게이트를 강제하는 운영 모델"
+      "스키마/트레이스/릴리스 게이트를 결정적으로 검증하는 경로",
+      "릴리스 판정에 인간 게이트를 강제하는 운영 모델"
     ],
     howTitle: "어떻게 동작하나",
     how: [
-      "레지스트리로 허용 서비스/MCP 범위를 정의",
+      "레지스트리로 linked service와 MCP 경계를 정의",
       "검증 스크립트가 CI에서 저장소 계약을 강제",
-      "리스크 등급이 인간 승인 의무 여부를 결정"
+      "temporary-link 스캔이 릴리스 가능 여부를 결정"
     ],
     whyTitle: "무엇이 혁신적인가",
     why: [
@@ -159,10 +130,10 @@ const copy = {
     ],
     flowTitle: "코드 플로우 개요",
     flow: [
-      "intent + evidence refs 입력",
-      "스키마/정책 계약을 스크립트로 검증",
-      "레지스트리/allowlist 게이트로 범위 판정",
-      "리스크 계층 결과 출력: 자동 / 정책+오너 / 인간 필수"
+      "입력이 temporary-link 스캔 경로로 들어감",
+      "스키마/DTP 계약을 스크립트로 검증",
+      "레지스트리 게이트로 서비스/MCP 범위 판정",
+      "릴리스 결과 출력: 진행 / 보류 / 인간 게이트"
     ],
     demoTitle: "거버넌스 시뮬레이터",
     demoButton: "새로고침",
@@ -189,46 +160,17 @@ const copy = {
     recommendationBlock: "권고: 지금은 배포 차단. 결정성 경로부터 복구 후 재평가하세요.",
     deltaPrefix: "직전 실행 대비:",
     deltaNone: "의미 있는 변화 없음",
-    traceRuleDetFail: "deterministic_trace 실패 -> 즉시 차단",
-    traceRuleHighRisk: "리스크 등급 high 상향 -> 인간 게이트 필요",
+    traceRuleDetFail: "dtp_contract 실패 -> 즉시 차단",
+    traceRuleHighRisk: "릴리스 리스크 상향 -> 인간 게이트 필요",
     traceRuleExternal: "외부 의존 감지 -> 검토 경고 추가",
     traceRulePii: "민감 데이터 경로 감지 -> 데이터 민감도 경고",
     traceRuleProceed: "필수 검증 통과 -> 진행 후보",
     traceRuleHuman: "하드 실패는 없지만 고위험 경로 -> 인간 승인 대기",
     traceRuleBlock: "하드 실패 존재 -> 차단 후보",
-    blogTitle: "짧은 설명 글",
-    blogs: [
-      {
-        title: "이 설계의 본질",
-        body: "이 구조는 단순 문서가 아니라 의사결정 운영체계입니다. 모든 서비스와 MCP가 동일 계약 검증을 통과해야 하므로, 아키텍처 의도가 실제로 강제됩니다."
-      },
-      {
-        title: "지금 왜 필요한가",
-        body: "AI 개발은 빠르지만 경계가 없으면 품질이 무너집니다. 이 모델은 속도를 유지하면서 권한을 분리합니다. 에이전트는 제안하고 인간은 릴리스를 승인합니다."
-      },
-      {
-        title: "코드 없이 이해하는 운영 흐름",
-        body: "코드 열람이 없어도 의사결정 흐름은 읽을 수 있습니다. 제안 입력 -> 거버넌스 계약 검증 -> 리스크 등급 판정 -> 고위험 인간 승인 순서로 보면 됩니다."
-      }
-    ],
-    contactTitle: "연락",
-    contactText: "이 거버넌스 아키텍처 협업은 이메일로 직접 연락주세요.",
-    caseTitle: "실전 사례 1개",
-    caseSummary: "실제 운영 경로에서 시크릿/환경 불일치가 발생했을 때, 거버넌스 게이트가 배포 전 단계에서 이를 감지해 사용자 영향 전에 차단했습니다.",
-    caseMetric1Label: "감지 시점",
-    caseMetric1Value: "사전 차단 1건",
-    caseMetric2Label: "MTTR 개선",
-    caseMetric2Value: "복구속도 43% 향상",
-    caseMetric3Label: "프로덕션 장애",
-    caseMetric3Value: "동일 유형 0건",
-    ctaTitle: "다음 액션",
-    ctaText: "이 구조가 팀에 필요하다면, 아래에서 바로 다음 단계를 선택하세요.",
-    ctaWhitepaper: "화이트페이퍼 다운로드",
-    ctaDiagram: "아키텍처 다이어그램 다운로드",
     quickstartTitle: "Governance Quickstart (3 steps)",
     quickstartStep1: "먼저 registry에 서비스/MCP 범위를 고정하세요.",
-    quickstartStep2: "스키마 계약과 결정적 트레이스 참조를 연결하세요.",
-    quickstartStep3: "CI 검증을 붙이고 고위험은 인간 게이트를 유지하세요.",
+    quickstartStep2: "스키마 계약과 결정적 DTP 참조를 연결하세요.",
+    quickstartStep3: "CI 검증을 붙이고 릴리스 게이트를 명시적으로 유지하세요.",
     footer: "최종 릴리스 권한은 Human System Architect에게 있습니다."
   }
 };
@@ -291,27 +233,6 @@ function fillList(id, values) {
   });
 }
 
-function fillBlog(lang) {
-  const selected = copy[lang] || copy.en;
-  const list = document.getElementById("blog-list");
-  if (!list) return;
-  list.innerHTML = "";
-
-  selected.blogs.forEach((entry) => {
-    const item = document.createElement("article");
-    item.className = "blog-item";
-
-    const title = document.createElement("h3");
-    title.textContent = entry.title;
-    const body = document.createElement("p");
-    body.textContent = entry.body;
-
-    item.appendChild(title);
-    item.appendChild(body);
-    list.appendChild(item);
-  });
-}
-
 function setText(lang) {
   const selected = copy[lang] || copy.en;
   document.documentElement.lang = lang;
@@ -329,7 +250,6 @@ function setText(lang) {
   fillList("hierarchy-core-list", selected.hierarchyCore);
   fillList("hierarchy-sub-list", selected.hierarchySub);
   fillList("hierarchy-flow-list", selected.hierarchyFlow);
-  fillBlog(lang);
 }
 
 async function sha256(text) {
@@ -340,13 +260,13 @@ async function sha256(text) {
 
 function buildDecision(state) {
   const checks = [];
-  checks.push({ name: "policy_contract", status: "pass" });
+  checks.push({ name: "boundary_contract", status: "pass" });
   checks.push({ name: "schema_contract", status: "pass" });
 
   if (!state.deterministic) {
-    checks.push({ name: "deterministic_trace", status: "fail" });
+    checks.push({ name: "dtp_contract", status: "fail" });
   } else {
-    checks.push({ name: "deterministic_trace", status: "pass" });
+    checks.push({ name: "dtp_contract", status: "pass" });
   }
 
   if (state.external) {
@@ -492,10 +412,10 @@ function renderCockpit(lang, state, result) {
   }
 
   const gateRows = [
-    { label: "intake", status: "done" },
-    { label: "policy-schema", status: "done" },
+    { label: "intake-scan", status: "done" },
+    { label: "pre-exec-scan", status: "done" },
     { label: "scope-gate", status: "done" },
-    { label: "human-gate", status: result.humanGateRequired ? "current" : "pending" },
+    { label: "review-gate", status: result.humanGateRequired ? "current" : "pending" },
     { label: "release", status: result.decision === "block" ? "blocked" : "pending" }
   ];
   if (result.decision === "proceed") {

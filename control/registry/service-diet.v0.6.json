@@ -1,0 +1,97 @@
+{
+  "version": "v0.6",
+  "model": "linked-service-diet",
+  "purpose": "Define the temporary-link scan used to identify unnecessary surfaces in an independent service and archive them without central runtime ownership.",
+  "scan_axes": [
+    {
+      "axis_id": "dead-surface",
+      "question": "Is this file, folder, or flow no longer used by the current runtime path?"
+    },
+    {
+      "axis_id": "duplicate-surface",
+      "question": "Does this surface duplicate another active surface without providing a distinct operational role?"
+    },
+    {
+      "axis_id": "stale-governance-surface",
+      "question": "Does this surface still represent an old governance path that is no longer canonical?"
+    },
+    {
+      "axis_id": "archive-safe",
+      "question": "Can this surface be archived without breaking the live runtime or the current governance kernel?"
+    }
+  ],
+  "required_outputs": [
+    "scan_receipt",
+    "archive_candidates_ref",
+    "keep_list_ref",
+    "risk_note_ref"
+  ],
+  "status_levels": [
+    {
+      "status": "pending",
+      "meaning": "No diet scan has been completed yet."
+    },
+    {
+      "status": "diet-scanned-light",
+      "meaning": "A first-pass classification scan is complete, but no archive-safe move is authorized yet."
+    },
+    {
+      "status": "diet-scanned-deep",
+      "meaning": "A deeper scan has confirmed archive-safe candidates and a second pass may move local archive-safe surfaces."
+    },
+    {
+      "status": "incomplete",
+      "meaning": "A diet pass was attempted but required evidence or rollback notes are missing."
+    }
+  ],
+  "archive_policy": {
+    "allowed_actions": [
+      "mark-for-archive",
+      "move-to-local-archive",
+      "retain-as-active"
+    ],
+    "forbidden_actions": [
+      "delete-live-runtime-surface-without-receipt",
+      "archive-governance-kernel-required-entry",
+      "archive-without-rollback-note"
+    ]
+  },
+  "classification_rules": {
+    "retain_if_any": [
+      "required-kernel-entry",
+      "referenced-by-service-yaml",
+      "referenced-by-service-contract",
+      "referenced-by-active-link-kit",
+      "referenced-by-dtp-index-or-validator",
+      "required-for-rollback"
+    ],
+    "archive_if_all": [
+      "not-required-kernel-entry",
+      "not-referenced-by-active-link-kit",
+      "not-referenced-by-current-review-evidence-or-contract",
+      "not-required-by-declared-runtime-profile",
+      "duplicate-or-stale-governance-surface",
+      "risk-note-confirms-archive-safe"
+    ],
+    "forbidden_if_any": [
+      "required-kernel-entry",
+      "dtp-required-file",
+      "active-link-kit-file",
+      "current-rollback-artifact"
+    ]
+  },
+  "completion_rule": {
+    "required_status": "diet-scanned-light",
+    "linked_service_fields": [
+      "diet_status",
+      "archive_candidates_ref"
+    ]
+  },
+  "hard_rules": [
+    "Service diet must reduce clutter without breaking the live runtime path.",
+    "A surface may be marked for archive only if the scan receipt and risk note both exist.",
+    "Central governance may direct the archive decision but must not take custody of the archived runtime itself.",
+    "The diet pass must never classify required DTP files or active temporary-link kit files as archive candidates.",
+    "Classification alone does not authorize deletion; archive movement remains service-local and receipt-gated."
+  ]
+}

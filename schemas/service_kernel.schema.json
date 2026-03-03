@@ -8,13 +8,14 @@
     "purpose",
     "required_root_entries",
     "required_governance_entries",
+    "optional_root_entries",
     "profiles",
     "rules"
   ],
   "properties": {
     "version": {
       "type": "string",
-      "const": "v0.5"
+      "const": "v0.6"
     },
     "model": {
       "type": "string",
@@ -36,6 +37,14 @@
       "minItems": 1,
       "items": {
         "$ref": "#/$defs/entry"
+      }
+    },
+    "optional_root_entries": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Za-z0-9._/-]+$"
       }
     },
     "profiles": {

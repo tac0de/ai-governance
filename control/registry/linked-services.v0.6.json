@@ -1,0 +1,69 @@
+{
+  "version": "v0.6",
+  "model": "linked-service-catalog",
+  "services": [
+    {
+      "id": "thedivineparadox",
+      "owner_role": "architect-owner",
+      "runtime_repo_path": "external://thedivineparadox",
+      "log_owner": "service-local",
+      "governance_relationship": "temporary-link-preferred",
+      "service_root_profile": "web-runtime",
+      "service_contract_ref": "governance/service.contract.json",
+      "governance_kernel_status": "present",
+      "normalization_status": "normalized",
+      "normalization_receipt_ref": "governance/links/normalization.receipt.v0.1.json",
+      "diet_status": "diet-scanned-light",
+      "archive_candidates_ref": "governance/evidence/archive-candidates.v0.1.json",
+      "last_link_scan_ref": "governance/reviews/intake.review.v0.1.json",
+      "launch_readiness_ref": null,
+      "notes": [
+        "Independent runtime repository.",
+        "The v0.6 governance kernel is present inside the runtime repository.",
+        "A first non-destructive normalization and diet scan has been completed.",
+        "Active scene work-in-progress remains protected from the first diet pass."
+      ]
+    },
+    {
+      "id": "obsidian-mcp",
+      "owner_role": "architect-owner",
+      "runtime_repo_path": "external://obsidian-mcp",
+      "log_owner": "service-local",
+      "governance_relationship": "temporary-link-preferred",
+      "service_root_profile": "tool-runtime",
+      "service_contract_ref": "governance/service.contract.json",
+      "governance_kernel_status": "planned",
+      "normalization_status": "pending",
+      "normalization_receipt_ref": null,
+      "diet_status": "pending",
+      "archive_candidates_ref": null,
+      "last_link_scan_ref": "none",
+      "launch_readiness_ref": null,
+      "notes": [
+        "Independent runtime repository.",
+        "The v0.6 governance kernel path is declared but not yet enforced inside the runtime repository."
+      ]
+    },
+    {
+      "id": "korea-foreign-concerts",
+      "owner_role": "architect-owner",
+      "runtime_repo_path": "external://korea-foreign-concerts",
+      "log_owner": "service-local",
+      "governance_relationship": "temporary-link-preferred",
+      "service_root_profile": "web-runtime",
+      "service_contract_ref": "governance/service.contract.json",
+      "governance_kernel_status": "planned",
+      "normalization_status": "pending",
+      "normalization_receipt_ref": null,
+      "diet_status": "pending",
+      "archive_candidates_ref": null,
+      "last_link_scan_ref": "governance/reviews/intake.review.v0.1.json",
+      "launch_readiness_ref": null,
+      "notes": [
+        "Independent runtime repository.",
+        "The v0.6 governance kernel is bootstrapped and ready for runtime dependency installation.",
+        "Public search, admin review, policy engine, and ingestion scaffolds are present."
+      ]
+    }
+  ]
+}

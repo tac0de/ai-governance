@@ -3,7 +3,7 @@ name: deterministic-governance
 on:
   pull_request:
   push:
-    branches: [ main, rebuild/architecture-v0.1 ]
+    branches: [ main ]
   workflow_dispatch:
 
 permissions: read-all
@@ -22,12 +22,3 @@ jobs:
 
       - name: Validate governance contracts
         run: bash scripts/validate_all.sh
-
-      - name: Run deterministic intent flow
-        run: bash scripts/run_intent.sh fixtures/intent.envelope.json traces/ci-run
-
-      - name: Run determinism regression gate
-        run: bash scripts/test_determinism.sh
-
-      - name: Run benchmark gate
-        run: bash scripts/benchmark_gate.sh

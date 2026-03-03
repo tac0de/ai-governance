@@ -1,7 +1,7 @@
 {
   "version": "v0.1",
-  "runtime_owner_service": "obsidian-mcp",
-  "runtime_repo_path": "/Users/wonyoung_choi/projects/obsidian-mcp",
+  "runtime_owner_service": "external-governance-diary",
+  "runtime_repo_path": "service-local-or-external-runtime",
   "invocation_surface": "validated trace export to external governance diary",
   "sdk_package": "@modelcontextprotocol/sdk",
   "validation_package": "zod",

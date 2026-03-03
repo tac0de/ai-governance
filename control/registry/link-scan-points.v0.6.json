@@ -1,0 +1,87 @@
+{
+  "version": "v0.6",
+  "model": "link-scan-catalog",
+  "purpose": "Define the mandatory scan points that close temporary-link work into a deterministic reviewable loop.",
+  "lane_minimums": {
+    "exploration": [
+      "intake-scan",
+      "pre-exec-scan",
+      "post-exec-scan"
+    ],
+    "production": [
+      "intake-scan",
+      "pre-exec-scan",
+      "post-exec-scan",
+      "pre-release-scan"
+    ]
+  },
+  "scan_points": [
+    {
+      "id": "intake-scan",
+      "order": 1,
+      "phase_gate": "request",
+      "purpose": "Classify intent, lane, and initial risk before central role or capability assignment.",
+      "required_fields": [
+        "service_id",
+        "change_class",
+        "lane_id",
+        "intent_ref",
+        "requested_roles",
+        "requested_capabilities",
+        "risk_tier",
+        "expected_outputs"
+      ],
+      "fail_if_missing": true,
+      "blocks_release": true
+    },
+    {
+      "id": "pre-exec-scan",
+      "order": 2,
+      "phase_gate": "grant",
+      "purpose": "Freeze granted scope, forbidden actions, evidence shape, and department route before local execution.",
+      "required_fields": [
+        "link_receipt_ref",
+        "granted_roles",
+        "granted_capabilities",
+        "department_route",
+        "forbidden_actions",
+        "required_evidence_types",
+        "rollback_trigger_set"
+      ],
+      "fail_if_missing": true,
+      "blocks_release": true
+    },
+    {
+      "id": "post-exec-scan",
+      "order": 3,
+      "phase_gate": "review",
+      "purpose": "Verify scope fidelity, policy exceptions, and link residue after local execution.",
+      "required_fields": [
+        "evidence_ref",
+        "verification_ref",
+        "scope_diff",
+        "policy_exceptions",
+        "link_residue_check",
+        "reviewer_role",
+        "outcome"
+      ],
+      "fail_if_missing": true,
+      "blocks_release": true
+    },
+    {
+      "id": "pre-release-scan",
+      "order": 4,
+      "phase_gate": "release",
+      "purpose": "Confirm rollback readiness and final release gate outcome before production exposure.",
+      "required_fields": [
+        "release_review_ref",
+        "open_risks",
+        "rollback_plan_ref",
+        "promotion_impact",
+        "production_gate_outcome"
+      ],
+      "fail_if_missing": true,
+      "blocks_release": true
+    }
+  ]
+}

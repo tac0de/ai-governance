@@ -4,20 +4,14 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 errors=0
 
-TMP_MAX_FILE_BYTES=262144
-ENABLE_TMP_SENSITIVE_KEYWORD_GUARD=0
-
 ALLOWED_ROOT_DIRS=(
   ".git"
   ".github"
   "control"
   "docs"
-  "fixtures"
   "policies"
   "schemas"
   "scripts"
-  "services"
-  "traces"
 )
 
 fail() {
@@ -33,18 +27,6 @@ is_in_list() {
   local allowed
   for allowed in "$@"; do
     if [[ "$candidate" == "$allowed" ]]; then
-      return 0
-    fi
-  done
-  return 1
-}
-
-matches_any_pattern() {
-  local candidate="$1"
-  shift
-  local pattern
-  for pattern in "$@"; do
-    if [[ "$candidate" == $pattern ]]; then
       return 0
     fi
   done

@@ -1,8 +1,8 @@
 {
   "version": "v0.1",
   "mcp_id": "core-governance-journal-mcp",
-  "summary": "Minimum contract for moving validated governance traces into the external long-lived governance diary.",
-  "purpose": "Export validated trace bundles, append normalized governance diary entries, and verify export receipts across the traces to obsidian-mcp boundary only.",
+  "summary": "Minimum contract for moving validated service-local DTP bundles into the external long-lived governance diary.",
+  "purpose": "Export validated service-local DTP bundles and verify export receipts across the service-local DTP to the external governance diary boundary only.",
   "capability_contract": {
     "allowed_operations": [
       "export_trace_bundle",
@@ -15,7 +15,7 @@
     ],
     "required_approval_tier": "medium",
     "scope": [
-      "Export validated trace bundles from traces/.",
+      "Export validated trace bundles from a service-local DTP surface.",
       "Append normalized governance diary entries.",
       "Verify export acknowledgements."
     ]
@@ -48,12 +48,12 @@
       "receipt_hash"
     ],
     "hash_policy": "Export packets and receipts must remain append-only and sha256-referenced.",
-    "trace_linkage": "Use an append-only hash-referenced packet and receipt flow for traces to obsidian-mcp export."
+    "trace_linkage": "Use an append-only hash-referenced packet and receipt flow for service-local DTP export to the external governance diary."
   },
   "runtime_contract": {
     "binding_ref": "control/mcps/core-governance-journal-mcp/versions/runtime.binding.v0.1.json",
-    "runtime_owner_service": "obsidian-mcp",
-    "runtime_repo_path": "/Users/wonyoung_choi/projects/obsidian-mcp",
+    "runtime_owner_service": "external-governance-diary",
+    "runtime_repo_path": "service-local-or-external-runtime",
     "invocation_surface": "validated trace export to external governance diary",
     "sdk_package": "@modelcontextprotocol/sdk",
     "validation_package": "zod",
@@ -66,7 +66,7 @@
   "change_log": [
     {
       "release_line": "v0.2",
-      "change": "Collapsed governance journal MCP Markdown docs into a single JSON contract bundle and fixed the traces to obsidian-mcp boundary.",
+      "change": "Collapsed governance journal MCP Markdown docs into a single JSON contract bundle and fixed the service-local DTP to the external governance diary boundary.",
       "date_label": "2026-02-27"
     }
   ]

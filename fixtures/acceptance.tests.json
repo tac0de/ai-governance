@@ -1,5 +1,0 @@
-{
-  "must_include_sources": true,
-  "max_hallucination_score": 0.1,
-  "required_sections": ["summary", "analysis", "risk"]
-}

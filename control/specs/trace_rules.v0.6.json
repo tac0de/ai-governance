@@ -1,0 +1,72 @@
+{
+  "version": "v0.6",
+  "append_only": true,
+  "hash_reference_required": true,
+  "allowed_record_types": [
+    "jsonl_trace_record",
+    "governance_journal_packet",
+    "governance_journal_receipt"
+  ],
+  "forbidden_mutations": [
+    "Record deletion.",
+    "In-place record rewrite.",
+    "Wall-clock fields in deterministic verdict path.",
+    "Randomized verdict inputs.",
+    "Network-dependent verdict evaluation."
+  ],
+  "retention_model": {
+    "primary_store": "service-local-governance/dtp/",
+    "export_path": "service-local-governance/dtp/journal-exports/",
+    "notes": [
+      "Primary runtime traces remain append-only in the independently owned service repository.",
+      "Long-lived governance diary copies are exported after validation from the service-local DTP surface.",
+      "Trace packets and receipts stay hash-referenced."
+    ]
+  },
+  "dtp": {
+    "root_path": "governance/dtp/",
+    "required_paths": [
+      "governance/dtp/trace.jsonl",
+      "governance/dtp/journal.index.json",
+      "governance/dtp/validator.receipt.json"
+    ],
+    "fixed_genesis_prev_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+    "journal_index_required_fields": [
+      "trace_path",
+      "trace_head",
+      "record_count",
+      "append_only",
+      "hash_algorithm",
+      "last_validated_by",
+      "last_validated_at_ref"
+    ],
+    "validator_receipt_required_fields": [
+      "trace_path",
+      "validated_trace_head",
+      "validated_record_count",
+      "schema_ref",
+      "trace_rules_ref",
+      "verdict",
+      "failures",
+      "receipt_hash"
+    ],
+    "validator_checks": [
+      "required DTP files exist",
+      "trace.jsonl is parseable line-by-line",
+      "every record satisfies trace schema requirements",
+      "hash chain is continuous",
+      "journal.index.json matches actual trace head and count",
+      "validator.receipt.json matches the current validated state",
+      "no forbidden mutation pattern exists"
+    ]
+  },
+  "journal_export_boundary": {
+    "mcp_id": "core-governance-journal-mcp",
+    "target_service": "external-governance-diary",
+    "requirements": [
+      "Only validated governance artifacts may be exported.",
+      "Export payloads must remain trace-linked and hash-verifiable.",
+      "An export receipt artifact is required before completion."
+    ]
+  }
+}

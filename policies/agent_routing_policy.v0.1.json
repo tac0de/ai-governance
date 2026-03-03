@@ -1,9 +1,0 @@
-{
-  "version": "v0.1",
-  "allowed_executors_by_tier": {
-    "low": ["service-review"],
-    "medium": ["service-review", "policy-ops"],
-    "high": ["governance-council", "policy-ops"]
-  },
-  "fallback_chain": ["governance-council"]
-}

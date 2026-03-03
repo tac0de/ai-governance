@@ -1,0 +1,125 @@
+{
+  "version": "v0.6",
+  "purpose": "Define the temporary-link handshake with mandatory scan closure and incomplete-state handling.",
+  "link_contract": {
+    "phases": [
+      "request",
+      "grant",
+      "execute-local",
+      "review",
+      "release"
+    ],
+    "phase_scan_map": [
+      {
+        "phase": "request",
+        "required_scans": [
+          "intake-scan"
+        ]
+      },
+      {
+        "phase": "grant",
+        "required_scans": [
+          "pre-exec-scan"
+        ]
+      },
+      {
+        "phase": "execute-local",
+        "required_scans": [
+          "pre-exec-scan"
+        ]
+      },
+      {
+        "phase": "review",
+        "required_scans": [
+          "post-exec-scan"
+        ]
+      },
+      {
+        "phase": "release",
+        "required_scans": [
+          "pre-release-scan"
+        ]
+      }
+    ],
+    "completion_rule": {
+      "required_scans_for_completed": [
+        "intake-scan",
+        "pre-exec-scan",
+        "post-exec-scan",
+        "pre-release-scan"
+      ],
+      "missing_scan_status": "incomplete",
+      "production_requires_scan": "pre-release-scan",
+      "exploration_requires_scans": [
+        "intake-scan",
+        "pre-exec-scan",
+        "post-exec-scan"
+      ]
+    },
+    "residue_policy": {
+      "link_residue_check_must_be": "none",
+      "incomplete_blocks_release": true,
+      "open_residue_blocks_release": true
+    },
+    "defaults": {
+      "link_scope": "ephemeral",
+      "runtime_log_owner": "service-local",
+      "central_receives_raw_logs": false,
+      "central_receives_only": [
+        "evidence_contract",
+        "review_result",
+        "link_receipt"
+      ],
+      "initial_status": "requested"
+    },
+    "kit_structure": {
+      "active_root": "governance/links/active/<link-id>",
+      "required_files": [
+        "link.request.json",
+        "link.grant.json",
+        "link.route.json",
+        "scan.intake.json",
+        "scan.pre-exec.json",
+        "scan.post-exec.json",
+        "review.outcome.json",
+        "residue.check.json",
+        "status.json"
+      ],
+      "production_extra_files": [
+        "scan.pre-release.json"
+      ],
+      "allow_extra_root_level_files": false,
+      "evidence_root": "governance/evidence",
+      "review_root": "governance/reviews",
+      "mutable_files": [
+        "status.json"
+      ],
+      "status_required_fields": [
+        "link_id",
+        "lane_id",
+        "phase",
+        "required_scans",
+        "present_scans",
+        "missing_scans",
+        "residue_state",
+        "completion_state"
+      ],
+      "completion_invariants": [
+        "completion_state is computed from scan presence and residue state",
+        "completed requires all lane-required scans, review.outcome.json, and residue_state=none",
+        "missing required scans force completion_state=incomplete",
+        "incomplete links remain unreleasable"
+      ]
+    },
+    "hard_rules": [
+      "Central governance must not become a mandatory runtime hop for service execution.",
+      "Temporary links must be releasable without central stateful coordination.",
+      "Service-local logs remain owned by the service repository or service operator.",
+      "A temporary link may grant guidance, validation, or approval gates, but not central runtime custody.",
+      "A missing required scan leaves the link incomplete and blocks release.",
+      "Production links may not reach a completed state without a pre-release-scan.",
+      "Temporary-link kits must use the fixed file set under governance/links/active/<link-id> with no extra root-level files.",
+      "Evidence payloads and review payloads referenced by the link kit must remain outside the kit folder in the fixed governance roots."
+    ]
+  }
+}

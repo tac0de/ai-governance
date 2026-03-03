@@ -1,5 +1,0 @@
-{
-  "strict": { "max_tokens": 2000, "max_steps": 6 },
-  "balanced": { "max_tokens": 4000, "max_steps": 8 },
-  "creative": { "max_tokens": 8000, "max_steps": 12 }
-}

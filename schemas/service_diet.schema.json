@@ -8,14 +8,16 @@
     "purpose",
     "scan_axes",
     "required_outputs",
+    "status_levels",
     "archive_policy",
+    "classification_rules",
     "completion_rule",
     "hard_rules"
   ],
   "properties": {
     "version": {
       "type": "string",
-      "const": "v0.5"
+      "const": "v0.6"
     },
     "model": {
       "type": "string",
@@ -55,6 +57,33 @@
         "pattern": "^[a-z0-9][a-z0-9_-]*$"
       }
     },
+    "status_levels": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "type": "object",
+        "required": [
+          "status",
+          "meaning"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "diet-scanned-light",
+              "diet-scanned-deep",
+              "incomplete"
+            ]
+          },
+          "meaning": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "additionalProperties": false
+      }
+    },
     "archive_policy": {
       "type": "object",
       "required": [
@@ -81,6 +110,41 @@
       },
       "additionalProperties": false
     },
+    "classification_rules": {
+      "type": "object",
+      "required": [
+        "retain_if_any",
+        "archive_if_all",
+        "forbidden_if_any"
+      ],
+      "properties": {
+        "retain_if_any": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          }
+        },
+        "archive_if_all": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          }
+        },
+        "forbidden_if_any": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
     "completion_rule": {
       "type": "object",
       "required": [
@@ -90,7 +154,7 @@
       "properties": {
         "required_status": {
           "type": "string",
-          "const": "diet-scanned"
+          "const": "diet-scanned-light"
         },
         "linked_service_fields": {
           "type": "array",

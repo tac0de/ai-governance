@@ -6,7 +6,7 @@
   "properties": {
     "version": {
       "type": "string",
-      "const": "v0.1"
+      "const": "v0.6"
     },
     "mcps": {
       "type": "array",

@@ -9,12 +9,13 @@
     "applies_to",
     "required_phases",
     "completion_rule",
+    "status_rules",
     "hard_rules"
   ],
   "properties": {
     "version": {
       "type": "string",
-      "const": "v0.5"
+      "const": "v0.6"
     },
     "model": {
       "type": "string",
@@ -86,6 +87,41 @@
         "repeat_mode": {
           "type": "string",
           "const": "one-time-by-default"
+        }
+      },
+      "additionalProperties": false
+    },
+    "status_rules": {
+      "type": "object",
+      "required": [
+        "normalized_when_all",
+        "pending_when_any",
+        "incomplete_when_any"
+      ],
+      "properties": {
+        "normalized_when_all": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          }
+        },
+        "pending_when_any": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          }
+        },
+        "incomplete_when_any": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]*$"
+          }
         }
       },
       "additionalProperties": false
