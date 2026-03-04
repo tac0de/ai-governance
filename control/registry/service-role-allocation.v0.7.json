@@ -1,0 +1,80 @@
+{
+  "version": "v0.7",
+  "model": "service-role-allocation",
+  "purpose": "Define which role families must be assignable per service profile without turning role families into new departments.",
+  "required_role_families": [
+    "governance",
+    "product",
+    "runtime",
+    "review",
+    "operations"
+  ],
+  "profile_defaults": [
+    {
+      "profile_id": "web-runtime",
+      "required_roles": [
+        "architect-owner",
+        "product-strategist",
+        "service-builder",
+        "frontend-engineer",
+        "qa-reviewer",
+        "release-review"
+      ],
+      "recommended_roles": [
+        "design-lead",
+        "backend-engineer",
+        "security-review",
+        "devops-sre",
+        "growth-marketer",
+        "token-optimizer"
+      ]
+    },
+    {
+      "profile_id": "tool-runtime",
+      "required_roles": [
+        "architect-owner",
+        "product-strategist",
+        "service-builder",
+        "backend-engineer",
+        "qa-reviewer",
+        "release-review"
+      ],
+      "recommended_roles": [
+        "data-automation",
+        "security-review",
+        "devops-sre",
+        "finance-ops",
+        "token-optimizer"
+      ]
+    },
+    {
+      "profile_id": "worker-runtime",
+      "required_roles": [
+        "architect-owner",
+        "product-strategist",
+        "service-builder",
+        "data-automation",
+        "qa-reviewer",
+        "release-review"
+      ],
+      "recommended_roles": [
+        "backend-engineer",
+        "devops-sre",
+        "security-review",
+        "finance-controller",
+        "token-optimizer"
+      ]
+    }
+  ],
+  "orchestration_binding_rules": [
+    "orchestration/service.map.yaml must declare assigned_roles for the current service.",
+    "orchestration/service.map.yaml must declare a primary_owner_role and at least one review role.",
+    "Role assignment may add business roles such as finance and marketing when the service model requires them.",
+    "Token optimization is a cross-cutting role and must be modeled as a role, not as a department."
+  ],
+  "hard_rules": [
+    "Departments remain state-machine stages and must not be expanded to mirror every business function.",
+    "A service may assign extra roles, but required profile roles must remain present.",
+    "Central governance may validate role coverage, but service-local orchestration owns day-to-day assignment."
+  ]
+}

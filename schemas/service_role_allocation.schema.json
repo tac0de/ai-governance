@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ServiceRoleAllocation",
+  "type": "object",
+  "required": [
+    "version",
+    "model",
+    "purpose",
+    "required_role_families",
+    "profile_defaults",
+    "orchestration_binding_rules",
+    "hard_rules"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "v0.7"
+    },
+    "model": {
+      "type": "string",
+      "const": "service-role-allocation"
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "required_role_families": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z][a-z-]*$"
+      }
+    },
+    "profile_defaults": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "profile_id",
+          "required_roles",
+          "recommended_roles"
+        ],
+        "properties": {
+          "profile_id": {
+            "type": "string",
+            "enum": [
+              "web-runtime",
+              "tool-runtime",
+              "worker-runtime"
+            ]
+          },
+          "required_roles": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]*$"
+            }
+          },
+          "recommended_roles": {
+            "type": "array",
+            "minItems": 0,
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9-]*$"
+            }
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "orchestration_binding_rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "hard_rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "additionalProperties": false
+}

@@ -9,7 +9,11 @@
       "default_prompt_set": "governance-intake",
       "supports_roles": [
         "architect-owner",
-        "policy-ops"
+        "product-strategist",
+        "policy-ops",
+        "finance-ops",
+        "growth-marketer",
+        "token-optimizer"
       ],
       "allowed_outputs": [
         "intake verdict",
@@ -23,7 +27,14 @@
       "purpose": "Carry out service-local implementation and integration work inside the independent repository.",
       "default_prompt_set": "service-build",
       "supports_roles": [
-        "service-builder"
+        "service-builder",
+        "frontend-engineer",
+        "backend-engineer",
+        "data-automation",
+        "devops-sre",
+        "growth-marketer",
+        "crm-retention",
+        "token-optimizer"
       ],
       "allowed_outputs": [
         "local implementation",
@@ -37,6 +48,7 @@
       "purpose": "Perform domain-specific high-skill work that should not be generalized into the central governance core.",
       "default_prompt_set": "specialist-pass",
       "supports_roles": [
+        "design-lead",
         "threejs-visual-specialist"
       ],
       "allowed_outputs": [
@@ -51,7 +63,13 @@
       "purpose": "Evaluate outputs, catch regressions, and determine whether the work may progress toward release.",
       "default_prompt_set": "review-gate",
       "supports_roles": [
+        "design-lead",
         "visual-critic",
+        "qa-reviewer",
+        "security-review",
+        "finance-controller",
+        "crm-retention",
+        "token-optimizer",
         "release-review"
       ],
       "allowed_outputs": [
@@ -67,8 +85,13 @@
       "default_prompt_set": "change-gate",
       "supports_roles": [
         "architect-owner",
-        "release-review",
-        "policy-ops"
+        "product-strategist",
+        "policy-ops",
+        "devops-sre",
+        "security-review",
+        "finance-ops",
+        "finance-controller",
+        "release-review"
       ],
       "allowed_outputs": [
         "release approval",

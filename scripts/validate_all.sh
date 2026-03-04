@@ -196,6 +196,7 @@ check_exact_files_in_dir "control/registry" \
   "service-kernel.v0.7.json" \
   "service-monitoring.v0.7.json" \
   "service-normalization.v0.7.json" \
+  "service-role-allocation.v0.7.json" \
   "temporary-links.v0.7.json" \
   "version-promotion.v0.7.json"
 check_exact_files_in_dir "control/specs" \
@@ -213,6 +214,7 @@ check_exact_files_in_dir "schemas" \
   "service_kernel.schema.json" \
   "service_monitoring.schema.json" \
   "service_normalization.schema.json" \
+  "service_role_allocation.schema.json" \
   "service_snapshot.schema.json" \
   "trace_record.schema.json" \
   "trace_rules.schema.json" \
@@ -227,6 +229,7 @@ for schema_rel in \
   schemas/service_kernel.schema.json \
   schemas/service_monitoring.schema.json \
   schemas/service_normalization.schema.json \
+  schemas/service_role_allocation.schema.json \
   schemas/service_snapshot.schema.json \
   schemas/trace_record.schema.json \
   schemas/trace_rules.schema.json \
@@ -253,6 +256,7 @@ for governance_rel in \
   control/registry/service-kernel.v0.7.json \
   control/registry/service-monitoring.v0.7.json \
   control/registry/service-normalization.v0.7.json \
+  control/registry/service-role-allocation.v0.7.json \
   control/registry/temporary-links.v0.7.json \
   control/registry/version-promotion.v0.7.json
 do
@@ -325,6 +329,17 @@ validate_jq_contract "control/registry/service-monitoring.v0.7.json" "schemas/se
   ((.required_artifacts | index("cleanup_action_ref")) != null) and
   (.monitoring_status_levels|type=="array" and length==4) and
   ((.monitoring_status_levels | index("cleanup-required")) != null)
+'
+
+validate_jq_contract "control/registry/service-role-allocation.v0.7.json" "schemas/service_role_allocation.schema.json" '
+  .version=="v0.7" and
+  (.required_role_families|type=="array" and length>=5) and
+  ((.required_role_families | index("product")) != null) and
+  ((.required_role_families | index("operations")) != null) and
+  (.profile_defaults|type=="array" and length==3) and
+  (all(.profile_defaults[]; (.required_roles|length>=6))) and
+  (all(.profile_defaults[]; (.recommended_roles|type=="array"))) and
+  ((.orchestration_binding_rules | map(test("assigned_roles")) | any))
 '
 
 validate_jq_contract "control/registry/linked-services.v0.7.json" "schemas/service_monitoring.schema.json" '
