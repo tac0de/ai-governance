@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="AI governance architecture explained for developers and non-developers.">
-  <title>AI Governance Architecture</title>
+  <title>AI Governance v0.7</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="stylesheet" href="assets/site.css">
 </head>
@@ -26,13 +26,37 @@
   </header>
 
   <main class="container">
-    <section class="hero card">
-      <p class="eyebrow" data-i18n="eyebrow"></p>
-      <h1 data-i18n="title"></h1>
-      <p class="subtitle" data-i18n="subtitle"></p>
+    <section class="hero-shell">
+      <section class="hero card">
+        <p class="eyebrow" data-i18n="eyebrow"></p>
+        <h1 data-i18n="title"></h1>
+        <p class="subtitle" data-i18n="subtitle"></p>
+        <div class="hero-ribbon">
+          <span class="ribbon-chip">v0.7</span>
+          <span class="ribbon-chip">API Telemetry</span>
+          <span class="ribbon-chip">Continuous Monitoring</span>
+        </div>
+      </section>
+      <aside class="hero-stack">
+        <article class="card stat-card">
+          <span class="stat-kicker">Core</span>
+          <strong class="stat-value">5</strong>
+          <span class="stat-copy">fixed departments in one state machine</span>
+        </article>
+        <article class="card stat-card">
+          <span class="stat-kicker">Service Surface</span>
+          <strong class="stat-value">3</strong>
+          <span class="stat-copy">governance + orchestration + prompts</span>
+        </article>
+        <article class="card stat-card accent-card">
+          <span class="stat-kicker">Release Rule</span>
+          <strong class="stat-value">0</strong>
+          <span class="stat-copy">missing scans tolerated before release</span>
+        </article>
+      </aside>
     </section>
 
-    <section class="card">
+    <section class="card spotlight-card">
       <h2 data-i18n="hierarchyTitle"></h2>
       <div class="hierarchy-grid">
         <article class="hierarchy-card">
@@ -50,24 +74,35 @@
       </div>
     </section>
 
-    <section class="grid-3">
-      <article class="card">
+    <section class="story-grid">
+      <article class="card story-card primary-story">
         <h2 data-i18n="whatTitle"></h2>
         <ul id="what-list"></ul>
       </article>
-      <article class="card">
+      <article class="card story-card">
         <h2 data-i18n="howTitle"></h2>
         <ul id="how-list"></ul>
       </article>
-      <article class="card">
+      <article class="card story-card">
         <h2 data-i18n="whyTitle"></h2>
         <ul id="why-list"></ul>
       </article>
     </section>
 
-    <section class="card">
-      <h2 data-i18n="flowTitle"></h2>
-      <ol id="flow-list" class="flow-list"></ol>
+    <section class="timeline-grid">
+      <section class="card timeline-card">
+        <h2 data-i18n="flowTitle"></h2>
+        <ol id="flow-list" class="flow-list"></ol>
+      </section>
+
+      <section class="card quickstart-card">
+        <h2 data-i18n="quickstartTitle"></h2>
+        <ol class="quickstart-list">
+          <li data-i18n="quickstartStep1"></li>
+          <li data-i18n="quickstartStep2"></li>
+          <li data-i18n="quickstartStep3"></li>
+        </ol>
+      </section>
     </section>
 
     <section class="card demo-card">
@@ -163,15 +198,6 @@
         <span id="run-count">0</span>
       </p>
       <pre id="demo-output" aria-live="polite"></pre>
-    </section>
-
-    <section class="card">
-      <h2 data-i18n="quickstartTitle"></h2>
-      <ol class="quickstart-list">
-        <li data-i18n="quickstartStep1"></li>
-        <li data-i18n="quickstartStep2"></li>
-        <li data-i18n="quickstartStep3"></li>
-      </ol>
     </section>
   </main>
 
