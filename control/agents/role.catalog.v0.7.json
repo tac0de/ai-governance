@@ -125,6 +125,50 @@
       ]
     },
     {
+      "id": "ux-specialist",
+      "name": "UX Specialist",
+      "class": "specialist",
+      "mission": "Own interaction quality, usability flow, information hierarchy, and loop-breaking experience decisions for user-facing services.",
+      "default_lane": "exploration",
+      "leaseable": true,
+      "home_department": "specialist-studio",
+      "allowed_departments": [
+        "specialist-studio",
+        "review-gate"
+      ],
+      "must_pair_with": [
+        "product-strategist",
+        "frontend-engineer"
+      ],
+      "outputs": [
+        "ux audit",
+        "interaction flow revision",
+        "usability remediation package"
+      ]
+    },
+    {
+      "id": "css-specialist",
+      "name": "CSS Specialist",
+      "class": "specialist",
+      "mission": "Own layout systems, responsive behavior, design token application, and styling quality for front-end services.",
+      "default_lane": "exploration",
+      "leaseable": true,
+      "home_department": "specialist-studio",
+      "allowed_departments": [
+        "specialist-studio",
+        "build-execution"
+      ],
+      "must_pair_with": [
+        "frontend-engineer",
+        "design-lead"
+      ],
+      "outputs": [
+        "styling system update",
+        "responsive layout pass",
+        "css remediation package"
+      ]
+    },
+    {
       "id": "threejs-visual-specialist",
       "name": "Three.js Visual Specialist",
       "class": "specialist",

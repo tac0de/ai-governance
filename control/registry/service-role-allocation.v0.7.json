@@ -22,6 +22,8 @@
       ],
       "recommended_roles": [
         "design-lead",
+        "ux-specialist",
+        "css-specialist",
         "backend-engineer",
         "security-review",
         "devops-sre",
