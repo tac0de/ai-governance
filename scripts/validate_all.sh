@@ -318,6 +318,14 @@ validate_jq_contract "control/registry/service-diet.v0.7.json" "schemas/service_
   ((.scan_axes | map(.axis_id) | index("oversized-surface")) != null) and
   (.required_outputs|type=="array" and length==5) and
   ((.required_outputs | index("delete_review_candidates_ref")) != null) and
+  (.cleanup_modes|type=="array" and length==6) and
+  ((.cleanup_modes | index("apply-safe-fixes")) != null) and
+  ((.cleanup_modes | index("apply-archive")) != null) and
+  ((.cleanup_modes | index("apply-cleanup-review")) != null) and
+  (.auto_fix_scope.auto_create_missing_required_paths==true) and
+  (.auto_fix_scope.auto_write_missing_monitoring_artifacts==true) and
+  (.auto_fix_scope.auto_move_archive_candidates==false) and
+  (.auto_fix_scope.auto_delete_review_candidates==false) and
   ((.status_levels | map(.status) | index("cleanup-required")) != null)
 '
 

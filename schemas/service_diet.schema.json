@@ -8,8 +8,10 @@
     "purpose",
     "scan_axes",
     "required_outputs",
+    "cleanup_modes",
     "status_levels",
     "archive_policy",
+    "auto_fix_scope",
     "classification_rules",
     "completion_rule",
     "hard_rules"
@@ -55,6 +57,14 @@
       "items": {
         "type": "string",
         "pattern": "^[a-z0-9][a-z0-9_-]*$"
+      }
+    },
+    "cleanup_modes": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9-]*$"
       }
     },
     "status_levels": {
@@ -107,6 +117,30 @@
             "type": "string",
             "pattern": "^[a-z0-9][a-z0-9-]*$"
           }
+        }
+      },
+      "additionalProperties": false
+    },
+    "auto_fix_scope": {
+      "type": "object",
+      "required": [
+        "auto_create_missing_required_paths",
+        "auto_write_missing_monitoring_artifacts",
+        "auto_move_archive_candidates",
+        "auto_delete_review_candidates"
+      ],
+      "properties": {
+        "auto_create_missing_required_paths": {
+          "type": "boolean"
+        },
+        "auto_write_missing_monitoring_artifacts": {
+          "type": "boolean"
+        },
+        "auto_move_archive_candidates": {
+          "type": "boolean"
+        },
+        "auto_delete_review_candidates": {
+          "type": "boolean"
         }
       },
       "additionalProperties": false

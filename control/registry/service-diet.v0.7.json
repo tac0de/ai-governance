@@ -35,6 +35,14 @@
     "keep_list_ref",
     "risk_note_ref"
   ],
+  "cleanup_modes": [
+    "bootstrap",
+    "scan",
+    "apply-safe-fixes",
+    "apply-archive",
+    "apply-cleanup-review",
+    "sync"
+  ],
   "status_levels": [
     {
       "status": "pending",
@@ -70,6 +78,12 @@
       "delete-protected-path",
       "cleanup-without-rollback-note"
     ]
+  },
+  "auto_fix_scope": {
+    "auto_create_missing_required_paths": true,
+    "auto_write_missing_monitoring_artifacts": true,
+    "auto_move_archive_candidates": false,
+    "auto_delete_review_candidates": false
   },
   "classification_rules": {
     "retain_if_any": [
@@ -109,6 +123,9 @@
     "Delete-review candidates must never include protected paths or required kernel paths.",
     "Archive and delete review both require a receipt, a risk note, and a rollback note before any local action executes.",
     "The diet pass must never classify required DTP files or active temporary-link kit files as archive or delete candidates.",
-    "Classification alone does not authorize deletion; cleanup execution remains service-local and receipt-gated."
+    "Classification alone does not authorize deletion; cleanup execution remains service-local and receipt-gated.",
+    "Safe fixes may create missing required paths and rewrite monitoring artifacts, but they may not delete runtime surfaces.",
+    "Archive mode may move only archive candidates into a local archive path and must emit a cleanup action receipt.",
+    "Cleanup review mode may stage delete-review candidates for human approval, but it must not delete them automatically."
   ]
 }
