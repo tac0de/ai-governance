@@ -15,7 +15,7 @@
   "properties": {
     "version": {
       "type": "string",
-      "const": "v0.6"
+      "const": "v0.7"
     },
     "model": {
       "type": "string",
@@ -86,7 +86,7 @@
         },
         "repeat_mode": {
           "type": "string",
-          "const": "one-time-by-default"
+          "const": "initial-alignment-only"
         }
       },
       "additionalProperties": false

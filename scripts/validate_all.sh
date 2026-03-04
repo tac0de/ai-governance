@@ -57,11 +57,6 @@ check_json() {
   return 0
 }
 
-json_ready() {
-  local rel_path="$1"
-  [[ -f "$ROOT_DIR/$rel_path" ]] && jq -e . "$ROOT_DIR/$rel_path" >/dev/null 2>&1
-}
-
 is_expected_name() {
   local candidate="$1"
   shift
@@ -134,17 +129,12 @@ validate_jq_contract() {
   fi
 }
 
-require jq
-
-bash "$ROOT_DIR/scripts/scan_repo_hygiene.sh"
-
 check_sha256_baseline() {
   local rel_path="$1"
   local line
   local expected_hash
   local target_path
   local actual_hash
-  local rel_target
 
   if ! check_file "$rel_path"; then
     return
@@ -168,13 +158,16 @@ check_sha256_baseline() {
 
     actual_hash="$(sha256_of_file "$ROOT_DIR/$target_path")"
     if [[ "$actual_hash" != "$expected_hash" ]]; then
-      rel_target="$target_path"
-      fail "$rel_path" "hash drift for $rel_target"
+      fail "$rel_path" "hash drift for $target_path"
     fi
   done < "$ROOT_DIR/$rel_path"
 }
 
-check_sha256_baseline "docs/baseline.v0.6.sha256"
+require jq
+
+bash "$ROOT_DIR/scripts/scan_repo_hygiene.sh"
+
+check_sha256_baseline "docs/baseline.v0.7.sha256"
 
 check_exact_files_in_dir "scripts" \
   "scan_repo_hygiene.sh" \
@@ -188,18 +181,53 @@ check_exact_files_in_dir ".github/workflows" \
 check_file "LICENSE"
 check_file "CONTRIBUTING.md"
 check_file "SECURITY.md"
+check_file "README.md"
+
+check_allowed_entries_in_dir "control" "agents" "registry" "specs"
+check_exact_files_in_dir "control/agents" \
+  "departments.v0.7.json" \
+  "role.catalog.v0.7.json"
+check_exact_files_in_dir "control/registry" \
+  "department-flow.v0.7.json" \
+  "launch-readiness.v0.7.json" \
+  "link-scan-points.v0.7.json" \
+  "linked-services.v0.7.json" \
+  "service-diet.v0.7.json" \
+  "service-kernel.v0.7.json" \
+  "service-monitoring.v0.7.json" \
+  "service-normalization.v0.7.json" \
+  "temporary-links.v0.7.json" \
+  "version-promotion.v0.7.json"
+check_exact_files_in_dir "control/specs" \
+  "trace_rules.v0.7.json"
+
+check_exact_files_in_dir "policies" \
+  "external_execution_boundary.v0.7.json"
+
+check_exact_files_in_dir "schemas" \
+  "department_flow.schema.json" \
+  "launch_readiness.schema.json" \
+  "link_scan_points.schema.json" \
+  "service_diet.schema.json" \
+  "service_hygiene_report.schema.json" \
+  "service_kernel.schema.json" \
+  "service_monitoring.schema.json" \
+  "service_normalization.schema.json" \
+  "service_snapshot.schema.json" \
+  "trace_record.schema.json" \
+  "trace_rules.schema.json" \
+  "version_promotion_policy.schema.json"
 
 for schema_rel in \
   schemas/department_flow.schema.json \
   schemas/launch_readiness.schema.json \
   schemas/link_scan_points.schema.json \
-  schemas/mcp_contract_bundle.schema.json \
-  schemas/mcp_manifest.schema.json \
-  schemas/mcp_runtime_binding.schema.json \
-  schemas/mcps_registry.schema.json \
   schemas/service_diet.schema.json \
+  schemas/service_hygiene_report.schema.json \
   schemas/service_kernel.schema.json \
+  schemas/service_monitoring.schema.json \
   schemas/service_normalization.schema.json \
+  schemas/service_snapshot.schema.json \
   schemas/trace_record.schema.json \
   schemas/trace_rules.schema.json \
   schemas/version_promotion_policy.schema.json
@@ -208,189 +236,113 @@ do
 done
 
 for policy_rel in \
-  policies/mcp_execution_boundary.v0.6.json
+  policies/external_execution_boundary.v0.7.json
 do
   check_json "$policy_rel"
 done
 
 for governance_rel in \
-  control/agents/departments.v0.6.json \
-  control/agents/role.catalog.v0.6.json \
-  control/specs/trace_rules.v0.6.json \
-  control/registry/department-flow.v0.6.json \
-  control/registry/launch-readiness.v0.6.json \
-  control/registry/link-scan-points.v0.6.json \
-  control/registry/linked-services.v0.6.json \
-  control/registry/mcps.v0.6.json \
-  control/registry/service-diet.v0.6.json \
-  control/registry/service-kernel.v0.6.json \
-  control/registry/service-normalization.v0.6.json \
-  control/registry/temporary-links.v0.6.json \
-  control/registry/version-promotion.v0.6.json
+  control/agents/departments.v0.7.json \
+  control/agents/role.catalog.v0.7.json \
+  control/specs/trace_rules.v0.7.json \
+  control/registry/department-flow.v0.7.json \
+  control/registry/launch-readiness.v0.7.json \
+  control/registry/link-scan-points.v0.7.json \
+  control/registry/linked-services.v0.7.json \
+  control/registry/service-diet.v0.7.json \
+  control/registry/service-kernel.v0.7.json \
+  control/registry/service-monitoring.v0.7.json \
+  control/registry/service-normalization.v0.7.json \
+  control/registry/temporary-links.v0.7.json \
+  control/registry/version-promotion.v0.7.json
 do
   check_json "$governance_rel"
 done
 
-check_exact_files_in_dir "control/specs" \
-  "trace_rules.v0.6.json"
+validate_jq_contract "policies/external_execution_boundary.v0.7.json" "schemas/service_monitoring.schema.json" '
+  .version=="v0.7" and
+  .policy_id=="external-execution-boundary" and
+  (.central_allows|type=="array" and length==3) and
+  (.central_forbids|type=="array" and length==3) and
+  (.service_runtime_rule|type=="array" and length==3) and
+  (.language_policy.required_core==["json","yaml","sh"]) and
+  (.language_policy.allowed_optional==["py"]) and
+  (.language_policy.excluded_in_v0_7==["rs","rust"])
+'
 
-if json_ready "control/registry/mcps.v0.6.json"; then
-  while IFS= read -r root_path; do
-    check_allowed_entries_in_dir "$root_path" "manifest.json" "contract.bundle.v0.1.json" "versions"
-    check_exact_files_in_dir "$root_path/versions" "runtime.binding.v0.1.json"
-  done < <(jq -r '.mcps[].root_path' "$ROOT_DIR/control/registry/mcps.v0.6.json")
-fi
-
-validate_jq_contract "control/specs/trace_rules.v0.6.json" "schemas/trace_rules.schema.json" '
-  .version=="v0.6" and
+validate_jq_contract "control/specs/trace_rules.v0.7.json" "schemas/trace_rules.schema.json" '
+  .version=="v0.7" and
   (.append_only==true) and
   (.hash_reference_required==true) and
+  (.allowed_record_types|type=="array" and length==4) and
+  ((.allowed_record_types | index("service_snapshot_packet")) != null) and
+  ((.allowed_record_types | index("service_hygiene_packet")) != null) and
+  ((.allowed_record_types | index("monitoring_sync_receipt")) != null) and
   (.retention_model.primary_store=="service-local-governance/dtp/") and
-  (.retention_model.export_path=="service-local-governance/dtp/journal-exports/") and
+  (.retention_model.export_path=="service-local-governance/dtp/api-sync/") and
   (.dtp.root_path=="governance/dtp/") and
   (.dtp.required_paths|type=="array" and length==3) and
-  ((.dtp.required_paths | index("governance/dtp/trace.jsonl")) != null) and
-  ((.dtp.required_paths | index("governance/dtp/journal.index.json")) != null) and
-  ((.dtp.required_paths | index("governance/dtp/validator.receipt.json")) != null) and
-  (.dtp.fixed_genesis_prev_hash=="0000000000000000000000000000000000000000000000000000000000000000") and
-  (.journal_export_boundary.mcp_id=="core-governance-journal-mcp") and
-  (.journal_export_boundary.target_service=="external-governance-diary")
+  (.telemetry_sync_boundary.transport=="http-api") and
+  (.telemetry_sync_boundary.ownership=="service-local")
 '
 
-validate_jq_contract "control/registry/department-flow.v0.6.json" "schemas/department_flow.schema.json" '
-  .version=="v0.6" and
-  (.model=="department-handoff-graph") and
-  (.terminal_states | type=="array" and length==1) and
-  ((.terminal_states | index("released")) != null) and
-  (.max_same_department_reentries_before_human_approval==2) and
-  (.allowed_transitions | type=="array" and length==10) and
-  (.forbidden_shortcuts | type=="array" and length==3)
+validate_jq_contract "control/registry/service-kernel.v0.7.json" "schemas/service_kernel.schema.json" '
+  .version=="v0.7" and
+  (.required_root_entries|length==6) and
+  (.required_governance_entries|length==11) and
+  (.required_orchestration_entries|length==4) and
+  (.required_prompt_entries|length==5) and
+  ((.required_root_entries | map(.path) | index("orchestration")) != null) and
+  ((.required_root_entries | map(.path) | index("prompts")) != null) and
+  ((.required_governance_entries | map(.path) | index("governance/monitoring/service.snapshot.json")) != null) and
+  ((.required_governance_entries | map(.path) | index("governance/monitoring/hygiene.report.json")) != null)
 '
 
-validate_jq_contract "control/registry/service-kernel.v0.6.json" "schemas/service_kernel.schema.json" '
-  .version=="v0.6" and
-  (.model=="linked-service-kernel") and
-  (.required_root_entries | type=="array" and length==4) and
-  (.required_governance_entries | type=="array" and length==8) and
-  ((.required_governance_entries | map(.path) | index("governance/dtp")) != null) and
-  ((.required_governance_entries | map(.path) | index("governance/dtp/trace.jsonl")) != null) and
-  ((.required_governance_entries | map(.path) | index("governance/dtp/journal.index.json")) != null) and
-  ((.required_governance_entries | map(.path) | index("governance/dtp/validator.receipt.json")) != null) and
-  ((.required_governance_entries | map(.path) | index("governance/links/active")) != null) and
-  (.optional_root_entries | type=="array" and length==10) and
-  (.profiles | type=="array" and length==3)
+validate_jq_contract "control/registry/service-normalization.v0.7.json" "schemas/service_normalization.schema.json" '
+  .version=="v0.7" and
+  (.required_phases|length==6) and
+  (.completion_rule.repeat_mode=="initial-alignment-only") and
+  ((.required_phases | map(.phase_id) | index("orchestration-alignment")) != null) and
+  ((.required_phases | map(.phase_id) | index("prompt-pack-alignment")) != null) and
+  ((.required_phases | map(.phase_id) | index("monitoring-alignment")) != null)
 '
 
-if check_json "control/registry/temporary-links.v0.6.json"; then
-  if ! jq -e '
-    .version=="v0.6" and
-    (.link_contract.phases | type=="array" and length==5) and
-    (.link_contract.completion_rule.missing_scan_status=="incomplete") and
-    (.link_contract.completion_rule.production_requires_scan=="pre-release-scan") and
-    (.link_contract.residue_policy.link_residue_check_must_be=="none") and
-    (.link_contract.residue_policy.incomplete_blocks_release==true) and
-    (.link_contract.kit_structure.active_root=="governance/links/active/<link-id>") and
-    (.link_contract.kit_structure.required_files | type=="array" and length==9) and
-    ((.link_contract.kit_structure.production_extra_files | index("scan.pre-release.json")) != null) and
-    (.link_contract.kit_structure.allow_extra_root_level_files==false) and
-    (.link_contract.kit_structure.mutable_files == ["status.json"]) and
-    (.link_contract.kit_structure.status_required_fields | type=="array" and length==8)
-  ' "$ROOT_DIR/control/registry/temporary-links.v0.6.json" >/dev/null 2>&1; then
-    fail "control/registry/temporary-links.v0.6.json" "schema validation failed (inline v0.6 temporary-link rules)"
-  fi
-fi
-
-validate_jq_contract "control/registry/launch-readiness.v0.6.json" "schemas/launch_readiness.schema.json" '
-  .version=="v0.6" and
-  (.policy_id=="launch-readiness") and
-  (.gates.required_all|type=="array" and length>=4) and
-  (.gates.required_checks|type=="array" and length>=4) and
-  ((.gates.required_checks | map(.check_id) | index("dtp-current")) != null) and
-  (.promotion_effect.blocks_v1_without_version_promotion==true)
+validate_jq_contract "control/registry/service-diet.v0.7.json" "schemas/service_diet.schema.json" '
+  .version=="v0.7" and
+  (.scan_axes|length==6) and
+  ((.scan_axes | map(.axis_id) | index("structural-drift")) != null) and
+  ((.scan_axes | map(.axis_id) | index("oversized-surface")) != null) and
+  (.required_outputs|type=="array" and length==5) and
+  ((.required_outputs | index("delete_review_candidates_ref")) != null) and
+  ((.status_levels | map(.status) | index("cleanup-required")) != null)
 '
 
-validate_jq_contract "control/registry/service-normalization.v0.6.json" "schemas/service_normalization.schema.json" '
-  .version=="v0.6" and
-  (.model=="one-time-service-normalization") and
-  (.required_phases|type=="array" and length==4) and
-  (.completion_rule.required_status=="normalized") and
-  (.status_rules.normalized_when_all|type=="array" and length>=6)
+validate_jq_contract "control/registry/service-monitoring.v0.7.json" "schemas/service_monitoring.schema.json" '
+  .version=="v0.7" and
+  (.required_artifacts|type=="array" and length==3) and
+  ((.required_artifacts | index("service.snapshot.json")) != null) and
+  ((.required_artifacts | index("hygiene.report.json")) != null) and
+  ((.required_artifacts | index("cleanup_action_ref")) != null) and
+  (.monitoring_status_levels|type=="array" and length==4) and
+  ((.monitoring_status_levels | index("cleanup-required")) != null)
 '
 
-validate_jq_contract "control/registry/service-diet.v0.6.json" "schemas/service_diet.schema.json" '
-  .version=="v0.6" and
-  (.model=="linked-service-diet") and
-  (.status_levels|type=="array" and length==4) and
-  (.classification_rules.retain_if_any|type=="array" and length>=6) and
-  (.classification_rules.archive_if_all|type=="array" and length>=6) and
-  (.classification_rules.forbidden_if_any|type=="array" and length>=4) and
-  (.completion_rule.required_status=="diet-scanned-light")
+validate_jq_contract "control/registry/linked-services.v0.7.json" "schemas/service_monitoring.schema.json" '
+  .version=="v0.7" and
+  (.services|type=="array" and length==2) and
+  ((.services | map(.id) | sort) == ["korea-foreign-concerts","thedivineparadox"]) and
+  (all(.services[]; (.runtime_repo_path|test("^external://")))) and
+  (all(.services[]; has("monitoring_status") and has("last_snapshot_ref") and has("last_hygiene_report_ref") and has("cleanup_action_ref")))
 '
 
-if json_ready "control/agents/departments.v0.6.json" && json_ready "control/agents/role.catalog.v0.6.json"; then
-  if ! jq -n \
-    --slurpfile departments "$ROOT_DIR/control/agents/departments.v0.6.json" \
-    --slurpfile roles "$ROOT_DIR/control/agents/role.catalog.v0.6.json" '
-      ($departments[0].departments | map(.id)) as $dept_ids |
-      all($roles[0].roles[];
-        . as $role |
-        ($dept_ids | index($role.home_department)) != null and
-        ($role.allowed_departments | all(.[]; . as $allowed | ($dept_ids | index($allowed)) != null))
-      )
-    ' >/dev/null 2>&1; then
-    fail "control/agents/role.catalog.v0.6.json" "role departments must resolve against departments.v0.6.json"
-  fi
-fi
+validate_jq_contract "control/registry/launch-readiness.v0.7.json" "schemas/launch_readiness.schema.json" '
+  .version=="v0.7" and
+  ((.gates.required_checks | map(.check_id) | index("monitoring-clear")) != null)
+'
 
-if json_ready "control/registry/service-kernel.v0.6.json" && json_ready "control/registry/linked-services.v0.6.json"; then
-  if ! jq -n \
-    --slurpfile kernel "$ROOT_DIR/control/registry/service-kernel.v0.6.json" \
-    --slurpfile services "$ROOT_DIR/control/registry/linked-services.v0.6.json" '
-      ($kernel[0].profiles | map(.profile_id)) as $profile_ids |
-      all($services[0].services[];
-        . as $service |
-        ($profile_ids | index($service.service_root_profile)) != null and
-        ($service.service_contract_ref == "governance/service.contract.json")
-      )
-    ' >/dev/null 2>&1; then
-    fail "control/registry/linked-services.v0.6.json" "linked service profiles must resolve against service-kernel.v0.6.json"
-  fi
-fi
-
-if json_ready "control/specs/trace_rules.v0.6.json" && json_ready "control/registry/service-kernel.v0.6.json"; then
-  if ! jq -n \
-    --slurpfile trace "$ROOT_DIR/control/specs/trace_rules.v0.6.json" \
-    --slurpfile kernel "$ROOT_DIR/control/registry/service-kernel.v0.6.json" '
-      ($trace[0].dtp.required_paths) as $required_paths |
-      ($kernel[0].required_governance_entries | map(.path)) as $kernel_paths |
-      all($required_paths[]; $kernel_paths | index(.) != null)
-    ' >/dev/null 2>&1; then
-    fail "control/registry/service-kernel.v0.6.json" "service kernel must embed the DTP required paths declared by trace_rules.v0.6.json"
-  fi
-fi
-
-if [[ -d "$ROOT_DIR/control/mcps" ]] && json_ready "control/registry/mcps.v0.6.json"; then
-  if ! jq -n \
-    --slurpfile registry "$ROOT_DIR/control/registry/mcps.v0.6.json" '
-      ($registry[0].mcps | map(.root_path | split("/") | last) | sort) as $expected |
-      $expected == $expected
-    ' >/dev/null 2>&1; then
-    fail "control/registry/mcps.v0.6.json" "mcp registry shape invalid"
-  fi
-
-  while IFS= read -r dir_path; do
-    dir_name="$(basename "$dir_path")"
-    if ! jq -e --arg name "$dir_name" '.mcps | any(.root_path == ("control/mcps/" + $name))' \
-      "$ROOT_DIR/control/registry/mcps.v0.6.json" >/dev/null 2>&1; then
-      fail "control/mcps/$dir_name" "directory not registered in mcps.v0.6.json"
-    fi
-  done < <(find "$ROOT_DIR/control/mcps" -mindepth 1 -maxdepth 1 -type d | sort)
-fi
-
-check_file "docs/index.html"
-check_file "docs/assets/site.css"
-check_file "docs/assets/site.js"
-check_file "docs/.nojekyll"
+validate_jq_contract "control/registry/version-promotion.v0.7.json" "schemas/version_promotion_policy.schema.json" '
+  .version=="v0.7"
+'
 
 if (( errors > 0 )); then
   exit 1

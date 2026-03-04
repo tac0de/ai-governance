@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ServiceHygieneReport",
+  "type": "object",
+  "required": [
+    "version",
+    "service_id",
+    "snapshot_id",
+    "status",
+    "archive_candidates",
+    "delete_review_candidates",
+    "keep_paths",
+    "risk_flags",
+    "recommended_action",
+    "receipt_ref"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "v0.7"
+    },
+    "service_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "snapshot_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "healthy",
+        "attention",
+        "archive-recommended",
+        "cleanup-required"
+      ]
+    },
+    "archive_candidates": {
+      "$ref": "#/$defs/stringList"
+    },
+    "delete_review_candidates": {
+      "$ref": "#/$defs/stringList"
+    },
+    "keep_paths": {
+      "$ref": "#/$defs/stringList"
+    },
+    "risk_flags": {
+      "$ref": "#/$defs/stringList"
+    },
+    "recommended_action": {
+      "type": "string",
+      "minLength": 1
+    },
+    "receipt_ref": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "$defs": {
+    "stringList": {
+      "type": "array",
+      "minItems": 0,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "additionalProperties": false
+}

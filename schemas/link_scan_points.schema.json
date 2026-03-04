@@ -12,7 +12,7 @@
   "properties": {
     "version": {
       "type": "string",
-      "const": "v0.6"
+      "const": "v0.7"
     },
     "model": {
       "type": "string",

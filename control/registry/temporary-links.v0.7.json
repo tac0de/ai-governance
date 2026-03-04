@@ -1,5 +1,5 @@
 {
-  "version": "v0.6",
+  "version": "v0.7",
   "purpose": "Define the temporary-link handshake with mandatory scan closure and incomplete-state handling.",
   "link_contract": {
     "phases": [

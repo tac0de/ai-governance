@@ -1,5 +1,5 @@
 {
-  "version": "v0.6",
+  "version": "v0.7",
   "policy_id": "version-promotion",
   "definition": {
     "pre_v1": "All governed services remain pre-v1 while the product is exploratory, internally evaluated, or visually/operationally unstable.",

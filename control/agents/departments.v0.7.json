@@ -1,5 +1,5 @@
 {
-  "version": "v0.6",
+  "version": "v0.7",
   "model": "department-state-machine",
   "departments": [
     {

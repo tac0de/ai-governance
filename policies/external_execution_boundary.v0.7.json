@@ -1,0 +1,34 @@
+{
+  "version": "v0.7",
+  "policy_id": "external-execution-boundary",
+  "summary": "Central governance validates API-linked receipts and monitoring artifacts but does not own service-local runtimes or execution tooling.",
+  "central_allows": [
+    "JSON contracts for API receipts and monitoring artifacts.",
+    "Schema validation for service snapshots and hygiene reports.",
+    "GitHub workflow enforcement for drift detection."
+  ],
+  "central_forbids": [
+    "Owning service-local runtimes.",
+    "Special-casing proprietary invocation protocols.",
+    "Treating API telemetry as a substitute for human approval or release gates."
+  ],
+  "service_runtime_rule": [
+    "API clients stay in the service repository.",
+    "Browser automation and runtime tools stay in the service repository.",
+    "All external execution must emit receipt-linked artifacts."
+  ],
+  "language_policy": {
+    "required_core": [
+      "json",
+      "yaml",
+      "sh"
+    ],
+    "allowed_optional": [
+      "py"
+    ],
+    "excluded_in_v0_7": [
+      "rs",
+      "rust"
+    ]
+  }
+}

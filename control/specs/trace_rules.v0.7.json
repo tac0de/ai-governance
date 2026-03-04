@@ -1,11 +1,12 @@
 {
-  "version": "v0.6",
+  "version": "v0.7",
   "append_only": true,
   "hash_reference_required": true,
   "allowed_record_types": [
     "jsonl_trace_record",
-    "governance_journal_packet",
-    "governance_journal_receipt"
+    "service_snapshot_packet",
+    "service_hygiene_packet",
+    "monitoring_sync_receipt"
   ],
   "forbidden_mutations": [
     "Record deletion.",
@@ -16,10 +17,10 @@
   ],
   "retention_model": {
     "primary_store": "service-local-governance/dtp/",
-    "export_path": "service-local-governance/dtp/journal-exports/",
+    "export_path": "service-local-governance/dtp/api-sync/",
     "notes": [
       "Primary runtime traces remain append-only in the independently owned service repository.",
-      "Long-lived governance diary copies are exported after validation from the service-local DTP surface.",
+      "API sync payloads are emitted only after local validation succeeds.",
       "Trace packets and receipts stay hash-referenced."
     ]
   },
@@ -60,13 +61,18 @@
       "no forbidden mutation pattern exists"
     ]
   },
-  "journal_export_boundary": {
-    "mcp_id": "core-governance-journal-mcp",
-    "target_service": "external-governance-diary",
+  "telemetry_sync_boundary": {
+    "transport": "http-api",
+    "ownership": "service-local",
+    "required_payloads": [
+      "service_snapshot",
+      "service_hygiene_report",
+      "trace_export_receipt"
+    ],
     "requirements": [
-      "Only validated governance artifacts may be exported.",
-      "Export payloads must remain trace-linked and hash-verifiable.",
-      "An export receipt artifact is required before completion."
+      "Only validated governance artifacts may be sent.",
+      "Payloads must remain trace-linked and hash-verifiable.",
+      "A sync receipt artifact is required before the sync is considered complete."
     ]
   }
 }

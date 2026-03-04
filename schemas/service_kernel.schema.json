@@ -8,6 +8,8 @@
     "purpose",
     "required_root_entries",
     "required_governance_entries",
+    "required_orchestration_entries",
+    "required_prompt_entries",
     "optional_root_entries",
     "profiles",
     "rules"
@@ -15,7 +17,7 @@
   "properties": {
     "version": {
       "type": "string",
-      "const": "v0.6"
+      "const": "v0.7"
     },
     "model": {
       "type": "string",
@@ -27,14 +29,28 @@
     },
     "required_root_entries": {
       "type": "array",
-      "minItems": 1,
+      "minItems": 6,
       "items": {
         "$ref": "#/$defs/entry"
       }
     },
     "required_governance_entries": {
       "type": "array",
-      "minItems": 1,
+      "minItems": 11,
+      "items": {
+        "$ref": "#/$defs/entry"
+      }
+    },
+    "required_orchestration_entries": {
+      "type": "array",
+      "minItems": 4,
+      "items": {
+        "$ref": "#/$defs/entry"
+      }
+    },
+    "required_prompt_entries": {
+      "type": "array",
+      "minItems": 5,
       "items": {
         "$ref": "#/$defs/entry"
       }

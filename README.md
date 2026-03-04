@@ -1,195 +1,212 @@
-# ai-governance v0.6
+# ai-governance v0.7
 
-Simple, deterministic governance for independent AI services.
+Simple, readable governance for independent AI services.
 
-This repository is now shaped for public open-source use.
+This repository is a small public contract kernel.
 
 ## English
 
 ### What This Is
 
-`ai-governance` is a small central contract layer.
+`ai-governance` defines:
+
+- contracts
+- schemas
+- policies
+- validation rules
+- continuous monitoring rules
 
 It does not run products.
 It does not own service code.
 It does not keep service runtime state.
 
-It defines the rules that independent services can follow:
-- how work moves through a fixed governance flow
-- what scans are required before release
-- what minimum governance files a service should expose
-- how deterministic trace rules are defined
+### Operating Model
 
-In short:
-- services do the real work
-- this repository defines the boundary, checks, and release gates
+The flow is fixed:
 
-### What This Is Not
+1. Work enters through a temporary link.
+2. The service executes locally.
+3. The service emits a snapshot and a hygiene report.
+4. Governance validates structure, trace state, and release gates.
+5. Release is allowed only when required scans and monitoring checks are clear.
 
-This is not:
-- an app framework
-- a runtime platform
-- a service template generator
-- a central log storage system
+If a required scan is missing, the link is incomplete and release stays blocked.
 
-If a service needs:
-- app code
-- local traces
-- product UX
-- deployment logic
+### What Every Service Must Expose
 
-that stays in the service repository, not here.
+Every independent service is expected to expose three small public-facing surfaces:
 
-### Core Idea
+- `governance/`
+- `orchestration/`
+- `prompts/`
 
-The operating model is simple:
-
-1. Work enters through intake.
-2. A temporary link is opened for scoped work.
-3. The service executes locally.
-4. Review checks the result.
-5. Release only happens if required scans are complete.
-
-Missing a required scan means:
-- the link is incomplete
-- release is blocked
-
-### Service Rule
-
-Each independent service should expose only a small governance-facing surface:
+Minimum kernel:
 
 - `README.md`
 - `service.yaml`
+- `.gitignore`
 - `governance/service.contract.json`
 - `governance/dtp/`
 - `governance/links/active/`
 - `governance/evidence/`
 - `governance/reviews/`
-- `.gitignore`
+- `governance/monitoring/`
+- `orchestration/service.map.yaml`
+- `orchestration/stack.profile.yaml`
+- `orchestration/package-policy.yaml`
+- `orchestration/execution.plan.md`
+- `prompts/ideation.md`
+- `prompts/macro-planning.md`
+- `prompts/tech-selection.md`
+- `prompts/implementation-kickoff.md`
+- `prompts/review-recovery.md`
 
-Everything else stays service-local and free.
+Everything else stays local to the service.
+
+### Language Policy
+
+Core repository formats:
+
+- `json`
+- `yaml`
+- `sh`
+
+Optional helper language:
+
+- `py`
+
+Not used in `v0.7`:
+
+- `rust`
 
 ### Repository Layout
 
-This repository intentionally stays small:
-
-- `control/`  
-  Governance contracts and registries
-- `policies/`  
+- `control/`
+  Contracts and registries
+- `policies/`
   Boundary rules
-- `schemas/`  
+- `schemas/`
   Validation schemas
-- `scripts/`  
+- `scripts/`
   Deterministic validation and trace utilities
-- `docs/`  
+- `docs/`
   Human-readable public documentation
 
-### Validate
+### Validation
 
 ```bash
 bash scripts/validate_all.sh
 ```
 
 This checks:
+
 - repository shape
 - contract validity
 - fixed baseline drift
 
-### Public Open-Source Intent
+### Why It Exists
 
-This repository is meant to be readable by humans first.
+The goal is simple:
 
-The goal is:
-- easy to inspect
+- easy to read
 - easy to validate
 - hard to drift silently
 
-It is a governance kernel, not a product runtime.
+This repository is a governance kernel, not a runtime platform.
 
 ## 한국어
 
 ### 이 저장소는 무엇인가
 
-`ai-governance`는 아주 작은 중앙 계약 레이어입니다.
+`ai-governance`는 공개용으로 읽기 쉬운 작은 계약 커널입니다.
+
+이 저장소가 정의하는 것은 다음입니다.
+
+- 계약
+- 스키마
+- 정책
+- 검증 규칙
+- 지속 모니터링 규칙
 
 이 저장소는:
-- 제품을 실행하지 않습니다
-- 서비스 코드를 소유하지 않습니다
+
+- 제품을 실행하지 않고
+- 서비스 코드를 소유하지 않고
 - 서비스 런타임 상태를 보관하지 않습니다
 
-대신, 독립 서비스들이 따라야 할 규칙을 정의합니다.
+### 동작 방식
 
-- 작업이 어떤 고정된 흐름으로 이동하는지
-- 릴리스 전에 어떤 스캔이 필요한지
-- 서비스가 어떤 최소 거버넌스 파일을 드러내야 하는지
-- 결정적 트레이스(DTP) 규칙을 어떻게 유지하는지
+흐름은 고정되어 있습니다.
 
-한 줄로 말하면:
-- 실제 일은 서비스가 하고
-- 이 저장소는 경계, 검증, 릴리스 게이트를 정의합니다
+1. 작업이 temporary link로 들어옵니다.
+2. 실제 실행은 서비스 로컬에서 일어납니다.
+3. 서비스가 snapshot과 hygiene report를 남깁니다.
+4. 거버넌스가 구조, trace 상태, release gate를 검증합니다.
+5. 필수 스캔과 모니터링 검사가 모두 깨끗할 때만 release가 가능합니다.
 
-### 이 저장소가 아닌 것
+필수 스캔이 하나라도 없으면 link는 incomplete 상태이고, release는 차단됩니다.
 
-이 저장소는 다음이 아닙니다.
+### 모든 서비스가 드러내야 하는 최소 표면
 
-- 앱 프레임워크
-- 런타임 플랫폼
-- 서비스 템플릿 생성기
-- 중앙 로그 저장소
+모든 독립 서비스는 아래 3개의 작은 공개 표면을 가져야 합니다.
 
-서비스에 필요한:
-- 앱 코드
-- 로컬 트레이스
-- 제품 UX
-- 배포 로직
+- `governance/`
+- `orchestration/`
+- `prompts/`
 
-이런 것은 모두 각 서비스 저장소에 있어야 합니다.
-
-### 핵심 동작 방식
-
-구조는 단순합니다.
-
-1. 작업이 intake로 들어옵니다.
-2. 범위가 제한된 temporary link를 엽니다.
-3. 실제 실행은 서비스 로컬에서 일어납니다.
-4. review가 결과를 확인합니다.
-5. 필수 스캔이 모두 있어야만 release가 가능합니다.
-
-필수 스캔이 하나라도 없으면:
-- link는 incomplete 상태이고
-- release는 막힙니다
-
-### 서비스가 맞춰야 하는 최소 구조
-
-각 독립 서비스는 아래 정도의 작은 거버넌스 표면만 드러내면 됩니다.
+최소 커널은 다음과 같습니다.
 
 - `README.md`
 - `service.yaml`
+- `.gitignore`
 - `governance/service.contract.json`
 - `governance/dtp/`
 - `governance/links/active/`
 - `governance/evidence/`
 - `governance/reviews/`
-- `.gitignore`
+- `governance/monitoring/`
+- `orchestration/service.map.yaml`
+- `orchestration/stack.profile.yaml`
+- `orchestration/package-policy.yaml`
+- `orchestration/execution.plan.md`
+- `prompts/ideation.md`
+- `prompts/macro-planning.md`
+- `prompts/tech-selection.md`
+- `prompts/implementation-kickoff.md`
+- `prompts/review-recovery.md`
 
-그 외 구현 구조는 서비스가 자유롭게 가져갑니다.
+그 외 구현은 서비스 로컬에서 자유롭게 유지합니다.
+
+### 언어 원칙
+
+코어 형식:
+
+- `json`
+- `yaml`
+- `sh`
+
+선택 보조 언어:
+
+- `py`
+
+`v0.7`에서 사용하지 않는 언어:
+
+- `rust`
 
 ### 저장소 구조
 
-이 저장소는 의도적으로 작게 유지합니다.
-
-- `control/`  
-  거버넌스 계약과 레지스트리
-- `policies/`  
+- `control/`
+  계약과 레지스트리
+- `policies/`
   경계 규칙
-- `schemas/`  
+- `schemas/`
   검증 스키마
-- `scripts/`  
-  결정적 검증 및 트레이스 유틸
-- `docs/`  
+- `scripts/`
+  결정적 검증 및 trace 유틸
+- `docs/`
   사람이 읽는 공개 문서
 
-### 검증 방법
+### 검증
 
 ```bash
 bash scripts/validate_all.sh
@@ -197,18 +214,16 @@ bash scripts/validate_all.sh
 
 이 스크립트는 다음을 확인합니다.
 
-- 저장소 형태가 고정 규칙과 맞는지
-- 계약 JSON이 유효한지
-- 기준선 해시가 조용히 바뀌지 않았는지
+- 저장소 구조
+- 계약 JSON의 형태
+- 기준선 해시 드리프트
 
-### 공개 오픈소스 방향
+### 왜 공개하는가
 
-이 저장소는 사람이 먼저 읽고 이해할 수 있어야 합니다.
-
-목표는 다음입니다.
+목표는 단순합니다.
 
 - 쉽게 읽히고
 - 쉽게 검증되고
 - 조용한 구조 드리프트가 어렵게 만드는 것
 
-이 저장소는 제품 런타임이 아니라, 거버넌스 커널입니다.
+이 저장소는 런타임 플랫폼이 아니라, 거버넌스 커널입니다.

@@ -1,0 +1,179 @@
+{
+  "version": "v0.7",
+  "model": "linked-service-kernel",
+  "purpose": "Define the fixed governance-facing root kernel that every independent service must expose while keeping runtime implementation fully local.",
+  "required_root_entries": [
+    {
+      "path": "README.md",
+      "entry_type": "file"
+    },
+    {
+      "path": "service.yaml",
+      "entry_type": "file"
+    },
+    {
+      "path": "governance",
+      "entry_type": "directory"
+    },
+    {
+      "path": "orchestration",
+      "entry_type": "directory"
+    },
+    {
+      "path": "prompts",
+      "entry_type": "directory"
+    },
+    {
+      "path": ".gitignore",
+      "entry_type": "file"
+    }
+  ],
+  "required_governance_entries": [
+    {
+      "path": "governance/service.contract.json",
+      "entry_type": "file"
+    },
+    {
+      "path": "governance/dtp",
+      "entry_type": "directory"
+    },
+    {
+      "path": "governance/dtp/trace.jsonl",
+      "entry_type": "file"
+    },
+    {
+      "path": "governance/dtp/journal.index.json",
+      "entry_type": "file"
+    },
+    {
+      "path": "governance/dtp/validator.receipt.json",
+      "entry_type": "file"
+    },
+    {
+      "path": "governance/links/active",
+      "entry_type": "directory"
+    },
+    {
+      "path": "governance/evidence",
+      "entry_type": "directory"
+    },
+    {
+      "path": "governance/reviews",
+      "entry_type": "directory"
+    },
+    {
+      "path": "governance/monitoring",
+      "entry_type": "directory"
+    },
+    {
+      "path": "governance/monitoring/service.snapshot.json",
+      "entry_type": "file"
+    },
+    {
+      "path": "governance/monitoring/hygiene.report.json",
+      "entry_type": "file"
+    }
+  ],
+  "required_orchestration_entries": [
+    {
+      "path": "orchestration/service.map.yaml",
+      "entry_type": "file"
+    },
+    {
+      "path": "orchestration/stack.profile.yaml",
+      "entry_type": "file"
+    },
+    {
+      "path": "orchestration/package-policy.yaml",
+      "entry_type": "file"
+    },
+    {
+      "path": "orchestration/execution.plan.md",
+      "entry_type": "file"
+    }
+  ],
+  "required_prompt_entries": [
+    {
+      "path": "prompts/ideation.md",
+      "entry_type": "file"
+    },
+    {
+      "path": "prompts/macro-planning.md",
+      "entry_type": "file"
+    },
+    {
+      "path": "prompts/tech-selection.md",
+      "entry_type": "file"
+    },
+    {
+      "path": "prompts/implementation-kickoff.md",
+      "entry_type": "file"
+    },
+    {
+      "path": "prompts/review-recovery.md",
+      "entry_type": "file"
+    }
+  ],
+  "optional_root_entries": [
+    "app",
+    "src",
+    "public",
+    "tests",
+    "workers",
+    "jobs",
+    "tools",
+    "bin",
+    "ops",
+    "packages"
+  ],
+  "profiles": [
+    {
+      "profile_id": "web-runtime",
+      "recommended_entries": [
+        "app",
+        "src",
+        "public",
+        "tests",
+        "tools"
+      ],
+      "notes": [
+        "app and src are alternatives; at least one is usually present.",
+        "UI runtimes often keep browser automation helpers under tools."
+      ]
+    },
+    {
+      "profile_id": "tool-runtime",
+      "recommended_entries": [
+        "src",
+        "tests",
+        "bin",
+        "tools"
+      ],
+      "notes": [
+        "bin and tools are alternatives.",
+        "The governance kernel does not force a package layout."
+      ]
+    },
+    {
+      "profile_id": "worker-runtime",
+      "recommended_entries": [
+        "workers",
+        "jobs",
+        "tests",
+        "ops"
+      ],
+      "notes": [
+        "workers and jobs are alternatives.",
+        "ops is recommended when runtime ownership includes batch or queue handling."
+      ]
+    }
+  ],
+  "rules": [
+    "The governance kernel is mandatory for independently linked services.",
+    "All independent services must expose orchestration and prompts as fixed public-readable execution surfaces.",
+    "Monitoring artifacts under governance/monitoring are mandatory for both new and existing linked services.",
+    "The central governance kernel defines required filenames only; it does not generate or own service-local content.",
+    "Implementation folders outside the required kernel remain service-local and unconstrained by central governance.",
+    "Temporary-link kits must live under governance/links/active while evidence and review payloads remain outside the active link kit."
+  ]
+}

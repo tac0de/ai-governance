@@ -1,5 +1,5 @@
 {
-  "version": "v0.6",
+  "version": "v0.7",
   "model": "link-scan-catalog",
   "purpose": "Define the mandatory scan points that close temporary-link work into a deterministic reviewable loop.",
   "lane_minimums": {

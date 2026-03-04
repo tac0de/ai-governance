@@ -17,7 +17,7 @@
   "properties": {
     "version": {
       "type": "string",
-      "const": "v0.6"
+      "const": "v0.7"
     },
     "model": {
       "type": "string",
@@ -59,7 +59,7 @@
     },
     "status_levels": {
       "type": "array",
-      "minItems": 4,
+      "minItems": 5,
       "items": {
         "type": "object",
         "required": [
@@ -73,6 +73,7 @@
               "pending",
               "diet-scanned-light",
               "diet-scanned-deep",
+              "cleanup-required",
               "incomplete"
             ]
           },

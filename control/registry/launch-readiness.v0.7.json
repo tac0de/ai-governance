@@ -1,9 +1,9 @@
 {
-  "version": "v0.6",
+  "version": "v0.7",
   "policy_id": "launch-readiness",
   "definition": {
     "pre_launch": "A governed service remains pre-launch while operational readiness is incomplete, even if the implementation appears feature complete.",
-    "launch_ready": "A governed service may be called launch-ready only when rollback, operator ownership, and current evidence are all in place for production exposure."
+    "launch_ready": "A governed service may be called launch-ready only when rollback, operator ownership, current evidence, and service hygiene clearance are all in place for production exposure."
   },
   "gates": {
     "required_all": [
@@ -45,7 +45,7 @@
         "check_id": "pre-release-scan-passed",
         "rule": "must-pass",
         "notes": [
-          "Production work must have a valid pre-release-scan before launch-ready can be granted."
+          "Production work must have a valid pre-release scan before launch-ready can be granted."
         ]
       },
       {
@@ -68,6 +68,13 @@
         "notes": [
           "The service must have a passing DTP validator receipt that matches the current trace head before launch-ready is granted."
         ]
+      },
+      {
+        "check_id": "monitoring-clear",
+        "rule": "must-pass",
+        "notes": [
+          "The service must have a hygiene clearance receipt and may not be in cleanup-required status."
+        ]
       }
     ],
     "freshness_window_days": 7
@@ -80,6 +87,7 @@
     "Calling a service launch-ready because the UI looks finished while operational ownership is still unclear.",
     "Calling a service launch-ready without a rollback plan.",
     "Using launch-ready as a substitute for market proof.",
-    "Calling a service launch-ready when the current DTP validator receipt does not match the active trace head."
+    "Calling a service launch-ready when the current DTP validator receipt does not match the active trace head.",
+    "Calling a service launch-ready while service hygiene is in cleanup-required status."
   ]
 }

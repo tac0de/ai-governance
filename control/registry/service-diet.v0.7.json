@@ -1,7 +1,7 @@
 {
-  "version": "v0.6",
+  "version": "v0.7",
   "model": "linked-service-diet",
-  "purpose": "Define the temporary-link scan used to identify unnecessary surfaces in an independent service and archive them without central runtime ownership.",
+  "purpose": "Define the hygiene classification pass used to identify unnecessary surfaces in an independent service and flag archive or delete-review candidates without central runtime ownership.",
   "scan_axes": [
     {
       "axis_id": "dead-surface",
@@ -18,11 +18,20 @@
     {
       "axis_id": "archive-safe",
       "question": "Can this surface be archived without breaking the live runtime or the current governance kernel?"
+    },
+    {
+      "axis_id": "structural-drift",
+      "question": "Does this surface indicate that the service root is drifting away from the declared profile?"
+    },
+    {
+      "axis_id": "oversized-surface",
+      "question": "Has this surface grown beyond what the current runtime profile can justify?"
     }
   ],
   "required_outputs": [
     "scan_receipt",
     "archive_candidates_ref",
+    "delete_review_candidates_ref",
     "keep_list_ref",
     "risk_note_ref"
   ],
@@ -33,27 +42,33 @@
     },
     {
       "status": "diet-scanned-light",
-      "meaning": "A first-pass classification scan is complete, but no archive-safe move is authorized yet."
+      "meaning": "A first-pass classification scan is complete, but no cleanup move is authorized yet."
     },
     {
       "status": "diet-scanned-deep",
-      "meaning": "A deeper scan has confirmed archive-safe candidates and a second pass may move local archive-safe surfaces."
+      "meaning": "A deeper scan has confirmed archive-safe candidates and delete-review candidates."
+    },
+    {
+      "status": "cleanup-required",
+      "meaning": "The service requires cleanup before release readiness can be granted."
     },
     {
       "status": "incomplete",
-      "meaning": "A diet pass was attempted but required evidence or rollback notes are missing."
+      "meaning": "A diet pass was attempted but required evidence, rollback notes, or receipts are missing."
     }
   ],
   "archive_policy": {
     "allowed_actions": [
       "mark-for-archive",
       "move-to-local-archive",
-      "retain-as-active"
+      "retain-as-active",
+      "mark-for-delete-review"
     ],
     "forbidden_actions": [
       "delete-live-runtime-surface-without-receipt",
       "archive-governance-kernel-required-entry",
-      "archive-without-rollback-note"
+      "delete-protected-path",
+      "cleanup-without-rollback-note"
     ]
   },
   "classification_rules": {
@@ -77,21 +92,23 @@
       "required-kernel-entry",
       "dtp-required-file",
       "active-link-kit-file",
-      "current-rollback-artifact"
+      "current-rollback-artifact",
+      "protected-path"
     ]
   },
   "completion_rule": {
     "required_status": "diet-scanned-light",
     "linked_service_fields": [
       "diet_status",
-      "archive_candidates_ref"
+      "archive_candidates_ref",
+      "cleanup_action_ref"
     ]
   },
   "hard_rules": [
-    "Service diet must reduce clutter without breaking the live runtime path.",
-    "A surface may be marked for archive only if the scan receipt and risk note both exist.",
-    "Central governance may direct the archive decision but must not take custody of the archived runtime itself.",
-    "The diet pass must never classify required DTP files or active temporary-link kit files as archive candidates.",
-    "Classification alone does not authorize deletion; archive movement remains service-local and receipt-gated."
+    "Central governance may classify delete-review candidates but actual deletion remains service-local only.",
+    "Delete-review candidates must never include protected paths or required kernel paths.",
+    "Archive and delete review both require a receipt, a risk note, and a rollback note before any local action executes.",
+    "The diet pass must never classify required DTP files or active temporary-link kit files as archive or delete candidates.",
+    "Classification alone does not authorize deletion; cleanup execution remains service-local and receipt-gated."
   ]
 }
