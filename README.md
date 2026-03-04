@@ -104,6 +104,12 @@ This checks:
 - contract validity
 - fixed baseline drift
 
+### Bootstrap Reference
+
+For service-local linking, monitoring bootstrap, and the base `tools/governance_link.sh` pattern, use:
+
+- [docs/service-bootstrap.md](/Users/wonyoung_choi/ai-governance/docs/service-bootstrap.md)
+
 ### Why It Exists
 
 The goal is simple:
@@ -217,6 +223,12 @@ bash scripts/validate_all.sh
 - 저장소 구조
 - 계약 JSON의 형태
 - 기준선 해시 드리프트
+
+### 부트스트랩 기준 문서
+
+서비스 로컬 링킹, 모니터링 부트스트랩, `tools/governance_link.sh` 기본 패턴은 아래 문서를 기준으로 사용합니다.
+
+- [docs/service-bootstrap.md](/Users/wonyoung_choi/ai-governance/docs/service-bootstrap.md)
 
 ### 왜 공개하는가
 
