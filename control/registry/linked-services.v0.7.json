@@ -21,35 +21,143 @@
       "last_hygiene_report_ref": "governance/monitoring/hygiene.report.json",
       "cleanup_action_ref": "none",
       "launch_readiness_ref": null,
+      "runtime_stack_policy": {
+        "backend_runtime": "cloud-run",
+        "service_split_deploy": true,
+        "min_instances": 0,
+        "max_instances": 10,
+        "cpu_allocation": "request-only",
+        "database_primary": "firestore",
+        "cloud_sql_policy": "exception-only",
+        "file_storage": "cloud-storage",
+        "storage_lifecycle_rule": "delete-stale-objects",
+        "async_work_queue": "cloud-tasks-or-pubsub"
+      },
+      "cost_guardrails": {
+        "gcp_project_id": "divine-prod",
+        "budget_alert_percent": [
+          50,
+          80,
+          100
+        ],
+        "billing_export": "bigquery-enabled",
+        "cloud_run_max_instances_guardrail": true,
+        "artifact_registry_cleanup_policy": "enabled"
+      },
+      "workload_persistence": {
+        "content_metadata_store": "firestore",
+        "job_state_store": "firestore"
+      },
       "notes": [
         "Independent runtime repository.",
-        "The v0.7 governance kernel is present inside the runtime repository.",
-        "Continuous monitoring is active and no cleanup-required state is currently flagged."
+        "Serverless-only policy is enforced for cost-first operations.",
+        "Cloud SQL is forbidden unless strong relational joins and strict transactions are core requirements."
       ]
     },
     {
-      "id": "korea-foreign-concerts",
+      "id": "kakao-bot",
       "owner_role": "architect-owner",
-      "runtime_repo_path": "external://korea-foreign-concerts",
+      "runtime_repo_path": "external://kakao-bot",
       "log_owner": "service-local",
       "governance_relationship": "temporary-link-preferred",
       "service_root_profile": "web-runtime",
       "service_contract_ref": "governance/service.contract.json",
-      "governance_kernel_status": "planned",
-      "normalization_status": "pending",
-      "normalization_receipt_ref": null,
-      "diet_status": "pending",
-      "archive_candidates_ref": null,
+      "governance_kernel_status": "present",
+      "normalization_status": "normalized",
+      "normalization_receipt_ref": "governance/links/normalization.receipt.v0.1.json",
+      "diet_status": "diet-scanned-light",
+      "archive_candidates_ref": "governance/evidence/archive-candidates.v0.1.json",
       "last_link_scan_ref": "governance/reviews/intake.review.v0.1.json",
-      "monitoring_status": "attention",
-      "last_snapshot_ref": null,
-      "last_hygiene_report_ref": null,
-      "cleanup_action_ref": null,
+      "monitoring_status": "active",
+      "last_snapshot_ref": "governance/monitoring/service.snapshot.json",
+      "last_hygiene_report_ref": "governance/monitoring/hygiene.report.json",
+      "cleanup_action_ref": "none",
       "launch_readiness_ref": null,
+      "runtime_stack_policy": {
+        "backend_runtime": "cloud-run",
+        "service_split_deploy": true,
+        "min_instances": 0,
+        "max_instances": 15,
+        "cpu_allocation": "request-only",
+        "database_primary": "firestore",
+        "cloud_sql_policy": "exception-only",
+        "file_storage": "cloud-storage",
+        "storage_lifecycle_rule": "delete-stale-objects",
+        "async_work_queue": "cloud-tasks-or-pubsub"
+      },
+      "cost_guardrails": {
+        "gcp_project_id": "kakao-bot-prod",
+        "budget_alert_percent": [
+          50,
+          80,
+          100
+        ],
+        "billing_export": "bigquery-enabled",
+        "cloud_run_max_instances_guardrail": true,
+        "artifact_registry_cleanup_policy": "enabled"
+      },
+      "workload_persistence": {
+        "conversation_state_store": "firestore",
+        "session_store": "firestore",
+        "user_preferences_store": "firestore"
+      },
       "notes": [
         "Independent runtime repository.",
-        "The v0.7 governance kernel is planned but not yet fully aligned.",
-        "Continuous monitoring is waiting for the first snapshot and hygiene report."
+        "Kakao chatbot state and user settings are stored in Firestore.",
+        "Serverless-only policy is enforced and Cloud SQL is opt-in exception only."
+      ]
+    },
+    {
+      "id": "plotnodes",
+      "owner_role": "architect-owner",
+      "runtime_repo_path": "external://plotnodes",
+      "log_owner": "service-local",
+      "governance_relationship": "temporary-link-preferred",
+      "service_root_profile": "web-runtime",
+      "service_contract_ref": "governance/service.contract.json",
+      "governance_kernel_status": "present",
+      "normalization_status": "normalized",
+      "normalization_receipt_ref": "governance/links/normalization.receipt.v0.1.json",
+      "diet_status": "diet-scanned-light",
+      "archive_candidates_ref": "governance/evidence/archive-candidates.v0.1.json",
+      "last_link_scan_ref": "governance/reviews/intake.review.v0.1.json",
+      "monitoring_status": "active",
+      "last_snapshot_ref": "governance/monitoring/service.snapshot.json",
+      "last_hygiene_report_ref": "governance/monitoring/hygiene.report.json",
+      "cleanup_action_ref": "none",
+      "launch_readiness_ref": null,
+      "runtime_stack_policy": {
+        "backend_runtime": "cloud-run",
+        "service_split_deploy": true,
+        "min_instances": 0,
+        "max_instances": 12,
+        "cpu_allocation": "request-only",
+        "database_primary": "firestore",
+        "cloud_sql_policy": "exception-only",
+        "file_storage": "cloud-storage",
+        "storage_lifecycle_rule": "delete-stale-objects",
+        "async_work_queue": "cloud-tasks-or-pubsub"
+      },
+      "cost_guardrails": {
+        "gcp_project_id": "plotnodes-prod",
+        "budget_alert_percent": [
+          50,
+          80,
+          100
+        ],
+        "billing_export": "bigquery-enabled",
+        "cloud_run_max_instances_guardrail": true,
+        "artifact_registry_cleanup_policy": "enabled"
+      },
+      "workload_persistence": {
+        "content_store": "firestore",
+        "metadata_store": "firestore",
+        "job_state_store": "firestore"
+      },
+      "notes": [
+        "Independent runtime repository.",
+        "Plotnodes content, metadata, and job state are stored in Firestore.",
+        "Serverless-only policy is enforced and Cloud SQL is opt-in exception only."
       ]
     }
   ]

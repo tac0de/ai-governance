@@ -352,8 +352,8 @@ validate_jq_contract "control/registry/service-role-allocation.v0.7.json" "schem
 
 validate_jq_contract "control/registry/linked-services.v0.7.json" "schemas/service_monitoring.schema.json" '
   .version=="v0.7" and
-  (.services|type=="array" and length==2) and
-  ((.services | map(.id) | sort) == ["korea-foreign-concerts","thedivineparadox"]) and
+  (.services|type=="array" and length==3) and
+  ((.services | map(.id) | sort) == ["kakao-bot","plotnodes","thedivineparadox"]) and
   (all(.services[]; (.runtime_repo_path|test("^external://")))) and
   (all(.services[]; has("monitoring_status") and has("last_snapshot_ref") and has("last_hygiene_report_ref") and has("cleanup_action_ref")))
 '
