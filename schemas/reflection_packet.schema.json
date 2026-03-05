@@ -1,0 +1,111 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ReflectionPacket",
+  "type": "object",
+  "required": [
+    "version",
+    "record_type",
+    "date_ref",
+    "service_id",
+    "topic",
+    "problem_statement",
+    "why_chain",
+    "evidence_refs",
+    "improvement_actions",
+    "owner",
+    "target_date_ref",
+    "status"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "v0.7"
+    },
+    "record_type": {
+      "type": "string",
+      "const": "daily_reflection_packet"
+    },
+    "date_ref": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "service_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "topic": {
+      "type": "string",
+      "enum": [
+        "error-cause",
+        "capability-gap",
+        "ui-ux-quality",
+        "execution-drift",
+        "decision-latency"
+      ]
+    },
+    "problem_statement": {
+      "type": "string",
+      "minLength": 20
+    },
+    "why_chain": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "string",
+        "minLength": 10
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "improvement_actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "action",
+          "owner",
+          "due_date_ref"
+        ],
+        "properties": {
+          "action": {
+            "type": "string",
+            "minLength": 10
+          },
+          "owner": {
+            "type": "string",
+            "minLength": 1
+          },
+          "due_date_ref": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "target_date_ref": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in-progress",
+        "closed"
+      ]
+    }
+  },
+  "additionalProperties": false
+}

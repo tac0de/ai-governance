@@ -3,7 +3,7 @@
   "policy_id": "version-promotion",
   "definition": {
     "pre_v1": "All governed services remain pre-v1 while the product is exploratory, internally evaluated, or visually/operationally unstable.",
-    "v1_0": "A governed service may be called v1.0 only when market usefulness is evidenced and the human architect is using it as an active business instrument."
+    "v1_0": "A governed service may be called v1.0 only when market usefulness is evidenced, policy bundle and approval audits are reproducible, and the human architect is using it as an active business instrument."
   },
   "gates": {
     "required_all": [
@@ -32,6 +32,22 @@
         "notes": [
           "The service must pass a production-lane review with no unresolved high-risk deterministic failures."
         ]
+      },
+      {
+        "gate_id": "policy-bundle-reproducible",
+        "evidence_type": "policy-bundle-receipt",
+        "rule": "at_least_one",
+        "notes": [
+          "The policy bundle used for approval and release gates must be replayable from immutable references."
+        ]
+      },
+      {
+        "gate_id": "approval-audit-trail",
+        "evidence_type": "approval-log-receipt",
+        "rule": "at_least_one",
+        "notes": [
+          "Approval and gate decisions must be trace-linked and audit-complete."
+        ]
       }
     ],
     "required_metrics": [
@@ -44,11 +60,16 @@
         "metric_id": "critical-incident-count",
         "operator": "==",
         "value": 0
+      },
+      {
+        "metric_id": "audit-coverage-ratio",
+        "operator": ">=",
+        "value": 1
       }
     ]
   },
   "promotion_flow": [
-    "Collect evidence hashes for market-proof, operator-business-use, and production-stability.",
+    "Collect evidence hashes for market-proof, operator-business-use, production-stability, policy-bundle-reproducible, and approval-audit-trail.",
     "Confirm the service has operated through the required stability window.",
     "Issue a release-review verdict referencing the evidence hashes.",
     "Only then may the service version be promoted to 1.0."
@@ -56,6 +77,7 @@
   "anti_patterns": [
     "Declaring v1 because the implementation feels complete without business use.",
     "Declaring v1 from internal enthusiasm alone.",
-    "Declaring v1 while market proof exists but the human architect does not actively rely on the service."
+    "Declaring v1 while market proof exists but the human architect does not actively rely on the service.",
+    "Declaring v1 without reproducible policy bundle references and approval audit logs."
   ]
 }

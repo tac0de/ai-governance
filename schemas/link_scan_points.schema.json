@@ -50,7 +50,7 @@
     },
     "scan_points": {
       "type": "array",
-      "minItems": 4,
+      "minItems": 6,
       "items": {
         "type": "object",
         "required": [
@@ -74,8 +74,10 @@
           "phase_gate": {
             "type": "string",
             "enum": [
-              "request",
-              "grant",
+              "intake",
+              "link",
+              "baseline",
+              "plan",
               "review",
               "release"
             ]

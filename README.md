@@ -1,4 +1,4 @@
-# ai-governance v0.7
+# ai-governance v0.7.4
 
 Simple, readable governance for independent AI services.
 
@@ -25,10 +25,11 @@ It does not keep service runtime state.
 The flow is fixed:
 
 1. Work enters through a temporary link.
-2. The service executes locally.
-3. The service emits a snapshot and a hygiene report.
-4. Governance validates structure, trace state, and release gates.
-5. Release is allowed only when required scans and monitoring checks are clear.
+2. Boundary seal is validated under `governance/**` only.
+3. The service emits baseline scans and DTP evidence.
+4. The service writes a daily reflection packet with concrete root-cause evidence.
+5. Governance validates structure, trace state, and release gates.
+6. Release is allowed only when required scans and monitoring checks are clear.
 
 If a required scan is missing, the link is incomplete and release stays blocked.
 
@@ -46,6 +47,10 @@ Minimum kernel:
 - `service.yaml`
 - `.gitignore`
 - `governance/service.contract.json`
+- `governance/VERSION`
+- `governance/policies/`
+- `governance/bin/`
+- `governance/plan.json`
 - `governance/dtp/`
 - `governance/links/active/`
 - `governance/evidence/`
@@ -75,7 +80,7 @@ Optional helper language:
 
 - `py`
 
-Not used in `v0.7`:
+Not used in `v0.7.4`:
 
 - `rust`
 
@@ -109,6 +114,14 @@ This checks:
 For service-local linking, monitoring bootstrap, and the base `tools/governance_link.sh` pattern, use:
 
 - [docs/service-bootstrap.md](/Users/wonyoung_choi/ai-governance/docs/service-bootstrap.md)
+
+### Architecture Map (v0.7.4 Work)
+
+- [docs/architecture-map.v0.7.4.md](/Users/wonyoung_choi/ai-governance/docs/architecture-map.v0.7.4.md)
+
+### Release Notes (v0.7.4)
+
+- [docs/release-notes.v0.7.4.md](/Users/wonyoung_choi/ai-governance/docs/release-notes.v0.7.4.md)
 
 ### Why It Exists
 
@@ -145,10 +158,11 @@ This repository is a governance kernel, not a runtime platform.
 흐름은 고정되어 있습니다.
 
 1. 작업이 temporary link로 들어옵니다.
-2. 실제 실행은 서비스 로컬에서 일어납니다.
-3. 서비스가 snapshot과 hygiene report를 남깁니다.
-4. 거버넌스가 구조, trace 상태, release gate를 검증합니다.
-5. 필수 스캔과 모니터링 검사가 모두 깨끗할 때만 release가 가능합니다.
+2. `governance/**` 경계 봉인을 먼저 검증합니다.
+3. 서비스가 baseline 스캔과 DTP 증빙을 남깁니다.
+4. 서비스는 매일 구체 근거 기반 reflection packet을 남깁니다.
+5. 거버넌스가 구조, trace 상태, release gate를 검증합니다.
+6. 필수 스캔과 모니터링 검사가 모두 깨끗할 때만 release가 가능합니다.
 
 필수 스캔이 하나라도 없으면 link는 incomplete 상태이고, release는 차단됩니다.
 
@@ -166,6 +180,10 @@ This repository is a governance kernel, not a runtime platform.
 - `service.yaml`
 - `.gitignore`
 - `governance/service.contract.json`
+- `governance/VERSION`
+- `governance/policies/`
+- `governance/bin/`
+- `governance/plan.json`
 - `governance/dtp/`
 - `governance/links/active/`
 - `governance/evidence/`
@@ -195,7 +213,7 @@ This repository is a governance kernel, not a runtime platform.
 
 - `py`
 
-`v0.7`에서 사용하지 않는 언어:
+`v0.7.4`에서 사용하지 않는 언어:
 
 - `rust`
 
@@ -217,6 +235,14 @@ This repository is a governance kernel, not a runtime platform.
 ```bash
 bash scripts/validate_all.sh
 ```
+
+### 아키텍처 맵 (v0.7.4 작업)
+
+- [docs/architecture-map.v0.7.4.md](/Users/wonyoung_choi/ai-governance/docs/architecture-map.v0.7.4.md)
+
+### 릴리즈 노트 (v0.7.4)
+
+- [docs/release-notes.v0.7.4.md](/Users/wonyoung_choi/ai-governance/docs/release-notes.v0.7.4.md)
 
 이 스크립트는 다음을 확인합니다.
 

@@ -10,12 +10,14 @@
   "central_forbids": [
     "Owning service-local runtimes.",
     "Special-casing proprietary invocation protocols.",
-    "Treating API telemetry as a substitute for human approval or release gates."
+    "Treating API telemetry as a substitute for human approval or release gates.",
+    "Mutating or approving mutations outside governance/** during link or apply stages."
   ],
   "service_runtime_rule": [
     "API clients stay in the service repository.",
     "Browser automation and runtime tools stay in the service repository.",
-    "All external execution must emit receipt-linked artifacts."
+    "All external execution must emit receipt-linked artifacts.",
+    "If out-of-boundary mutations are detected, they must be reverted and recorded as remediation evidence before release."
   ],
   "language_policy": {
     "required_core": [

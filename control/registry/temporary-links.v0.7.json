@@ -3,35 +3,42 @@
   "purpose": "Define the temporary-link handshake with mandatory scan closure and incomplete-state handling.",
   "link_contract": {
     "phases": [
-      "request",
-      "grant",
-      "execute-local",
+      "intake",
+      "link",
+      "baseline",
+      "plan",
       "review",
       "release"
     ],
     "phase_scan_map": [
       {
-        "phase": "request",
+        "phase": "intake",
         "required_scans": [
-          "intake-scan"
+          "intake-contract-scan"
         ]
       },
       {
-        "phase": "grant",
+        "phase": "link",
         "required_scans": [
-          "pre-exec-scan"
+          "boundary-seal-scan"
         ]
       },
       {
-        "phase": "execute-local",
+        "phase": "baseline",
         "required_scans": [
-          "pre-exec-scan"
+          "baseline-scan"
+        ]
+      },
+      {
+        "phase": "plan",
+        "required_scans": [
+          "plan-scan"
         ]
       },
       {
         "phase": "review",
         "required_scans": [
-          "post-exec-scan"
+          "review-gate-scan"
         ]
       },
       {
@@ -43,17 +50,21 @@
     ],
     "completion_rule": {
       "required_scans_for_completed": [
-        "intake-scan",
-        "pre-exec-scan",
-        "post-exec-scan",
+        "intake-contract-scan",
+        "boundary-seal-scan",
+        "baseline-scan",
+        "plan-scan",
+        "review-gate-scan",
         "pre-release-scan"
       ],
       "missing_scan_status": "incomplete",
       "production_requires_scan": "pre-release-scan",
       "exploration_requires_scans": [
-        "intake-scan",
-        "pre-exec-scan",
-        "post-exec-scan"
+        "intake-contract-scan",
+        "boundary-seal-scan",
+        "baseline-scan",
+        "plan-scan",
+        "review-gate-scan"
       ]
     },
     "residue_policy": {
@@ -78,10 +89,13 @@
         "link.request.json",
         "link.grant.json",
         "link.route.json",
-        "scan.intake.json",
-        "scan.pre-exec.json",
-        "scan.post-exec.json",
+        "scan.intake-contract.json",
+        "scan.boundary-seal.json",
+        "scan.baseline.json",
+        "scan.plan.json",
+        "scan.review-gate.json",
         "review.outcome.json",
+        "gate.approval.json",
         "residue.check.json",
         "status.json"
       ],
@@ -106,7 +120,7 @@
       ],
       "completion_invariants": [
         "completion_state is computed from scan presence and residue state",
-        "completed requires all lane-required scans, review.outcome.json, and residue_state=none",
+        "completed requires all lane-required scans, review.outcome.json, gate.approval.json, and residue_state=none",
         "missing required scans force completion_state=incomplete",
         "incomplete links remain unreleasable"
       ]
@@ -118,6 +132,9 @@
       "A temporary link may grant guidance, validation, or approval gates, but not central runtime custody.",
       "A missing required scan leaves the link incomplete and blocks release.",
       "Production links may not reach a completed state without a pre-release-scan.",
+      "Plan approval must exist before any apply execution is allowed.",
+      "Apply execution must remain inside governance/** writable boundaries.",
+      "Any detected mutation outside governance/** must be reverted and referenced by remediation evidence before release.",
       "Temporary-link kits must use the fixed file set under governance/links/active/<link-id> with no extra root-level files.",
       "Evidence payloads and review payloads referenced by the link kit must remain outside the kit folder in the fixed governance roots."
     ]
