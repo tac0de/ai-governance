@@ -10,7 +10,8 @@
     "forbidden_mutations",
     "retention_model",
     "dtp",
-    "telemetry_sync_boundary"
+    "telemetry_sync_boundary",
+    "daily_reflection"
   ],
   "properties": {
     "version": {
@@ -148,6 +149,51 @@
           }
         },
         "requirements": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "daily_reflection": {
+      "type": "object",
+      "required": [
+        "required",
+        "store_path",
+        "minimum_fields",
+        "topics",
+        "rules"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean",
+          "const": true
+        },
+        "store_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "minimum_fields": {
+          "type": "array",
+          "minItems": 5,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "topics": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "rules": {
           "type": "array",
           "minItems": 1,
           "items": {

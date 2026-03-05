@@ -175,28 +175,18 @@ check_exact_files_in_dir "scripts" \
   "validate_all.sh"
 
 check_exact_files_in_dir ".github/workflows" \
-  "deterministic-governance.yml" \
-  "github-pages-showcase.yml"
+  "deterministic-governance.yml"
 
 check_file "LICENSE"
 check_file "CONTRIBUTING.md"
 check_file "SECURITY.md"
 check_file "README.md"
 
-check_allowed_entries_in_dir "control" "agents" "registry" "specs"
-check_exact_files_in_dir "control/agents" \
-  "departments.v0.7.json" \
-  "role.catalog.v0.7.json"
+check_allowed_entries_in_dir "control" "registry" "specs"
 check_exact_files_in_dir "control/registry" \
-  "department-flow.v0.7.json" \
   "launch-readiness.v0.7.json" \
   "link-scan-points.v0.7.json" \
-  "linked-services.v0.7.json" \
-  "service-diet.v0.7.json" \
   "service-kernel.v0.7.json" \
-  "service-monitoring.v0.7.json" \
-  "service-normalization.v0.7.json" \
-  "service-role-allocation.v0.7.json" \
   "temporary-links.v0.7.json" \
   "version-promotion.v0.7.json"
 check_exact_files_in_dir "control/specs" \
@@ -206,31 +196,19 @@ check_exact_files_in_dir "policies" \
   "external_execution_boundary.v0.7.json"
 
 check_exact_files_in_dir "schemas" \
-  "department_flow.schema.json" \
   "launch_readiness.schema.json" \
   "link_scan_points.schema.json" \
-  "service_diet.schema.json" \
-  "service_hygiene_report.schema.json" \
+  "reflection_packet.schema.json" \
   "service_kernel.schema.json" \
-  "service_monitoring.schema.json" \
-  "service_normalization.schema.json" \
-  "service_role_allocation.schema.json" \
-  "service_snapshot.schema.json" \
   "trace_record.schema.json" \
   "trace_rules.schema.json" \
   "version_promotion_policy.schema.json"
 
 for schema_rel in \
-  schemas/department_flow.schema.json \
   schemas/launch_readiness.schema.json \
   schemas/link_scan_points.schema.json \
-  schemas/service_diet.schema.json \
-  schemas/service_hygiene_report.schema.json \
+  schemas/reflection_packet.schema.json \
   schemas/service_kernel.schema.json \
-  schemas/service_monitoring.schema.json \
-  schemas/service_normalization.schema.json \
-  schemas/service_role_allocation.schema.json \
-  schemas/service_snapshot.schema.json \
   schemas/trace_record.schema.json \
   schemas/trace_rules.schema.json \
   schemas/version_promotion_policy.schema.json
@@ -245,30 +223,24 @@ do
 done
 
 for governance_rel in \
-  control/agents/departments.v0.7.json \
-  control/agents/role.catalog.v0.7.json \
   control/specs/trace_rules.v0.7.json \
-  control/registry/department-flow.v0.7.json \
   control/registry/launch-readiness.v0.7.json \
   control/registry/link-scan-points.v0.7.json \
-  control/registry/linked-services.v0.7.json \
-  control/registry/service-diet.v0.7.json \
   control/registry/service-kernel.v0.7.json \
-  control/registry/service-monitoring.v0.7.json \
-  control/registry/service-normalization.v0.7.json \
-  control/registry/service-role-allocation.v0.7.json \
   control/registry/temporary-links.v0.7.json \
   control/registry/version-promotion.v0.7.json
 do
   check_json "$governance_rel"
 done
 
-validate_jq_contract "policies/external_execution_boundary.v0.7.json" "schemas/service_monitoring.schema.json" '
+validate_jq_contract "policies/external_execution_boundary.v0.7.json" "schemas/trace_rules.schema.json" '
   .version=="v0.7" and
   .policy_id=="external-execution-boundary" and
   (.central_allows|type=="array" and length==3) and
-  (.central_forbids|type=="array" and length==3) and
-  (.service_runtime_rule|type=="array" and length==3) and
+  (.central_forbids|type=="array" and length==4) and
+  (.service_runtime_rule|type=="array" and length==4) and
+  ((.central_forbids | map(test("outside governance/\\*\\*")) | any)) and
+  ((.service_runtime_rule | map(test("out-of-boundary mutations")) | any)) and
   (.language_policy.required_core==["json","yaml","sh"]) and
   (.language_policy.allowed_optional==["py"]) and
   (.language_policy.excluded_in_v0_7==["rs","rust"])
@@ -278,14 +250,18 @@ validate_jq_contract "control/specs/trace_rules.v0.7.json" "schemas/trace_rules.
   .version=="v0.7" and
   (.append_only==true) and
   (.hash_reference_required==true) and
-  (.allowed_record_types|type=="array" and length==4) and
+  (.allowed_record_types|type=="array" and length==5) and
   ((.allowed_record_types | index("service_snapshot_packet")) != null) and
   ((.allowed_record_types | index("service_hygiene_packet")) != null) and
   ((.allowed_record_types | index("monitoring_sync_receipt")) != null) and
+  ((.allowed_record_types | index("daily_reflection_packet")) != null) and
   (.retention_model.primary_store=="service-local-governance/dtp/") and
   (.retention_model.export_path=="service-local-governance/dtp/api-sync/") and
   (.dtp.root_path=="governance/dtp/") and
   (.dtp.required_paths|type=="array" and length==3) and
+  (.daily_reflection.required==true) and
+  (.daily_reflection.minimum_fields|type=="array" and length>=10) and
+  ((.daily_reflection.topics | index("ui-ux-quality")) != null) and
   (.telemetry_sync_boundary.transport=="http-api") and
   (.telemetry_sync_boundary.ownership=="service-local")
 '
@@ -293,78 +269,56 @@ validate_jq_contract "control/specs/trace_rules.v0.7.json" "schemas/trace_rules.
 validate_jq_contract "control/registry/service-kernel.v0.7.json" "schemas/service_kernel.schema.json" '
   .version=="v0.7" and
   (.required_root_entries|length==6) and
-  (.required_governance_entries|length==11) and
+  (.required_governance_entries|length==15) and
   (.required_orchestration_entries|length==4) and
   (.required_prompt_entries|length==5) and
   ((.required_root_entries | map(.path) | index("orchestration")) != null) and
   ((.required_root_entries | map(.path) | index("prompts")) != null) and
+  ((.required_governance_entries | map(.path) | index("governance/VERSION")) != null) and
+  ((.required_governance_entries | map(.path) | index("governance/policies")) != null) and
+  ((.required_governance_entries | map(.path) | index("governance/bin")) != null) and
+  ((.required_governance_entries | map(.path) | index("governance/plan.json")) != null) and
   ((.required_governance_entries | map(.path) | index("governance/monitoring/service.snapshot.json")) != null) and
   ((.required_governance_entries | map(.path) | index("governance/monitoring/hygiene.report.json")) != null)
 '
 
-validate_jq_contract "control/registry/service-normalization.v0.7.json" "schemas/service_normalization.schema.json" '
+validate_jq_contract "control/registry/link-scan-points.v0.7.json" "schemas/link_scan_points.schema.json" '
   .version=="v0.7" and
-  (.required_phases|length==6) and
-  (.completion_rule.repeat_mode=="initial-alignment-only") and
-  ((.required_phases | map(.phase_id) | index("orchestration-alignment")) != null) and
-  ((.required_phases | map(.phase_id) | index("prompt-pack-alignment")) != null) and
-  ((.required_phases | map(.phase_id) | index("monitoring-alignment")) != null)
+  (.scan_points|length==6) and
+  ((.scan_points | map(.id) | index("intake-contract-scan")) != null) and
+  ((.scan_points | map(.id) | index("boundary-seal-scan")) != null) and
+  ((.scan_points | map(.id) | index("baseline-scan")) != null) and
+  ((.scan_points | map(.id) | index("plan-scan")) != null) and
+  ((.scan_points | map(.id) | index("review-gate-scan")) != null) and
+  ((.scan_points | map(.id) | index("pre-release-scan")) != null)
 '
 
-validate_jq_contract "control/registry/service-diet.v0.7.json" "schemas/service_diet.schema.json" '
+validate_jq_contract "control/registry/temporary-links.v0.7.json" "schemas/link_scan_points.schema.json" '
   .version=="v0.7" and
-  (.scan_axes|length==6) and
-  ((.scan_axes | map(.axis_id) | index("structural-drift")) != null) and
-  ((.scan_axes | map(.axis_id) | index("oversized-surface")) != null) and
-  (.required_outputs|type=="array" and length==5) and
-  ((.required_outputs | index("delete_review_candidates_ref")) != null) and
-  (.cleanup_modes|type=="array" and length==6) and
-  ((.cleanup_modes | index("apply-safe-fixes")) != null) and
-  ((.cleanup_modes | index("apply-archive")) != null) and
-  ((.cleanup_modes | index("apply-cleanup-review")) != null) and
-  (.auto_fix_scope.auto_create_missing_required_paths==true) and
-  (.auto_fix_scope.auto_write_missing_monitoring_artifacts==true) and
-  (.auto_fix_scope.auto_move_archive_candidates==false) and
-  (.auto_fix_scope.auto_delete_review_candidates==false) and
-  ((.status_levels | map(.status) | index("cleanup-required")) != null)
-'
-
-validate_jq_contract "control/registry/service-monitoring.v0.7.json" "schemas/service_monitoring.schema.json" '
-  .version=="v0.7" and
-  (.required_artifacts|type=="array" and length==3) and
-  ((.required_artifacts | index("service.snapshot.json")) != null) and
-  ((.required_artifacts | index("hygiene.report.json")) != null) and
-  ((.required_artifacts | index("cleanup_action_ref")) != null) and
-  (.monitoring_status_levels|type=="array" and length==4) and
-  ((.monitoring_status_levels | index("cleanup-required")) != null)
-'
-
-validate_jq_contract "control/registry/service-role-allocation.v0.7.json" "schemas/service_role_allocation.schema.json" '
-  .version=="v0.7" and
-  (.required_role_families|type=="array" and length>=5) and
-  ((.required_role_families | index("product")) != null) and
-  ((.required_role_families | index("operations")) != null) and
-  (.profile_defaults|type=="array" and length==3) and
-  (all(.profile_defaults[]; (.required_roles|length>=6))) and
-  (all(.profile_defaults[]; (.recommended_roles|type=="array"))) and
-  ((.orchestration_binding_rules | map(test("assigned_roles")) | any))
-'
-
-validate_jq_contract "control/registry/linked-services.v0.7.json" "schemas/service_monitoring.schema.json" '
-  .version=="v0.7" and
-  (.services|type=="array" and length==3) and
-  ((.services | map(.id) | sort) == ["kakao-bot","plotnodes","thedivineparadox"]) and
-  (all(.services[]; (.runtime_repo_path|test("^external://")))) and
-  (all(.services[]; has("monitoring_status") and has("last_snapshot_ref") and has("last_hygiene_report_ref") and has("cleanup_action_ref")))
+  (.link_contract.phases|length==6) and
+  ((.link_contract.phases | index("intake")) != null) and
+  ((.link_contract.phases | index("link")) != null) and
+  ((.link_contract.phases | index("baseline")) != null) and
+  ((.link_contract.phases | index("plan")) != null) and
+  ((.link_contract.phases | index("review")) != null) and
+  ((.link_contract.phases | index("release")) != null) and
+  ((.link_contract.completion_rule.required_scans_for_completed | index("pre-release-scan")) != null) and
+  ((.link_contract.hard_rules | map(test("outside governance/\\*\\*")) | any))
 '
 
 validate_jq_contract "control/registry/launch-readiness.v0.7.json" "schemas/launch_readiness.schema.json" '
   .version=="v0.7" and
+  ((.gates.required_checks | map(.check_id) | index("baseline-recorded")) != null) and
+  ((.gates.required_checks | map(.check_id) | index("plan-approved")) != null) and
+  ((.gates.required_checks | map(.check_id) | index("apply-boundary-sealed")) != null) and
   ((.gates.required_checks | map(.check_id) | index("monitoring-clear")) != null)
 '
 
 validate_jq_contract "control/registry/version-promotion.v0.7.json" "schemas/version_promotion_policy.schema.json" '
-  .version=="v0.7"
+  .version=="v0.7" and
+  ((.gates.required_all | map(.gate_id) | index("policy-bundle-reproducible")) != null) and
+  ((.gates.required_all | map(.gate_id) | index("approval-audit-trail")) != null) and
+  ((.gates.required_metrics | map(.metric_id) | index("audit-coverage-ratio")) != null)
 '
 
 if (( errors > 0 )); then

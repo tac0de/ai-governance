@@ -1,83 +1,112 @@
 {
   "version": "v0.7",
   "model": "link-scan-catalog",
-  "purpose": "Define the mandatory scan points that close temporary-link work into a deterministic reviewable loop.",
+  "purpose": "Define the mandatory 6-stage scan points that close governance work into a deterministic reviewable loop.",
   "lane_minimums": {
     "exploration": [
-      "intake-scan",
-      "pre-exec-scan",
-      "post-exec-scan"
+      "intake-contract-scan",
+      "boundary-seal-scan",
+      "baseline-scan",
+      "plan-scan",
+      "review-gate-scan"
     ],
     "production": [
-      "intake-scan",
-      "pre-exec-scan",
-      "post-exec-scan",
+      "intake-contract-scan",
+      "boundary-seal-scan",
+      "baseline-scan",
+      "plan-scan",
+      "review-gate-scan",
       "pre-release-scan"
     ]
   },
   "scan_points": [
     {
-      "id": "intake-scan",
+      "id": "intake-contract-scan",
       "order": 1,
-      "phase_gate": "request",
-      "purpose": "Classify intent, lane, and initial risk before central role or capability assignment.",
+      "phase_gate": "intake",
+      "purpose": "Freeze least-privilege access intent and policy bundle before any link action.",
       "required_fields": [
         "service_id",
-        "change_class",
         "lane_id",
-        "intent_ref",
-        "requested_roles",
-        "requested_capabilities",
-        "risk_tier",
+        "access_mode",
+        "policy_bundle_ref",
+        "contract_owner",
         "expected_outputs"
       ],
       "fail_if_missing": true,
       "blocks_release": true
     },
     {
-      "id": "pre-exec-scan",
+      "id": "boundary-seal-scan",
       "order": 2,
-      "phase_gate": "grant",
-      "purpose": "Freeze granted scope, forbidden actions, evidence shape, and department route before local execution.",
+      "phase_gate": "link",
+      "purpose": "Confirm governance boundary is sealed under governance-only writable paths.",
       "required_fields": [
-        "link_receipt_ref",
-        "granted_roles",
-        "granted_capabilities",
-        "department_route",
-        "forbidden_actions",
-        "required_evidence_types",
-        "rollback_trigger_set"
+        "boundary_root",
+        "governance_version_ref",
+        "governance_policy_path",
+        "governance_bin_path",
+        "root_mutation_detected"
       ],
       "fail_if_missing": true,
       "blocks_release": true
     },
     {
-      "id": "post-exec-scan",
+      "id": "baseline-scan",
       "order": 3,
-      "phase_gate": "review",
-      "purpose": "Verify scope fidelity, policy exceptions, and link residue after local execution.",
+      "phase_gate": "baseline",
+      "purpose": "Record dependency, build, test, performance-budget, and security baseline evidence into DTP.",
       "required_fields": [
-        "evidence_ref",
-        "verification_ref",
-        "scope_diff",
+        "baseline_ref",
+        "dependency_snapshot_ref",
+        "build_status",
+        "test_status",
+        "lighthouse_budget_status",
+        "security_scan_status"
+      ],
+      "fail_if_missing": true,
+      "blocks_release": true
+    },
+    {
+      "id": "plan-scan",
+      "order": 4,
+      "phase_gate": "plan",
+      "purpose": "Validate governance plan shape, allowlist boundary, and approval requirement before apply.",
+      "required_fields": [
+        "plan_ref",
+        "plan_schema_ref",
+        "allowlist_ref",
+        "approval_required",
+        "approval_status"
+      ],
+      "fail_if_missing": true,
+      "blocks_release": true
+    },
+    {
+      "id": "review-gate-scan",
+      "order": 5,
+      "phase_gate": "review",
+      "purpose": "Verify review decision and approval log are complete before execution is allowed.",
+      "required_fields": [
+        "review_outcome",
+        "approval_log_ref",
         "policy_exceptions",
-        "link_residue_check",
-        "reviewer_role",
-        "outcome"
+        "open_risks",
+        "reviewer_role"
       ],
       "fail_if_missing": true,
       "blocks_release": true
     },
     {
       "id": "pre-release-scan",
-      "order": 4,
+      "order": 6,
       "phase_gate": "release",
-      "purpose": "Confirm rollback readiness and final release gate outcome before production exposure.",
+      "purpose": "Confirm release gate outcome across policy-compliance, security, and Lighthouse checks.",
       "required_fields": [
         "release_review_ref",
-        "open_risks",
-        "rollback_plan_ref",
-        "promotion_impact",
+        "policy_compliance_gate",
+        "security_gate",
+        "lighthouse_gate",
         "production_gate_outcome"
       ],
       "fail_if_missing": true,

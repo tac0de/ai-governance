@@ -34,6 +34,22 @@
       "entry_type": "file"
     },
     {
+      "path": "governance/VERSION",
+      "entry_type": "file"
+    },
+    {
+      "path": "governance/policies",
+      "entry_type": "directory"
+    },
+    {
+      "path": "governance/bin",
+      "entry_type": "directory"
+    },
+    {
+      "path": "governance/plan.json",
+      "entry_type": "file"
+    },
+    {
       "path": "governance/dtp",
       "entry_type": "directory"
     },
@@ -172,6 +188,7 @@
     "The governance kernel is mandatory for independently linked services.",
     "All independent services must expose orchestration and prompts as fixed public-readable execution surfaces.",
     "Monitoring artifacts under governance/monitoring are mandatory for both new and existing linked services.",
+    "The boundary seal entries governance/VERSION, governance/policies, governance/bin, and governance/plan.json are mandatory.",
     "The central governance kernel defines required filenames only; it does not generate or own service-local content.",
     "Implementation folders outside the required kernel remain service-local and unconstrained by central governance.",
     "Temporary-link kits must live under governance/links/active while evidence and review payloads remain outside the active link kit."

@@ -3,7 +3,7 @@
   "policy_id": "launch-readiness",
   "definition": {
     "pre_launch": "A governed service remains pre-launch while operational readiness is incomplete, even if the implementation appears feature complete.",
-    "launch_ready": "A governed service may be called launch-ready only when rollback, operator ownership, current evidence, and service hygiene clearance are all in place for production exposure."
+    "launch_ready": "A governed service may be called launch-ready only when rollback, operator ownership, current evidence, governance boundary seal, and approval-auditable execution readiness are all in place for production exposure."
   },
   "gates": {
     "required_all": [
@@ -56,6 +56,27 @@
         ]
       },
       {
+        "check_id": "baseline-recorded",
+        "rule": "must-pass",
+        "notes": [
+          "A current baseline packet must exist with dependency, build, test, Lighthouse budget, and security status evidence."
+        ]
+      },
+      {
+        "check_id": "plan-approved",
+        "rule": "must-pass",
+        "notes": [
+          "governance/plan.json must be approved before apply execution is allowed."
+        ]
+      },
+      {
+        "check_id": "apply-boundary-sealed",
+        "rule": "must-pass",
+        "notes": [
+          "Apply intent must be constrained to governance/** and must not mutate runtime paths."
+        ]
+      },
+      {
         "check_id": "no-blocking-risk",
         "rule": "must-pass",
         "notes": [
@@ -87,6 +108,7 @@
     "Calling a service launch-ready because the UI looks finished while operational ownership is still unclear.",
     "Calling a service launch-ready without a rollback plan.",
     "Using launch-ready as a substitute for market proof.",
+    "Calling a service launch-ready before governance/plan.json approval is recorded.",
     "Calling a service launch-ready when the current DTP validator receipt does not match the active trace head.",
     "Calling a service launch-ready while service hygiene is in cleanup-required status."
   ]
