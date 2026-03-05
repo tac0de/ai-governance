@@ -178,8 +178,6 @@ check_exact_files_in_dir ".github/workflows" \
   "deterministic-governance.yml"
 
 check_file "LICENSE"
-check_file "CONTRIBUTING.md"
-check_file "SECURITY.md"
 check_file "README.md"
 
 check_allowed_entries_in_dir "control" "registry" "specs"

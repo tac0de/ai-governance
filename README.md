@@ -1,4 +1,4 @@
-# ai-governance v0.7.4
+# ai-governance v0.7.41
 
 Simple, readable governance for independent AI services.
 
@@ -80,7 +80,7 @@ Optional helper language:
 
 - `py`
 
-Not used in `v0.7.4`:
+Not used in `v0.7.41`:
 
 - `rust`
 
@@ -108,20 +108,6 @@ This checks:
 - repository shape
 - contract validity
 - fixed baseline drift
-
-### Bootstrap Reference
-
-For service-local linking, monitoring bootstrap, and the base `tools/governance_link.sh` pattern, use:
-
-- [docs/service-bootstrap.md](/Users/wonyoung_choi/ai-governance/docs/service-bootstrap.md)
-
-### Architecture Map (v0.7.4 Work)
-
-- [docs/architecture-map.v0.7.4.md](/Users/wonyoung_choi/ai-governance/docs/architecture-map.v0.7.4.md)
-
-### Release Notes (v0.7.4)
-
-- [docs/release-notes.v0.7.4.md](/Users/wonyoung_choi/ai-governance/docs/release-notes.v0.7.4.md)
 
 ### Why It Exists
 
@@ -213,7 +199,7 @@ This repository is a governance kernel, not a runtime platform.
 
 - `py`
 
-`v0.7.4`에서 사용하지 않는 언어:
+`v0.7.41`에서 사용하지 않는 언어:
 
 - `rust`
 
@@ -236,25 +222,11 @@ This repository is a governance kernel, not a runtime platform.
 bash scripts/validate_all.sh
 ```
 
-### 아키텍처 맵 (v0.7.4 작업)
-
-- [docs/architecture-map.v0.7.4.md](/Users/wonyoung_choi/ai-governance/docs/architecture-map.v0.7.4.md)
-
-### 릴리즈 노트 (v0.7.4)
-
-- [docs/release-notes.v0.7.4.md](/Users/wonyoung_choi/ai-governance/docs/release-notes.v0.7.4.md)
-
 이 스크립트는 다음을 확인합니다.
 
 - 저장소 구조
 - 계약 JSON의 형태
 - 기준선 해시 드리프트
-
-### 부트스트랩 기준 문서
-
-서비스 로컬 링킹, 모니터링 부트스트랩, `tools/governance_link.sh` 기본 패턴은 아래 문서를 기준으로 사용합니다.
-
-- [docs/service-bootstrap.md](/Users/wonyoung_choi/ai-governance/docs/service-bootstrap.md)
 
 ### 왜 공개하는가
 
