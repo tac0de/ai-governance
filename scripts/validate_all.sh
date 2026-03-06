@@ -175,7 +175,8 @@ check_exact_files_in_dir "scripts" \
   "validate_all.sh"
 
 check_exact_files_in_dir ".github/workflows" \
-  "deterministic-governance.yml"
+  "deterministic-governance.yml" \
+  "github-pages.yml"
 
 check_file "LICENSE"
 check_file "README.md"
