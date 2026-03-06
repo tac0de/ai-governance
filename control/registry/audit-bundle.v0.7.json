@@ -1,0 +1,28 @@
+{
+  "version": "v0.7",
+  "model": "audit-bundle",
+  "purpose": "Define the one-shot exportable audit bundle that can be handed to a customer or auditor as a replayable governance evidence package.",
+  "required_fields": [
+    "bundle_id",
+    "customer_id",
+    "service_id",
+    "link_id",
+    "auth_contract_ref",
+    "approval_receipt_ref",
+    "baseline_summary_ref",
+    "release_verdict_ref",
+    "reflection_summary_ref",
+    "policy_bundle_refs",
+    "protocol_chain_refs",
+    "export_format"
+  ],
+  "export_format_values": [
+    "json-bundle"
+  ],
+  "hard_rules": [
+    "Customer-facing audit bundles must be exportable in one shot without manual reconstruction.",
+    "Audit bundles must be hash-replayable from immutable refs.",
+    "Missing auth, approval, baseline, release, policy, or protocol refs make the bundle invalid.",
+    "Compressed or attached export formats are outside v0.7 and must not replace json-bundle."
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "pack_id": "audit-bundle",
+  "version": "v0.7",
+  "entry_script": "render.sh",
+  "template_file": "bundle.template.json"
+}

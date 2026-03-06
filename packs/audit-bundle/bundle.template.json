@@ -1,0 +1,18 @@
+{
+  "bundle_id": "sample-bundle",
+  "customer_id": "sample-customer",
+  "service_id": "sample-service",
+  "link_id": "sample-link",
+  "auth_contract_ref": "governance/links/active/sample-link/auth.contract.json",
+  "approval_receipt_ref": "governance/links/active/sample-link/approval.receipt.json",
+  "baseline_summary_ref": "governance/monitoring/service.snapshot.json",
+  "release_verdict_ref": "governance/reviews/release.verdict.json",
+  "reflection_summary_ref": "governance/dtp/validator.receipt.json",
+  "policy_bundle_refs": [
+    "governance/policies"
+  ],
+  "protocol_chain_refs": [
+    "governance/dtp/trace.jsonl"
+  ],
+  "export_format": "json-bundle"
+}

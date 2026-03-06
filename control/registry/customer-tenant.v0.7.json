@@ -1,0 +1,33 @@
+{
+  "version": "v0.7",
+  "model": "service-customer",
+  "purpose": "Define the customer and tenant contract for a service that must operate with customer-specific policy, support, approval, and data boundaries.",
+  "required_fields": [
+    "customer_id",
+    "service_id",
+    "tenant_id",
+    "policy_bundle_id",
+    "support_tier",
+    "data_boundary",
+    "approval_owner",
+    "service_tier_ref",
+    "status"
+  ],
+  "status_values": [
+    "active",
+    "restricted",
+    "suspended",
+    "archived"
+  ],
+  "support_tiers": [
+    "standard",
+    "priority",
+    "strategic"
+  ],
+  "hard_rules": [
+    "A service may govern multiple customers, but each customer must have an isolated policy bundle reference.",
+    "Scoped cleanup must not be approved when the customer approval owner is undefined.",
+    "Customer data boundaries must remain explicit before launch-ready status is granted.",
+    "Customer and tenant contracts must remain auditable and replayable from immutable refs."
+  ]
+}

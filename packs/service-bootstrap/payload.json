@@ -1,0 +1,99 @@
+{
+  "directories": [
+    "governance/policies",
+    "governance/bin",
+    "governance/dtp",
+    "governance/links/active",
+    "governance/evidence",
+    "governance/reviews",
+    "governance/monitoring",
+    "orchestration",
+    "prompts"
+  ],
+  "files": [
+    {
+      "path": "governance/VERSION",
+      "content": "v0.7.7\n"
+    },
+    {
+      "path": "governance/service.contract.json",
+      "content": "{\n  \"version\": \"v0.7\",\n  \"service_id\": \"sample-service\",\n  \"profile\": \"web-runtime\",\n  \"policy_bundle_id\": \"default-bundle\"\n}\n"
+    },
+    {
+      "path": "governance/plan.json",
+      "content": "{\n  \"version\": \"v0.7\",\n  \"status\": \"draft\",\n  \"steps\": []\n}\n"
+    },
+    {
+      "path": "governance/dtp/trace.jsonl",
+      "content": ""
+    },
+    {
+      "path": "governance/dtp/journal.index.json",
+      "content": "{\n  \"trace_path\": \"governance/dtp/trace.jsonl\",\n  \"trace_head\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n  \"record_count\": 0,\n  \"append_only\": true,\n  \"hash_algorithm\": \"sha256\",\n  \"last_validated_by\": \"bootstrap-pack\",\n  \"last_validated_at_ref\": \"1970-01-01\"\n}\n"
+    },
+    {
+      "path": "governance/dtp/validator.receipt.json",
+      "content": "{\n  \"trace_path\": \"governance/dtp/trace.jsonl\",\n  \"validated_trace_head\": \"0000000000000000000000000000000000000000000000000000000000000000\",\n  \"validated_record_count\": 0,\n  \"schema_ref\": \"trace_record.schema.json\",\n  \"trace_rules_ref\": \"control/specs/trace_rules.v0.7.json\",\n  \"verdict\": \"bootstrap\",\n  \"failures\": [],\n  \"receipt_hash\": \"bootstrap\"\n}\n"
+    },
+    {
+      "path": "governance/monitoring/service.snapshot.json",
+      "content": "{\n  \"status\": \"bootstrap\",\n  \"snapshot_ref\": \"pending\"\n}\n"
+    },
+    {
+      "path": "governance/monitoring/hygiene.report.json",
+      "content": "{\n  \"status\": \"pending\",\n  \"report_ref\": \"pending\"\n}\n"
+    },
+    {
+      "path": "orchestration/service.map.yaml",
+      "content": "service_id: sample-service\nruntime_profile: web-runtime\n"
+    },
+    {
+      "path": "orchestration/stack.profile.yaml",
+      "content": "profile_id: web-runtime\nruntime_owner: service-local\n"
+    },
+    {
+      "path": "orchestration/package-policy.yaml",
+      "content": "package_policy: conservative\n"
+    },
+    {
+      "path": "orchestration/execution.plan.md",
+      "content": "# Execution Plan\n\n- baseline\n- plan\n- gate\n"
+    },
+    {
+      "path": "orchestration/architecture.blueprint.yaml",
+      "content": "architecture_ref: pending\nexecution_boundary: governance-first\n"
+    },
+    {
+      "path": "orchestration/shell.contract.json",
+      "content": "{\n  \"plan_entry\": \"governance/bin/gov-plan\",\n  \"apply_entry\": \"governance/bin/gov-apply\",\n  \"gate_entry\": \"governance/bin/gov-gate\",\n  \"trace_entry\": \"governance/bin/gov-trace\"\n}\n"
+    },
+    {
+      "path": "prompts/ideation.md",
+      "content": "# Ideation\n\nDefine the service problem and possible solution directions.\n"
+    },
+    {
+      "path": "prompts/macro-planning.md",
+      "content": "# Macro Planning\n\nOutline milestones, risks, and release checkpoints.\n"
+    },
+    {
+      "path": "prompts/tech-selection.md",
+      "content": "# Tech Selection\n\nChoose the narrowest architecture and dependencies that satisfy the service goal.\n"
+    },
+    {
+      "path": "prompts/implementation-kickoff.md",
+      "content": "# Implementation Kickoff\n\nRestate the plan, constraints, and protected boundaries before execution.\n"
+    },
+    {
+      "path": "prompts/review-recovery.md",
+      "content": "# Review Recovery\n\nDocument review findings, rollback strategy, and remediation sequence.\n"
+    },
+    {
+      "path": "prompts/agent-system.md",
+      "content": "# Agent System\n\nDescribe the governed agent role, scope, and output expectations.\n"
+    },
+    {
+      "path": "prompts/collaboration-ideation.md",
+      "content": "# Collaboration Ideation\n\nCapture human and agent idea comparison, tradeoffs, and selected direction.\n"
+    }
+  ]
+}

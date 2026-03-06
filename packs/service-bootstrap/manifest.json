@@ -1,0 +1,11 @@
+{
+  "pack_id": "service-bootstrap",
+  "version": "v0.7",
+  "entry_script": "install.sh",
+  "payload_file": "payload.json",
+  "installs_surfaces": [
+    "governance",
+    "orchestration",
+    "prompts"
+  ]
+}

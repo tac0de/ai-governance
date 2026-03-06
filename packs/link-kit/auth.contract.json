@@ -1,0 +1,11 @@
+{
+  "link_id": "__LINK_ID__",
+  "client_id": "sample-customer",
+  "key_id": "sample-key",
+  "status": "active",
+  "allowed_scopes": [
+    "repo-read",
+    "governance-write",
+    "cleanup-review"
+  ]
+}

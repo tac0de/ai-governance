@@ -1,0 +1,6 @@
+{
+  "pack_id": "link-kit",
+  "version": "v0.7",
+  "entry_script": "install.sh",
+  "active_link_root": "governance/links/active/<link-id>"
+}

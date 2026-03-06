@@ -1,0 +1,9 @@
+{
+  "link_id": "__LINK_ID__",
+  "approval_receipt_id": "sample-approval",
+  "approved_mutation_scope": [
+    "governance/**"
+  ],
+  "allowed_cleanup_targets": [],
+  "verdict": "approved"
+}

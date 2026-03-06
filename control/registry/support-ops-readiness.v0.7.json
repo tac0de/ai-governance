@@ -1,0 +1,37 @@
+{
+  "version": "v0.7",
+  "model": "support-ops-readiness",
+  "purpose": "Define the minimum support, SLA, escalation, and billing readiness required for B2B service operation.",
+  "required_fields": [
+    "service_id",
+    "support_tier",
+    "sla_class",
+    "support_channel",
+    "billing_readiness_status",
+    "escalation_owner",
+    "incident_contact_ref",
+    "customer_evidence_refs"
+  ],
+  "support_tier_values": [
+    "standard",
+    "priority",
+    "strategic"
+  ],
+  "sla_class_values": [
+    "best-effort",
+    "business-hours",
+    "contractual"
+  ],
+  "billing_readiness_status_values": [
+    "undefined",
+    "manual",
+    "semi-structured",
+    "operational"
+  ],
+  "hard_rules": [
+    "Launch readiness must not pass without a declared support tier and escalation owner.",
+    "Billing readiness is a stated operating condition even before billing automation exists.",
+    "SLA class must be explicit before B2B operation is considered ready.",
+    "Customer evidence refs must be reviewable for support and escalation context."
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "version": "v0.7",
+  "model": "incident-exception",
+  "purpose": "Define the incident, exception, and emergency override contract required for B2B operating exceptions.",
+  "required_fields": [
+    "incident_id",
+    "customer_id",
+    "service_id",
+    "severity",
+    "exception_type",
+    "override_scope",
+    "approved_by",
+    "approved_at_ref",
+    "expires_at_ref",
+    "rollback_ref",
+    "post_incident_ref",
+    "status"
+  ],
+  "severity_values": [
+    "sev1",
+    "sev2",
+    "sev3"
+  ],
+  "exception_type_values": [
+    "temporary-exception",
+    "emergency-override",
+    "policy-waiver"
+  ],
+  "status_values": [
+    "open",
+    "mitigating",
+    "closed"
+  ],
+  "hard_rules": [
+    "Emergency override entries are invalid without an explicit expiry.",
+    "Override entries are invalid without a rollback ref.",
+    "Post-incident reflection must exist before the incident can be considered closed.",
+    "An override scope must not extend beyond the customer data boundary."
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "link_id": "__LINK_ID__",
+  "lane_id": "production",
+  "phase": "intake",
+  "required_scans": [
+    "intake-contract-scan",
+    "boundary-seal-scan",
+    "baseline-scan",
+    "plan-scan",
+    "review-gate-scan",
+    "pre-release-scan"
+  ],
+  "present_scans": [],
+  "missing_scans": [
+    "intake-contract-scan",
+    "boundary-seal-scan",
+    "baseline-scan",
+    "plan-scan",
+    "review-gate-scan",
+    "pre-release-scan"
+  ],
+  "residue_state": "none",
+  "completion_state": "incomplete"
+}

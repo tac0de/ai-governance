@@ -3,7 +3,7 @@
   "policy_id": "launch-readiness",
   "definition": {
     "pre_launch": "A governed service remains pre-launch while operational readiness is incomplete, even if the implementation appears feature complete.",
-    "launch_ready": "A governed service may be called launch-ready only when rollback, operator ownership, current evidence, governance boundary seal, current auth and approval receipts, and reflection-cleared execution readiness are all in place for production exposure."
+    "launch_ready": "A governed service may be called launch-ready only when rollback, operator ownership, customer-specific contracts, current evidence, governance boundary seal, current auth and approval receipts, incident controls, support readiness, and reflection-cleared execution readiness are all in place for production exposure."
   },
   "gates": {
     "required_all": [
@@ -133,6 +133,41 @@
         ]
       },
       {
+        "check_id": "customer-contract-valid",
+        "rule": "must-pass",
+        "notes": [
+          "Customer and tenant contracts must be present, isolated by policy bundle, and owned by a named approval owner."
+        ]
+      },
+      {
+        "check_id": "audit-bundle-exportable",
+        "rule": "must-pass",
+        "notes": [
+          "A customer-facing audit bundle must be exportable as a replayable json-bundle without manual reconstruction."
+        ]
+      },
+      {
+        "check_id": "incident-exception-governed",
+        "rule": "must-pass",
+        "notes": [
+          "Incident, exception, and override handling must have expiry, rollback, and post-incident reflection coverage."
+        ]
+      },
+      {
+        "check_id": "support-ops-ready",
+        "rule": "must-pass",
+        "notes": [
+          "The service must declare support tier, SLA class, support channel, and escalation ownership before B2B launch."
+        ]
+      },
+      {
+        "check_id": "billing-readiness-minimum",
+        "rule": "must-pass",
+        "notes": [
+          "A minimum billing readiness status must be declared even if billing automation is not yet operational."
+        ]
+      },
+      {
         "check_id": "no-blocking-risk",
         "rule": "must-pass",
         "notes": [
@@ -169,6 +204,10 @@
     "Calling a service launch-ready when the approval receipt is expired, missing, or broader than the executed cleanup scope.",
     "Calling a service launch-ready when the protocol chain is incomplete or shell execution lacks architecture context.",
     "Calling a service launch-ready when no minimum commercialization path is defined.",
+    "Calling a service launch-ready when customer policy isolation or approval ownership is missing.",
+    "Calling a service launch-ready when the audit bundle cannot be exported or replayed for a customer.",
+    "Calling a service launch-ready when incident overrides have no expiry, rollback, or post-incident reflection.",
+    "Calling a service launch-ready without explicit support tier, SLA class, escalation ownership, or billing readiness.",
     "Calling a service launch-ready while high-severity reflection debt is still open or overdue.",
     "Calling a service launch-ready while service hygiene is in cleanup-required status."
   ]
