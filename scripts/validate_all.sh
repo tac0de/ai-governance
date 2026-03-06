@@ -179,12 +179,19 @@ check_exact_files_in_dir ".github/workflows" \
 
 check_file "LICENSE"
 check_file "README.md"
+check_file "docs/index.html"
+check_file "docs/assets/site.css"
+check_file "docs/assets/site.js"
 
 check_allowed_entries_in_dir "control" "registry" "specs"
 check_exact_files_in_dir "control/registry" \
   "launch-readiness.v0.7.json" \
+  "link-auth-contract.v0.7.json" \
+  "link-approval-receipt.v0.7.json" \
   "link-scan-points.v0.7.json" \
+  "service-diet.v0.7.json" \
   "service-kernel.v0.7.json" \
+  "service-normalization.v0.7.json" \
   "temporary-links.v0.7.json" \
   "version-promotion.v0.7.json"
 check_exact_files_in_dir "control/specs" \
@@ -195,6 +202,8 @@ check_exact_files_in_dir "policies" \
 
 check_exact_files_in_dir "schemas" \
   "launch_readiness.schema.json" \
+  "link_auth_contract.schema.json" \
+  "link_approval_receipt.schema.json" \
   "link_scan_points.schema.json" \
   "reflection_packet.schema.json" \
   "service_kernel.schema.json" \
@@ -204,6 +213,8 @@ check_exact_files_in_dir "schemas" \
 
 for schema_rel in \
   schemas/launch_readiness.schema.json \
+  schemas/link_auth_contract.schema.json \
+  schemas/link_approval_receipt.schema.json \
   schemas/link_scan_points.schema.json \
   schemas/reflection_packet.schema.json \
   schemas/service_kernel.schema.json \
@@ -223,8 +234,12 @@ done
 for governance_rel in \
   control/specs/trace_rules.v0.7.json \
   control/registry/launch-readiness.v0.7.json \
+  control/registry/link-auth-contract.v0.7.json \
+  control/registry/link-approval-receipt.v0.7.json \
   control/registry/link-scan-points.v0.7.json \
+  control/registry/service-diet.v0.7.json \
   control/registry/service-kernel.v0.7.json \
+  control/registry/service-normalization.v0.7.json \
   control/registry/temporary-links.v0.7.json \
   control/registry/version-promotion.v0.7.json
 do
@@ -234,11 +249,13 @@ done
 validate_jq_contract "policies/external_execution_boundary.v0.7.json" "schemas/trace_rules.schema.json" '
   .version=="v0.7" and
   .policy_id=="external-execution-boundary" and
-  (.central_allows|type=="array" and length==3) and
+  (.central_allows|type=="array" and length==5) and
   (.central_forbids|type=="array" and length==4) and
-  (.service_runtime_rule|type=="array" and length==4) and
-  ((.central_forbids | map(test("outside governance/\\*\\*")) | any)) and
-  ((.service_runtime_rule | map(test("out-of-boundary mutations")) | any)) and
+  (.service_runtime_rule|type=="array" and length==5) and
+  ((.central_allows | map(test("Repository-wide read scans")) | any)) and
+  ((.central_allows | map(test("cleanup outside governance/")) | any)) and
+  ((.central_forbids | map(test("outside governance/")) | any)) and
+  ((.service_runtime_rule | map(test("permits the target scope")) | any)) and
   (.language_policy.required_core==["json","yaml","sh"]) and
   (.language_policy.allowed_optional==["py"]) and
   (.language_policy.excluded_in_v0_7==["rs","rust"])
@@ -249,17 +266,20 @@ validate_jq_contract "control/specs/trace_rules.v0.7.json" "schemas/trace_rules.
   (.append_only==true) and
   (.hash_reference_required==true) and
   (.allowed_record_types|type=="array" and length==5) and
-  ((.allowed_record_types | index("service_snapshot_packet")) != null) and
-  ((.allowed_record_types | index("service_hygiene_packet")) != null) and
-  ((.allowed_record_types | index("monitoring_sync_receipt")) != null) and
-  ((.allowed_record_types | index("daily_reflection_packet")) != null) and
+  ((.allowed_record_types | index("reflection_packet")) != null) and
   (.retention_model.primary_store=="service-local-governance/dtp/") and
   (.retention_model.export_path=="service-local-governance/dtp/api-sync/") and
   (.dtp.root_path=="governance/dtp/") and
   (.dtp.required_paths|type=="array" and length==3) and
-  (.daily_reflection.required==true) and
-  (.daily_reflection.minimum_fields|type=="array" and length>=10) and
-  ((.daily_reflection.topics | index("ui-ux-quality")) != null) and
+  (.reflection_gate.required_fields|type=="array" and length==8) and
+  ((.reflection_gate.required_fields | index("problem_statement")) != null) and
+  ((.reflection_gate.required_fields | index("evidence_refs")) != null) and
+  ((.reflection_gate.required_fields | index("root_cause_chain")) != null) and
+  ((.reflection_gate.required_fields | index("fix_action")) != null) and
+  ((.reflection_gate.required_fields | index("owner")) != null) and
+  ((.reflection_gate.required_fields | index("due_date_ref")) != null) and
+  ((.reflection_gate.required_fields | index("severity")) != null) and
+  ((.reflection_gate.required_fields | index("status")) != null) and
   (.telemetry_sync_boundary.transport=="http-api") and
   (.telemetry_sync_boundary.ownership=="service-local")
 '
@@ -270,38 +290,78 @@ validate_jq_contract "control/registry/service-kernel.v0.7.json" "schemas/servic
   (.required_governance_entries|length==15) and
   (.required_orchestration_entries|length==4) and
   (.required_prompt_entries|length==5) and
-  ((.required_root_entries | map(.path) | index("orchestration")) != null) and
-  ((.required_root_entries | map(.path) | index("prompts")) != null) and
+  ((.rules | map(test("governance/ surface only")) | any)) and
+  ((.rules | map(test("Whole-repository read scans")) | any)) and
+  ((.rules | map(test("auth.contract.json")) | any)) and
   ((.required_governance_entries | map(.path) | index("governance/VERSION")) != null) and
-  ((.required_governance_entries | map(.path) | index("governance/policies")) != null) and
-  ((.required_governance_entries | map(.path) | index("governance/bin")) != null) and
   ((.required_governance_entries | map(.path) | index("governance/plan.json")) != null) and
   ((.required_governance_entries | map(.path) | index("governance/monitoring/service.snapshot.json")) != null) and
   ((.required_governance_entries | map(.path) | index("governance/monitoring/hygiene.report.json")) != null)
 '
 
+validate_jq_contract "control/registry/link-auth-contract.v0.7.json" "schemas/link_auth_contract.schema.json" '
+  .version=="v0.7" and
+  .model=="link-auth-contract" and
+  (.required_fields|length==8) and
+  ((.required_fields | index("client_id")) != null) and
+  ((.required_fields | index("key_id")) != null) and
+  ((.required_fields | index("allowed_scopes")) != null) and
+  (.status_values==["active","revoked","expired"]) and
+  ((.scope_catalog | index("repo-read")) != null) and
+  ((.scope_catalog | index("cleanup-apply")) != null)
+'
+
+validate_jq_contract "control/registry/link-approval-receipt.v0.7.json" "schemas/link_approval_receipt.schema.json" '
+  .version=="v0.7" and
+  .model=="link-approval-receipt" and
+  (.required_fields|length==11) and
+  ((.required_fields | index("approved_mutation_scope")) != null) and
+  ((.required_fields | index("allowed_cleanup_targets")) != null) and
+  ((.required_fields | index("rollback_note_ref")) != null) and
+  (.verdict_values==["approved","rejected","expired"])
+'
+
 validate_jq_contract "control/registry/link-scan-points.v0.7.json" "schemas/link_scan_points.schema.json" '
   .version=="v0.7" and
   (.scan_points|length==6) and
-  ((.scan_points | map(.id) | index("intake-contract-scan")) != null) and
-  ((.scan_points | map(.id) | index("boundary-seal-scan")) != null) and
-  ((.scan_points | map(.id) | index("baseline-scan")) != null) and
-  ((.scan_points | map(.id) | index("plan-scan")) != null) and
-  ((.scan_points | map(.id) | index("review-gate-scan")) != null) and
-  ((.scan_points | map(.id) | index("pre-release-scan")) != null)
+  ((.scan_points[] | select(.id=="intake-contract-scan") | .required_fields | index("auth_contract_ref")) != null) and
+  ((.scan_points[] | select(.id=="intake-contract-scan") | .required_fields | index("scan_root_scope")) != null) and
+  ((.scan_points[] | select(.id=="plan-scan") | .required_fields | index("approved_mutation_scope")) != null) and
+  ((.scan_points[] | select(.id=="plan-scan") | .required_fields | index("approval_receipt_ref")) != null) and
+  ((.scan_points[] | select(.id=="review-gate-scan") | .required_fields | index("cleanup_receipt_ref")) != null) and
+  ((.scan_points[] | select(.id=="pre-release-scan") | .required_fields | index("reflection_gate_status")) != null)
 '
 
 validate_jq_contract "control/registry/temporary-links.v0.7.json" "schemas/link_scan_points.schema.json" '
   .version=="v0.7" and
   (.link_contract.phases|length==6) and
-  ((.link_contract.phases | index("intake")) != null) and
-  ((.link_contract.phases | index("link")) != null) and
-  ((.link_contract.phases | index("baseline")) != null) and
-  ((.link_contract.phases | index("plan")) != null) and
-  ((.link_contract.phases | index("review")) != null) and
-  ((.link_contract.phases | index("release")) != null) and
-  ((.link_contract.completion_rule.required_scans_for_completed | index("pre-release-scan")) != null) and
-  ((.link_contract.hard_rules | map(test("outside governance/\\*\\*")) | any))
+  (.link_contract.defaults.governance_attach_mode=="governance-folder-only") and
+  (.link_contract.defaults.scan_root_scope=="repository-wide-read") and
+  ((.link_contract.defaults.central_receives_only | index("auth_contract")) != null) and
+  ((.link_contract.defaults.central_receives_only | index("approval_receipt")) != null) and
+  ((.link_contract.kit_structure.required_files | index("auth.contract.json")) != null) and
+  ((.link_contract.kit_structure.required_files | index("approval.receipt.json")) != null) and
+  ((.link_contract.hard_rules | map(test("Repository-wide read scans")) | any)) and
+  ((.link_contract.hard_rules | map(test("active auth contract")) | any)) and
+  ((.link_contract.hard_rules | map(test("outside governance/")) | any))
+'
+
+validate_jq_contract "control/registry/service-diet.v0.7.json" "schemas/trace_rules.schema.json" '
+  .version=="v0.7" and
+  (.required_outputs|type=="array" and length==6) and
+  ((.required_outputs | index("cleanup_receipt_ref")) != null) and
+  ((.hard_rules | map(test("whole repository")) | any)) and
+  ((.hard_rules | map(test("approved mutation scope")) | any))
+'
+
+validate_jq_contract "control/registry/service-normalization.v0.7.json" "schemas/trace_rules.schema.json" '
+  .version=="v0.7" and
+  (.required_phases|length==6) and
+  ((.required_phases[] | select(.phase_id=="intake") | .required_artifacts | index("auth_contract_ref")) != null) and
+  ((.required_phases[] | select(.phase_id=="kernel-alignment") | .required_artifacts | index("governance_attach_mode")) != null) and
+  ((.required_phases[] | select(.phase_id=="release") | .required_artifacts | index("approval_receipt_ref")) != null) and
+  ((.hard_rules | map(test("whole repository")) | any)) and
+  ((.hard_rules | map(test("outside governance/")) | any))
 '
 
 validate_jq_contract "control/registry/launch-readiness.v0.7.json" "schemas/launch_readiness.schema.json" '
@@ -309,7 +369,12 @@ validate_jq_contract "control/registry/launch-readiness.v0.7.json" "schemas/laun
   ((.gates.required_checks | map(.check_id) | index("baseline-recorded")) != null) and
   ((.gates.required_checks | map(.check_id) | index("plan-approved")) != null) and
   ((.gates.required_checks | map(.check_id) | index("apply-boundary-sealed")) != null) and
-  ((.gates.required_checks | map(.check_id) | index("monitoring-clear")) != null)
+  ((.gates.required_checks | map(.check_id) | index("auth-contract-valid")) != null) and
+  ((.gates.required_checks | map(.check_id) | index("approval-receipt-current")) != null) and
+  ((.gates.required_checks | map(.check_id) | index("cleanup-scope-approved")) != null) and
+  ((.gates.required_checks | map(.check_id) | index("reflection-actions-clear")) != null) and
+  ((.anti_patterns | map(test("expired")) | any)) and
+  ((.anti_patterns | map(test("reflection debt")) | any))
 '
 
 validate_jq_contract "control/registry/version-promotion.v0.7.json" "schemas/version_promotion_policy.schema.json" '

@@ -1,6 +1,6 @@
 {
   "version": "v0.7",
-  "purpose": "Define the temporary-link handshake with mandatory scan closure and incomplete-state handling.",
+  "purpose": "Define the temporary-link handshake with mandatory scan closure, governance-folder attachment, repository-wide read visibility, and approval-receipt-gated cleanup outside governance/.",
   "link_contract": {
     "phases": [
       "intake",
@@ -76,10 +76,14 @@
       "link_scope": "ephemeral",
       "runtime_log_owner": "service-local",
       "central_receives_raw_logs": false,
+      "governance_attach_mode": "governance-folder-only",
+      "scan_root_scope": "repository-wide-read",
       "central_receives_only": [
         "evidence_contract",
         "review_result",
-        "link_receipt"
+        "link_receipt",
+        "auth_contract",
+        "approval_receipt"
       ],
       "initial_status": "requested"
     },
@@ -89,6 +93,8 @@
         "link.request.json",
         "link.grant.json",
         "link.route.json",
+        "auth.contract.json",
+        "approval.receipt.json",
         "scan.intake-contract.json",
         "scan.boundary-seal.json",
         "scan.baseline.json",
@@ -127,14 +133,17 @@
     },
     "hard_rules": [
       "Central governance must not become a mandatory runtime hop for service execution.",
+      "Governance may be attached to the service only as the governance/ folder surface.",
+      "Repository-wide read scans are allowed during intake, review, hygiene, and release checks.",
+      "An active auth contract is required before any repository-wide scan begins.",
       "Temporary links must be releasable without central stateful coordination.",
       "Service-local logs remain owned by the service repository or service operator.",
       "A temporary link may grant guidance, validation, or approval gates, but not central runtime custody.",
       "A missing required scan leaves the link incomplete and blocks release.",
       "Production links may not reach a completed state without a pre-release-scan.",
       "Plan approval must exist before any apply execution is allowed.",
-      "Apply execution must remain inside governance/** writable boundaries.",
-      "Any detected mutation outside governance/** must be reverted and referenced by remediation evidence before release.",
+      "Cleanup outside governance/ is allowed only when the approval receipt explicitly permits the target scope.",
+      "Cleanup outside governance/ requires evidence plus a rollback-linked receipt before release.",
       "Temporary-link kits must use the fixed file set under governance/links/active/<link-id> with no extra root-level files.",
       "Evidence payloads and review payloads referenced by the link kit must remain outside the kit folder in the fixed governance roots."
     ]

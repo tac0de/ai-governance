@@ -5,19 +5,22 @@
   "central_allows": [
     "JSON contracts for API receipts and monitoring artifacts.",
     "Schema validation for service snapshots and hygiene reports.",
-    "GitHub workflow enforcement for drift detection."
+    "GitHub workflow enforcement for drift detection.",
+    "Repository-wide read scans during linking, hygiene review, and release gating.",
+    "Receipt-gated cleanup outside governance/ when the approved mutation scope explicitly allows it."
   ],
   "central_forbids": [
     "Owning service-local runtimes.",
     "Special-casing proprietary invocation protocols.",
     "Treating API telemetry as a substitute for human approval or release gates.",
-    "Mutating or approving mutations outside governance/** during link or apply stages."
+    "Mutating paths outside governance/ without explicit approved scope and receipt."
   ],
   "service_runtime_rule": [
     "API clients stay in the service repository.",
     "Browser automation and runtime tools stay in the service repository.",
     "All external execution must emit receipt-linked artifacts.",
-    "If out-of-boundary mutations are detected, they must be reverted and recorded as remediation evidence before release."
+    "Out-of-governance cleanup is valid only when the link approval explicitly permits the target scope.",
+    "Any out-of-boundary mutation must remain reviewable by evidence and rollback notes."
   ],
   "language_policy": {
     "required_core": [

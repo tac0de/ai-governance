@@ -9,6 +9,7 @@ ALLOWED_ROOT_DIRS=(
   ".github"
   "control"
   "docs"
+  "ops"
   "policies"
   "schemas"
   "scripts"

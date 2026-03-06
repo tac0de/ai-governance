@@ -1,4 +1,4 @@
-# ai-governance v0.7.41
+# ai-governance v0.7.5
 
 Simple, readable governance for independent AI services.
 
@@ -15,6 +15,8 @@ This repository is a small public contract kernel.
 - policies
 - validation rules
 - continuous monitoring rules
+- API-key-based link authorization
+- approval-receipt-gated external cleanup
 
 It does not run products.
 It does not own service code.
@@ -25,11 +27,13 @@ It does not keep service runtime state.
 The flow is fixed:
 
 1. Work enters through a temporary link.
-2. Boundary seal is validated under `governance/**` only.
-3. The service emits baseline scans and DTP evidence.
-4. The service writes a daily reflection packet with concrete root-cause evidence.
-5. Governance validates structure, trace state, and release gates.
-6. Release is allowed only when required scans and monitoring checks are clear.
+2. Governance is attached to the service as the `governance/` folder only.
+3. The scan still reads the whole repository, not only `governance/`.
+4. An API-key link contract authenticates the link before repository-wide scanning begins.
+5. Cleanup outside `governance/` is allowed only when an approval receipt explicitly permits the target scope.
+6. The service emits baseline scans, hygiene reports, and reflection packets.
+7. Governance validates structure, auth state, trace state, and release gates.
+8. Release is allowed only when required scans, approvals, and reflection gates are clear.
 
 If a required scan is missing, the link is incomplete and release stays blocked.
 
@@ -52,7 +56,8 @@ Minimum kernel:
 - `governance/bin/`
 - `governance/plan.json`
 - `governance/dtp/`
-- `governance/links/active/`
+- `governance/links/active/<link-id>/auth.contract.json`
+- `governance/links/active/<link-id>/approval.receipt.json`
 - `governance/evidence/`
 - `governance/reviews/`
 - `governance/monitoring/`
@@ -66,7 +71,7 @@ Minimum kernel:
 - `prompts/implementation-kickoff.md`
 - `prompts/review-recovery.md`
 
-Everything else stays local to the service.
+Everything else stays local to the service, but whole-repository read scans are still allowed for linking, hygiene classification, and approved cleanup review. Cleanup outside `governance/` is valid only when both the auth contract and approval receipt are active and evidence-linked.
 
 ### Language Policy
 
@@ -80,7 +85,7 @@ Optional helper language:
 
 - `py`
 
-Not used in `v0.7.41`:
+Not used in `v0.7.5`:
 
 - `rust`
 
@@ -95,7 +100,7 @@ Not used in `v0.7.41`:
 - `scripts/`
   Deterministic validation and trace utilities
 - `docs/`
-  Human-readable public documentation
+  Public landing surface
 
 ### Validation
 
@@ -132,6 +137,8 @@ This repository is a governance kernel, not a runtime platform.
 - 정책
 - 검증 규칙
 - 지속 모니터링 규칙
+- API key 기반 링크 인증
+- approval receipt 기반 외부 정리 통제
 
 이 저장소는:
 
@@ -144,11 +151,13 @@ This repository is a governance kernel, not a runtime platform.
 흐름은 고정되어 있습니다.
 
 1. 작업이 temporary link로 들어옵니다.
-2. `governance/**` 경계 봉인을 먼저 검증합니다.
-3. 서비스가 baseline 스캔과 DTP 증빙을 남깁니다.
-4. 서비스는 매일 구체 근거 기반 reflection packet을 남깁니다.
-5. 거버넌스가 구조, trace 상태, release gate를 검증합니다.
-6. 필수 스캔과 모니터링 검사가 모두 깨끗할 때만 release가 가능합니다.
+2. 거버넌스는 서비스에 `governance/` 폴더 형태로만 부착됩니다.
+3. 하지만 스캔은 `governance/`만이 아니라 저장소 전체를 읽습니다.
+4. API key 링크 계약이 저장소 전체 스캔 전에 링크를 인증합니다.
+5. `governance/` 밖 정리는 approval receipt가 명시적으로 허용한 범위에서만 가능합니다.
+6. 서비스가 baseline 스캔, hygiene report, reflection packet을 남깁니다.
+7. 거버넌스가 구조, 인증 상태, trace 상태, release gate를 검증합니다.
+8. 필수 스캔, 승인, reflection gate가 모두 깨끗할 때만 release가 가능합니다.
 
 필수 스캔이 하나라도 없으면 link는 incomplete 상태이고, release는 차단됩니다.
 
@@ -171,7 +180,8 @@ This repository is a governance kernel, not a runtime platform.
 - `governance/bin/`
 - `governance/plan.json`
 - `governance/dtp/`
-- `governance/links/active/`
+- `governance/links/active/<link-id>/auth.contract.json`
+- `governance/links/active/<link-id>/approval.receipt.json`
 - `governance/evidence/`
 - `governance/reviews/`
 - `governance/monitoring/`
@@ -185,7 +195,7 @@ This repository is a governance kernel, not a runtime platform.
 - `prompts/implementation-kickoff.md`
 - `prompts/review-recovery.md`
 
-그 외 구현은 서비스 로컬에서 자유롭게 유지합니다.
+그 외 구현은 서비스 로컬에서 자유롭게 유지합니다. 다만 링킹, 위생 분류, 승인된 정리 검토를 위해 저장소 전체 읽기 스캔은 허용됩니다. `governance/` 밖 정리는 auth contract와 approval receipt가 모두 활성 상태이고 증빙이 연결되어 있을 때만 유효합니다.
 
 ### 언어 원칙
 
@@ -199,7 +209,7 @@ This repository is a governance kernel, not a runtime platform.
 
 - `py`
 
-`v0.7.41`에서 사용하지 않는 언어:
+`v0.7.5`에서 사용하지 않는 언어:
 
 - `rust`
 
@@ -214,7 +224,7 @@ This repository is a governance kernel, not a runtime platform.
 - `scripts/`
   결정적 검증 및 trace 유틸
 - `docs/`
-  사람이 읽는 공개 문서
+  공개 랜딩 표면
 
 ### 검증
 

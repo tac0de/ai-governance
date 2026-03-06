@@ -1,0 +1,33 @@
+{
+  "version": "v0.7",
+  "model": "link-auth-contract",
+  "purpose": "Define the API-key-based authentication contract required before a temporary link may scan or mutate an independent service.",
+  "required_fields": [
+    "client_id",
+    "key_id",
+    "status",
+    "issued_at_ref",
+    "expires_at_ref",
+    "allowed_scopes",
+    "rotation_policy",
+    "revocation_mode"
+  ],
+  "status_values": [
+    "active",
+    "revoked",
+    "expired"
+  ],
+  "scope_catalog": [
+    "repo-read",
+    "governance-write",
+    "cleanup-review",
+    "cleanup-apply",
+    "release-read"
+  ],
+  "hard_rules": [
+    "A temporary link must not start without an active auth contract.",
+    "Repository-wide scans require repo-read scope.",
+    "Mutation outside governance/ requires cleanup-apply scope plus an approval receipt.",
+    "Expired or revoked auth contracts immediately invalidate link execution."
+  ]
+}

@@ -11,7 +11,7 @@
     "retention_model",
     "dtp",
     "telemetry_sync_boundary",
-    "daily_reflection"
+    "reflection_gate"
   ],
   "properties": {
     "version": {
@@ -159,47 +159,24 @@
       },
       "additionalProperties": false
     },
-    "daily_reflection": {
+    "reflection_gate": {
       "type": "object",
       "required": [
-        "required",
-        "store_path",
-        "minimum_fields",
-        "topics",
-        "rules"
+        "required_fields",
+        "release_rule"
       ],
       "properties": {
-        "required": {
-          "type": "boolean",
-          "const": true
+        "required_fields": {
+          "type": "array",
+          "minItems": 8,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
         },
-        "store_path": {
+        "release_rule": {
           "type": "string",
           "minLength": 1
-        },
-        "minimum_fields": {
-          "type": "array",
-          "minItems": 5,
-          "items": {
-            "type": "string",
-            "minLength": 1
-          }
-        },
-        "topics": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "type": "string",
-            "minLength": 1
-          }
-        },
-        "rules": {
-          "type": "array",
-          "minItems": 1,
-          "items": {
-            "type": "string",
-            "minLength": 1
-          }
         }
       },
       "additionalProperties": false

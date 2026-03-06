@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "LinkApprovalReceipt",
+  "type": "object",
+  "required": [
+    "version",
+    "model",
+    "purpose",
+    "required_fields",
+    "verdict_values",
+    "hard_rules"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "const": "v0.7"
+    },
+    "model": {
+      "type": "string",
+      "const": "link-approval-receipt"
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "required_fields": {
+      "type": "array",
+      "minItems": 11,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9_]*$"
+      }
+    },
+    "verdict_values": {
+      "type": "array",
+      "minItems": 3,
+      "items": {
+        "type": "string",
+        "enum": [
+          "approved",
+          "rejected",
+          "expired"
+        ]
+      }
+    },
+    "hard_rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "additionalProperties": false
+}

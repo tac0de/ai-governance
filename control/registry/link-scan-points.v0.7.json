@@ -1,7 +1,7 @@
 {
   "version": "v0.7",
   "model": "link-scan-catalog",
-  "purpose": "Define the mandatory 6-stage scan points that close governance work into a deterministic reviewable loop.",
+  "purpose": "Define the mandatory 6-stage scan points that close governance-folder attachment, repository-wide scan visibility, scoped cleanup approval, and release audit into one deterministic loop.",
   "lane_minimums": {
     "exploration": [
       "intake-contract-scan",
@@ -24,13 +24,16 @@
       "id": "intake-contract-scan",
       "order": 1,
       "phase_gate": "intake",
-      "purpose": "Freeze least-privilege access intent and policy bundle before any link action.",
+      "purpose": "Freeze least-privilege access intent, policy bundle, and active auth contract before repository-wide scan work begins.",
       "required_fields": [
         "service_id",
         "lane_id",
         "access_mode",
         "policy_bundle_ref",
-        "contract_owner",
+        "auth_contract_ref",
+        "scan_root_scope",
+        "governance_attach_mode",
+        "external_cleanup_policy",
         "expected_outputs"
       ],
       "fail_if_missing": true,
@@ -40,13 +43,14 @@
       "id": "boundary-seal-scan",
       "order": 2,
       "phase_gate": "link",
-      "purpose": "Confirm governance boundary is sealed under governance-only writable paths.",
+      "purpose": "Confirm governance boundary is sealed under governance-only writable paths and that external cleanup remains receipt-gated.",
       "required_fields": [
         "boundary_root",
         "governance_version_ref",
         "governance_policy_path",
         "governance_bin_path",
-        "root_mutation_detected"
+        "root_mutation_detected",
+        "approval_receipt_required"
       ],
       "fail_if_missing": true,
       "blocks_release": true
@@ -71,13 +75,15 @@
       "id": "plan-scan",
       "order": 4,
       "phase_gate": "plan",
-      "purpose": "Validate governance plan shape, allowlist boundary, and approval requirement before apply.",
+      "purpose": "Validate governance plan shape, allowlist boundary, approved mutation scope, and approval receipt requirement before apply.",
       "required_fields": [
         "plan_ref",
         "plan_schema_ref",
         "allowlist_ref",
         "approval_required",
-        "approval_status"
+        "approval_status",
+        "approved_mutation_scope",
+        "approval_receipt_ref"
       ],
       "fail_if_missing": true,
       "blocks_release": true
@@ -86,10 +92,13 @@
       "id": "review-gate-scan",
       "order": 5,
       "phase_gate": "review",
-      "purpose": "Verify review decision and approval log are complete before execution is allowed.",
+      "purpose": "Verify review decision, scoped cleanup evidence, receipt validity, and rollback coverage before execution is accepted.",
       "required_fields": [
         "review_outcome",
         "approval_log_ref",
+        "approval_receipt_ref",
+        "allowed_cleanup_targets",
+        "cleanup_receipt_ref",
         "policy_exceptions",
         "open_risks",
         "reviewer_role"
@@ -101,12 +110,15 @@
       "id": "pre-release-scan",
       "order": 6,
       "phase_gate": "release",
-      "purpose": "Confirm release gate outcome across policy-compliance, security, and Lighthouse checks.",
+      "purpose": "Confirm release gate outcome across policy-compliance, security, Lighthouse, auth validity, approval receipt validity, and reflection debt.",
       "required_fields": [
         "release_review_ref",
         "policy_compliance_gate",
         "security_gate",
         "lighthouse_gate",
+        "auth_contract_status",
+        "approval_receipt_status",
+        "reflection_gate_status",
         "production_gate_outcome"
       ],
       "fail_if_missing": true,

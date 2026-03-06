@@ -7,7 +7,7 @@
     "service_snapshot_packet",
     "service_hygiene_packet",
     "monitoring_sync_receipt",
-    "daily_reflection_packet"
+    "reflection_packet"
   ],
   "forbidden_mutations": [
     "Record deletion.",
@@ -76,33 +76,17 @@
       "A sync receipt artifact is required before the sync is considered complete."
     ]
   },
-  "daily_reflection": {
-    "required": true,
-    "store_path": "governance/dtp/reflections/",
-    "minimum_fields": [
-      "date_ref",
-      "service_id",
-      "topic",
+  "reflection_gate": {
+    "required_fields": [
       "problem_statement",
-      "why_chain",
       "evidence_refs",
-      "improvement_actions",
+      "root_cause_chain",
+      "fix_action",
       "owner",
-      "target_date_ref",
+      "due_date_ref",
+      "severity",
       "status"
     ],
-    "topics": [
-      "error-cause",
-      "capability-gap",
-      "ui-ux-quality",
-      "execution-drift",
-      "decision-latency"
-    ],
-    "rules": [
-      "Reflections must include concrete evidence, not only impressions.",
-      "why_chain must contain at least three linked causes.",
-      "Each reflection must include at least one actionable improvement with owner and due date.",
-      "Open reflection actions must be reviewed before release decisions."
-    ]
+    "release_rule": "production release must fail when any high severity reflection action is overdue or unresolved"
   }
 }

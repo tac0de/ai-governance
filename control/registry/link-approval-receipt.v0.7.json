@@ -1,0 +1,29 @@
+{
+  "version": "v0.7",
+  "model": "link-approval-receipt",
+  "purpose": "Define the approval receipt required before cleanup or mutation outside governance/ may execute during a temporary link.",
+  "required_fields": [
+    "link_id",
+    "approval_receipt_id",
+    "auth_contract_ref",
+    "approved_mutation_scope",
+    "allowed_cleanup_targets",
+    "rollback_note_ref",
+    "required_evidence_types",
+    "approved_by",
+    "approved_at_ref",
+    "expires_at_ref",
+    "verdict"
+  ],
+  "verdict_values": [
+    "approved",
+    "rejected",
+    "expired"
+  ],
+  "hard_rules": [
+    "Cleanup outside governance/ must not execute without an approved receipt.",
+    "The approved mutation scope must be narrower than or equal to the auth contract scopes.",
+    "Every allowed cleanup target must remain rollback-covered.",
+    "Expired approval receipts immediately block release."
+  ]
+}
