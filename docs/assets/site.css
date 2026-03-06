@@ -81,7 +81,7 @@ a {
   z-index: 1;
   width: min(1120px, calc(100% - 40px));
   margin: 0 auto;
-  padding: 56px 0 96px;
+  padding: 68px 0 108px;
 }
 
 .hero,
@@ -89,20 +89,20 @@ a {
 .proof,
 .demo {
   opacity: 0;
-  transform: translateY(20px);
-  animation: reveal 800ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  transform: translateY(24px);
+  animation: reveal 900ms cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
 }
 
 .strip {
-  animation-delay: 100ms;
+  animation-delay: 120ms;
 }
 
 .proof {
-  animation-delay: 180ms;
+  animation-delay: 220ms;
 }
 
 .demo {
-  animation-delay: 260ms;
+  animation-delay: 320ms;
 }
 
 .eyebrow,
@@ -129,29 +129,32 @@ ul {
 }
 
 .hero {
-  padding-top: 24px;
+  padding-top: 32px;
+  position: relative;
 }
 
 h1 {
   max-width: 11ch;
   font-size: clamp(3.4rem, 8.4vw, 7rem);
-  line-height: 0.92;
-  letter-spacing: -0.075em;
+  line-height: 0.98;
+  letter-spacing: -0.05em;
+  text-wrap: balance;
 }
 
 .hero-copy {
-  margin-top: 22px;
+  margin-top: 26px;
   max-width: 42rem;
   color: var(--muted);
   font-size: 1.08rem;
-  line-height: 1.8;
+  line-height: 1.9;
+  letter-spacing: -0.01em;
 }
 
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-top: 28px;
+  margin-top: 34px;
 }
 
 .button {
@@ -159,13 +162,35 @@ h1 {
   padding: 13px 18px;
   border-radius: 999px;
   border: 1px solid var(--line);
-  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+  overflow: hidden;
+  transition: transform 220ms ease, border-color 220ms ease, background 220ms ease, box-shadow 220ms ease;
+}
+
+.button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 35%,
+    rgba(255, 255, 255, 0.24) 50%,
+    transparent 65%,
+    transparent 100%
+  );
+  transform: translateX(-140%);
+  opacity: 0;
 }
 
 .button:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
   border-color: var(--line-strong);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+}
+
+.button:hover::before {
+  opacity: 1;
+  animation: button-sheen 900ms cubic-bezier(0.2, 0.8, 0.2, 1) 1;
 }
 
 .button-primary {
@@ -183,7 +208,7 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   gap: 18px;
-  margin-top: 24px;
+  margin-top: 28px;
   color: var(--muted);
   font-size: 0.92rem;
 }
@@ -209,16 +234,18 @@ h1 {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
-  margin-top: 88px;
-  padding: 22px 0;
+  margin-top: 96px;
+  padding: 26px 0;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
+  position: relative;
 }
 
 .strip p {
   color: var(--soft);
   font-size: 0.98rem;
-  line-height: 1.6;
+  line-height: 1.72;
+  letter-spacing: -0.01em;
 }
 
 .strip span {
@@ -228,14 +255,14 @@ h1 {
 }
 
 .proof {
-  margin-top: 56px;
+  margin-top: 64px;
 }
 
 .proof-line {
   display: grid;
   grid-template-columns: minmax(140px, 180px) minmax(0, 1fr);
   gap: 24px;
-  padding: 18px 0;
+  padding: 22px 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -250,18 +277,20 @@ h1 {
 .proof-text {
   color: var(--soft);
   font-size: 1rem;
-  line-height: 1.8;
+  line-height: 1.92;
+  letter-spacing: -0.01em;
   max-width: 44rem;
 }
 
 .demo {
-  margin-top: 72px;
+  margin-top: 84px;
 }
 
 .demo-intro h2 {
   margin-top: 10px;
   font-size: clamp(2rem, 4vw, 3.4rem);
-  letter-spacing: -0.06em;
+  line-height: 1.04;
+  letter-spacing: -0.04em;
 }
 
 .demo-stage {
@@ -269,8 +298,8 @@ h1 {
   display: grid;
   grid-template-columns: minmax(260px, 300px) minmax(0, 1fr);
   gap: 28px;
-  margin-top: 24px;
-  padding: 28px 0 0;
+  margin-top: 30px;
+  padding: 34px 0 0;
 }
 
 .demo-stage::before {
@@ -283,6 +312,7 @@ h1 {
     radial-gradient(circle at 15% 0%, rgba(138, 164, 255, 0.08), transparent 24%),
     radial-gradient(circle at 85% 100%, rgba(140, 230, 194, 0.08), transparent 26%);
   pointer-events: none;
+  animation: stage-shimmer 9s linear infinite;
 }
 
 .demo-controls,
@@ -302,6 +332,7 @@ h1 {
   gap: 8px;
   color: var(--muted);
   font-size: 0.95rem;
+  line-height: 1.6;
 }
 
 .demo-controls select {
@@ -329,7 +360,12 @@ h1 {
 
 .decision-panel {
   min-height: 260px;
-  padding: 8px 0 0;
+  padding: 16px 18px 18px 0;
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+  transition: border-color 240ms ease, box-shadow 240ms ease, background 240ms ease;
+  background:
+    radial-gradient(circle at 0% 20%, rgba(140, 230, 194, 0.12), transparent 40%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
 }
 
 .decision-head {
@@ -366,30 +402,65 @@ h1 {
   transform: translateX(4px);
 }
 
+.decision-panel.proceed {
+  border-left-color: rgba(140, 230, 194, 0.22);
+  background:
+    radial-gradient(circle at 0% 28%, rgba(140, 230, 194, 0.16), transparent 42%),
+    linear-gradient(90deg, rgba(140, 230, 194, 0.05), rgba(255, 255, 255, 0) 42%);
+  box-shadow: inset 0 0 0 1px rgba(140, 230, 194, 0.03);
+}
+
+.decision-panel.review {
+  border-left-color: rgba(244, 204, 117, 0.22);
+  background:
+    radial-gradient(circle at 0% 28%, rgba(244, 204, 117, 0.17), transparent 42%),
+    linear-gradient(90deg, rgba(244, 204, 117, 0.05), rgba(255, 255, 255, 0) 42%);
+  box-shadow: inset 0 0 0 1px rgba(244, 204, 117, 0.03);
+}
+
+.decision-panel.block {
+  border-left-color: rgba(255, 140, 133, 0.24);
+  background:
+    radial-gradient(circle at 0% 28%, rgba(255, 140, 133, 0.18), transparent 44%),
+    linear-gradient(90deg, rgba(255, 140, 133, 0.06), rgba(255, 255, 255, 0) 42%);
+  box-shadow: inset 0 0 0 1px rgba(255, 140, 133, 0.04), 0 0 36px rgba(255, 140, 133, 0.04);
+}
+
 .decision-panel h3 {
   margin-top: 18px;
   font-size: clamp(1.5rem, 3vw, 2.35rem);
   letter-spacing: -0.05em;
+  line-height: 1.08;
 }
 
 #decision-body {
   margin-top: 12px;
   max-width: 42rem;
   color: var(--muted);
-  line-height: 1.8;
+  line-height: 1.92;
+  letter-spacing: -0.01em;
 }
 
 .decision-points {
   margin-top: 18px;
   padding-left: 18px;
   color: var(--soft);
-  line-height: 1.85;
+  line-height: 1.95;
 }
 
 @keyframes reveal {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes button-sheen {
+  0% {
+    transform: translateX(-140%);
+  }
+  100% {
+    transform: translateX(140%);
   }
 }
 
@@ -423,6 +494,18 @@ h1 {
   }
 }
 
+@keyframes stage-shimmer {
+  0%,
+  100% {
+    opacity: 0.75;
+    background-position: 0% 0%, 100% 100%;
+  }
+  50% {
+    opacity: 1;
+    background-position: 10% 0%, 90% 100%;
+  }
+}
+
 @media (max-width: 980px) {
   .strip,
   .demo-stage {
@@ -432,6 +515,10 @@ h1 {
   .proof-line {
     grid-template-columns: 1fr;
     gap: 10px;
+  }
+
+  .decision-panel {
+    padding-left: 14px;
   }
 }
 
@@ -453,5 +540,9 @@ h1 {
   .strip {
     margin-top: 56px;
     gap: 14px;
+  }
+
+  .decision-panel {
+    padding: 14px 0 0 12px;
   }
 }
