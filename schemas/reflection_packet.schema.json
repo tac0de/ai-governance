@@ -3,57 +3,19 @@
   "title": "ReflectionPacket",
   "type": "object",
   "required": [
-    "version",
-    "record_type",
-    "date_ref",
-    "service_id",
-    "topic",
     "problem_statement",
-    "why_chain",
     "evidence_refs",
-    "improvement_actions",
+    "root_cause_chain",
+    "fix_action",
     "owner",
-    "target_date_ref",
+    "due_date_ref",
+    "severity",
     "status"
   ],
   "properties": {
-    "version": {
-      "type": "string",
-      "const": "v0.7"
-    },
-    "record_type": {
-      "type": "string",
-      "const": "daily_reflection_packet"
-    },
-    "date_ref": {
-      "type": "string",
-      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
-    },
-    "service_id": {
-      "type": "string",
-      "minLength": 1
-    },
-    "topic": {
-      "type": "string",
-      "enum": [
-        "error-cause",
-        "capability-gap",
-        "ui-ux-quality",
-        "execution-drift",
-        "decision-latency"
-      ]
-    },
     "problem_statement": {
       "type": "string",
-      "minLength": 20
-    },
-    "why_chain": {
-      "type": "array",
-      "minItems": 3,
-      "items": {
-        "type": "string",
-        "minLength": 10
-      }
+      "minLength": 1
     },
     "evidence_refs": {
       "type": "array",
@@ -63,40 +25,33 @@
         "minLength": 1
       }
     },
-    "improvement_actions": {
+    "root_cause_chain": {
       "type": "array",
-      "minItems": 1,
+      "minItems": 2,
       "items": {
-        "type": "object",
-        "required": [
-          "action",
-          "owner",
-          "due_date_ref"
-        ],
-        "properties": {
-          "action": {
-            "type": "string",
-            "minLength": 10
-          },
-          "owner": {
-            "type": "string",
-            "minLength": 1
-          },
-          "due_date_ref": {
-            "type": "string",
-            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
-          }
-        },
-        "additionalProperties": false
+        "type": "string",
+        "minLength": 1
       }
+    },
+    "fix_action": {
+      "type": "string",
+      "minLength": 1
     },
     "owner": {
       "type": "string",
       "minLength": 1
     },
-    "target_date_ref": {
+    "due_date_ref": {
       "type": "string",
       "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
     },
     "status": {
       "type": "string",

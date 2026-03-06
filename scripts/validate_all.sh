@@ -186,8 +186,8 @@ check_file "docs/assets/site.js"
 check_allowed_entries_in_dir "control" "registry" "specs"
 check_exact_files_in_dir "control/registry" \
   "launch-readiness.v0.7.json" \
-  "link-auth-contract.v0.7.json" \
   "link-approval-receipt.v0.7.json" \
+  "link-auth-contract.v0.7.json" \
   "link-scan-points.v0.7.json" \
   "service-diet.v0.7.json" \
   "service-kernel.v0.7.json" \
@@ -202,8 +202,8 @@ check_exact_files_in_dir "policies" \
 
 check_exact_files_in_dir "schemas" \
   "launch_readiness.schema.json" \
-  "link_auth_contract.schema.json" \
   "link_approval_receipt.schema.json" \
+  "link_auth_contract.schema.json" \
   "link_scan_points.schema.json" \
   "reflection_packet.schema.json" \
   "service_kernel.schema.json" \
@@ -213,8 +213,8 @@ check_exact_files_in_dir "schemas" \
 
 for schema_rel in \
   schemas/launch_readiness.schema.json \
-  schemas/link_auth_contract.schema.json \
   schemas/link_approval_receipt.schema.json \
+  schemas/link_auth_contract.schema.json \
   schemas/link_scan_points.schema.json \
   schemas/reflection_packet.schema.json \
   schemas/service_kernel.schema.json \
@@ -234,8 +234,8 @@ done
 for governance_rel in \
   control/specs/trace_rules.v0.7.json \
   control/registry/launch-readiness.v0.7.json \
-  control/registry/link-auth-contract.v0.7.json \
   control/registry/link-approval-receipt.v0.7.json \
+  control/registry/link-auth-contract.v0.7.json \
   control/registry/link-scan-points.v0.7.json \
   control/registry/service-diet.v0.7.json \
   control/registry/service-kernel.v0.7.json \
