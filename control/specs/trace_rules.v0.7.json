@@ -7,7 +7,11 @@
     "service_snapshot_packet",
     "service_hygiene_packet",
     "monitoring_sync_receipt",
-    "reflection_packet"
+    "reflection_packet",
+    "protocol_chain_packet",
+    "shell_execution_receipt",
+    "collaboration_ideation_packet",
+    "revenue_signal_packet"
   ],
   "forbidden_mutations": [
     "Record deletion.",
@@ -76,6 +80,20 @@
       "A sync receipt artifact is required before the sync is considered complete."
     ]
   },
+  "protocol_chain_rules": {
+    "required_record_types": [
+      "protocol_chain_packet",
+      "shell_execution_receipt",
+      "collaboration_ideation_packet",
+      "revenue_signal_packet"
+    ],
+    "requirements": [
+      "Protocol chain packets must reference upstream and downstream stages.",
+      "Shell execution receipts must include the actor, allowed scope, approval refs, and result hash.",
+      "Collaboration ideation packets must include the human and agent role context, problem framing, option comparison, and chosen rationale.",
+      "Revenue signal packets must include commercialization evidence linked to the service value unit."
+    ]
+  },
   "reflection_gate": {
     "required_fields": [
       "problem_statement",
@@ -88,5 +106,18 @@
       "status"
     ],
     "release_rule": "production release must fail when any high severity reflection action is overdue or unresolved"
+  },
+  "revenue_signal_rules": {
+    "required_fields": [
+      "service_value_unit",
+      "buyer_problem_statement",
+      "target_customer_profile",
+      "delivery_mode",
+      "commercial_readiness_status",
+      "revenue_evidence_refs",
+      "operator_reliance_level",
+      "repeatability_signal"
+    ],
+    "minimum_rule": "launch readiness must fail when the service value unit or buyer problem statement is undefined"
   }
 }

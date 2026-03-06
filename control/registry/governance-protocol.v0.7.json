@@ -1,0 +1,117 @@
+{
+  "version": "v0.7",
+  "model": "governance-protocol",
+  "purpose": "Define the fixed protocol chain that turns agent work, prompt surfaces, orchestration, architecture, shell execution, human and agent collaboration, DTP packets, and governance verdicts into one auditable release path.",
+  "stages": [
+    {
+      "stage_id": "agent_layer",
+      "required_ref": "prompts/agent-system.md",
+      "produces": [
+        "agent_intent_packet",
+        "prompt_requirements_ref"
+      ],
+      "consumes": [
+        "service_goal_ref"
+      ],
+      "gate_rule": "agent outputs must not enter release review without prompt bundle linkage"
+    },
+    {
+      "stage_id": "prompt_bundle",
+      "required_ref": "prompts/",
+      "produces": [
+        "prompt_bundle_hash",
+        "execution_intent_ref"
+      ],
+      "consumes": [
+        "agent_intent_packet"
+      ],
+      "gate_rule": "prompt bundle must reference orchestration and architecture inputs before execution planning"
+    },
+    {
+      "stage_id": "orchestration_layer",
+      "required_ref": "orchestration/service.map.yaml",
+      "produces": [
+        "service_map_ref",
+        "stack_profile_ref",
+        "execution_plan_ref"
+      ],
+      "consumes": [
+        "prompt_bundle_hash"
+      ],
+      "gate_rule": "orchestration must remain reviewable and hash-linked to the prompt bundle"
+    },
+    {
+      "stage_id": "architecture_layer",
+      "required_ref": "orchestration/architecture.blueprint.yaml",
+      "produces": [
+        "architecture_blueprint_ref",
+        "shell_scope_ref"
+      ],
+      "consumes": [
+        "service_map_ref",
+        "execution_plan_ref"
+      ],
+      "gate_rule": "architecture approval must exist before shell execution is considered valid"
+    },
+    {
+      "stage_id": "shell_execution_layer",
+      "required_ref": "orchestration/shell.contract.json",
+      "produces": [
+        "shell_execution_receipt",
+        "execution_result_hash"
+      ],
+      "consumes": [
+        "architecture_blueprint_ref",
+        "approval_receipt_ref",
+        "rollback_note_ref"
+      ],
+      "gate_rule": "shell execution must not proceed without architecture, approval, and rollback context"
+    },
+    {
+      "stage_id": "human_agent_collaboration_layer",
+      "required_ref": "prompts/collaboration-ideation.md",
+      "produces": [
+        "collaboration_ideation_packet",
+        "decision_rationale_ref"
+      ],
+      "consumes": [
+        "shell_execution_receipt",
+        "review_notes_ref"
+      ],
+      "gate_rule": "human and agent ideation must be trace-linked before governance verdicts are issued"
+    },
+    {
+      "stage_id": "dtp_layer",
+      "required_ref": "governance/dtp/trace.jsonl",
+      "produces": [
+        "protocol_chain_packet",
+        "trace_export_receipt"
+      ],
+      "consumes": [
+        "collaboration_ideation_packet",
+        "execution_result_hash"
+      ],
+      "gate_rule": "protocol packets must remain append-only and hash-linked"
+    },
+    {
+      "stage_id": "governance_verdict_layer",
+      "required_ref": "governance/reviews/",
+      "produces": [
+        "governance_verdict_receipt"
+      ],
+      "consumes": [
+        "protocol_chain_packet",
+        "trace_export_receipt",
+        "release_review_ref"
+      ],
+      "gate_rule": "governance verdicts are invalid unless upstream refs are complete and hash-linked"
+    }
+  ],
+  "invariants": [
+    "Agent outputs must not enter release review without prompt bundle references.",
+    "Prompt bundles must not flow into execution without orchestration and architecture references.",
+    "Shell execution must not run without architecture, approval, and rollback context.",
+    "Human and agent ideation must be stored as DTP-linked collaboration packets.",
+    "Governance verdicts must not be valid without upstream hash-linked protocol refs."
+  ]
+}

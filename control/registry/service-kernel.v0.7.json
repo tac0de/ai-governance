@@ -106,6 +106,14 @@
     {
       "path": "orchestration/execution.plan.md",
       "entry_type": "file"
+    },
+    {
+      "path": "orchestration/architecture.blueprint.yaml",
+      "entry_type": "file"
+    },
+    {
+      "path": "orchestration/shell.contract.json",
+      "entry_type": "file"
     }
   ],
   "required_prompt_entries": [
@@ -127,6 +135,14 @@
     },
     {
       "path": "prompts/review-recovery.md",
+      "entry_type": "file"
+    },
+    {
+      "path": "prompts/agent-system.md",
+      "entry_type": "file"
+    },
+    {
+      "path": "prompts/collaboration-ideation.md",
       "entry_type": "file"
     }
   ],
@@ -189,8 +205,11 @@
     "Governance is attached to the service through the governance/ surface only.",
     "All independent services must expose orchestration and prompts as fixed public-readable execution surfaces.",
     "Monitoring artifacts under governance/monitoring are mandatory for both new and existing linked services.",
+    "The governance protocol chain agent -> prompts -> orchestration -> architecture -> shell -> human and agent collaboration -> DTP -> governance verdict is mandatory for independently linked services.",
     "The boundary seal entries governance/VERSION, governance/policies, governance/bin, and governance/plan.json are mandatory.",
     "Active link kits under governance/links/active must carry auth.contract.json and approval.receipt.json before out-of-governance cleanup is reviewable.",
+    "Architecture and shell contract surfaces must remain public-readable under orchestration/ for governance review.",
+    "Agent system and collaboration ideation prompt surfaces must remain public-readable under prompts/ for protocol review.",
     "The central governance kernel defines required filenames only; it does not generate or own service-local content.",
     "Whole-repository read scans are allowed for linking, hygiene review, and release checks.",
     "Implementation folders outside the required kernel remain service-local and unconstrained by central governance.",

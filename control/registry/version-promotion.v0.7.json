@@ -48,6 +48,38 @@
         "notes": [
           "Approval and gate decisions must be trace-linked and audit-complete."
         ]
+      },
+      {
+        "gate_id": "revenue-evidence-present",
+        "evidence_type": "revenue-signal-receipt",
+        "rule": "at_least_one",
+        "notes": [
+          "Revenue or commercialization evidence must be present and reviewable."
+        ]
+      },
+      {
+        "gate_id": "repeatable-value-unit",
+        "evidence_type": "value-unit-receipt",
+        "rule": "at_least_one",
+        "notes": [
+          "The service must have a repeatable value unit that can be delivered beyond one-off curiosity."
+        ]
+      },
+      {
+        "gate_id": "operator-business-dependence",
+        "evidence_type": "operator-business-dependence-receipt",
+        "rule": "at_least_one",
+        "notes": [
+          "The human architect must rely on the service as an active business instrument."
+        ]
+      },
+      {
+        "gate_id": "protocol-audit-complete",
+        "evidence_type": "protocol-audit-receipt",
+        "rule": "at_least_one",
+        "notes": [
+          "The protocol chain from agent work to governance verdict must be audit-complete."
+        ]
       }
     ],
     "required_metrics": [
@@ -70,6 +102,7 @@
   },
   "promotion_flow": [
     "Collect evidence hashes for market-proof, operator-business-use, production-stability, policy-bundle-reproducible, and approval-audit-trail.",
+    "Collect commercialization and protocol-chain evidence for revenue-evidence-present, repeatable-value-unit, operator-business-dependence, and protocol-audit-complete.",
     "Confirm the service has operated through the required stability window.",
     "Issue a release-review verdict referencing the evidence hashes.",
     "Only then may the service version be promoted to 1.0."
@@ -78,6 +111,7 @@
     "Declaring v1 because the implementation feels complete without business use.",
     "Declaring v1 from internal enthusiasm alone.",
     "Declaring v1 while market proof exists but the human architect does not actively rely on the service.",
-    "Declaring v1 without reproducible policy bundle references and approval audit logs."
+    "Declaring v1 without reproducible policy bundle references and approval audit logs.",
+    "Declaring v1 without repeatable value-unit evidence or protocol-chain audit completeness."
   ]
 }

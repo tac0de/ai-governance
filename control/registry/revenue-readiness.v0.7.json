@@ -1,0 +1,35 @@
+{
+  "version": "v0.7",
+  "model": "revenue-readiness",
+  "purpose": "Define the minimum commercialization-readiness contract that governance must evaluate before a service is called launch-ready or promotable toward v1.",
+  "required_fields": [
+    "service_value_unit",
+    "buyer_problem_statement",
+    "target_customer_profile",
+    "delivery_mode",
+    "commercial_readiness_status",
+    "revenue_evidence_refs",
+    "operator_reliance_level",
+    "repeatability_signal"
+  ],
+  "commercial_readiness_status_values": [
+    "undefined",
+    "hypothesized",
+    "validated-internal",
+    "validated-external",
+    "revenue-active"
+  ],
+  "delivery_modes": [
+    "managed-service",
+    "self-serve-saas",
+    "operator-assisted",
+    "internal-tooling-with-external-path"
+  ],
+  "hard_rules": [
+    "Launch readiness must not pass if the service value unit is still undefined.",
+    "Governance must evaluate the buyer problem statement, not only technical completeness.",
+    "A commercialization path may exist before live revenue, but repeatability must still be stated.",
+    "Revenue evidence refs must remain reviewable, even when they point to pilot or adoption conversations.",
+    "Operator reliance must be explicit before version promotion is granted."
+  ]
+}

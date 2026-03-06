@@ -1,4 +1,4 @@
-# ai-governance v0.7.5
+# ai-governance v0.7.6
 
 Simple, readable governance for independent AI services.
 
@@ -17,6 +17,8 @@ This repository is a small public contract kernel.
 - continuous monitoring rules
 - API-key-based link authorization
 - approval-receipt-gated external cleanup
+- revenue-readiness governance
+- governance protocol chain control
 
 It does not run products.
 It does not own service code.
@@ -31,9 +33,10 @@ The flow is fixed:
 3. The scan still reads the whole repository, not only `governance/`.
 4. An API-key link contract authenticates the link before repository-wide scanning begins.
 5. Cleanup outside `governance/` is allowed only when an approval receipt explicitly permits the target scope.
-6. The service emits baseline scans, hygiene reports, and reflection packets.
-7. Governance validates structure, auth state, trace state, and release gates.
-8. Release is allowed only when required scans, approvals, and reflection gates are clear.
+6. The governed chain is fixed as `agent -> prompts -> orchestration -> architecture -> shell -> human/agent collaboration -> DTP -> governance verdict`.
+7. The service emits baseline scans, hygiene reports, protocol-chain packets, collaboration packets, and revenue signal packets.
+8. Governance validates structure, auth state, protocol completeness, trace state, revenue readiness, and release gates.
+9. Release is allowed only when required scans, approvals, protocol checks, and reflection gates are clear.
 
 If a required scan is missing, the link is incomplete and release stays blocked.
 
@@ -65,13 +68,17 @@ Minimum kernel:
 - `orchestration/stack.profile.yaml`
 - `orchestration/package-policy.yaml`
 - `orchestration/execution.plan.md`
+- `orchestration/architecture.blueprint.yaml`
+- `orchestration/shell.contract.json`
 - `prompts/ideation.md`
 - `prompts/macro-planning.md`
 - `prompts/tech-selection.md`
 - `prompts/implementation-kickoff.md`
 - `prompts/review-recovery.md`
+- `prompts/agent-system.md`
+- `prompts/collaboration-ideation.md`
 
-Everything else stays local to the service, but whole-repository read scans are still allowed for linking, hygiene classification, and approved cleanup review. Cleanup outside `governance/` is valid only when both the auth contract and approval receipt are active and evidence-linked.
+Everything else stays local to the service, but whole-repository read scans are still allowed for linking, hygiene classification, and approved cleanup review. Cleanup outside `governance/` is valid only when both the auth contract and approval receipt are active and evidence-linked. Governance now also evaluates whether the service has a real repeatable value unit that can support commercialization.
 
 ### Language Policy
 
@@ -85,7 +92,7 @@ Optional helper language:
 
 - `py`
 
-Not used in `v0.7.5`:
+Not used in `v0.7.6`:
 
 - `rust`
 
@@ -113,6 +120,7 @@ This checks:
 - repository shape
 - contract validity
 - fixed baseline drift
+- protocol and revenue gate completeness
 
 ### Why It Exists
 
@@ -123,6 +131,7 @@ The goal is simple:
 - hard to drift silently
 
 This repository is a governance kernel, not a runtime platform.
+`0.8.0` is reserved for onboarding real independent services against this protocol chain.
 
 ## 한국어
 
@@ -139,6 +148,8 @@ This repository is a governance kernel, not a runtime platform.
 - 지속 모니터링 규칙
 - API key 기반 링크 인증
 - approval receipt 기반 외부 정리 통제
+- 수익화 준비도 거버넌스
+- 거버넌스 프로토콜 체인 통제
 
 이 저장소는:
 
@@ -155,9 +166,10 @@ This repository is a governance kernel, not a runtime platform.
 3. 하지만 스캔은 `governance/`만이 아니라 저장소 전체를 읽습니다.
 4. API key 링크 계약이 저장소 전체 스캔 전에 링크를 인증합니다.
 5. `governance/` 밖 정리는 approval receipt가 명시적으로 허용한 범위에서만 가능합니다.
-6. 서비스가 baseline 스캔, hygiene report, reflection packet을 남깁니다.
-7. 거버넌스가 구조, 인증 상태, trace 상태, release gate를 검증합니다.
-8. 필수 스캔, 승인, reflection gate가 모두 깨끗할 때만 release가 가능합니다.
+6. 거버넌스 체인은 `agent -> prompts -> orchestration -> architecture -> shell -> human/agent collaboration -> DTP -> governance verdict`로 고정됩니다.
+7. 서비스는 baseline 스캔, hygiene report, protocol-chain packet, collaboration packet, revenue signal packet을 남깁니다.
+8. 거버넌스는 구조, 인증 상태, 프로토콜 완결성, trace 상태, 수익화 준비도, release gate를 검증합니다.
+9. 필수 스캔, 승인, 프로토콜 체크, reflection gate가 모두 깨끗할 때만 release가 가능합니다.
 
 필수 스캔이 하나라도 없으면 link는 incomplete 상태이고, release는 차단됩니다.
 
@@ -189,13 +201,17 @@ This repository is a governance kernel, not a runtime platform.
 - `orchestration/stack.profile.yaml`
 - `orchestration/package-policy.yaml`
 - `orchestration/execution.plan.md`
+- `orchestration/architecture.blueprint.yaml`
+- `orchestration/shell.contract.json`
 - `prompts/ideation.md`
 - `prompts/macro-planning.md`
 - `prompts/tech-selection.md`
 - `prompts/implementation-kickoff.md`
 - `prompts/review-recovery.md`
+- `prompts/agent-system.md`
+- `prompts/collaboration-ideation.md`
 
-그 외 구현은 서비스 로컬에서 자유롭게 유지합니다. 다만 링킹, 위생 분류, 승인된 정리 검토를 위해 저장소 전체 읽기 스캔은 허용됩니다. `governance/` 밖 정리는 auth contract와 approval receipt가 모두 활성 상태이고 증빙이 연결되어 있을 때만 유효합니다.
+그 외 구현은 서비스 로컬에서 자유롭게 유지합니다. 다만 링킹, 위생 분류, 승인된 정리 검토를 위해 저장소 전체 읽기 스캔은 허용됩니다. `governance/` 밖 정리는 auth contract와 approval receipt가 모두 활성 상태이고 증빙이 연결되어 있을 때만 유효합니다. 이번 버전부터 거버넌스는 서비스가 실제로 판매 가능한 반복 가치 단위를 갖는지도 봅니다.
 
 ### 언어 원칙
 
@@ -209,7 +225,7 @@ This repository is a governance kernel, not a runtime platform.
 
 - `py`
 
-`v0.7.5`에서 사용하지 않는 언어:
+`v0.7.6`에서 사용하지 않는 언어:
 
 - `rust`
 
@@ -237,6 +253,7 @@ bash scripts/validate_all.sh
 - 저장소 구조
 - 계약 JSON의 형태
 - 기준선 해시 드리프트
+- 프로토콜 체인 및 수익화 게이트 완결성
 
 ### 왜 공개하는가
 
@@ -247,3 +264,4 @@ bash scripts/validate_all.sh
 - 조용한 구조 드리프트가 어렵게 만드는 것
 
 이 저장소는 런타임 플랫폼이 아니라, 거버넌스 커널입니다.
+`0.8.0`은 이 프로토콜 체인으로 실제 독립서비스를 온보딩하는 실험 버전으로 둡니다.

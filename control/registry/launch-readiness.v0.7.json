@@ -105,6 +105,34 @@
         ]
       },
       {
+        "check_id": "protocol-chain-complete",
+        "rule": "must-pass",
+        "notes": [
+          "The full agent to governance verdict protocol chain must be present and trace-linked."
+        ]
+      },
+      {
+        "check_id": "shell-contract-valid",
+        "rule": "must-pass",
+        "notes": [
+          "The shell contract must remain valid and constrained by architecture, approval, and rollback context."
+        ]
+      },
+      {
+        "check_id": "collaboration-trace-present",
+        "rule": "must-pass",
+        "notes": [
+          "Human and agent ideation must be present as trace-linked collaboration packets."
+        ]
+      },
+      {
+        "check_id": "revenue-readiness-minimum",
+        "rule": "must-pass",
+        "notes": [
+          "A minimum service value unit and buyer problem statement must exist before launch-ready is granted."
+        ]
+      },
+      {
         "check_id": "no-blocking-risk",
         "rule": "must-pass",
         "notes": [
@@ -139,6 +167,8 @@
     "Calling a service launch-ready before governance/plan.json approval is recorded.",
     "Calling a service launch-ready when the auth contract is expired or revoked.",
     "Calling a service launch-ready when the approval receipt is expired, missing, or broader than the executed cleanup scope.",
+    "Calling a service launch-ready when the protocol chain is incomplete or shell execution lacks architecture context.",
+    "Calling a service launch-ready when no minimum commercialization path is defined.",
     "Calling a service launch-ready while high-severity reflection debt is still open or overdue.",
     "Calling a service launch-ready while service hygiene is in cleanup-required status."
   ]

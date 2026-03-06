@@ -186,9 +186,11 @@ check_file "docs/assets/site.js"
 
 check_allowed_entries_in_dir "control" "registry" "specs"
 check_exact_files_in_dir "control/registry" \
+  "governance-protocol.v0.7.json" \
   "launch-readiness.v0.7.json" \
   "link-approval-receipt.v0.7.json" \
   "link-auth-contract.v0.7.json" \
+  "revenue-readiness.v0.7.json" \
   "link-scan-points.v0.7.json" \
   "service-diet.v0.7.json" \
   "service-kernel.v0.7.json" \
@@ -202,10 +204,12 @@ check_exact_files_in_dir "policies" \
   "external_execution_boundary.v0.7.json"
 
 check_exact_files_in_dir "schemas" \
+  "governance_protocol.schema.json" \
   "launch_readiness.schema.json" \
   "link_approval_receipt.schema.json" \
   "link_auth_contract.schema.json" \
   "link_scan_points.schema.json" \
+  "revenue_readiness.schema.json" \
   "reflection_packet.schema.json" \
   "service_kernel.schema.json" \
   "trace_record.schema.json" \
@@ -213,10 +217,12 @@ check_exact_files_in_dir "schemas" \
   "version_promotion_policy.schema.json"
 
 for schema_rel in \
+  schemas/governance_protocol.schema.json \
   schemas/launch_readiness.schema.json \
   schemas/link_approval_receipt.schema.json \
   schemas/link_auth_contract.schema.json \
   schemas/link_scan_points.schema.json \
+  schemas/revenue_readiness.schema.json \
   schemas/reflection_packet.schema.json \
   schemas/service_kernel.schema.json \
   schemas/trace_record.schema.json \
@@ -233,11 +239,13 @@ do
 done
 
 for governance_rel in \
+  control/registry/governance-protocol.v0.7.json \
   control/specs/trace_rules.v0.7.json \
   control/registry/launch-readiness.v0.7.json \
   control/registry/link-approval-receipt.v0.7.json \
   control/registry/link-auth-contract.v0.7.json \
   control/registry/link-scan-points.v0.7.json \
+  control/registry/revenue-readiness.v0.7.json \
   control/registry/service-diet.v0.7.json \
   control/registry/service-kernel.v0.7.json \
   control/registry/service-normalization.v0.7.json \
@@ -266,12 +274,18 @@ validate_jq_contract "control/specs/trace_rules.v0.7.json" "schemas/trace_rules.
   .version=="v0.7" and
   (.append_only==true) and
   (.hash_reference_required==true) and
-  (.allowed_record_types|type=="array" and length==5) and
+  (.allowed_record_types|type=="array" and length==9) and
   ((.allowed_record_types | index("reflection_packet")) != null) and
+  ((.allowed_record_types | index("protocol_chain_packet")) != null) and
+  ((.allowed_record_types | index("shell_execution_receipt")) != null) and
+  ((.allowed_record_types | index("collaboration_ideation_packet")) != null) and
+  ((.allowed_record_types | index("revenue_signal_packet")) != null) and
   (.retention_model.primary_store=="service-local-governance/dtp/") and
   (.retention_model.export_path=="service-local-governance/dtp/api-sync/") and
   (.dtp.root_path=="governance/dtp/") and
   (.dtp.required_paths|type=="array" and length==3) and
+  (.protocol_chain_rules.required_record_types|type=="array" and length==4) and
+  ((.protocol_chain_rules.required_record_types | index("protocol_chain_packet")) != null) and
   (.reflection_gate.required_fields|type=="array" and length==8) and
   ((.reflection_gate.required_fields | index("problem_statement")) != null) and
   ((.reflection_gate.required_fields | index("evidence_refs")) != null) and
@@ -281,6 +295,8 @@ validate_jq_contract "control/specs/trace_rules.v0.7.json" "schemas/trace_rules.
   ((.reflection_gate.required_fields | index("due_date_ref")) != null) and
   ((.reflection_gate.required_fields | index("severity")) != null) and
   ((.reflection_gate.required_fields | index("status")) != null) and
+  (.revenue_signal_rules.required_fields|type=="array" and length==8) and
+  ((.revenue_signal_rules.required_fields | index("service_value_unit")) != null) and
   (.telemetry_sync_boundary.transport=="http-api") and
   (.telemetry_sync_boundary.ownership=="service-local")
 '
@@ -289,15 +305,35 @@ validate_jq_contract "control/registry/service-kernel.v0.7.json" "schemas/servic
   .version=="v0.7" and
   (.required_root_entries|length==6) and
   (.required_governance_entries|length==15) and
-  (.required_orchestration_entries|length==4) and
-  (.required_prompt_entries|length==5) and
+  (.required_orchestration_entries|length==6) and
+  (.required_prompt_entries|length==7) and
   ((.rules | map(test("governance/ surface only")) | any)) and
   ((.rules | map(test("Whole-repository read scans")) | any)) and
   ((.rules | map(test("auth.contract.json")) | any)) and
+  ((.rules | map(test("governance protocol chain")) | any)) and
   ((.required_governance_entries | map(.path) | index("governance/VERSION")) != null) and
   ((.required_governance_entries | map(.path) | index("governance/plan.json")) != null) and
+  ((.required_orchestration_entries | map(.path) | index("orchestration/architecture.blueprint.yaml")) != null) and
+  ((.required_orchestration_entries | map(.path) | index("orchestration/shell.contract.json")) != null) and
+  ((.required_prompt_entries | map(.path) | index("prompts/agent-system.md")) != null) and
+  ((.required_prompt_entries | map(.path) | index("prompts/collaboration-ideation.md")) != null) and
   ((.required_governance_entries | map(.path) | index("governance/monitoring/service.snapshot.json")) != null) and
   ((.required_governance_entries | map(.path) | index("governance/monitoring/hygiene.report.json")) != null)
+'
+
+validate_jq_contract "control/registry/governance-protocol.v0.7.json" "schemas/governance_protocol.schema.json" '
+  .version=="v0.7" and
+  .model=="governance-protocol" and
+  (.stages|length==8) and
+  ((.stages | map(.stage_id) | index("agent_layer")) != null) and
+  ((.stages | map(.stage_id) | index("prompt_bundle")) != null) and
+  ((.stages | map(.stage_id) | index("orchestration_layer")) != null) and
+  ((.stages | map(.stage_id) | index("architecture_layer")) != null) and
+  ((.stages | map(.stage_id) | index("shell_execution_layer")) != null) and
+  ((.stages | map(.stage_id) | index("human_agent_collaboration_layer")) != null) and
+  ((.stages | map(.stage_id) | index("dtp_layer")) != null) and
+  ((.stages | map(.stage_id) | index("governance_verdict_layer")) != null) and
+  (.invariants|length==5)
 '
 
 validate_jq_contract "control/registry/link-auth-contract.v0.7.json" "schemas/link_auth_contract.schema.json" '
@@ -320,6 +356,17 @@ validate_jq_contract "control/registry/link-approval-receipt.v0.7.json" "schemas
   ((.required_fields | index("allowed_cleanup_targets")) != null) and
   ((.required_fields | index("rollback_note_ref")) != null) and
   (.verdict_values==["approved","rejected","expired"])
+'
+
+validate_jq_contract "control/registry/revenue-readiness.v0.7.json" "schemas/revenue_readiness.schema.json" '
+  .version=="v0.7" and
+  .model=="revenue-readiness" and
+  (.required_fields|length==8) and
+  ((.required_fields | index("service_value_unit")) != null) and
+  ((.required_fields | index("buyer_problem_statement")) != null) and
+  ((.required_fields | index("revenue_evidence_refs")) != null) and
+  (.commercial_readiness_status_values|length==5) and
+  ((.delivery_modes | index("managed-service")) != null)
 '
 
 validate_jq_contract "control/registry/link-scan-points.v0.7.json" "schemas/link_scan_points.schema.json" '
@@ -374,6 +421,10 @@ validate_jq_contract "control/registry/launch-readiness.v0.7.json" "schemas/laun
   ((.gates.required_checks | map(.check_id) | index("approval-receipt-current")) != null) and
   ((.gates.required_checks | map(.check_id) | index("cleanup-scope-approved")) != null) and
   ((.gates.required_checks | map(.check_id) | index("reflection-actions-clear")) != null) and
+  ((.gates.required_checks | map(.check_id) | index("protocol-chain-complete")) != null) and
+  ((.gates.required_checks | map(.check_id) | index("shell-contract-valid")) != null) and
+  ((.gates.required_checks | map(.check_id) | index("collaboration-trace-present")) != null) and
+  ((.gates.required_checks | map(.check_id) | index("revenue-readiness-minimum")) != null) and
   ((.anti_patterns | map(test("expired")) | any)) and
   ((.anti_patterns | map(test("reflection debt")) | any))
 '
@@ -382,6 +433,10 @@ validate_jq_contract "control/registry/version-promotion.v0.7.json" "schemas/ver
   .version=="v0.7" and
   ((.gates.required_all | map(.gate_id) | index("policy-bundle-reproducible")) != null) and
   ((.gates.required_all | map(.gate_id) | index("approval-audit-trail")) != null) and
+  ((.gates.required_all | map(.gate_id) | index("revenue-evidence-present")) != null) and
+  ((.gates.required_all | map(.gate_id) | index("repeatable-value-unit")) != null) and
+  ((.gates.required_all | map(.gate_id) | index("operator-business-dependence")) != null) and
+  ((.gates.required_all | map(.gate_id) | index("protocol-audit-complete")) != null) and
   ((.gates.required_metrics | map(.metric_id) | index("audit-coverage-ratio")) != null)
 '
 
