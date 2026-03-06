@@ -11,6 +11,8 @@ const demoStage = document.getElementById("demo-stage");
 const hero = document.querySelector(".hero");
 const heroLens = document.querySelector(".hero-lens");
 const heroVisual = document.querySelector(".hero-visual");
+const trailPathGlow = document.getElementById("trail-path-glow");
+const trailNodes = document.querySelectorAll(".trail-node");
 
 const gsapReady = typeof window.gsap !== "undefined" && typeof window.ScrollTrigger !== "undefined";
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -34,8 +36,10 @@ function animateDecision(state) {
   }
 
   const tintScale = state === "block" ? 1.08 : 1;
+  const trailTravel = state === "proceed" ? 0 : state === "review" ? 36 : 72;
+  const trailOpacity = state === "block" ? 0.92 : state === "review" ? 0.78 : 0.66;
 
-  window.gsap.killTweensOf([decisionPanel, decisionPill, stateBand]);
+  window.gsap.killTweensOf([decisionPanel, decisionPill, stateBand, trailPathGlow, trailNodes]);
   window.gsap.fromTo(
     decisionPanel,
     { y: 20, autoAlpha: 0.82 },
@@ -51,6 +55,20 @@ function animateDecision(state) {
     { scaleX: 0.74, opacity: 0.16 },
     { scaleX: tintScale, opacity: 0.5, duration: 0.58, ease: "power2.out" }
   );
+  if (trailPathGlow) {
+    window.gsap.fromTo(
+      trailPathGlow,
+      { strokeDashoffset: trailTravel + 120, opacity: 0.18 },
+      { strokeDashoffset: trailTravel, opacity: trailOpacity, duration: 0.72, ease: "power2.out" }
+    );
+  }
+  if (trailNodes.length) {
+    window.gsap.fromTo(
+      trailNodes,
+      { scale: 0.82, autoAlpha: 0.5 },
+      { scale: 1, autoAlpha: 1, duration: 0.36, stagger: 0.06, ease: "back.out(1.5)" }
+    );
+  }
   window.gsap.fromTo(
     decisionPoints.children,
     { y: 12, autoAlpha: 0 },
@@ -160,6 +178,12 @@ function initHeroPointer() {
 function initAnimations() {
   if (!gsapReady || prefersReducedMotion) {
     return;
+  }
+
+  if (trailPathGlow) {
+    const trailLength = trailPathGlow.getTotalLength();
+    trailPathGlow.style.strokeDasharray = `${trailLength}`;
+    trailPathGlow.style.strokeDashoffset = `${trailLength * 0.18}`;
   }
 
   const intro = window.gsap.timeline({ defaults: { ease: "power3.out" } });
@@ -312,6 +336,28 @@ function initAnimations() {
       scrub: 1.1
     }
   });
+
+  if (trailPathGlow) {
+    window.gsap.to(trailPathGlow, {
+      strokeDashoffset: 0,
+      duration: 4.6,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut"
+    });
+  }
+
+  if (trailNodes.length) {
+    window.gsap.to(trailNodes, {
+      scale: 1.18,
+      duration: 1.6,
+      stagger: 0.18,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+      transformOrigin: "center center"
+    });
+  }
 }
 
 [scopeSelect, approvalToggle, reflectionToggle].forEach((input) => {

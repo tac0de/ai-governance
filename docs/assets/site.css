@@ -549,6 +549,53 @@ ul {
   transform: translateY(calc(var(--stage-shift) * -12px));
 }
 
+.demo-trail {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: visible;
+  opacity: 0.92;
+}
+
+#trail-path-base,
+#trail-path-glow {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+#trail-path-base {
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 1.15;
+}
+
+#trail-path-glow {
+  stroke: url(#trailGradient);
+  stroke-width: 1.7;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.2));
+}
+
+.trail-node {
+  fill: rgba(255, 255, 255, 0.85);
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.18));
+}
+
+.trail-node-a {
+  fill: rgba(138, 164, 255, 0.86);
+}
+
+.trail-node-b {
+  fill: rgba(255, 255, 255, 0.88);
+}
+
+.trail-node-c {
+  fill: rgba(var(--stage-rgb), 0.94);
+  filter: drop-shadow(0 0 12px rgba(var(--stage-rgb), 0.32));
+}
+
 .demo-stage.proceed {
   --stage-rgb: var(--mint-rgb);
 }
@@ -826,6 +873,10 @@ ul {
     margin-top: 26px;
     padding: 28px 16px 22px 10px;
     gap: 28px;
+  }
+
+  .demo-trail {
+    opacity: 0.5;
   }
 
   .state-band {

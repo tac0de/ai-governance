@@ -94,6 +94,21 @@
       <div id="demo-stage" class="demo-stage proceed">
         <div id="state-band" class="state-band proceed" aria-hidden="true"></div>
         <div class="demo-stage-grid" aria-hidden="true"></div>
+        <svg class="demo-trail" viewBox="0 0 760 360" aria-hidden="true">
+          <defs>
+            <linearGradient id="trailGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#ffffff" stop-opacity="0"></stop>
+              <stop offset="28%" stop-color="#8aa4ff" stop-opacity="0.46"></stop>
+              <stop offset="68%" stop-color="#ffffff" stop-opacity="0.7"></stop>
+              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"></stop>
+            </linearGradient>
+          </defs>
+          <path id="trail-path-base" d="M52 248 C180 214, 234 126, 338 128 S508 188, 706 102"></path>
+          <path id="trail-path-glow" d="M52 248 C180 214, 234 126, 338 128 S508 188, 706 102"></path>
+          <circle class="trail-node trail-node-a" cx="52" cy="248" r="4"></circle>
+          <circle class="trail-node trail-node-b" cx="338" cy="128" r="4"></circle>
+          <circle class="trail-node trail-node-c" cx="706" cy="102" r="4"></circle>
+        </svg>
         <form class="demo-controls">
           <label>
             <span>Cleanup scope</span>
