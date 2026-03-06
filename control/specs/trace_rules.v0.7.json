@@ -11,7 +11,10 @@
     "protocol_chain_packet",
     "shell_execution_receipt",
     "collaboration_ideation_packet",
-    "revenue_signal_packet"
+    "revenue_signal_packet",
+    "handbook_ack_packet",
+    "service_intake_packet",
+    "deployment_topology_packet"
   ],
   "forbidden_mutations": [
     "Record deletion.",
@@ -85,13 +88,18 @@
       "protocol_chain_packet",
       "shell_execution_receipt",
       "collaboration_ideation_packet",
-      "revenue_signal_packet"
+      "revenue_signal_packet",
+      "handbook_ack_packet",
+      "service_intake_packet"
     ],
     "requirements": [
+      "Handbook acknowledgement packets must exist before intake packets are valid.",
+      "Service intake packets must remain ordered and reference the intake workflow stages.",
       "Protocol chain packets must reference upstream and downstream stages.",
       "Shell execution receipts must include the actor, allowed scope, approval refs, and result hash.",
       "Collaboration ideation packets must include the human and agent role context, problem framing, option comparison, and chosen rationale.",
-      "Revenue signal packets must include commercialization evidence linked to the service value unit."
+      "Revenue signal packets must include commercialization evidence linked to the service value unit.",
+      "Deployment topology packets must include frontend platform, backend platform, domain owner, and api boundary references."
     ]
   },
   "reflection_gate": {

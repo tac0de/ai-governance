@@ -1,4 +1,4 @@
-# ai-governance v0.7.7
+# ai-governance v0.7.8
 
 Simple, readable governance for independent AI services.
 
@@ -24,6 +24,8 @@ This repository is a small public contract kernel.
 - incident and exception governance
 - support, SLA, and billing ops readiness
 - installable B2B ops packs
+- machine-readable agent handbook contracts
+- service intake workflow contracts
 
 It does not run products.
 It does not own service code.
@@ -38,10 +40,11 @@ The flow is fixed:
 3. The scan still reads the whole repository, not only `governance/`.
 4. An API-key link contract authenticates the link before repository-wide scanning begins.
 5. Cleanup outside `governance/` is allowed only when an approval receipt explicitly permits the target scope.
-6. The governed chain is fixed as `agent -> prompts -> orchestration -> architecture -> shell -> human/agent collaboration -> DTP -> governance verdict`.
-7. The service emits baseline scans, hygiene reports, protocol-chain packets, collaboration packets, and revenue signal packets.
-8. Governance validates structure, auth state, protocol completeness, trace state, revenue readiness, customer ops readiness, and release gates.
-9. Release is allowed only when required scans, approvals, protocol checks, customer gates, and reflection gates are clear.
+6. The agent must first read the service handbook and follow the intake workflow before solution work begins.
+7. The governed chain is fixed as `agent -> prompts -> orchestration -> architecture -> shell -> human/agent collaboration -> DTP -> governance verdict`.
+8. The service emits baseline scans, hygiene reports, handbook acknowledgement packets, intake packets, deployment topology packets, protocol-chain packets, collaboration packets, and revenue signal packets.
+9. Governance validates structure, auth state, protocol completeness, intake workflow state, deployment topology state, trace state, revenue readiness, customer ops readiness, and release gates.
+10. Release is allowed only when required scans, approvals, protocol checks, intake checks, customer gates, and reflection gates are clear.
 
 If a required scan is missing, the link is incomplete and release stays blocked.
 
@@ -165,6 +168,8 @@ This repository is a governance kernel, not a runtime platform.
 - incident 및 exception 거버넌스
 - support, SLA, billing ops readiness
 - 설치 가능한 B2B ops pack
+- 에이전트용 handbook 계약
+- 서비스 intake workflow 계약
 
 이 저장소는:
 
@@ -181,10 +186,11 @@ This repository is a governance kernel, not a runtime platform.
 3. 하지만 스캔은 `governance/`만이 아니라 저장소 전체를 읽습니다.
 4. API key 링크 계약이 저장소 전체 스캔 전에 링크를 인증합니다.
 5. `governance/` 밖 정리는 approval receipt가 명시적으로 허용한 범위에서만 가능합니다.
-6. 거버넌스 체인은 `agent -> prompts -> orchestration -> architecture -> shell -> human/agent collaboration -> DTP -> governance verdict`로 고정됩니다.
-7. 서비스는 baseline 스캔, hygiene report, protocol-chain packet, collaboration packet, revenue signal packet을 남깁니다.
-8. 거버넌스는 구조, 인증 상태, 프로토콜 완결성, trace 상태, 수익화 준비도, 고객 운영 준비도, release gate를 검증합니다.
-9. 필수 스캔, 승인, 프로토콜 체크, 고객 운영 게이트, reflection gate가 모두 깨끗할 때만 release가 가능합니다.
+6. 에이전트는 먼저 service handbook를 읽고 intake workflow를 따라야 합니다.
+7. 거버넌스 체인은 `agent -> prompts -> orchestration -> architecture -> shell -> human/agent collaboration -> DTP -> governance verdict`로 고정됩니다.
+8. 서비스는 baseline 스캔, hygiene report, handbook acknowledgement packet, intake packet, deployment topology packet, protocol-chain packet, collaboration packet, revenue signal packet을 남깁니다.
+9. 거버넌스는 구조, 인증 상태, 프로토콜 완결성, intake workflow 상태, deployment topology 상태, trace 상태, 수익화 준비도, 고객 운영 준비도, release gate를 검증합니다.
+10. 필수 스캔, 승인, 프로토콜 체크, intake 체크, 고객 운영 게이트, reflection gate가 모두 깨끗할 때만 release가 가능합니다.
 
 필수 스캔이 하나라도 없으면 link는 incomplete 상태이고, release는 차단됩니다.
 

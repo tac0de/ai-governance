@@ -5,15 +5,17 @@
   "stages": [
     {
       "stage_id": "agent_layer",
-      "required_ref": "prompts/agent-system.md",
+      "required_ref": "control/registry/agent-service-handbook.v0.7.json",
       "produces": [
         "agent_intent_packet",
-        "prompt_requirements_ref"
+        "prompt_requirements_ref",
+        "handbook_ack_packet"
       ],
       "consumes": [
-        "service_goal_ref"
+        "service_goal_ref",
+        "service_handbook_ref"
       ],
-      "gate_rule": "agent outputs must not enter release review without prompt bundle linkage"
+      "gate_rule": "agent outputs must not enter release review without handbook acknowledgement and prompt bundle linkage"
     },
     {
       "stage_id": "prompt_bundle",
@@ -23,9 +25,10 @@
         "execution_intent_ref"
       ],
       "consumes": [
-        "agent_intent_packet"
+        "agent_intent_packet",
+        "handbook_ack_packet"
       ],
-      "gate_rule": "prompt bundle must reference orchestration and architecture inputs before execution planning"
+      "gate_rule": "prompt bundle must reference handbook, orchestration, and architecture inputs before execution planning"
     },
     {
       "stage_id": "orchestration_layer",
@@ -36,9 +39,10 @@
         "execution_plan_ref"
       ],
       "consumes": [
-        "prompt_bundle_hash"
+        "prompt_bundle_hash",
+        "service_intake_packet"
       ],
-      "gate_rule": "orchestration must remain reviewable and hash-linked to the prompt bundle"
+      "gate_rule": "orchestration must remain reviewable and hash-linked to the handbook, intake workflow, and prompt bundle"
     },
     {
       "stage_id": "architecture_layer",
@@ -108,7 +112,9 @@
     }
   ],
   "invariants": [
+    "Agent entry must begin from the service handbook and handbook acknowledgement packet.",
     "Agent outputs must not enter release review without prompt bundle references.",
+    "Service intake workflow packets must exist before orchestration is considered valid.",
     "Prompt bundles must not flow into execution without orchestration and architecture references.",
     "Shell execution must not run without architecture, approval, and rollback context.",
     "Human and agent ideation must be stored as DTP-linked collaboration packets.",

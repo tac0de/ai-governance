@@ -56,6 +56,20 @@
         ]
       },
       {
+        "check_id": "agent-handbook-current",
+        "rule": "must-pass",
+        "notes": [
+          "The agent-readable service handbook must be current before solution work may enter launch review."
+        ]
+      },
+      {
+        "check_id": "intake-workflow-followed",
+        "rule": "must-pass",
+        "notes": [
+          "Handbook acknowledgement, intake packets, and deployment topology packets must prove the ordered intake workflow was followed."
+        ]
+      },
+      {
         "check_id": "baseline-recorded",
         "rule": "must-pass",
         "notes": [
@@ -130,6 +144,13 @@
         "rule": "must-pass",
         "notes": [
           "A minimum service value unit and buyer problem statement must exist before launch-ready is granted."
+        ]
+      },
+      {
+        "check_id": "deployment-topology-declared",
+        "rule": "must-pass",
+        "notes": [
+          "Frontend platform, backend platform, domain owner, and api boundary must be declared before production exposure."
         ]
       },
       {

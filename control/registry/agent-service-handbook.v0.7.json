@@ -1,0 +1,48 @@
+{
+  "version": "v0.7",
+  "model": "agent-service-handbook",
+  "purpose": "Define the machine-readable handbook surface that an agent must read before entering an independently governed service and starting any scan, normalization, diet, planning, or deployment mapping work.",
+  "handbook_id": "service-entry-handbook",
+  "required_sections": [
+    "service-identity",
+    "runtime-profile",
+    "governance-surface",
+    "orchestration-surface",
+    "prompt-surface",
+    "link-contracts",
+    "boundary-rules",
+    "intake-workflow",
+    "gate-conditions",
+    "deployment-topology"
+  ],
+  "entry_sequence": [
+    "read-handbook",
+    "acknowledge-boundary",
+    "verify-link-auth",
+    "scan-service-surface",
+    "run-normalization-review",
+    "run-diet-review",
+    "draft-plan",
+    "request-gate",
+    "map-deployment-topology"
+  ],
+  "forbidden_actions_before_read": [
+    "Do not mutate service-local files before handbook acknowledgement.",
+    "Do not start cleanup classification before boundary rules are read.",
+    "Do not execute shell apply before intake workflow gates are satisfied.",
+    "Do not map deployment topology before service identity and runtime profile are read."
+  ],
+  "service_surface_refs": [
+    "README.md",
+    "service.yaml",
+    "governance/",
+    "orchestration/",
+    "prompts/"
+  ],
+  "decision_gates": [
+    "handbook_ack_packet must exist before intake packets are valid.",
+    "The intake workflow must stay ordered and trace-linked.",
+    "Deployment topology mapping must not precede gate review.",
+    "Agent entry is invalid when governance, orchestration, or prompts surfaces are unreadable."
+  ]
+}

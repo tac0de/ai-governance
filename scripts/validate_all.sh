@@ -216,6 +216,7 @@ check_file "docs/assets/site.js"
 
 check_allowed_entries_in_dir "control" "registry" "specs"
 check_exact_files_in_dir "control/registry" \
+  "agent-service-handbook.v0.7.json" \
   "audit-bundle.v0.7.json" \
   "customer-tenant.v0.7.json" \
   "governance-protocol.v0.7.json" \
@@ -228,6 +229,7 @@ check_exact_files_in_dir "control/registry" \
   "revenue-readiness.v0.7.json" \
   "link-scan-points.v0.7.json" \
   "service-diet.v0.7.json" \
+  "service-intake-workflow.v0.7.json" \
   "service-kernel.v0.7.json" \
   "service-normalization.v0.7.json" \
   "temporary-links.v0.7.json" \
@@ -270,6 +272,7 @@ check_exact_files_in_dir "packs/audit-bundle" \
   "render.sh"
 
 check_exact_files_in_dir "schemas" \
+  "agent_service_handbook.schema.json" \
   "audit_bundle.schema.json" \
   "customer_tenant.schema.json" \
   "governance_protocol.schema.json" \
@@ -280,6 +283,7 @@ check_exact_files_in_dir "schemas" \
   "link_scan_points.schema.json" \
   "revenue_readiness.schema.json" \
   "reflection_packet.schema.json" \
+  "service_intake_workflow.schema.json" \
   "service_kernel.schema.json" \
   "shell_entrypoints.schema.json" \
   "support_ops_readiness.schema.json" \
@@ -288,6 +292,7 @@ check_exact_files_in_dir "schemas" \
   "version_promotion_policy.schema.json"
 
 for schema_rel in \
+  schemas/agent_service_handbook.schema.json \
   schemas/audit_bundle.schema.json \
   schemas/customer_tenant.schema.json \
   schemas/governance_protocol.schema.json \
@@ -298,6 +303,7 @@ for schema_rel in \
   schemas/link_scan_points.schema.json \
   schemas/revenue_readiness.schema.json \
   schemas/reflection_packet.schema.json \
+  schemas/service_intake_workflow.schema.json \
   schemas/service_kernel.schema.json \
   schemas/shell_entrypoints.schema.json \
   schemas/support_ops_readiness.schema.json \
@@ -344,6 +350,7 @@ do
 done
 
 for governance_rel in \
+  control/registry/agent-service-handbook.v0.7.json \
   control/registry/audit-bundle.v0.7.json \
   control/registry/customer-tenant.v0.7.json \
   control/registry/governance-protocol.v0.7.json \
@@ -355,6 +362,7 @@ for governance_rel in \
   control/registry/link-scan-points.v0.7.json \
   control/registry/revenue-readiness.v0.7.json \
   control/registry/service-diet.v0.7.json \
+  control/registry/service-intake-workflow.v0.7.json \
   control/registry/service-kernel.v0.7.json \
   control/registry/service-normalization.v0.7.json \
   control/registry/shell-entrypoints.v0.7.json \
@@ -364,6 +372,38 @@ for governance_rel in \
 do
   check_json "$governance_rel"
 done
+
+validate_jq_contract "control/registry/agent-service-handbook.v0.7.json" "schemas/agent_service_handbook.schema.json" '
+  .version=="v0.7" and
+  .model=="agent-service-handbook" and
+  .handbook_id=="service-entry-handbook" and
+  (.required_sections|length==10) and
+  ((.required_sections | index("intake-workflow")) != null) and
+  ((.required_sections | index("deployment-topology")) != null) and
+  (.entry_sequence|length==9) and
+  ((.entry_sequence | index("read-handbook")) != null) and
+  ((.entry_sequence | index("map-deployment-topology")) != null) and
+  (.service_surface_refs|length==5) and
+  ((.service_surface_refs | index("governance/")) != null) and
+  ((.service_surface_refs | index("orchestration/")) != null) and
+  ((.service_surface_refs | index("prompts/")) != null)
+'
+
+validate_jq_contract "control/registry/service-intake-workflow.v0.7.json" "schemas/service_intake_workflow.schema.json" '
+  .version=="v0.7" and
+  .model=="service-intake-workflow" and
+  .workflow_id=="independent-service-intake" and
+  (.ordered_stages|length==7) and
+  ((.ordered_stages | map(.stage_id) | index("handbook-read")) != null) and
+  ((.ordered_stages | map(.stage_id) | index("deployment-topology-map")) != null) and
+  ((.ordered_stages | map(.stage_id) | index("plan-and-gate")) != null) and
+  (.required_inputs|length==5) and
+  (.required_outputs|length==4) and
+  ((.required_outputs | index("handbook_ack_packet")) != null) and
+  ((.required_outputs | index("deployment_topology_packet")) != null) and
+  (.gate_refs|length==3) and
+  (.rollback_points|length==4)
+'
 
 validate_jq_contract "policies/external_execution_boundary.v0.7.json" "schemas/trace_rules.schema.json" '
   .version=="v0.7" and
@@ -384,18 +424,23 @@ validate_jq_contract "control/specs/trace_rules.v0.7.json" "schemas/trace_rules.
   .version=="v0.7" and
   (.append_only==true) and
   (.hash_reference_required==true) and
-  (.allowed_record_types|type=="array" and length==9) and
+  (.allowed_record_types|type=="array" and length==12) and
   ((.allowed_record_types | index("reflection_packet")) != null) and
   ((.allowed_record_types | index("protocol_chain_packet")) != null) and
   ((.allowed_record_types | index("shell_execution_receipt")) != null) and
   ((.allowed_record_types | index("collaboration_ideation_packet")) != null) and
   ((.allowed_record_types | index("revenue_signal_packet")) != null) and
+  ((.allowed_record_types | index("handbook_ack_packet")) != null) and
+  ((.allowed_record_types | index("service_intake_packet")) != null) and
+  ((.allowed_record_types | index("deployment_topology_packet")) != null) and
   (.retention_model.primary_store=="service-local-governance/dtp/") and
   (.retention_model.export_path=="service-local-governance/dtp/api-sync/") and
   (.dtp.root_path=="governance/dtp/") and
   (.dtp.required_paths|type=="array" and length==3) and
-  (.protocol_chain_rules.required_record_types|type=="array" and length==4) and
+  (.protocol_chain_rules.required_record_types|type=="array" and length==6) and
   ((.protocol_chain_rules.required_record_types | index("protocol_chain_packet")) != null) and
+  ((.protocol_chain_rules.required_record_types | index("handbook_ack_packet")) != null) and
+  ((.protocol_chain_rules.required_record_types | index("service_intake_packet")) != null) and
   (.reflection_gate.required_fields|type=="array" and length==8) and
   ((.reflection_gate.required_fields | index("problem_statement")) != null) and
   ((.reflection_gate.required_fields | index("evidence_refs")) != null) and
@@ -421,6 +466,8 @@ validate_jq_contract "control/registry/service-kernel.v0.7.json" "schemas/servic
   ((.rules | map(test("Whole-repository read scans")) | any)) and
   ((.rules | map(test("auth.contract.json")) | any)) and
   ((.rules | map(test("governance protocol chain")) | any)) and
+  ((.rules | map(test("service handbook")) | any)) and
+  ((.rules | map(test("intake workflow")) | any)) and
   ((.required_governance_entries | map(.path) | index("governance/VERSION")) != null) and
   ((.required_governance_entries | map(.path) | index("governance/plan.json")) != null) and
   ((.required_orchestration_entries | map(.path) | index("orchestration/architecture.blueprint.yaml")) != null) and
@@ -443,7 +490,10 @@ validate_jq_contract "control/registry/governance-protocol.v0.7.json" "schemas/g
   ((.stages | map(.stage_id) | index("human_agent_collaboration_layer")) != null) and
   ((.stages | map(.stage_id) | index("dtp_layer")) != null) and
   ((.stages | map(.stage_id) | index("governance_verdict_layer")) != null) and
-  (.invariants|length==5)
+  ((.stages[] | select(.stage_id=="agent_layer") | .required_ref)=="control/registry/agent-service-handbook.v0.7.json") and
+  (.invariants|length==7) and
+  ((.invariants | map(test("service handbook")) | any)) and
+  ((.invariants | map(test("intake workflow")) | any))
 '
 
 validate_jq_contract "control/registry/customer-tenant.v0.7.json" "schemas/customer_tenant.schema.json" '
@@ -579,6 +629,8 @@ validate_jq_contract "control/registry/service-normalization.v0.7.json" "schemas
 
 validate_jq_contract "control/registry/launch-readiness.v0.7.json" "schemas/launch_readiness.schema.json" '
   .version=="v0.7" and
+  ((.gates.required_checks | map(.check_id) | index("agent-handbook-current")) != null) and
+  ((.gates.required_checks | map(.check_id) | index("intake-workflow-followed")) != null) and
   ((.gates.required_checks | map(.check_id) | index("baseline-recorded")) != null) and
   ((.gates.required_checks | map(.check_id) | index("plan-approved")) != null) and
   ((.gates.required_checks | map(.check_id) | index("apply-boundary-sealed")) != null) and
@@ -590,6 +642,7 @@ validate_jq_contract "control/registry/launch-readiness.v0.7.json" "schemas/laun
   ((.gates.required_checks | map(.check_id) | index("shell-contract-valid")) != null) and
   ((.gates.required_checks | map(.check_id) | index("collaboration-trace-present")) != null) and
   ((.gates.required_checks | map(.check_id) | index("revenue-readiness-minimum")) != null) and
+  ((.gates.required_checks | map(.check_id) | index("deployment-topology-declared")) != null) and
   ((.gates.required_checks | map(.check_id) | index("customer-contract-valid")) != null) and
   ((.gates.required_checks | map(.check_id) | index("audit-bundle-exportable")) != null) and
   ((.gates.required_checks | map(.check_id) | index("incident-exception-governed")) != null) and

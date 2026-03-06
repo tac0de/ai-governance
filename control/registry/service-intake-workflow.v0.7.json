@@ -1,0 +1,96 @@
+{
+  "version": "v0.7",
+  "model": "service-intake-workflow",
+  "purpose": "Define the fixed ordered workflow an agent must follow when entering an independent service through ai-governance before solution work begins.",
+  "workflow_id": "independent-service-intake",
+  "ordered_stages": [
+    {
+      "stage_id": "handbook-read",
+      "required_read": "control/registry/agent-service-handbook.v0.7.json",
+      "produces": [
+        "handbook_ack_packet"
+      ],
+      "gate_rule": "the handbook must be acknowledged before any service-local review starts"
+    },
+    {
+      "stage_id": "link-auth-verify",
+      "required_read": "control/registry/link-auth-contract.v0.7.json",
+      "produces": [
+        "link_auth_verification_receipt"
+      ],
+      "gate_rule": "repo-wide scan may start only after link auth is valid"
+    },
+    {
+      "stage_id": "repository-scan",
+      "required_read": "control/registry/link-scan-points.v0.7.json",
+      "produces": [
+        "service_intake_packet",
+        "baseline_scan_summary"
+      ],
+      "gate_rule": "repository scan must remain read-first and boundary-aware"
+    },
+    {
+      "stage_id": "normalization-review",
+      "required_read": "control/registry/service-normalization.v0.7.json",
+      "produces": [
+        "normalization_review_receipt"
+      ],
+      "gate_rule": "normalization review must classify canonical and drifted surfaces before planning"
+    },
+    {
+      "stage_id": "diet-review",
+      "required_read": "control/registry/service-diet.v0.7.json",
+      "produces": [
+        "diet_review_receipt"
+      ],
+      "gate_rule": "diet review must classify retain, archive, and delete-review candidates before cleanup"
+    },
+    {
+      "stage_id": "deployment-topology-map",
+      "required_read": "service.yaml",
+      "produces": [
+        "deployment_topology_packet"
+      ],
+      "gate_rule": "frontend platform, backend platform, domain owner, and api boundary must be declared before apply planning"
+    },
+    {
+      "stage_id": "plan-and-gate",
+      "required_read": "governance/plan.json",
+      "produces": [
+        "approved_plan_ref",
+        "gate_request_receipt"
+      ],
+      "gate_rule": "apply remains blocked until the plan is approved and the scope is trace-linked"
+    }
+  ],
+  "required_inputs": [
+    "agent-service-handbook",
+    "link-auth-contract",
+    "service.yaml",
+    "governance/service.contract.json",
+    "orchestration/service.map.yaml"
+  ],
+  "required_outputs": [
+    "handbook_ack_packet",
+    "service_intake_packet",
+    "deployment_topology_packet",
+    "approved_plan_ref"
+  ],
+  "gate_refs": [
+    "launch-readiness",
+    "governance-protocol",
+    "trace-rules"
+  ],
+  "rollback_points": [
+    "after-handbook-read",
+    "after-normalization-review",
+    "after-diet-review",
+    "before-apply"
+  ],
+  "rules": [
+    "The intake workflow is ordered and may not skip handbook acknowledgement.",
+    "Repository-wide scans are allowed, but mutating actions remain gated.",
+    "Deployment topology must be declared before solution apply planning.",
+    "Every intake stage must emit a trace-linked packet or receipt."
+  ]
+}

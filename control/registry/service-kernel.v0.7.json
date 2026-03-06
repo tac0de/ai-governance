@@ -203,9 +203,11 @@
   "rules": [
     "The governance kernel is mandatory for independently linked services.",
     "Governance is attached to the service through the governance/ surface only.",
+    "Agents must read the service handbook and follow the service intake workflow before governed solution work begins.",
     "All independent services must expose orchestration and prompts as fixed public-readable execution surfaces.",
     "Monitoring artifacts under governance/monitoring are mandatory for both new and existing linked services.",
     "The governance protocol chain agent -> prompts -> orchestration -> architecture -> shell -> human and agent collaboration -> DTP -> governance verdict is mandatory for independently linked services.",
+    "The service handbook and intake workflow are machine-readable governance entry surfaces and must remain current.",
     "The boundary seal entries governance/VERSION, governance/policies, governance/bin, and governance/plan.json are mandatory.",
     "Active link kits under governance/links/active must carry auth.contract.json and approval.receipt.json before out-of-governance cleanup is reviewable.",
     "Architecture and shell contract surfaces must remain public-readable under orchestration/ for governance review.",
