@@ -3,6 +3,7 @@ const approvalToggle = document.getElementById("approval-toggle");
 const reflectionToggle = document.getElementById("reflection-toggle");
 const decisionPill = document.getElementById("decision-pill");
 const decisionPanel = document.getElementById("decision-panel");
+const stateBand = document.getElementById("state-band");
 const decisionTitle = document.getElementById("decision-title");
 const decisionBody = document.getElementById("decision-body");
 const decisionPoints = document.getElementById("decision-points");
@@ -70,6 +71,7 @@ function renderDecision() {
   decisionPill.textContent = state === "review" ? "human review" : state;
   decisionPill.className = `decision-pill ${state}`;
   decisionPanel.className = `decision-panel ${state}`;
+  stateBand.className = `state-band ${state}`;
   decisionTitle.textContent = title;
   decisionBody.textContent = body;
   pointList(points);
