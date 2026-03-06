@@ -11,103 +11,56 @@
   <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <div class="page-glow page-glow-a"></div>
-  <div class="page-glow page-glow-b"></div>
+  <div class="ambient ambient-a"></div>
+  <div class="ambient ambient-b"></div>
+  <div class="ambient ambient-c"></div>
 
-  <header class="site-header reveal">
-    <a class="brand" href="#top">AI Governance</a>
-    <nav class="nav">
-      <a href="#flow">Flow</a>
-      <a href="#benefits">Benefits</a>
-      <a href="#demo">Demo</a>
-    </nav>
-  </header>
-
-  <main id="top">
+  <main class="page-shell">
     <section class="hero reveal">
-      <div class="hero-copy">
-        <p class="eyebrow">B2B GOVERNANCE KERNEL</p>
-        <h1>Attach once. Scan the whole repo. Release with proof.</h1>
-        <p class="hero-text">A lightweight governance folder for independent services, backed by API-key link contracts, scoped cleanup approval, and release-ready audit receipts.</p>
-        <div class="hero-actions">
-          <a class="button button-primary" href="#demo">View Live Decision</a>
-          <a class="button button-secondary" href="#flow">See Product Flow</a>
-        </div>
-        <div class="chip-row">
-          <span class="chip">API-key link auth</span>
-          <span class="chip">Scoped cleanup receipt</span>
-          <span class="chip">Reflection-gated release</span>
-        </div>
+      <p class="eyebrow">B2B GOVERNANCE KERNEL</p>
+      <h1>Attach governance. Read everything. Approve only what should move.</h1>
+      <p class="hero-copy">
+        A minimal governance layer for independent services. One folder attached. Full-repo scan visibility. External cleanup only with auth, receipt, and audit proof.
+      </p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="#demo">Try the gate</a>
+        <a class="button button-secondary" href="https://github.com/tac0de/ai-governance">Open repo</a>
       </div>
-      <div class="hero-panel">
-        <div class="hero-card floating">
-          <div class="mini-label">live policy</div>
-          <div class="mini-value">governance/ attached</div>
-          <ul class="mini-list">
-            <li>repo-wide scan visibility</li>
-            <li>cleanup scope approval</li>
-            <li>audit-linked release gate</li>
-          </ul>
-        </div>
+      <div class="signal-row" aria-label="Product signals">
+        <span>API-key link auth</span>
+        <span>Scoped cleanup receipt</span>
+        <span>Reflection-gated release</span>
       </div>
     </section>
 
-    <section id="flow" class="flow-section reveal">
-      <div class="section-head">
-        <p class="section-kicker">PRODUCT FLOW</p>
-        <h2>Four steps. One contract path.</h2>
+    <section class="strip reveal" aria-label="Product flow">
+      <p><span>01</span> Attach `governance/` only</p>
+      <p><span>02</span> Scan the whole repo</p>
+      <p><span>03</span> Approve scoped cleanup</p>
+      <p><span>04</span> Release with audit trail</p>
+    </section>
+
+    <section class="proof reveal">
+      <div class="proof-line">
+        <p class="proof-label">Why teams buy</p>
+        <p class="proof-text">Fast onboarding, constrained mutation, visible release posture.</p>
       </div>
-      <div class="flow-grid">
-        <article class="flow-card">
-          <span class="flow-step">01</span>
-          <h3>Attach governance/</h3>
-          <p>Install only the governance surface inside the service.</p>
-        </article>
-        <article class="flow-card">
-          <span class="flow-step">02</span>
-          <h3>Scan whole repo</h3>
-          <p>Read runtime, tests, policies, and drift across the repository.</p>
-        </article>
-        <article class="flow-card">
-          <span class="flow-step">03</span>
-          <h3>Approve scoped cleanup</h3>
-          <p>Use auth + approval receipts before touching anything outside governance/.</p>
-        </article>
-        <article class="flow-card">
-          <span class="flow-step">04</span>
-          <h3>Release with audit trail</h3>
-          <p>Gate production on evidence, rollback coverage, and reflection health.</p>
-        </article>
+      <div class="proof-line">
+        <p class="proof-label">Boundary model</p>
+        <p class="proof-text">The scan sees the repository. The write path stays narrow until a human-backed receipt widens it.</p>
+      </div>
+      <div class="proof-line">
+        <p class="proof-label">Reflection rule</p>
+        <p class="proof-text">If high-severity reflection debt is overdue, production stays blocked.</p>
       </div>
     </section>
 
-    <section id="benefits" class="benefit-section reveal">
-      <div class="section-head">
-        <p class="section-kicker">WHY TEAMS BUY</p>
-        <h2>Small surface. Hard guarantees.</h2>
+    <section id="demo" class="demo reveal">
+      <div class="demo-intro">
+        <p class="eyebrow">LIVE GATE</p>
+        <h2>One small interaction. Three outcomes.</h2>
       </div>
-      <div class="benefit-grid">
-        <article class="benefit-card">
-          <h3>Faster onboarding</h3>
-          <p>Drop in governance/ and start scanning without forcing a runtime rewrite.</p>
-        </article>
-        <article class="benefit-card">
-          <h3>Safer cleanup</h3>
-          <p>Out-of-governance changes need explicit scope approval, rollback notes, and evidence.</p>
-        </article>
-        <article class="benefit-card">
-          <h3>Clear release posture</h3>
-          <p>Auth state, receipts, drift, and reflection debt all show up before production.</p>
-        </article>
-      </div>
-    </section>
-
-    <section id="demo" class="demo-section reveal">
-      <div class="section-head">
-        <p class="section-kicker">MINIMAL INTERACTION</p>
-        <h2>See the gate decision change.</h2>
-      </div>
-      <div class="demo-shell">
+      <div class="demo-stage">
         <form class="demo-controls">
           <label>
             <span>Cleanup scope</span>
@@ -126,9 +79,9 @@
             <span>High severity reflection overdue</span>
           </label>
         </form>
-        <div class="decision-card">
-          <div class="decision-top">
-            <span class="mini-label">decision</span>
+        <div class="decision-panel">
+          <div class="decision-head">
+            <span class="decision-label">gate</span>
             <span id="decision-pill" class="decision-pill">proceed</span>
           </div>
           <h3 id="decision-title">Scoped cleanup is release-ready.</h3>
@@ -136,12 +89,6 @@
           <ul id="decision-points" class="decision-points"></ul>
         </div>
       </div>
-    </section>
-
-    <section class="cta-section reveal">
-      <p class="section-kicker">READY FOR B2B LINKING</p>
-      <h2>Governance that reads the whole repo without owning the runtime.</h2>
-      <a class="button button-primary" href="https://github.com/tac0de/ai-governance">Open Repository</a>
     </section>
   </main>
 
