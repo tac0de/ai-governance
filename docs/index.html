@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="AI governance for B2B teams. Attach governance, scan the full repo, approve scoped cleanup, and release with audit trail.">
-  <title>AI Governance v0.7.7</title>
+  <title>AI Governance v0.7.8</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -16,6 +16,8 @@
   <div class="ambient ambient-b" aria-hidden="true"></div>
   <div class="ambient ambient-c" aria-hidden="true"></div>
   <div class="ambient ambient-d" aria-hidden="true"></div>
+  <div class="ambient ambient-e" aria-hidden="true"></div>
+  <div class="boundary-grid" aria-hidden="true"></div>
   <div class="orbit-line orbit-a" aria-hidden="true"></div>
   <div class="orbit-line orbit-b" aria-hidden="true"></div>
 
@@ -26,119 +28,158 @@
           <p class="eyebrow">B2B GOVERNANCE PROTOCOL</p>
           <h1 class="hero-title">
             <span class="hero-title-line"><span>Attach governance.</span></span>
-            <span class="hero-title-line"><span>Scan the repo.</span></span>
-            <span class="hero-title-line"><span>Move only what is approved.</span></span>
+            <span class="hero-title-line"><span>See the whole repository.</span></span>
+            <span class="hero-title-line"><span>Release only with proof.</span></span>
           </h1>
           <p class="hero-copy">
-            A minimal governance layer for independent services. One attached folder. Full-repo visibility. External cleanup only when auth, receipt, rollback context, and audit proof line up.
+            A constrained governance layer for independent services. Link auth, intake workflow, scoped cleanup receipts, reflection gates, and audit packaging line up before production moves.
           </p>
           <div class="hero-actions">
             <a class="button button-primary" href="#demo">Try the gate</a>
             <a class="button button-secondary" href="https://github.com/tac0de/ai-governance">Open repo</a>
           </div>
           <div class="signal-row" aria-label="Product signals">
-            <span>API-key link auth</span>
-            <span>Scoped cleanup receipt</span>
-            <span>Reflection-gated release</span>
+            <span>handbook-first intake</span>
+            <span>scoped cleanup receipts</span>
+            <span>customer-facing audit bundle</span>
           </div>
         </div>
 
         <div class="hero-visual" aria-hidden="true">
           <div class="hero-lens">
+            <div class="lens-halo"></div>
             <div class="hero-core"></div>
             <div class="hero-ring ring-a"></div>
             <div class="hero-ring ring-b"></div>
             <div class="hero-ring ring-c"></div>
+            <div class="hero-ring ring-d"></div>
             <div class="hero-axis axis-x"></div>
             <div class="hero-axis axis-y"></div>
+            <div class="hero-axis axis-z"></div>
             <div class="hero-beam beam-a"></div>
             <div class="hero-beam beam-b"></div>
+            <div class="hero-beam beam-c"></div>
+            <div class="hero-node node-auth"></div>
+            <div class="hero-node node-scan"></div>
+            <div class="hero-node node-gate"></div>
+            <div class="hero-node node-audit"></div>
+            <div class="hero-trace trace-a"></div>
+            <div class="hero-trace trace-b"></div>
             <div class="hero-labels">
-              <span class="hero-label">link auth</span>
-              <span class="hero-label">repo scan</span>
-              <span class="hero-label">human gate</span>
-              <span class="hero-label">audit trace</span>
+              <span class="hero-label label-auth">link auth</span>
+              <span class="hero-label label-scan">repo scan</span>
+              <span class="hero-label label-gate">gate review</span>
+              <span class="hero-label label-audit">audit bundle</span>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="strip" aria-label="Product flow">
-      <p><span>01</span> Attach `governance/` only</p>
-      <p><span>02</span> Scan the whole repo</p>
-      <p><span>03</span> Approve scoped cleanup</p>
-      <p><span>04</span> Release with audit trail</p>
-    </section>
-
-    <section class="proof">
-      <div class="proof-line">
-        <p class="proof-label">Why teams buy</p>
-        <p class="proof-text">Fast onboarding, constrained mutation, reviewable release posture, and customer-facing audit export without rebuilding the evidence by hand.</p>
+    <section class="protocol-surface" aria-label="Protocol overview">
+      <div class="surface-rail">
+        <p><span>01</span> handbook</p>
+        <p><span>02</span> intake</p>
+        <p><span>03</span> scope</p>
+        <p><span>04</span> verdict</p>
       </div>
-      <div class="proof-line">
-        <p class="proof-label">Boundary model</p>
-        <p class="proof-text">The scan sees the repository. The write path stays narrow until a receipt widens scope. That keeps service ownership local and governance authority explicit.</p>
-      </div>
-      <div class="proof-line">
-        <p class="proof-label">Revenue posture</p>
-        <p class="proof-text">Launch is not enough. Governance now checks whether a service has a repeatable value unit, customer ownership, support discipline, and billing readiness.</p>
+      <div class="surface-grid">
+        <div class="surface-copy">
+          <p class="proof-label">Control surface</p>
+          <p class="proof-text">The scan can see the repository, but mutation power stays narrow until auth, approval, rollback context, and reflection state agree. That is the product.</p>
+        </div>
+        <div class="surface-copy">
+          <p class="proof-label">Why teams buy</p>
+          <p class="proof-text">Fast onboarding, bounded writes, customer audit export, and a release posture that does not depend on memory or ad hoc review rituals.</p>
+        </div>
+        <div class="surface-copy">
+          <p class="proof-label">Commercial posture</p>
+          <p class="proof-text">Governance now checks repeatable value unit, customer ownership, support discipline, billing readiness, and protocol completeness before launch-ready language is allowed.</p>
+        </div>
       </div>
     </section>
 
     <section id="demo" class="demo">
       <div class="demo-intro">
         <p class="eyebrow">LIVE GATE</p>
-        <h2>One scope selector. One approval switch. One decision surface.</h2>
+        <h2>Scope, receipt, reflection, verdict.</h2>
       </div>
       <div id="demo-stage" class="demo-stage proceed">
         <div id="state-band" class="state-band proceed" aria-hidden="true"></div>
-        <div class="demo-stage-grid" aria-hidden="true"></div>
+        <div class="stage-mesh" aria-hidden="true"></div>
+        <div class="stage-column stage-left" aria-hidden="true">
+          <span class="stage-tag">scan root</span>
+          <span class="stage-value">repository-wide read</span>
+          <span class="stage-tag">attach mode</span>
+          <span class="stage-value">governance/ only</span>
+        </div>
+        <div class="stage-column stage-right" aria-hidden="true">
+          <span class="stage-tag">verdict</span>
+          <span class="stage-value">release lane</span>
+          <span class="stage-tag">proof</span>
+          <span class="stage-value">trace-linked</span>
+        </div>
         <svg class="demo-trail" viewBox="0 0 760 360" aria-hidden="true">
           <defs>
             <linearGradient id="trailGradient" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stop-color="#ffffff" stop-opacity="0"></stop>
-              <stop offset="28%" stop-color="#8aa4ff" stop-opacity="0.46"></stop>
-              <stop offset="68%" stop-color="#ffffff" stop-opacity="0.7"></stop>
+              <stop offset="22%" stop-color="#8aa4ff" stop-opacity="0.42"></stop>
+              <stop offset="58%" stop-color="#ffffff" stop-opacity="0.76"></stop>
               <stop offset="100%" stop-color="#ffffff" stop-opacity="0"></stop>
             </linearGradient>
           </defs>
-          <path id="trail-path-base" d="M52 248 C180 214, 234 126, 338 128 S508 188, 706 102"></path>
-          <path id="trail-path-glow" d="M52 248 C180 214, 234 126, 338 128 S508 188, 706 102"></path>
-          <circle class="trail-node trail-node-a" cx="52" cy="248" r="4"></circle>
-          <circle class="trail-node trail-node-b" cx="338" cy="128" r="4"></circle>
-          <circle class="trail-node trail-node-c" cx="706" cy="102" r="4"></circle>
+          <path id="trail-path-base" d="M48 260 C140 236, 214 134, 326 132 S482 184, 702 92"></path>
+          <path id="trail-path-glow" d="M48 260 C140 236, 214 134, 326 132 S482 184, 702 92"></path>
+          <circle class="trail-node trail-node-a" cx="48" cy="260" r="4"></circle>
+          <circle class="trail-node trail-node-b" cx="326" cy="132" r="4"></circle>
+          <circle class="trail-node trail-node-c" cx="702" cy="92" r="4"></circle>
         </svg>
-        <form class="demo-controls">
-          <label>
-            <span>Cleanup scope</span>
-            <select id="scope-select">
-              <option value="governance-only">governance-only</option>
-              <option value="docs">docs + governance</option>
-              <option value="runtime">runtime surface</option>
-            </select>
-          </label>
-          <label class="toggle">
-            <input id="approval-toggle" type="checkbox" checked>
-            <span>Approval receipt active</span>
-          </label>
-          <label class="toggle">
-            <input id="reflection-toggle" type="checkbox">
-            <span>High severity reflection overdue</span>
-          </label>
-        </form>
-        <div id="decision-panel" class="decision-panel proceed">
-          <div class="decision-head">
-            <span class="decision-label">gate</span>
-            <span id="decision-pill" class="decision-pill proceed">proceed</span>
+        <div class="demo-grid">
+          <form class="demo-controls">
+            <label>
+              <span>Cleanup scope</span>
+              <select id="scope-select">
+                <option value="governance-only">governance-only</option>
+                <option value="docs">docs + governance</option>
+                <option value="runtime">runtime surface</option>
+              </select>
+            </label>
+            <label class="toggle">
+              <input id="approval-toggle" type="checkbox" checked>
+              <span>Approval receipt active</span>
+            </label>
+            <label class="toggle">
+              <input id="reflection-toggle" type="checkbox">
+              <span>High severity reflection overdue</span>
+            </label>
+          </form>
+
+          <div class="decision-stack">
+            <div id="decision-panel" class="decision-panel proceed">
+              <div class="decision-head">
+                <span class="decision-label">gate</span>
+                <span id="decision-pill" class="decision-pill proceed">proceed</span>
+              </div>
+              <div class="decision-copy">
+                <h3 id="decision-title">Scoped cleanup is release-ready.</h3>
+                <p id="decision-body">The change stays within approved scope and no blocking reflection debt exists.</p>
+              </div>
+              <ul id="decision-points" class="decision-points"></ul>
+            </div>
+            <div class="verdict-strip" aria-hidden="true">
+              <span class="verdict-node">auth</span>
+              <span class="verdict-node">receipt</span>
+              <span class="verdict-node">reflection</span>
+              <span class="verdict-node">release</span>
+            </div>
           </div>
-          <div class="decision-copy">
-            <h3 id="decision-title">Scoped cleanup is release-ready.</h3>
-            <p id="decision-body">The change stays within approved scope and no blocking reflection debt exists.</p>
-          </div>
-          <ul id="decision-points" class="decision-points"></ul>
         </div>
       </div>
+    </section>
+
+    <section class="cta-band">
+      <p class="eyebrow">GOVERNED CHAIN</p>
+      <p class="cta-copy">agent → prompts → orchestration → architecture → shell → collaboration → DTP → governance verdict</p>
     </section>
   </main>
 

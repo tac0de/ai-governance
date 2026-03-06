@@ -13,6 +13,9 @@ const heroLens = document.querySelector(".hero-lens");
 const heroVisual = document.querySelector(".hero-visual");
 const trailPathGlow = document.getElementById("trail-path-glow");
 const trailNodes = document.querySelectorAll(".trail-node");
+const verdictNodes = document.querySelectorAll(".verdict-node");
+const heroCore = document.querySelector(".hero-core");
+const heroNodeList = document.querySelectorAll(".hero-node");
 
 const gsapReady = typeof window.gsap !== "undefined" && typeof window.ScrollTrigger !== "undefined";
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -30,19 +33,37 @@ function pointList(items) {
   });
 }
 
+function tintVerdictNodes(state) {
+  verdictNodes.forEach((node, index) => {
+    node.style.color = state === "proceed"
+      ? "rgb(140, 230, 194)"
+      : state === "review"
+        ? "rgb(244, 204, 117)"
+        : "rgb(255, 140, 133)";
+    node.style.background = state === "proceed"
+      ? `rgba(140, 230, 194, ${0.06 + index * 0.02})`
+      : state === "review"
+        ? `rgba(244, 204, 117, ${0.06 + index * 0.02})`
+        : `rgba(255, 140, 133, ${0.06 + index * 0.02})`;
+  });
+}
+
 function animateDecision(state) {
+  tintVerdictNodes(state);
+
   if (!gsapReady || prefersReducedMotion) {
     return;
   }
 
-  const tintScale = state === "block" ? 1.08 : 1;
-  const trailTravel = state === "proceed" ? 0 : state === "review" ? 36 : 72;
-  const trailOpacity = state === "block" ? 0.92 : state === "review" ? 0.78 : 0.66;
+  const tintScale = state === "block" ? 1.1 : state === "review" ? 1.04 : 1;
+  const trailTravel = state === "proceed" ? 0 : state === "review" ? 42 : 78;
+  const trailOpacity = state === "block" ? 0.94 : state === "review" ? 0.82 : 0.68;
+  const nodeColor = state === "proceed" ? "#87e2cb" : state === "review" ? "#f4cc75" : "#ff8c85";
 
-  window.gsap.killTweensOf([decisionPanel, decisionPill, stateBand, trailPathGlow, trailNodes]);
+  window.gsap.killTweensOf([decisionPanel, decisionPill, stateBand, trailPathGlow, trailNodes, verdictNodes, heroCore, heroNodeList]);
   window.gsap.fromTo(
     decisionPanel,
-    { y: 20, autoAlpha: 0.82 },
+    { y: 18, autoAlpha: 0.84 },
     { y: 0, autoAlpha: 1, duration: 0.48, ease: "power3.out" }
   );
   window.gsap.fromTo(
@@ -52,23 +73,44 @@ function animateDecision(state) {
   );
   window.gsap.fromTo(
     stateBand,
-    { scaleX: 0.74, opacity: 0.16 },
-    { scaleX: tintScale, opacity: 0.5, duration: 0.58, ease: "power2.out" }
+    { scaleX: 0.74, opacity: 0.18 },
+    { scaleX: tintScale, opacity: 0.56, duration: 0.62, ease: "power2.out" }
   );
   if (trailPathGlow) {
     window.gsap.fromTo(
       trailPathGlow,
       { strokeDashoffset: trailTravel + 120, opacity: 0.18 },
-      { strokeDashoffset: trailTravel, opacity: trailOpacity, duration: 0.72, ease: "power2.out" }
+      { strokeDashoffset: trailTravel, opacity: trailOpacity, duration: 0.76, ease: "power2.out" }
     );
   }
   if (trailNodes.length) {
     window.gsap.fromTo(
       trailNodes,
-      { scale: 0.82, autoAlpha: 0.5 },
+      { scale: 0.82, autoAlpha: 0.54 },
       { scale: 1, autoAlpha: 1, duration: 0.36, stagger: 0.06, ease: "back.out(1.5)" }
     );
   }
+  if (heroCore) {
+    window.gsap.fromTo(heroCore, { boxShadow: "0 0 90px rgba(138, 164, 255, 0.2)" }, {
+      boxShadow: `0 0 130px ${nodeColor}55`,
+      duration: 0.62,
+      ease: "power2.out"
+    });
+  }
+  if (heroNodeList.length) {
+    window.gsap.to(heroNodeList, {
+      backgroundColor: nodeColor,
+      boxShadow: `0 0 20px ${nodeColor}`,
+      duration: 0.44,
+      stagger: 0.04,
+      ease: "power2.out"
+    });
+  }
+  window.gsap.fromTo(
+    verdictNodes,
+    { y: 8, autoAlpha: 0.52 },
+    { y: 0, autoAlpha: 1, duration: 0.3, stagger: 0.05, ease: "power2.out" }
+  );
   window.gsap.fromTo(
     decisionPoints.children,
     { y: 12, autoAlpha: 0 },
@@ -85,7 +127,7 @@ function renderDecision() {
   let title = "Scoped cleanup is release-ready.";
   let body = "The change stays within approved scope and no blocking reflection debt exists.";
   let points = [
-    "API-key link auth is assumed active.",
+    "Link auth is assumed active.",
     "Cleanup stays inside the approved mutation scope.",
     "Release gate sees no blocking reflection debt."
   ];
@@ -96,7 +138,7 @@ function renderDecision() {
     body = "High-severity reflection actions remain overdue, so production cannot proceed even when approvals exist.";
     points = [
       "Reflection gate is red.",
-      "An overdue high-severity action must be closed or downgraded.",
+      "A high-severity overdue action remains open.",
       "Approval receipt alone is not enough."
     ];
   } else if (scope === "runtime" && !approved) {
@@ -195,120 +237,31 @@ function initAnimations() {
     .from(".hero-actions .button", { y: 16, autoAlpha: 0, duration: 0.52, stagger: 0.08 }, "-=0.48")
     .from(".signal-row span", { y: 12, autoAlpha: 0, duration: 0.45, stagger: 0.05 }, "-=0.42")
     .from(".hero-label", { scale: 0.88, autoAlpha: 0, duration: 0.6, stagger: 0.07 }, "-=0.55")
-    .from(".hero-ring, .hero-core, .hero-axis, .hero-beam", { scale: 0.86, autoAlpha: 0, duration: 0.8, stagger: 0.06 }, "-=0.62");
+    .from(".hero-ring, .hero-core, .hero-axis, .hero-beam, .hero-node, .hero-trace", { scale: 0.86, autoAlpha: 0, duration: 0.8, stagger: 0.04 }, "-=0.62");
 
-  window.gsap.to(".ambient-a", {
-    x: 54,
-    y: 28,
-    scale: 1.08,
-    duration: 12,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut"
-  });
-  window.gsap.to(".ambient-b", {
-    x: -34,
-    y: 32,
-    scale: 0.96,
-    duration: 18,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut"
-  });
-  window.gsap.to(".ambient-c", {
-    x: -24,
-    y: -30,
-    duration: 15,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut"
-  });
-  window.gsap.to(".ambient-d", {
-    x: 26,
-    y: -24,
-    scale: 1.14,
-    duration: 13,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut"
-  });
-  window.gsap.to(".orbit-a", {
-    rotation: -10,
-    x: 14,
-    y: 10,
-    duration: 22,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut"
-  });
-  window.gsap.to(".orbit-b", {
-    rotation: -16,
-    x: -18,
-    y: 14,
-    duration: 18,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut"
-  });
-  window.gsap.to(".hero-beam.beam-a", {
-    rotation: 18,
-    duration: 14,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut"
-  });
-  window.gsap.to(".hero-beam.beam-b", {
-    rotation: 10,
-    x: 10,
-    duration: 9,
-    repeat: -1,
-    yoyo: true,
-    ease: "sine.inOut"
-  });
+  window.gsap.to(".ambient-a", { x: 54, y: 28, scale: 1.08, duration: 12, repeat: -1, yoyo: true, ease: "sine.inOut" });
+  window.gsap.to(".ambient-b", { x: -34, y: 32, scale: 0.96, duration: 18, repeat: -1, yoyo: true, ease: "sine.inOut" });
+  window.gsap.to(".ambient-c", { x: -24, y: -30, duration: 15, repeat: -1, yoyo: true, ease: "sine.inOut" });
+  window.gsap.to(".ambient-d", { x: 26, y: -24, scale: 1.14, duration: 13, repeat: -1, yoyo: true, ease: "sine.inOut" });
+  window.gsap.to(".ambient-e", { x: -16, y: 18, scale: 1.06, duration: 10, repeat: -1, yoyo: true, ease: "sine.inOut" });
+  window.gsap.to(".orbit-a", { rotation: -10, x: 14, y: 10, duration: 22, repeat: -1, yoyo: true, ease: "sine.inOut" });
+  window.gsap.to(".orbit-b", { rotation: -16, x: -18, y: 14, duration: 18, repeat: -1, yoyo: true, ease: "sine.inOut" });
+  window.gsap.to(".beam-a", { rotation: 18, duration: 14, repeat: -1, yoyo: true, ease: "sine.inOut" });
+  window.gsap.to(".beam-b", { rotation: 10, x: 10, duration: 9, repeat: -1, yoyo: true, ease: "sine.inOut" });
+  window.gsap.to(".beam-c", { y: -18, duration: 11, repeat: -1, yoyo: true, ease: "sine.inOut" });
+  window.gsap.to(".trace-a", { opacity: 0.8, x: 12, duration: 6, repeat: -1, yoyo: true, ease: "sine.inOut" });
+  window.gsap.to(".trace-b", { opacity: 0.62, x: -10, duration: 7, repeat: -1, yoyo: true, ease: "sine.inOut" });
 
-  window.gsap.utils.toArray(".strip p").forEach((item, index) => {
-    window.gsap.from(item, {
-      scrollTrigger: {
-        trigger: item,
-        start: "top 92%"
-      },
-      y: 24,
-      autoAlpha: 0,
-      duration: 0.72,
-      delay: index * 0.04,
-      ease: "power3.out"
-    });
-  });
-
-  window.gsap.utils.toArray(".proof-line").forEach((line, index) => {
-    const direction = index % 2 === 0 ? -1 : 1;
-    window.gsap.from(line, {
-      scrollTrigger: {
-        trigger: line,
-        start: "top 88%"
-      },
-      x: direction * 28,
-      autoAlpha: 0,
-      duration: 0.82,
-      ease: "power3.out"
-    });
-    window.gsap.to(line, {
-      x: direction * 12,
-      ease: "none",
-      scrollTrigger: {
-        trigger: line,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: 1
-      }
-    });
+  window.gsap.from(".protocol-surface", {
+    scrollTrigger: { trigger: ".protocol-surface", start: "top 84%" },
+    y: 30,
+    autoAlpha: 0,
+    duration: 0.84,
+    ease: "power3.out"
   });
 
   window.gsap.from(".demo-intro", {
-    scrollTrigger: {
-      trigger: ".demo",
-      start: "top 84%"
-    },
+    scrollTrigger: { trigger: ".demo", start: "top 84%" },
     y: 32,
     autoAlpha: 0,
     duration: 0.82,
@@ -316,53 +269,36 @@ function initAnimations() {
   });
 
   window.gsap.from(".demo-stage", {
-    scrollTrigger: {
-      trigger: ".demo-stage",
-      start: "top 84%"
-    },
-    y: 38,
+    scrollTrigger: { trigger: ".demo-stage", start: "top 82%" },
+    y: 40,
     autoAlpha: 0,
-    duration: 0.92,
+    duration: 0.94,
     ease: "power3.out"
   });
 
   window.gsap.to(".demo-stage", {
-    "--stage-shift": 1,
+    y: -20,
     ease: "none",
     scrollTrigger: {
       trigger: ".demo-stage",
-      start: "top 80%",
+      start: "top bottom",
       end: "bottom top",
-      scrub: 1.1
+      scrub: 1
     }
   });
 
-  if (trailPathGlow) {
-    window.gsap.to(trailPathGlow, {
-      strokeDashoffset: 0,
-      duration: 4.6,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut"
-    });
-  }
-
-  if (trailNodes.length) {
-    window.gsap.to(trailNodes, {
-      scale: 1.18,
-      duration: 1.6,
-      stagger: 0.18,
-      repeat: -1,
-      yoyo: true,
-      ease: "sine.inOut",
-      transformOrigin: "center center"
-    });
-  }
+  window.gsap.from(".cta-band", {
+    scrollTrigger: { trigger: ".cta-band", start: "top 90%" },
+    y: 20,
+    autoAlpha: 0,
+    duration: 0.7,
+    ease: "power2.out"
+  });
 }
 
-[scopeSelect, approvalToggle, reflectionToggle].forEach((input) => {
-  input.addEventListener("input", renderDecision);
-});
+scopeSelect.addEventListener("change", renderDecision);
+approvalToggle.addEventListener("change", renderDecision);
+reflectionToggle.addEventListener("change", renderDecision);
 
 renderDecision();
 initHeroPointer();
