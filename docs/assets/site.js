@@ -26,6 +26,7 @@ const simPostureControls = document.getElementById("sim-posture-controls");
 const simTierSummary = document.getElementById("sim-tier-summary");
 const simRuntimeSummary = document.getElementById("sim-runtime-summary");
 const simSpecialistSummary = document.getElementById("sim-specialist-summary");
+const heroTitle = document.querySelector(".hero-title");
 
 const surfaceState = {
   solution: null,
@@ -110,7 +111,7 @@ function renderSolutionPackaging(surface) {
         inputs ${escapeHtml(tier.input_count)} · outputs ${escapeHtml(tier.output_count)} · receipts ${escapeHtml(tier.receipt_count)}
       </p>
       <div class="status-stack">
-        ${tier.handoff_conditions.map((condition) => `<span class="status-chip">${escapeHtml(condition)}</span>`).join("")}
+        ${tier.handoff_conditions.map((condition) => `<span class="status-chip status-chip-block">${escapeHtml(condition)}</span>`).join("")}
       </div>
     </article>
   `).join("");
@@ -479,6 +480,47 @@ function bindSimulatorControls() {
   }
 }
 
+function triggerShiftPulse() {
+  if (prefersReducedMotion) {
+    return;
+  }
+
+  [heroTitle, heroBoard].forEach((element) => {
+    if (!element) {
+      return;
+    }
+    element.classList.remove("is-shifting");
+    void element.offsetWidth;
+    element.classList.add("is-shifting");
+    window.setTimeout(() => {
+      element.classList.remove("is-shifting");
+    }, 260);
+  });
+}
+
+function initShiftPulse() {
+  if (prefersReducedMotion) {
+    return;
+  }
+
+  const scheduleNext = () => {
+    const delay = 4200 + Math.random() * 2600;
+    window.setTimeout(() => {
+      triggerShiftPulse();
+      scheduleNext();
+    }, delay);
+  };
+
+  if (heroBoard) {
+    heroBoard.addEventListener("pointerenter", triggerShiftPulse);
+  }
+  if (heroTitle) {
+    heroTitle.addEventListener("pointerenter", triggerShiftPulse);
+  }
+
+  scheduleNext();
+}
+
 function initSignalField() {
   if (!signalCanvas) {
     return;
@@ -633,4 +675,5 @@ initSignalField();
 initReveal();
 initHeroTilt();
 bindSimulatorControls();
+initShiftPulse();
 loadSurfaceData();
