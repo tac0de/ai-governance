@@ -1,0 +1,33 @@
+{
+  "version": "v0.8",
+  "model": "monitoring-link",
+  "purpose": "Define the minimum contract for persistent monitoring links used by the highest service packaging tier without centralizing runtime monitoring ownership.",
+  "required_fields": [
+    "uptime",
+    "error_surface",
+    "evidence_freshness",
+    "owner_route",
+    "review_cadence"
+  ],
+  "required_receipts": [
+    "monitoring_link_receipt",
+    "review_cadence_receipt",
+    "owner_route_receipt"
+  ],
+  "monitoring_tracks": [
+    "availability",
+    "error-reporting",
+    "evidence-freshness",
+    "operator-escalation"
+  ],
+  "review_cadence_values": [
+    "daily",
+    "weekly",
+    "monthly"
+  ],
+  "hard_rules": [
+    "Monitoring link contracts are required only for tier-3 packaging.",
+    "The central registry may define required monitoring evidence but must not store service-local telemetry streams.",
+    "Owner route and review cadence must be explicit before persistent monitoring is sold as active coverage."
+  ]
+}

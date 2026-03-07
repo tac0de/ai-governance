@@ -1,0 +1,83 @@
+{
+  "version": "v0.8",
+  "model": "cognitive-debt-ledger",
+  "purpose": "Convert agent cognitive failure modes into explicit debt items that enterprises can accept, remediate, or defer as technical risk rather than vague intuition.",
+  "decision_states": [
+    "accept",
+    "remediate",
+    "defer"
+  ],
+  "impact_levels": [
+    "low",
+    "medium",
+    "high",
+    "critical"
+  ],
+  "debt_classes": [
+    {
+      "debt_id": "hallucination",
+      "title": "Hallucinated claims or artifacts",
+      "impact": "high",
+      "observability_signals": [
+        "Evidence references cannot be replayed.",
+        "Generated statements cite assets that do not exist.",
+        "Runtime or governance output conflicts with repo truth."
+      ],
+      "mitigation": [
+        "Require trace-linked evidence refs before release claims.",
+        "Promote unverifiable claims into explicit review findings.",
+        "Escalate to human approval when evidence replay fails."
+      ]
+    },
+    {
+      "debt_id": "omission",
+      "title": "Critical omission or partial reasoning",
+      "impact": "medium",
+      "observability_signals": [
+        "Required packets or receipts are absent from the chain.",
+        "Plans skip boundary assumptions or rollback steps.",
+        "Monitoring blind spots are discovered after deployment."
+      ],
+      "mitigation": [
+        "Require checklist-backed stage completion.",
+        "Use structured plan drafts and required field contracts.",
+        "Record omissions as debt items until they are closed."
+      ]
+    },
+    {
+      "debt_id": "overreach",
+      "title": "Over-inference or speculative action",
+      "impact": "high",
+      "observability_signals": [
+        "The agent extrapolates beyond contract scope.",
+        "Execution is attempted before approval or ownership is clear.",
+        "Proposals imply capability that no service actually exposes."
+      ],
+      "mitigation": [
+        "Use control-plane contracts to cap action scope.",
+        "Require explicit approval state before apply paths unlock.",
+        "Prefer recommendation registries over central runtime ownership."
+      ]
+    },
+    {
+      "debt_id": "authority-misread",
+      "title": "Authority or boundary misread",
+      "impact": "critical",
+      "observability_signals": [
+        "The agent treats advisory context as source of truth.",
+        "Customer-specific ownership is bypassed.",
+        "Central governance attempts to own service-local runtime."
+      ],
+      "mitigation": [
+        "Keep source-of-truth registries machine-readable and fixed.",
+        "Trace all approval and ownership receipts.",
+        "Reject central runtime ownership creep during review."
+      ]
+    }
+  ],
+  "operating_rules": [
+    "Every material agent failure pattern may be logged as cognitive debt only if it is observable and reviewable.",
+    "Debt items must describe mitigations and a clear enterprise decision state.",
+    "The ledger informs adoption and packaging decisions; it does not replace runtime incident handling."
+  ]
+}

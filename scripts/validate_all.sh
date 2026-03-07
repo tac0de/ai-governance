@@ -191,13 +191,17 @@ require jq
 
 bash "$ROOT_DIR/scripts/scan_repo_hygiene.sh"
 
-check_sha256_baseline "docs/baseline.v0.7.sha256"
+check_sha256_baseline "docs/baseline.v0.8.sha256"
 
 markdown_files="$(cd "$ROOT_DIR" && rg --files -g '*.md' | sort || true)"
 expected_markdown_files="$(cat <<'EOF'
+docs/prompts/cognitive-debt-analyst.md
 docs/prompts/landing-narrative.md
+docs/prompts/mission-control-experience.md
 docs/prompts/release-reflection.md
 docs/prompts/role-system.md
+docs/prompts/solution-packaging-narrative.md
+docs/prompts/specialist-mcp-composer.md
 docs/prompts/visual-direction.md
 README.md
 EOF
@@ -223,22 +227,31 @@ check_file "docs/assets/site.css"
 check_file "docs/assets/site.js"
 check_allowed_entries_in_dir "docs" \
   "assets" \
-  "baseline.v0.7.sha256" \
+  "baseline.v0.8.sha256" \
+  "cognitive-debt-surface.json" \
   "index.html" \
+  "monitoring-link-surface.json" \
   "prompts" \
   "role-prompt-registry.json" \
+  "solution-packaging-surface.json" \
+  "specialist-mcp-surface.json" \
   "version-upgrade-loop.json" \
   "version-upgrade-proposal.json"
 check_exact_files_in_dir "docs/prompts" \
+  "cognitive-debt-analyst.md" \
   "landing-narrative.md" \
+  "mission-control-experience.md" \
   "release-reflection.md" \
   "role-system.md" \
+  "solution-packaging-narrative.md" \
+  "specialist-mcp-composer.md" \
   "visual-direction.md"
 
 check_allowed_entries_in_dir "control" "registry" "specs"
 check_exact_files_in_dir "control/registry" \
   "agent-service-handbook.v0.7.json" \
   "audit-bundle.v0.7.json" \
+  "cognitive-debt-ledger.v0.8.json" \
   "customer-tenant.v0.7.json" \
   "deployment-operations.v0.7.json" \
   "governance-protocol.v0.7.json" \
@@ -247,6 +260,9 @@ check_exact_files_in_dir "control/registry" \
   "link-approval-receipt.v0.7.json" \
   "link-auth-contract.v0.7.json" \
   "shell-entrypoints.v0.7.json" \
+  "monitoring-link.v0.8.json" \
+  "solution-packaging.v0.8.json" \
+  "specialist-mcp-registry.v0.8.json" \
   "support-ops-readiness.v0.7.json" \
   "revenue-readiness.v0.7.json" \
   "link-scan-points.v0.7.json" \
@@ -265,7 +281,21 @@ check_exact_files_in_dir "policies" \
 check_allowed_entries_in_dir "packs" \
   "audit-bundle" \
   "link-kit" \
+  "solutions" \
   "service-bootstrap"
+check_allowed_entries_in_dir "packs/solutions" \
+  "tier-1-audit" \
+  "tier-2-governance-setup" \
+  "tier-3-monitoring-link"
+check_exact_files_in_dir "packs/solutions/tier-1-audit" \
+  "manifest.json" \
+  "payload.json"
+check_exact_files_in_dir "packs/solutions/tier-2-governance-setup" \
+  "manifest.json" \
+  "payload.json"
+check_exact_files_in_dir "packs/solutions/tier-3-monitoring-link" \
+  "manifest.json" \
+  "payload.json"
 check_exact_files_in_dir "packs/service-bootstrap" \
   "install.sh" \
   "manifest.json" \
@@ -345,9 +375,19 @@ do
 done
 
 for pack_rel in \
+  docs/cognitive-debt-surface.json \
+  docs/monitoring-link-surface.json \
   docs/role-prompt-registry.json \
+  docs/solution-packaging-surface.json \
+  docs/specialist-mcp-surface.json \
   docs/version-upgrade-loop.json \
   docs/version-upgrade-proposal.json \
+  packs/solutions/tier-1-audit/manifest.json \
+  packs/solutions/tier-1-audit/payload.json \
+  packs/solutions/tier-2-governance-setup/manifest.json \
+  packs/solutions/tier-2-governance-setup/payload.json \
+  packs/solutions/tier-3-monitoring-link/manifest.json \
+  packs/solutions/tier-3-monitoring-link/payload.json \
   packs/service-bootstrap/manifest.json \
   packs/service-bootstrap/payload.json \
   packs/link-kit/manifest.json \
@@ -381,6 +421,7 @@ done
 for governance_rel in \
   control/registry/agent-service-handbook.v0.7.json \
   control/registry/audit-bundle.v0.7.json \
+  control/registry/cognitive-debt-ledger.v0.8.json \
   control/registry/customer-tenant.v0.7.json \
   control/registry/deployment-operations.v0.7.json \
   control/registry/governance-protocol.v0.7.json \
@@ -390,12 +431,15 @@ for governance_rel in \
   control/registry/link-approval-receipt.v0.7.json \
   control/registry/link-auth-contract.v0.7.json \
   control/registry/link-scan-points.v0.7.json \
+  control/registry/monitoring-link.v0.8.json \
   control/registry/revenue-readiness.v0.7.json \
   control/registry/service-diet.v0.7.json \
   control/registry/service-intake-workflow.v0.7.json \
   control/registry/service-kernel.v0.7.json \
   control/registry/service-normalization.v0.7.json \
   control/registry/shell-entrypoints.v0.7.json \
+  control/registry/solution-packaging.v0.8.json \
+  control/registry/specialist-mcp-registry.v0.8.json \
   control/registry/support-ops-readiness.v0.7.json \
   control/registry/temporary-links.v0.7.json \
   control/registry/version-promotion.v0.7.json
@@ -721,7 +765,7 @@ validate_jq_contract "control/registry/version-promotion.v0.7.json" "schemas/ver
 
 validate_jq_contract "packs/service-bootstrap/manifest.json" "schemas/trace_record.schema.json" '
   .pack_id=="service-bootstrap" and
-  .version=="v0.7" and
+  .version=="v0.8" and
   .entry_script=="install.sh" and
   .payload_file=="payload.json"
 '
@@ -740,33 +784,156 @@ validate_jq_contract "packs/service-bootstrap/payload.json" "schemas/trace_recor
 '
 
 validate_jq_contract "docs/role-prompt-registry.json" "schemas/trace_record.schema.json" '
-  .version=="v0.7.10-prep" and
+  .version=="v0.8.0" and
   .surface_id=="docs-role-prompt-registry" and
   .docs_mode=="public-landing-plus-operating-prompts" and
-  (.prompts|type=="array" and length==4) and
+  (.prompts|type=="array" and length==8) and
+  ((.prompts | map(.prompt_id) | index("cognitive-debt-analyst")) != null) and
   ((.prompts | map(.prompt_id) | index("landing-narrative")) != null) and
+  ((.prompts | map(.prompt_id) | index("mission-control-experience")) != null) and
   ((.prompts | map(.prompt_id) | index("role-system")) != null) and
+  ((.prompts | map(.prompt_id) | index("solution-packaging-narrative")) != null) and
+  ((.prompts | map(.prompt_id) | index("specialist-mcp-composer")) != null) and
   ((.prompts | map(.prompt_id) | index("visual-direction")) != null) and
   ((.prompts | map(.prompt_id) | index("release-reflection")) != null)
 '
 
 validate_jq_contract "docs/version-upgrade-loop.json" "schemas/trace_record.schema.json" '
-  .version=="v0.7.10-prep" and
+  .version=="v0.8.0" and
   .loop_id=="docs-evolution-loop" and
   .mode=="auto-apply-priority" and
-  .current_close_verdict.version=="v0.7.9" and
+  .current_close_verdict.version=="v0.8.0" and
   .current_close_verdict.can_close==true and
-  .next_target_version=="v0.7.10" and
-  (.trigger_events|type=="array" and length==3) and
+  .next_target_version=="v0.8.1" and
+  (.trigger_events|type=="array" and length==4) and
+  (.generated_outputs|type=="array" and length==7) and
   (.upgrade_steps|type=="array" and length==4)
 '
 
 validate_jq_contract "docs/version-upgrade-proposal.json" "schemas/trace_record.schema.json" '
   .source_loop_id=="docs-evolution-loop" and
-  .current_version=="v0.7.9" and
-  .target_version=="v0.7.10" and
+  .current_version=="v0.8.0" and
+  .target_version=="v0.8.1" and
   .status=="generated" and
-  (.proposal_items|type=="array" and length==4)
+  (.proposal_items|type=="array" and length==8)
+'
+
+validate_jq_contract "docs/solution-packaging-surface.json" "schemas/trace_record.schema.json" '
+  .current_version=="v0.8.0" and
+  .surface_id=="solution-packaging-surface" and
+  (.tiers|type=="array" and length==3) and
+  ((.tiers | map(.tier_id) | index("tier-1")) != null) and
+  ((.tiers | map(.tier_id) | index("tier-2")) != null) and
+  ((.tiers | map(.tier_id) | index("tier-3")) != null)
+'
+
+validate_jq_contract "docs/cognitive-debt-surface.json" "schemas/trace_record.schema.json" '
+  .current_version=="v0.8.0" and
+  .surface_id=="cognitive-debt-surface" and
+  (.decision_states|type=="array" and length==3) and
+  (.debt_classes|type=="array" and length==4) and
+  ((.debt_classes | map(.debt_id) | index("hallucination")) != null)
+'
+
+validate_jq_contract "docs/specialist-mcp-surface.json" "schemas/trace_record.schema.json" '
+  .current_version=="v0.8.0" and
+  .surface_id=="specialist-mcp-surface" and
+  .central_role=="recommend-only" and
+  (.specialists|type=="array" and length==5) and
+  ((.specialists | map(.mcp_id) | index("governance-api")) != null) and
+  ((.specialists | map(.mcp_id) | index("ui-ux")) != null)
+'
+
+validate_jq_contract "docs/monitoring-link-surface.json" "schemas/trace_record.schema.json" '
+  .current_version=="v0.8.0" and
+  .surface_id=="monitoring-link-surface" and
+  (.required_fields|type=="array" and length==5) and
+  (.required_receipts|type=="array" and length==3) and
+  (.monitoring_tracks|type=="array" and length==4) and
+  (.review_cadence_values|type=="array" and length==3)
+'
+
+validate_jq_contract "control/registry/solution-packaging.v0.8.json" "schemas/trace_record.schema.json" '
+  .version=="v0.8" and
+  .model=="solution-packaging" and
+  (.control_plane_boundary|type=="array" and length==3) and
+  (.tiers|type=="array" and length==3) and
+  ((.tiers | map(.tier_id) | index("tier-1")) != null) and
+  ((.tiers | map(.tier_id) | index("tier-2")) != null) and
+  ((.tiers | map(.tier_id) | index("tier-3")) != null)
+'
+
+validate_jq_contract "control/registry/cognitive-debt-ledger.v0.8.json" "schemas/trace_record.schema.json" '
+  .version=="v0.8" and
+  .model=="cognitive-debt-ledger" and
+  (.decision_states|type=="array" and length==3) and
+  (.impact_levels|type=="array" and length==4) and
+  (.debt_classes|type=="array" and length==4) and
+  ((.debt_classes | map(.debt_id) | index("authority-misread")) != null)
+'
+
+validate_jq_contract "control/registry/specialist-mcp-registry.v0.8.json" "schemas/trace_record.schema.json" '
+  .version=="v0.8" and
+  .model=="specialist-mcp-registry" and
+  .central_role=="recommend-only" and
+  (.required_fields|type=="array" and length==7) and
+  (.specialists|type=="array" and length==5) and
+  ((.specialists | map(.mcp_id) | index("frontend-perf")) != null) and
+  ((.specialists | map(.mcp_id) | index("note-context")) != null)
+'
+
+validate_jq_contract "control/registry/monitoring-link.v0.8.json" "schemas/trace_record.schema.json" '
+  .version=="v0.8" and
+  .model=="monitoring-link" and
+  (.required_fields|type=="array" and length==5) and
+  (.required_receipts|type=="array" and length==3) and
+  (.monitoring_tracks|type=="array" and length==4) and
+  (.review_cadence_values|type=="array" and length==3)
+'
+
+validate_jq_contract "packs/solutions/tier-1-audit/manifest.json" "schemas/trace_record.schema.json" '
+  .pack_id=="solution-tier-1-audit" and
+  .version=="v0.8" and
+  .payload_file=="payload.json" and
+  .delivery_mode=="contract-only"
+'
+
+validate_jq_contract "packs/solutions/tier-1-audit/payload.json" "schemas/trace_record.schema.json" '
+  .tier_id=="tier-1" and
+  .service_mode=="temporary-linking" and
+  (.required_inputs|type=="array" and length==4) and
+  (.generated_outputs|type=="array" and length==3) and
+  (.required_receipts|type=="array" and length==2)
+'
+
+validate_jq_contract "packs/solutions/tier-2-governance-setup/manifest.json" "schemas/trace_record.schema.json" '
+  .pack_id=="solution-tier-2-governance-setup" and
+  .version=="v0.8" and
+  .payload_file=="payload.json" and
+  .delivery_mode=="contract-only"
+'
+
+validate_jq_contract "packs/solutions/tier-2-governance-setup/payload.json" "schemas/trace_record.schema.json" '
+  .tier_id=="tier-2" and
+  .service_mode=="temporary-linking" and
+  (.required_inputs|type=="array" and length==6) and
+  (.generated_outputs|type=="array" and length==4) and
+  (.required_receipts|type=="array" and length==4)
+'
+
+validate_jq_contract "packs/solutions/tier-3-monitoring-link/manifest.json" "schemas/trace_record.schema.json" '
+  .pack_id=="solution-tier-3-monitoring-link" and
+  .version=="v0.8" and
+  .payload_file=="payload.json" and
+  .delivery_mode=="contract-only"
+'
+
+validate_jq_contract "packs/solutions/tier-3-monitoring-link/payload.json" "schemas/trace_record.schema.json" '
+  .tier_id=="tier-3" and
+  .service_mode=="persistent-monitoring-link" and
+  (.required_inputs|type=="array" and length==7) and
+  (.generated_outputs|type=="array" and length==5) and
+  (.required_receipts|type=="array" and length==6)
 '
 
 validate_jq_contract "packs/link-kit/manifest.json" "schemas/trace_record.schema.json" '

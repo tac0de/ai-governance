@@ -10,5 +10,5 @@ When the two conflict:
 - JSON wins on gates, invariants, and required fields
 - Markdown wins on framing, cadence, emotional tone, and creative experimentation
 
-Do not let docs become a soft escape hatch from governance truth.
-Do not let governance language flatten the landing into lifeless enterprise filler.
+In `v0.8.0`, central governance remains contract-only.
+The docs may recommend tiers, specialist MCPs, and debt posture, but they must not imply central runtime ownership.

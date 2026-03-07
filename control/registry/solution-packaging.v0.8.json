@@ -1,0 +1,103 @@
+{
+  "version": "v0.8",
+  "model": "solution-packaging",
+  "purpose": "Define the contract-only SaaS packaging tiers that central governance may recommend while leaving runtime orchestration and delivery execution inside independent services.",
+  "control_plane_boundary": [
+    "Central governance may define tier logic, required inputs, expected receipts, and handoff conditions.",
+    "Central governance may not run service-local deployment, domain cutover, or long-lived monitoring agents.",
+    "Independent services remain responsible for execution entrypoints, runtime ownership, and environment credentials."
+  ],
+  "tiers": [
+    {
+      "tier_id": "tier-1",
+      "label": "audit-only",
+      "link_mode": "temporary-linking",
+      "required_inputs": [
+        "service_identity",
+        "runtime_summary",
+        "current_risk_statement",
+        "repository_scan_receipt"
+      ],
+      "generated_outputs": [
+        "audit_summary_packet",
+        "risk_register_packet",
+        "handoff_recommendation_packet"
+      ],
+      "required_receipts": [
+        "link_auth_receipt",
+        "scan_receipt"
+      ],
+      "handoff_conditions": [
+        "The customer receives an audit summary and prioritized risk register.",
+        "No governance bootstrap or monitoring link is required."
+      ]
+    },
+    {
+      "tier_id": "tier-2",
+      "label": "audit-plus-governance-setup",
+      "link_mode": "temporary-linking",
+      "required_inputs": [
+        "service_identity",
+        "runtime_summary",
+        "current_risk_statement",
+        "repository_scan_receipt",
+        "governance_attach_scope",
+        "deployment_topology_packet"
+      ],
+      "generated_outputs": [
+        "audit_summary_packet",
+        "risk_register_packet",
+        "governance_bootstrap_packet",
+        "structured_plan_draft_packet"
+      ],
+      "required_receipts": [
+        "link_auth_receipt",
+        "scan_receipt",
+        "governance_bootstrap_receipt",
+        "plan_gate_receipt"
+      ],
+      "handoff_conditions": [
+        "The service must expose the governed kernel and structured plan draft.",
+        "Governance setup may be delivered, but continuous monitoring is optional."
+      ]
+    },
+    {
+      "tier_id": "tier-3",
+      "label": "audit-governance-and-monitoring-link",
+      "link_mode": "persistent-monitoring-link",
+      "required_inputs": [
+        "service_identity",
+        "runtime_summary",
+        "current_risk_statement",
+        "repository_scan_receipt",
+        "governance_attach_scope",
+        "deployment_topology_packet",
+        "monitoring_owner_route"
+      ],
+      "generated_outputs": [
+        "audit_summary_packet",
+        "risk_register_packet",
+        "governance_bootstrap_packet",
+        "structured_plan_draft_packet",
+        "monitoring_link_packet"
+      ],
+      "required_receipts": [
+        "link_auth_receipt",
+        "scan_receipt",
+        "governance_bootstrap_receipt",
+        "plan_gate_receipt",
+        "monitoring_link_receipt",
+        "review_cadence_receipt"
+      ],
+      "handoff_conditions": [
+        "The service must expose governance setup and a live monitoring link contract.",
+        "Owner route, evidence freshness cadence, and escalation expectations must be explicit."
+      ]
+    }
+  ],
+  "anti_patterns": [
+    "Selling tier-1 as if governance bootstrap has already been installed.",
+    "Treating tier-2 as sufficient when the customer explicitly expects ongoing monitoring coverage.",
+    "Using central governance to execute runtime orchestration instead of constraining and reviewing it."
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "version": "v0.8",
+  "model": "specialist-mcp-registry",
+  "purpose": "Register specialist MCP capabilities that central governance may recommend or compose while leaving runtime implementation and credentials to independent services.",
+  "central_role": "recommend-only",
+  "required_fields": [
+    "mcp_id",
+    "scope",
+    "allowed_data_classes",
+    "auth_model",
+    "logging_expectations",
+    "latency_cost_note",
+    "recommended_use_cases"
+  ],
+  "specialists": [
+    {
+      "mcp_id": "governance-api",
+      "scope": [
+        "Read governance registry contracts.",
+        "Issue governance-safe status and receipt lookups."
+      ],
+      "allowed_data_classes": [
+        "public-contract",
+        "service-governance-metadata"
+      ],
+      "auth_model": "scoped-service-auth",
+      "logging_expectations": [
+        "Read requests must be trace-linked.",
+        "Mutation endpoints are forbidden in the central registry profile."
+      ],
+      "latency_cost_note": "Low latency, low cost, suited for repeated policy lookups.",
+      "recommended_use_cases": [
+        "Contract hydration for agent plans",
+        "Receipt validation",
+        "Governance state summaries"
+      ]
+    },
+    {
+      "mcp_id": "ui-ux",
+      "scope": [
+        "Generate visual direction alternatives.",
+        "Review interface hierarchy, clarity, and interaction patterns."
+      ],
+      "allowed_data_classes": [
+        "public-design-brief",
+        "frontend-structure"
+      ],
+      "auth_model": "project-scoped-token",
+      "logging_expectations": [
+        "Decision-worthy critiques must be persisted as findings or proposals."
+      ],
+      "latency_cost_note": "Medium latency, useful when interaction exploration matters more than deterministic speed.",
+      "recommended_use_cases": [
+        "Landing page redesign",
+        "Interaction concept review",
+        "Narrative UI calibration"
+      ]
+    },
+    {
+      "mcp_id": "frontend-perf",
+      "scope": [
+        "Inspect render bottlenecks.",
+        "Recommend motion and asset optimizations without flattening the design."
+      ],
+      "allowed_data_classes": [
+        "frontend-asset-manifest",
+        "performance-profile",
+        "public-ui-structure"
+      ],
+      "auth_model": "project-scoped-token",
+      "logging_expectations": [
+        "Perf findings should include observable symptoms and mitigation notes."
+      ],
+      "latency_cost_note": "Medium latency with potentially high savings on UX stability and infra waste.",
+      "recommended_use_cases": [
+        "Animation budget tuning",
+        "Render-path review",
+        "Mobile stability passes"
+      ]
+    },
+    {
+      "mcp_id": "security-review",
+      "scope": [
+        "Review auth boundaries, secret exposure, and service-edge risk."
+      ],
+      "allowed_data_classes": [
+        "service-auth-contract",
+        "deployment-metadata",
+        "public-config-summary"
+      ],
+      "auth_model": "restricted-review-token",
+      "logging_expectations": [
+        "Security findings require severity and owner route."
+      ],
+      "latency_cost_note": "Higher review overhead, justified for production exposure and customer trust surfaces.",
+      "recommended_use_cases": [
+        "GCP cutover review",
+        "MCP auth design review",
+        "Public ingress posture review"
+      ]
+    },
+    {
+      "mcp_id": "note-context",
+      "scope": [
+        "Recover linked note context when a governed service explicitly references it."
+      ],
+      "allowed_data_classes": [
+        "linked-note-context"
+      ],
+      "auth_model": "linked-context-consent",
+      "logging_expectations": [
+        "Every note-context use must name the originating link or note reference."
+      ],
+      "latency_cost_note": "Low cost but high boundary sensitivity; use only when explicitly linked.",
+      "recommended_use_cases": [
+        "Recovering operator intent from linked notes",
+        "Tracing contextual design rationale"
+      ]
+    }
+  ],
+  "hard_rules": [
+    "Central governance may register and recommend MCP capabilities but must not host their runtime implementations here.",
+    "Each specialist recommendation must stay within declared data classes and auth expectations.",
+    "Specialist MCP selection is advisory until an independent service binds it into execution."
+  ]
+}

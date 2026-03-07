@@ -1,6 +1,6 @@
 # Visual Direction
 
-The landing is not a sterile dashboard. It should feel like a living protocol surface with pressure, atmosphere, and consequence.
+The landing is not a sterile dashboard. It should feel like a living operator console with pressure, atmosphere, and consequence.
 
 For each version bump:
 
@@ -9,4 +9,11 @@ For each version bump:
 - keep readability and mobile stability intact
 - avoid interchangeable SaaS aesthetics
 
-The page should be able to absorb experimental UI/UX while still teaching the release logic.
+For `v0.8.0`, the tone is mission control:
+
+- one live background signal field
+- bounded panel motion
+- strong system typography and rails
+- rich animation without repaint-heavy blur abuse
+
+The page should absorb experimental UI/UX while still teaching the release logic.

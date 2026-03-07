@@ -13,7 +13,7 @@
   "files": [
     {
       "path": "governance/VERSION",
-      "content": "v0.7.9\n"
+      "content": "v0.8.0\n"
     },
     {
       "path": "governance/service.contract.json",

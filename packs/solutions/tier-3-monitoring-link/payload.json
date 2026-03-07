@@ -1,0 +1,32 @@
+{
+  "tier_id": "tier-3",
+  "service_mode": "persistent-monitoring-link",
+  "required_inputs": [
+    "service_identity",
+    "runtime_summary",
+    "current_risk_statement",
+    "repository_scan_receipt",
+    "governance_attach_scope",
+    "deployment_topology_packet",
+    "monitoring_owner_route"
+  ],
+  "generated_outputs": [
+    "audit_summary_packet",
+    "risk_register_packet",
+    "governance_bootstrap_packet",
+    "structured_plan_draft_packet",
+    "monitoring_link_packet"
+  ],
+  "required_receipts": [
+    "link_auth_receipt",
+    "scan_receipt",
+    "governance_bootstrap_receipt",
+    "plan_gate_receipt",
+    "monitoring_link_receipt",
+    "review_cadence_receipt"
+  ],
+  "handoff_conditions": [
+    "Persistent monitoring link contract is active.",
+    "Owner route, review cadence, and evidence freshness are explicit."
+  ]
+}

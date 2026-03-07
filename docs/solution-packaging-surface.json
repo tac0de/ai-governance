@@ -1,0 +1,43 @@
+{
+  "current_version": "v0.8.0",
+  "surface_id": "solution-packaging-surface",
+  "control_plane_boundary": "Central governance may define tier logic, required inputs, expected receipts, and handoff conditions.",
+  "tiers": [
+    {
+      "tier_id": "tier-1",
+      "label": "audit-only",
+      "link_mode": "temporary-linking",
+      "input_count": 4,
+      "output_count": 3,
+      "receipt_count": 2,
+      "handoff_conditions": [
+        "The customer receives an audit summary and prioritized risk register.",
+        "No governance bootstrap or monitoring link is required."
+      ]
+    },
+    {
+      "tier_id": "tier-2",
+      "label": "audit-plus-governance-setup",
+      "link_mode": "temporary-linking",
+      "input_count": 6,
+      "output_count": 4,
+      "receipt_count": 4,
+      "handoff_conditions": [
+        "The service must expose the governed kernel and structured plan draft.",
+        "Governance setup may be delivered, but continuous monitoring is optional."
+      ]
+    },
+    {
+      "tier_id": "tier-3",
+      "label": "audit-governance-and-monitoring-link",
+      "link_mode": "persistent-monitoring-link",
+      "input_count": 7,
+      "output_count": 5,
+      "receipt_count": 6,
+      "handoff_conditions": [
+        "The service must expose governance setup and a live monitoring link contract.",
+        "Owner route, evidence freshness cadence, and escalation expectations must be explicit."
+      ]
+    }
+  ]
+}

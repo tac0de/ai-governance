@@ -1,19 +1,19 @@
 {
-  "version": "v0.7.10-prep",
+  "version": "v0.8.0",
   "surface_id": "docs-role-prompt-registry",
   "docs_mode": "public-landing-plus-operating-prompts",
-  "markdown_role": "creative-direction-and-role-prompts",
-  "json_role": "contracts-checkpoints-and-upgrade-state",
+  "markdown_role": "creative-direction-role-prompts-and-release-narrative",
+  "json_role": "contracts-checkpoints-upgrade-state-and-surface-mirrors",
   "prompts": [
     {
       "prompt_id": "landing-narrative",
       "title": "Landing Narrative",
       "path": "docs/prompts/landing-narrative.md",
       "audience": "agent-and-editor",
-      "purpose": "Keep the public landing emotionally resonant while staying aligned to the current governance version.",
+      "purpose": "Keep the public landing emotionally charged while staying aligned to the current governance version and release truth.",
       "linked_contracts": [
         "control/registry/governance-protocol.v0.7.json",
-        "control/registry/launch-readiness.v0.7.json"
+        "control/registry/solution-packaging.v0.8.json"
       ],
       "auto_upgrade_on_version_bump": true
     },
@@ -34,10 +34,10 @@
       "title": "Visual Direction",
       "path": "docs/prompts/visual-direction.md",
       "audience": "agent-and-designer",
-      "purpose": "Push the landing beyond generic governance UI into version-aware atmosphere, motion, and experimental interaction.",
+      "purpose": "Push the landing into a mission-control visual posture with rich but bounded animation and readable system hierarchy.",
       "linked_contracts": [
         "control/registry/deployment-operations.v0.7.json",
-        "control/registry/version-promotion.v0.7.json"
+        "control/registry/specialist-mcp-registry.v0.8.json"
       ],
       "auto_upgrade_on_version_bump": true
     },
@@ -46,10 +46,56 @@
       "title": "Release Reflection",
       "path": "docs/prompts/release-reflection.md",
       "audience": "agent-and-operator",
-      "purpose": "Generate version-close reasoning, residual risks, and next-version creative opportunities without losing governance clarity.",
+      "purpose": "Generate version-close reasoning, residual risks, and next-version pressure without softening governance boundaries.",
       "linked_contracts": [
         "control/specs/trace_rules.v0.7.json",
-        "control/registry/launch-readiness.v0.7.json"
+        "control/registry/cognitive-debt-ledger.v0.8.json"
+      ],
+      "auto_upgrade_on_version_bump": true
+    },
+    {
+      "prompt_id": "mission-control-experience",
+      "title": "Mission Control Experience",
+      "path": "docs/prompts/mission-control-experience.md",
+      "audience": "agent-and-designer",
+      "purpose": "Keep the landing behaving like an operator console rather than a glossy showcase while preserving experimental motion.",
+      "linked_contracts": [
+        "control/registry/solution-packaging.v0.8.json",
+        "control/registry/monitoring-link.v0.8.json"
+      ],
+      "auto_upgrade_on_version_bump": true
+    },
+    {
+      "prompt_id": "cognitive-debt-analyst",
+      "title": "Cognitive Debt Analyst",
+      "path": "docs/prompts/cognitive-debt-analyst.md",
+      "audience": "agent-and-operator",
+      "purpose": "Translate hallucination and reasoning risk into enterprise-readable debt language with explicit decisions and mitigations.",
+      "linked_contracts": [
+        "control/registry/cognitive-debt-ledger.v0.8.json"
+      ],
+      "auto_upgrade_on_version_bump": true
+    },
+    {
+      "prompt_id": "specialist-mcp-composer",
+      "title": "Specialist MCP Composer",
+      "path": "docs/prompts/specialist-mcp-composer.md",
+      "audience": "agent-and-operator",
+      "purpose": "Describe which specialist MCP capability should be composed for a service or tier without centralizing runtime implementation.",
+      "linked_contracts": [
+        "control/registry/specialist-mcp-registry.v0.8.json"
+      ],
+      "auto_upgrade_on_version_bump": true
+    },
+    {
+      "prompt_id": "solution-packaging-narrative",
+      "title": "Solution Packaging Narrative",
+      "path": "docs/prompts/solution-packaging-narrative.md",
+      "audience": "agent-and-editor",
+      "purpose": "Explain the SaaS tiers as operating commitments with distinct receipts, handoff rules, and customer expectations.",
+      "linked_contracts": [
+        "control/registry/solution-packaging.v0.8.json",
+        "control/registry/monitoring-link.v0.8.json"
       ],
       "auto_upgrade_on_version_bump": true
     }

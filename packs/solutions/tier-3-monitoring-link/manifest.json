@@ -1,0 +1,6 @@
+{
+  "pack_id": "solution-tier-3-monitoring-link",
+  "version": "v0.8",
+  "payload_file": "payload.json",
+  "delivery_mode": "contract-only"
+}

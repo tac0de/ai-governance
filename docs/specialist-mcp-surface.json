@@ -1,0 +1,77 @@
+{
+  "current_version": "v0.8.0",
+  "surface_id": "specialist-mcp-surface",
+  "central_role": "recommend-only",
+  "specialists": [
+    {
+      "mcp_id": "governance-api",
+      "scope_count": 2,
+      "allowed_data_classes": [
+        "public-contract",
+        "service-governance-metadata"
+      ],
+      "auth_model": "scoped-service-auth",
+      "recommended_use_cases": [
+        "Contract hydration for agent plans",
+        "Receipt validation",
+        "Governance state summaries"
+      ]
+    },
+    {
+      "mcp_id": "ui-ux",
+      "scope_count": 2,
+      "allowed_data_classes": [
+        "public-design-brief",
+        "frontend-structure"
+      ],
+      "auth_model": "project-scoped-token",
+      "recommended_use_cases": [
+        "Landing page redesign",
+        "Interaction concept review",
+        "Narrative UI calibration"
+      ]
+    },
+    {
+      "mcp_id": "frontend-perf",
+      "scope_count": 2,
+      "allowed_data_classes": [
+        "frontend-asset-manifest",
+        "performance-profile",
+        "public-ui-structure"
+      ],
+      "auth_model": "project-scoped-token",
+      "recommended_use_cases": [
+        "Animation budget tuning",
+        "Render-path review",
+        "Mobile stability passes"
+      ]
+    },
+    {
+      "mcp_id": "security-review",
+      "scope_count": 1,
+      "allowed_data_classes": [
+        "service-auth-contract",
+        "deployment-metadata",
+        "public-config-summary"
+      ],
+      "auth_model": "restricted-review-token",
+      "recommended_use_cases": [
+        "GCP cutover review",
+        "MCP auth design review",
+        "Public ingress posture review"
+      ]
+    },
+    {
+      "mcp_id": "note-context",
+      "scope_count": 1,
+      "allowed_data_classes": [
+        "linked-note-context"
+      ],
+      "auth_model": "linked-context-consent",
+      "recommended_use_cases": [
+        "Recovering operator intent from linked notes",
+        "Tracing contextual design rationale"
+      ]
+    }
+  ]
+}

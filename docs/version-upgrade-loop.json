@@ -1,44 +1,48 @@
 {
-  "version": "v0.7.10-prep",
+  "version": "v0.8.0",
   "loop_id": "docs-evolution-loop",
   "mode": "auto-apply-priority",
   "current_close_verdict": {
-    "version": "v0.7.9",
+    "version": "v0.8.0",
     "can_close": true,
-    "basis": "governance-kernel-complete",
+    "basis": "clean-renewal-and-control-plane-extension",
     "excluded_axes": [
-      "brand-evolution",
-      "docs-role-prompts",
-      "visual-upgrade-loop"
+      "service-runtime-ownership",
+      "real-mcp-runtime-hosting"
     ]
   },
-  "next_target_version": "v0.7.10",
+  "next_target_version": "v0.8.1",
   "trigger_events": [
     "governance-version-bump",
     "landing-drift-detected",
+    "solution-tier-drift-detected",
     "prompt-drift-detected"
   ],
   "generated_outputs": [
     "docs/version-upgrade-proposal.json",
     "docs/role-prompt-registry.json",
+    "docs/solution-packaging-surface.json",
+    "docs/cognitive-debt-surface.json",
+    "docs/specialist-mcp-surface.json",
+    "docs/monitoring-link-surface.json",
     "docs/prompts/*.md"
   ],
   "upgrade_steps": [
     {
       "step_id": "refresh-proposal",
-      "summary": "Generate the next docs evolution proposal from the current version and prompt registry."
+      "summary": "Generate the next docs evolution proposal from the current version, prompt registry, and control-plane additions."
     },
     {
-      "step_id": "upgrade-copy",
-      "summary": "Revise landing narrative and product framing to match the new governance version."
+      "step_id": "sync-surface-data",
+      "summary": "Mirror selected control-plane contracts into docs-readable JSON surfaces for the landing."
     },
     {
-      "step_id": "upgrade-visuals",
-      "summary": "Push motion, layout, and interaction away from stale showcase behavior into version-specific presence."
+      "step_id": "upgrade-copy-and-visuals",
+      "summary": "Revise landing narrative, motion, and interface framing to match the current governance version."
     },
     {
-      "step_id": "record-reflection",
-      "summary": "Leave a release-close reflection explaining what changed, what remains risky, and what the next version should challenge."
+      "step_id": "record-next-pressure",
+      "summary": "Leave a reflection that names residual risk, accepted debt posture, and the next version challenge."
     }
   ]
 }

@@ -1,0 +1,28 @@
+{
+  "tier_id": "tier-2",
+  "service_mode": "temporary-linking",
+  "required_inputs": [
+    "service_identity",
+    "runtime_summary",
+    "current_risk_statement",
+    "repository_scan_receipt",
+    "governance_attach_scope",
+    "deployment_topology_packet"
+  ],
+  "generated_outputs": [
+    "audit_summary_packet",
+    "risk_register_packet",
+    "governance_bootstrap_packet",
+    "structured_plan_draft_packet"
+  ],
+  "required_receipts": [
+    "link_auth_receipt",
+    "scan_receipt",
+    "governance_bootstrap_receipt",
+    "plan_gate_receipt"
+  ],
+  "handoff_conditions": [
+    "Governed kernel bootstrap is complete.",
+    "Structured plan draft exists with gate-ready evidence references."
+  ]
+}

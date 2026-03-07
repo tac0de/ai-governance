@@ -1,7 +1,7 @@
 {
   "source_loop_id": "docs-evolution-loop",
-  "current_version": "v0.7.9",
-  "target_version": "v0.7.10",
+  "current_version": "v0.8.0",
+  "target_version": "v0.8.1",
   "status": "generated",
   "docs_mode": "public-landing-plus-operating-prompts",
   "generated_from": "scripts/refresh_docs_evolution.sh",
@@ -10,10 +10,10 @@
       "prompt_id": "landing-narrative",
       "title": "Landing Narrative",
       "path": "docs/prompts/landing-narrative.md",
-      "intent": "Keep the public landing emotionally resonant while staying aligned to the current governance version.",
+      "intent": "Keep the public landing emotionally charged while staying aligned to the current governance version and release truth.",
       "linked_contracts": [
         "control/registry/governance-protocol.v0.7.json",
-        "control/registry/launch-readiness.v0.7.json"
+        "control/registry/solution-packaging.v0.8.json"
       ]
     },
     {
@@ -30,20 +30,58 @@
       "prompt_id": "visual-direction",
       "title": "Visual Direction",
       "path": "docs/prompts/visual-direction.md",
-      "intent": "Push the landing beyond generic governance UI into version-aware atmosphere, motion, and experimental interaction.",
+      "intent": "Push the landing into a mission-control visual posture with rich but bounded animation and readable system hierarchy.",
       "linked_contracts": [
         "control/registry/deployment-operations.v0.7.json",
-        "control/registry/version-promotion.v0.7.json"
+        "control/registry/specialist-mcp-registry.v0.8.json"
       ]
     },
     {
       "prompt_id": "release-reflection",
       "title": "Release Reflection",
       "path": "docs/prompts/release-reflection.md",
-      "intent": "Generate version-close reasoning, residual risks, and next-version creative opportunities without losing governance clarity.",
+      "intent": "Generate version-close reasoning, residual risks, and next-version pressure without softening governance boundaries.",
       "linked_contracts": [
         "control/specs/trace_rules.v0.7.json",
-        "control/registry/launch-readiness.v0.7.json"
+        "control/registry/cognitive-debt-ledger.v0.8.json"
+      ]
+    },
+    {
+      "prompt_id": "mission-control-experience",
+      "title": "Mission Control Experience",
+      "path": "docs/prompts/mission-control-experience.md",
+      "intent": "Keep the landing behaving like an operator console rather than a glossy showcase while preserving experimental motion.",
+      "linked_contracts": [
+        "control/registry/solution-packaging.v0.8.json",
+        "control/registry/monitoring-link.v0.8.json"
+      ]
+    },
+    {
+      "prompt_id": "cognitive-debt-analyst",
+      "title": "Cognitive Debt Analyst",
+      "path": "docs/prompts/cognitive-debt-analyst.md",
+      "intent": "Translate hallucination and reasoning risk into enterprise-readable debt language with explicit decisions and mitigations.",
+      "linked_contracts": [
+        "control/registry/cognitive-debt-ledger.v0.8.json"
+      ]
+    },
+    {
+      "prompt_id": "specialist-mcp-composer",
+      "title": "Specialist MCP Composer",
+      "path": "docs/prompts/specialist-mcp-composer.md",
+      "intent": "Describe which specialist MCP capability should be composed for a service or tier without centralizing runtime implementation.",
+      "linked_contracts": [
+        "control/registry/specialist-mcp-registry.v0.8.json"
+      ]
+    },
+    {
+      "prompt_id": "solution-packaging-narrative",
+      "title": "Solution Packaging Narrative",
+      "path": "docs/prompts/solution-packaging-narrative.md",
+      "intent": "Explain the SaaS tiers as operating commitments with distinct receipts, handoff rules, and customer expectations.",
+      "linked_contracts": [
+        "control/registry/solution-packaging.v0.8.json",
+        "control/registry/monitoring-link.v0.8.json"
       ]
     }
   ]

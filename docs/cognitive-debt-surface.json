@@ -1,0 +1,39 @@
+{
+  "current_version": "v0.8.0",
+  "surface_id": "cognitive-debt-surface",
+  "decision_states": [
+    "accept",
+    "remediate",
+    "defer"
+  ],
+  "debt_classes": [
+    {
+      "debt_id": "hallucination",
+      "title": "Hallucinated claims or artifacts",
+      "impact": "high",
+      "signal_count": 3,
+      "mitigation_count": 3
+    },
+    {
+      "debt_id": "omission",
+      "title": "Critical omission or partial reasoning",
+      "impact": "medium",
+      "signal_count": 3,
+      "mitigation_count": 3
+    },
+    {
+      "debt_id": "overreach",
+      "title": "Over-inference or speculative action",
+      "impact": "high",
+      "signal_count": 3,
+      "mitigation_count": 3
+    },
+    {
+      "debt_id": "authority-misread",
+      "title": "Authority or boundary misread",
+      "impact": "critical",
+      "signal_count": 3,
+      "mitigation_count": 3
+    }
+  ]
+}

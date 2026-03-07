@@ -1,0 +1,23 @@
+{
+  "tier_id": "tier-1",
+  "service_mode": "temporary-linking",
+  "required_inputs": [
+    "service_identity",
+    "runtime_summary",
+    "current_risk_statement",
+    "repository_scan_receipt"
+  ],
+  "generated_outputs": [
+    "audit_summary_packet",
+    "risk_register_packet",
+    "handoff_recommendation_packet"
+  ],
+  "required_receipts": [
+    "link_auth_receipt",
+    "scan_receipt"
+  ],
+  "handoff_conditions": [
+    "Audit findings and prioritized risks are delivered.",
+    "Governance setup remains optional."
+  ]
+}
