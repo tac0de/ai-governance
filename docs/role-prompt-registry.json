@@ -1,0 +1,57 @@
+{
+  "version": "v0.7.10-prep",
+  "surface_id": "docs-role-prompt-registry",
+  "docs_mode": "public-landing-plus-operating-prompts",
+  "markdown_role": "creative-direction-and-role-prompts",
+  "json_role": "contracts-checkpoints-and-upgrade-state",
+  "prompts": [
+    {
+      "prompt_id": "landing-narrative",
+      "title": "Landing Narrative",
+      "path": "docs/prompts/landing-narrative.md",
+      "audience": "agent-and-editor",
+      "purpose": "Keep the public landing emotionally resonant while staying aligned to the current governance version.",
+      "linked_contracts": [
+        "control/registry/governance-protocol.v0.7.json",
+        "control/registry/launch-readiness.v0.7.json"
+      ],
+      "auto_upgrade_on_version_bump": true
+    },
+    {
+      "prompt_id": "role-system",
+      "title": "Role System",
+      "path": "docs/prompts/role-system.md",
+      "audience": "agent",
+      "purpose": "Define how agents balance contract discipline, creative exploration, and operator sovereignty across docs updates.",
+      "linked_contracts": [
+        "control/registry/agent-service-handbook.v0.7.json",
+        "control/registry/service-intake-workflow.v0.7.json"
+      ],
+      "auto_upgrade_on_version_bump": true
+    },
+    {
+      "prompt_id": "visual-direction",
+      "title": "Visual Direction",
+      "path": "docs/prompts/visual-direction.md",
+      "audience": "agent-and-designer",
+      "purpose": "Push the landing beyond generic governance UI into version-aware atmosphere, motion, and experimental interaction.",
+      "linked_contracts": [
+        "control/registry/deployment-operations.v0.7.json",
+        "control/registry/version-promotion.v0.7.json"
+      ],
+      "auto_upgrade_on_version_bump": true
+    },
+    {
+      "prompt_id": "release-reflection",
+      "title": "Release Reflection",
+      "path": "docs/prompts/release-reflection.md",
+      "audience": "agent-and-operator",
+      "purpose": "Generate version-close reasoning, residual risks, and next-version creative opportunities without losing governance clarity.",
+      "linked_contracts": [
+        "control/specs/trace_rules.v0.7.json",
+        "control/registry/launch-readiness.v0.7.json"
+      ],
+      "auto_upgrade_on_version_bump": true
+    }
+  ]
+}

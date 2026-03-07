@@ -1,0 +1,44 @@
+{
+  "version": "v0.7.10-prep",
+  "loop_id": "docs-evolution-loop",
+  "mode": "auto-apply-priority",
+  "current_close_verdict": {
+    "version": "v0.7.9",
+    "can_close": true,
+    "basis": "governance-kernel-complete",
+    "excluded_axes": [
+      "brand-evolution",
+      "docs-role-prompts",
+      "visual-upgrade-loop"
+    ]
+  },
+  "next_target_version": "v0.7.10",
+  "trigger_events": [
+    "governance-version-bump",
+    "landing-drift-detected",
+    "prompt-drift-detected"
+  ],
+  "generated_outputs": [
+    "docs/version-upgrade-proposal.json",
+    "docs/role-prompt-registry.json",
+    "docs/prompts/*.md"
+  ],
+  "upgrade_steps": [
+    {
+      "step_id": "refresh-proposal",
+      "summary": "Generate the next docs evolution proposal from the current version and prompt registry."
+    },
+    {
+      "step_id": "upgrade-copy",
+      "summary": "Revise landing narrative and product framing to match the new governance version."
+    },
+    {
+      "step_id": "upgrade-visuals",
+      "summary": "Push motion, layout, and interaction away from stale showcase behavior into version-specific presence."
+    },
+    {
+      "step_id": "record-reflection",
+      "summary": "Leave a release-close reflection explaining what changed, what remains risky, and what the next version should challenge."
+    }
+  ]
+}

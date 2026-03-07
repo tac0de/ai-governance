@@ -1,0 +1,50 @@
+{
+  "source_loop_id": "docs-evolution-loop",
+  "current_version": "v0.7.9",
+  "target_version": "v0.7.10",
+  "status": "generated",
+  "docs_mode": "public-landing-plus-operating-prompts",
+  "generated_from": "scripts/refresh_docs_evolution.sh",
+  "proposal_items": [
+    {
+      "prompt_id": "landing-narrative",
+      "title": "Landing Narrative",
+      "path": "docs/prompts/landing-narrative.md",
+      "intent": "Keep the public landing emotionally resonant while staying aligned to the current governance version.",
+      "linked_contracts": [
+        "control/registry/governance-protocol.v0.7.json",
+        "control/registry/launch-readiness.v0.7.json"
+      ]
+    },
+    {
+      "prompt_id": "role-system",
+      "title": "Role System",
+      "path": "docs/prompts/role-system.md",
+      "intent": "Define how agents balance contract discipline, creative exploration, and operator sovereignty across docs updates.",
+      "linked_contracts": [
+        "control/registry/agent-service-handbook.v0.7.json",
+        "control/registry/service-intake-workflow.v0.7.json"
+      ]
+    },
+    {
+      "prompt_id": "visual-direction",
+      "title": "Visual Direction",
+      "path": "docs/prompts/visual-direction.md",
+      "intent": "Push the landing beyond generic governance UI into version-aware atmosphere, motion, and experimental interaction.",
+      "linked_contracts": [
+        "control/registry/deployment-operations.v0.7.json",
+        "control/registry/version-promotion.v0.7.json"
+      ]
+    },
+    {
+      "prompt_id": "release-reflection",
+      "title": "Release Reflection",
+      "path": "docs/prompts/release-reflection.md",
+      "intent": "Generate version-close reasoning, residual risks, and next-version creative opportunities without losing governance clarity.",
+      "linked_contracts": [
+        "control/specs/trace_rules.v0.7.json",
+        "control/registry/launch-readiness.v0.7.json"
+      ]
+    }
+  ]
+}

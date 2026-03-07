@@ -1,4 +1,4 @@
-# ai-governance v0.7.8
+# ai-governance v0.7.9
 
 Simple, readable governance for independent AI services.
 
@@ -26,6 +26,7 @@ This repository is a small public contract kernel.
 - installable B2B ops packs
 - machine-readable agent handbook contracts
 - service intake workflow contracts
+- deployment and domain operations contracts for GCP-oriented independent services
 
 It does not run products.
 It does not own service code.
@@ -43,8 +44,11 @@ The flow is fixed:
 6. The agent must first read the service handbook and follow the intake workflow before solution work begins.
 7. The governed chain is fixed as `agent -> prompts -> orchestration -> architecture -> shell -> human/agent collaboration -> DTP -> governance verdict`.
 8. The service emits baseline scans, hygiene reports, handbook acknowledgement packets, intake packets, deployment topology packets, protocol-chain packets, collaboration packets, and revenue signal packets.
-9. Governance validates structure, auth state, protocol completeness, intake workflow state, deployment topology state, trace state, revenue readiness, customer ops readiness, and release gates.
+9. Governance validates structure, auth state, protocol completeness, intake workflow state, deployment topology state, deployment and domain operations state, trace state, revenue readiness, customer ops readiness, and release gates.
 10. Release is allowed only when required scans, approvals, protocol checks, intake checks, customer gates, and reflection gates are clear.
+
+The ordered intake path is: `handbook -> link auth -> repository scan -> normalization/diet -> deployment topology -> draft plan -> request gate`.
+`tools/governance_link.sh` is the preferred service-local entrypoint for bootstrapping the link kit, packet drafts, and structured `governance/plan.json`.
 
 If a required scan is missing, the link is incomplete and release stays blocked.
 
@@ -86,7 +90,9 @@ Minimum kernel:
 - `prompts/agent-system.md`
 - `prompts/collaboration-ideation.md`
 
-Everything else stays local to the service, but whole-repository read scans are still allowed for linking, hygiene classification, and approved cleanup review. Cleanup outside `governance/` is valid only when both the auth contract and approval receipt are active and evidence-linked. Governance now also evaluates whether the service has a real repeatable value unit that can support commercialization.
+Everything else stays local to the service, but whole-repository read scans are still allowed for linking, hygiene classification, and approved cleanup review. Cleanup outside `governance/` is valid only when both the auth contract and approval receipt are active and evidence-linked. Governance now also evaluates whether the service has a real repeatable value unit that can support commercialization, and whether GCP-oriented frontend cutover, ingress, DNS, and certificate ownership are explicit enough to automate safely.
+
+`governance/plan.json` now starts as a structured draft. It must carry `workflow_stage`, `approval_status`, `deployment_topology_ref`, `rollback_entrypoint`, and `evidence_refs` before launch review.
 
 For B2B operations, one service may govern multiple customers. Customer-specific policy, approval ownership, support tier, and audit packaging must remain separable.
 
@@ -170,6 +176,7 @@ This repository is a governance kernel, not a runtime platform.
 - 설치 가능한 B2B ops pack
 - 에이전트용 handbook 계약
 - 서비스 intake workflow 계약
+- GCP 지향 독립서비스를 위한 deployment/domain operations 계약
 
 이 저장소는:
 
@@ -189,8 +196,11 @@ This repository is a governance kernel, not a runtime platform.
 6. 에이전트는 먼저 service handbook를 읽고 intake workflow를 따라야 합니다.
 7. 거버넌스 체인은 `agent -> prompts -> orchestration -> architecture -> shell -> human/agent collaboration -> DTP -> governance verdict`로 고정됩니다.
 8. 서비스는 baseline 스캔, hygiene report, handbook acknowledgement packet, intake packet, deployment topology packet, protocol-chain packet, collaboration packet, revenue signal packet을 남깁니다.
-9. 거버넌스는 구조, 인증 상태, 프로토콜 완결성, intake workflow 상태, deployment topology 상태, trace 상태, 수익화 준비도, 고객 운영 준비도, release gate를 검증합니다.
+9. 거버넌스는 구조, 인증 상태, 프로토콜 완결성, intake workflow 상태, deployment topology 상태, deployment/domain operations 상태, trace 상태, 수익화 준비도, 고객 운영 준비도, release gate를 검증합니다.
 10. 필수 스캔, 승인, 프로토콜 체크, intake 체크, 고객 운영 게이트, reflection gate가 모두 깨끗할 때만 release가 가능합니다.
+
+정식 intake 순서는 `handbook -> link auth -> repository scan -> normalization/diet -> deployment topology -> draft plan -> request gate`입니다.
+서비스 로컬 시작점은 `tools/governance_link.sh`를 기본으로 하며, 이 스크립트가 link kit, packet 초안, 구조화된 `governance/plan.json` 부트스트랩을 담당합니다.
 
 필수 스캔이 하나라도 없으면 link는 incomplete 상태이고, release는 차단됩니다.
 
@@ -232,7 +242,9 @@ This repository is a governance kernel, not a runtime platform.
 - `prompts/agent-system.md`
 - `prompts/collaboration-ideation.md`
 
-그 외 구현은 서비스 로컬에서 자유롭게 유지합니다. 다만 링킹, 위생 분류, 승인된 정리 검토를 위해 저장소 전체 읽기 스캔은 허용됩니다. `governance/` 밖 정리는 auth contract와 approval receipt가 모두 활성 상태이고 증빙이 연결되어 있을 때만 유효합니다. 이번 버전부터 거버넌스는 서비스가 실제로 판매 가능한 반복 가치 단위를 갖는지, 고객별 정책/지원/감사 패키지를 분리할 수 있는지도 봅니다.
+그 외 구현은 서비스 로컬에서 자유롭게 유지합니다. 다만 링킹, 위생 분류, 승인된 정리 검토를 위해 저장소 전체 읽기 스캔은 허용됩니다. `governance/` 밖 정리는 auth contract와 approval receipt가 모두 활성 상태이고 증빙이 연결되어 있을 때만 유효합니다. 이번 버전부터 거버넌스는 서비스가 실제로 판매 가능한 반복 가치 단위를 갖는지, 고객별 정책/지원/감사 패키지를 분리할 수 있는지, 그리고 GCP 기준의 프런트엔드 cutover, ingress, DNS, certificate ownership이 자동화 가능할 정도로 명시되어 있는지도 봅니다.
+
+`governance/plan.json`은 더 이상 빈 steps 배열만 가진 파일이 아니라, `workflow_stage`, `approval_status`, `deployment_topology_ref`, `rollback_entrypoint`, `evidence_refs`를 포함한 구조화된 draft로 시작합니다.
 
 ### 언어 원칙
 

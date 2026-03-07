@@ -47,11 +47,11 @@
     },
     {
       "stage_id": "deployment-topology-map",
-      "required_read": "service.yaml",
+      "required_read": "control/registry/deployment-operations.v0.7.json",
       "produces": [
         "deployment_topology_packet"
       ],
-      "gate_rule": "frontend platform, backend platform, domain owner, and api boundary must be declared before apply planning"
+      "gate_rule": "frontend platform, backend platform, domain owner, api boundary, domain routing mode, and rollback entrypoint must be declared before apply planning"
     },
     {
       "stage_id": "plan-and-gate",
@@ -66,6 +66,7 @@
   "required_inputs": [
     "agent-service-handbook",
     "link-auth-contract",
+    "deployment-operations",
     "service.yaml",
     "governance/service.contract.json",
     "orchestration/service.map.yaml"
@@ -78,6 +79,7 @@
   ],
   "gate_refs": [
     "launch-readiness",
+    "deployment-operations",
     "governance-protocol",
     "trace-rules"
   ],
@@ -90,7 +92,8 @@
   "rules": [
     "The intake workflow is ordered and may not skip handbook acknowledgement.",
     "Repository-wide scans are allowed, but mutating actions remain gated.",
-    "Deployment topology must be declared before solution apply planning.",
+    "Deployment topology must be declared against the deployment operations contract before solution apply planning.",
+    "Frontend cutover, domain routing, and rollback entrypoints must be reviewable before production-bound apply planning.",
     "Every intake stage must emit a trace-linked packet or receipt."
   ]
 }

@@ -16,6 +16,9 @@ const trailNodes = document.querySelectorAll(".trail-node");
 const verdictNodes = document.querySelectorAll(".verdict-node");
 const heroCore = document.querySelector(".hero-core");
 const heroNodeList = document.querySelectorAll(".hero-node");
+const promptRegistry = document.getElementById("prompt-registry");
+const upgradeLoop = document.getElementById("upgrade-loop");
+const upgradeProposal = document.getElementById("upgrade-proposal");
 
 const gsapReady = typeof window.gsap !== "undefined" && typeof window.ScrollTrigger !== "undefined";
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -260,6 +263,15 @@ function initAnimations() {
     ease: "power3.out"
   });
 
+  window.gsap.from(".closure-card, .dual-card, .prompt-card, .upgrade-card, .proposal-card", {
+    scrollTrigger: { trigger: ".closure-surface", start: "top 84%" },
+    y: 24,
+    autoAlpha: 0,
+    duration: 0.56,
+    stagger: 0.08,
+    ease: "power3.out"
+  });
+
   window.gsap.from(".demo-intro", {
     scrollTrigger: { trigger: ".demo", start: "top 84%" },
     y: 32,
@@ -296,10 +308,92 @@ function initAnimations() {
   });
 }
 
+function renderPromptRegistry(data) {
+  if (!promptRegistry) {
+    return;
+  }
+
+  promptRegistry.innerHTML = "";
+  data.prompts.forEach((prompt) => {
+    const card = document.createElement("article");
+    card.className = "prompt-card";
+    card.innerHTML = `
+      <div class="prompt-head">
+        <span class="decision-label">${prompt.title}</span>
+        <span class="prompt-badge">${prompt.auto_upgrade_on_version_bump ? "auto-upgrade" : "manual"}</span>
+      </div>
+      <p class="prompt-body">${prompt.purpose}</p>
+      <p class="prompt-meta">${prompt.path}</p>
+    `;
+    promptRegistry.appendChild(card);
+  });
+}
+
+function renderUpgradeLoop(loop, proposal) {
+  if (upgradeLoop) {
+    upgradeLoop.innerHTML = `
+      <article class="upgrade-card">
+        <p class="proof-label">Close Verdict</p>
+        <p class="proof-text">v0.7.9 closes on ${loop.current_close_verdict.basis.replaceAll("-", " ")}.</p>
+      </article>
+      <article class="upgrade-card">
+        <p class="proof-label">Next Target</p>
+        <p class="proof-text">${loop.next_target_version} becomes the docs evolution release.</p>
+      </article>
+      <article class="upgrade-card">
+        <p class="proof-label">Loop Mode</p>
+        <p class="proof-text">${loop.mode.replaceAll("-", " ")} keeps prompts and visuals moving with the version.</p>
+      </article>
+      <article class="upgrade-card">
+        <p class="proof-label">Trigger Events</p>
+        <p class="proof-text">${loop.trigger_events.join(" · ")}</p>
+      </article>
+    `;
+  }
+
+  if (upgradeProposal) {
+    upgradeProposal.innerHTML = proposal.proposal_items.map((item) => `
+      <article class="proposal-card">
+        <p class="proof-label">${item.title}</p>
+        <p class="proof-text">${item.intent}</p>
+      </article>
+    `).join("");
+  }
+}
+
+async function loadDocsSurface() {
+  try {
+    const [registryResponse, loopResponse, proposalResponse] = await Promise.all([
+      fetch("role-prompt-registry.json"),
+      fetch("version-upgrade-loop.json"),
+      fetch("version-upgrade-proposal.json")
+    ]);
+
+    if (!registryResponse.ok || !loopResponse.ok || !proposalResponse.ok) {
+      throw new Error("Docs surface fetch failed");
+    }
+
+    const registryData = await registryResponse.json();
+    const loopData = await loopResponse.json();
+    const proposalData = await proposalResponse.json();
+
+    renderPromptRegistry(registryData);
+    renderUpgradeLoop(loopData, proposalData);
+  } catch (error) {
+    if (promptRegistry) {
+      promptRegistry.innerHTML = '<article class="prompt-card"><p class="proof-text">Prompt registry unavailable.</p></article>';
+    }
+    if (upgradeLoop) {
+      upgradeLoop.innerHTML = '<article class="upgrade-card"><p class="proof-text">Upgrade loop unavailable.</p></article>';
+    }
+  }
+}
+
 scopeSelect.addEventListener("change", renderDecision);
 approvalToggle.addEventListener("change", renderDecision);
 reflectionToggle.addEventListener("change", renderDecision);
 
 renderDecision();
+loadDocsSurface();
 initHeroPointer();
 initAnimations();

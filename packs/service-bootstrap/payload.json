@@ -13,7 +13,7 @@
   "files": [
     {
       "path": "governance/VERSION",
-      "content": "v0.7.7\n"
+      "content": "v0.7.9\n"
     },
     {
       "path": "governance/service.contract.json",
@@ -21,7 +21,7 @@
     },
     {
       "path": "governance/plan.json",
-      "content": "{\n  \"version\": \"v0.7\",\n  \"status\": \"draft\",\n  \"steps\": []\n}\n"
+      "content": "{\n  \"version\": \"v0.7\",\n  \"status\": \"draft\",\n  \"workflow_stage\": \"draft-plan\",\n  \"approval_status\": \"pending-gate\",\n  \"deployment_topology_ref\": \"governance/evidence/deployment-topology.packet.json\",\n  \"rollback_entrypoint\": \"pending\",\n  \"evidence_refs\": [\n    \"governance/evidence/handbook-ack.packet.json\",\n    \"governance/evidence/service-intake.packet.json\",\n    \"governance/evidence/deployment-topology.packet.json\"\n  ],\n  \"steps\": []\n}\n"
     },
     {
       "path": "governance/dtp/trace.jsonl",
@@ -65,7 +65,7 @@
     },
     {
       "path": "orchestration/shell.contract.json",
-      "content": "{\n  \"plan_entry\": \"governance/bin/gov-plan\",\n  \"apply_entry\": \"governance/bin/gov-apply\",\n  \"gate_entry\": \"governance/bin/gov-gate\",\n  \"trace_entry\": \"governance/bin/gov-trace\"\n}\n"
+      "content": "{\n  \"link_entry\": \"tools/governance_link.sh . link-init\",\n  \"plan_entry\": \"governance/bin/gov-plan\",\n  \"apply_entry\": \"governance/bin/gov-apply\",\n  \"gate_entry\": \"governance/bin/gov-gate\",\n  \"trace_entry\": \"governance/bin/gov-trace\"\n}\n"
     },
     {
       "path": "prompts/ideation.md",

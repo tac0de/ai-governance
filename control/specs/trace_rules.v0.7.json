@@ -99,7 +99,7 @@
       "Shell execution receipts must include the actor, allowed scope, approval refs, and result hash.",
       "Collaboration ideation packets must include the human and agent role context, problem framing, option comparison, and chosen rationale.",
       "Revenue signal packets must include commercialization evidence linked to the service value unit.",
-      "Deployment topology packets must include frontend platform, backend platform, domain owner, and api boundary references."
+      "Deployment topology packets must include frontend platform, backend platform, domain owner, api boundary, domain routing mode, and rollback entrypoint references."
     ]
   },
   "reflection_gate": {

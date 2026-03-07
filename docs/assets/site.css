@@ -829,6 +829,90 @@ select {
   margin-top: 30px;
 }
 
+.closure-surface,
+.dual-surface,
+.prompt-surface,
+.upgrade-surface {
+  margin-top: 34px;
+}
+
+.closure-grid,
+.dual-grid,
+.prompt-grid,
+.upgrade-grid,
+.proposal-strip {
+  display: grid;
+  gap: 16px;
+}
+
+.closure-grid,
+.upgrade-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.dual-grid,
+.prompt-grid,
+.proposal-strip {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.closure-card,
+.dual-card,
+.prompt-card,
+.upgrade-card,
+.proposal-card {
+  padding: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
+    rgba(8, 12, 22, 0.82);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.24);
+}
+
+.dual-json {
+  border-color: rgba(138, 164, 255, 0.22);
+}
+
+.dual-markdown {
+  border-color: rgba(140, 230, 194, 0.22);
+}
+
+.prompt-copy {
+  margin-top: 12px;
+}
+
+.prompt-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.prompt-badge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(140, 230, 194, 0.08);
+  color: var(--soft);
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.prompt-body,
+.prompt-meta {
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+.prompt-meta {
+  margin-top: 14px;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.78rem;
+}
+
 .cta-copy {
   color: var(--soft);
   font-size: 1rem;
@@ -848,7 +932,12 @@ select {
 
   .hero-grid,
   .surface-grid,
-  .demo-grid {
+  .demo-grid,
+  .closure-grid,
+  .dual-grid,
+  .prompt-grid,
+  .upgrade-grid,
+  .proposal-strip {
     grid-template-columns: 1fr;
   }
 

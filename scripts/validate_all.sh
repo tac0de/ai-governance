@@ -193,13 +193,21 @@ bash "$ROOT_DIR/scripts/scan_repo_hygiene.sh"
 
 check_sha256_baseline "docs/baseline.v0.7.sha256"
 
-markdown_files="$(cd "$ROOT_DIR" && rg --files -g '*.md' || true)"
-markdown_count="$(printf '%s\n' "$markdown_files" | sed '/^$/d' | wc -l | tr -d ' ')"
-if [[ "$markdown_count" -ne 1 || "$markdown_files" != "README.md" ]]; then
-  fail "README.md" "README-only markdown policy violated"
+markdown_files="$(cd "$ROOT_DIR" && rg --files -g '*.md' | sort || true)"
+expected_markdown_files="$(cat <<'EOF'
+docs/prompts/landing-narrative.md
+docs/prompts/release-reflection.md
+docs/prompts/role-system.md
+docs/prompts/visual-direction.md
+README.md
+EOF
+)"
+if [[ "$markdown_files" != "$expected_markdown_files" ]]; then
+  fail "README.md" "markdown policy violated outside approved docs prompt surface"
 fi
 
 check_exact_files_in_dir "scripts" \
+  "refresh_docs_evolution.sh" \
   "scan_repo_hygiene.sh" \
   "trace_append.sh" \
   "validate_all.sh"
@@ -213,12 +221,26 @@ check_file "README.md"
 check_file "docs/index.html"
 check_file "docs/assets/site.css"
 check_file "docs/assets/site.js"
+check_allowed_entries_in_dir "docs" \
+  "assets" \
+  "baseline.v0.7.sha256" \
+  "index.html" \
+  "prompts" \
+  "role-prompt-registry.json" \
+  "version-upgrade-loop.json" \
+  "version-upgrade-proposal.json"
+check_exact_files_in_dir "docs/prompts" \
+  "landing-narrative.md" \
+  "release-reflection.md" \
+  "role-system.md" \
+  "visual-direction.md"
 
 check_allowed_entries_in_dir "control" "registry" "specs"
 check_exact_files_in_dir "control/registry" \
   "agent-service-handbook.v0.7.json" \
   "audit-bundle.v0.7.json" \
   "customer-tenant.v0.7.json" \
+  "deployment-operations.v0.7.json" \
   "governance-protocol.v0.7.json" \
   "incident-exception.v0.7.json" \
   "launch-readiness.v0.7.json" \
@@ -275,6 +297,7 @@ check_exact_files_in_dir "schemas" \
   "agent_service_handbook.schema.json" \
   "audit_bundle.schema.json" \
   "customer_tenant.schema.json" \
+  "deployment_operations.schema.json" \
   "governance_protocol.schema.json" \
   "incident_exception.schema.json" \
   "launch_readiness.schema.json" \
@@ -295,6 +318,7 @@ for schema_rel in \
   schemas/agent_service_handbook.schema.json \
   schemas/audit_bundle.schema.json \
   schemas/customer_tenant.schema.json \
+  schemas/deployment_operations.schema.json \
   schemas/governance_protocol.schema.json \
   schemas/incident_exception.schema.json \
   schemas/launch_readiness.schema.json \
@@ -321,6 +345,9 @@ do
 done
 
 for pack_rel in \
+  docs/role-prompt-registry.json \
+  docs/version-upgrade-loop.json \
+  docs/version-upgrade-proposal.json \
   packs/service-bootstrap/manifest.json \
   packs/service-bootstrap/payload.json \
   packs/link-kit/manifest.json \
@@ -331,6 +358,7 @@ do
 done
 
 for shell_rel in \
+  scripts/refresh_docs_evolution.sh \
   scripts/scan_repo_hygiene.sh \
   scripts/trace_append.sh \
   scripts/validate_all.sh \
@@ -342,6 +370,7 @@ do
 done
 
 for executable_rel in \
+  scripts/refresh_docs_evolution.sh \
   packs/service-bootstrap/install.sh \
   packs/link-kit/install.sh \
   packs/audit-bundle/render.sh
@@ -353,6 +382,7 @@ for governance_rel in \
   control/registry/agent-service-handbook.v0.7.json \
   control/registry/audit-bundle.v0.7.json \
   control/registry/customer-tenant.v0.7.json \
+  control/registry/deployment-operations.v0.7.json \
   control/registry/governance-protocol.v0.7.json \
   control/registry/incident-exception.v0.7.json \
   control/specs/trace_rules.v0.7.json \
@@ -372,6 +402,24 @@ for governance_rel in \
 do
   check_json "$governance_rel"
 done
+
+validate_jq_contract "control/registry/deployment-operations.v0.7.json" "schemas/deployment_operations.schema.json" '
+  .version=="v0.7" and
+  .model=="deployment-operations" and
+  (.required_topology_fields|type=="array" and length==16) and
+  ((.required_topology_fields | index("frontend_platform")) != null) and
+  ((.required_topology_fields | index("domain_routing_mode")) != null) and
+  ((.required_topology_fields | index("rollback_entrypoint")) != null) and
+  (.platform_values|type=="array" and length>=5) and
+  ((.platform_values | index("gcp-cloud-run")) != null) and
+  ((.platform_values | index("vercel")) != null) and
+  (.domain_routing_modes|type=="array" and length==5) and
+  ((.domain_routing_modes | index("global-external-application-load-balancer")) != null) and
+  (.certificate_modes|type=="array" and length==4) and
+  (.ingress_modes|type=="array" and length==4) and
+  (.hard_rules|type=="array" and length==5) and
+  (.review_focus|type=="array" and length==6)
+'
 
 validate_jq_contract "control/registry/agent-service-handbook.v0.7.json" "schemas/agent_service_handbook.schema.json" '
   .version=="v0.7" and
@@ -397,11 +445,12 @@ validate_jq_contract "control/registry/service-intake-workflow.v0.7.json" "schem
   ((.ordered_stages | map(.stage_id) | index("handbook-read")) != null) and
   ((.ordered_stages | map(.stage_id) | index("deployment-topology-map")) != null) and
   ((.ordered_stages | map(.stage_id) | index("plan-and-gate")) != null) and
-  (.required_inputs|length==5) and
+  (.required_inputs|length==6) and
   (.required_outputs|length==4) and
   ((.required_outputs | index("handbook_ack_packet")) != null) and
   ((.required_outputs | index("deployment_topology_packet")) != null) and
-  (.gate_refs|length==3) and
+  (.gate_refs|length==4) and
+  ((.gate_refs | index("deployment-operations")) != null) and
   (.rollback_points|length==4)
 '
 
@@ -441,6 +490,8 @@ validate_jq_contract "control/specs/trace_rules.v0.7.json" "schemas/trace_rules.
   ((.protocol_chain_rules.required_record_types | index("protocol_chain_packet")) != null) and
   ((.protocol_chain_rules.required_record_types | index("handbook_ack_packet")) != null) and
   ((.protocol_chain_rules.required_record_types | index("service_intake_packet")) != null) and
+  ((.protocol_chain_rules.requirements | map(test("domain routing mode")) | any)) and
+  ((.protocol_chain_rules.requirements | map(test("rollback entrypoint")) | any)) and
   (.reflection_gate.required_fields|type=="array" and length==8) and
   ((.reflection_gate.required_fields | index("problem_statement")) != null) and
   ((.reflection_gate.required_fields | index("evidence_refs")) != null) and
@@ -686,6 +737,36 @@ validate_jq_contract "packs/service-bootstrap/payload.json" "schemas/trace_recor
   ((.files | map(.path) | index("orchestration/shell.contract.json")) != null) and
   ((.files | map(.path) | index("prompts/agent-system.md")) != null) and
   ((.files | map(.path) | index("prompts/collaboration-ideation.md")) != null)
+'
+
+validate_jq_contract "docs/role-prompt-registry.json" "schemas/trace_record.schema.json" '
+  .version=="v0.7.10-prep" and
+  .surface_id=="docs-role-prompt-registry" and
+  .docs_mode=="public-landing-plus-operating-prompts" and
+  (.prompts|type=="array" and length==4) and
+  ((.prompts | map(.prompt_id) | index("landing-narrative")) != null) and
+  ((.prompts | map(.prompt_id) | index("role-system")) != null) and
+  ((.prompts | map(.prompt_id) | index("visual-direction")) != null) and
+  ((.prompts | map(.prompt_id) | index("release-reflection")) != null)
+'
+
+validate_jq_contract "docs/version-upgrade-loop.json" "schemas/trace_record.schema.json" '
+  .version=="v0.7.10-prep" and
+  .loop_id=="docs-evolution-loop" and
+  .mode=="auto-apply-priority" and
+  .current_close_verdict.version=="v0.7.9" and
+  .current_close_verdict.can_close==true and
+  .next_target_version=="v0.7.10" and
+  (.trigger_events|type=="array" and length==3) and
+  (.upgrade_steps|type=="array" and length==4)
+'
+
+validate_jq_contract "docs/version-upgrade-proposal.json" "schemas/trace_record.schema.json" '
+  .source_loop_id=="docs-evolution-loop" and
+  .current_version=="v0.7.9" and
+  .target_version=="v0.7.10" and
+  .status=="generated" and
+  (.proposal_items|type=="array" and length==4)
 '
 
 validate_jq_contract "packs/link-kit/manifest.json" "schemas/trace_record.schema.json" '

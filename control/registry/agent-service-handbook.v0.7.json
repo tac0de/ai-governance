@@ -22,9 +22,9 @@
     "scan-service-surface",
     "run-normalization-review",
     "run-diet-review",
+    "map-deployment-topology",
     "draft-plan",
-    "request-gate",
-    "map-deployment-topology"
+    "request-gate"
   ],
   "forbidden_actions_before_read": [
     "Do not mutate service-local files before handbook acknowledgement.",
@@ -42,7 +42,7 @@
   "decision_gates": [
     "handbook_ack_packet must exist before intake packets are valid.",
     "The intake workflow must stay ordered and trace-linked.",
-    "Deployment topology mapping must not precede gate review.",
+    "Deployment topology mapping must complete before draft plan and gate review.",
     "Agent entry is invalid when governance, orchestration, or prompts surfaces are unreadable."
   ]
 }

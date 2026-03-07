@@ -150,7 +150,14 @@
         "check_id": "deployment-topology-declared",
         "rule": "must-pass",
         "notes": [
-          "Frontend platform, backend platform, domain owner, and api boundary must be declared before production exposure."
+          "Frontend platform, backend platform, domain owner, api boundary, domain routing mode, and rollback entrypoint must be declared before production exposure."
+        ]
+      },
+      {
+        "check_id": "deployment-operations-governed",
+        "rule": "must-pass",
+        "notes": [
+          "GCP-managed frontend hosting, DNS provider, certificate mode, and ingress ownership must be reviewable whenever production exposure depends on them."
         ]
       },
       {
@@ -229,6 +236,7 @@
     "Calling a service launch-ready when the audit bundle cannot be exported or replayed for a customer.",
     "Calling a service launch-ready when incident overrides have no expiry, rollback, or post-incident reflection.",
     "Calling a service launch-ready without explicit support tier, SLA class, escalation ownership, or billing readiness.",
+    "Calling a service launch-ready while Vercel-to-GCP cutover leaves domain routing, certificate ownership, or rollback entrypoints implicit.",
     "Calling a service launch-ready while high-severity reflection debt is still open or overdue.",
     "Calling a service launch-ready while service hygiene is in cleanup-required status."
   ]

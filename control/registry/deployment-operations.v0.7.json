@@ -1,0 +1,68 @@
+{
+  "version": "v0.7",
+  "model": "deployment-operations",
+  "purpose": "Define the minimum deployment and domain operations contract for independent services so frontend and backend runtime placement, ingress ownership, and GCP-managed domain automation stay reviewable without central runtime ownership.",
+  "required_topology_fields": [
+    "frontend_platform",
+    "frontend_runtime_mode",
+    "frontend_deploy_project",
+    "backend_platform",
+    "backend_runtime_mode",
+    "backend_deploy_project",
+    "primary_region",
+    "domain_owner",
+    "dns_provider",
+    "dns_zone_ref",
+    "certificate_mode",
+    "ingress_mode",
+    "domain_routing_mode",
+    "static_asset_origin",
+    "api_boundary",
+    "rollback_entrypoint"
+  ],
+  "platform_values": [
+    "gcp-cloud-run",
+    "gcp-cloud-storage",
+    "gcp-load-balancer",
+    "gcp-firebase-hosting",
+    "vercel",
+    "netlify",
+    "cloudflare-pages",
+    "self-hosted",
+    "other-reviewed"
+  ],
+  "domain_routing_modes": [
+    "cloud-run-domain-mapping",
+    "global-external-application-load-balancer",
+    "cdn-to-origin-proxy",
+    "external-dns-only",
+    "manual-transition"
+  ],
+  "certificate_modes": [
+    "google-managed",
+    "provider-managed",
+    "bring-your-own-cert",
+    "manual-transition"
+  ],
+  "ingress_modes": [
+    "public-managed",
+    "public-gated",
+    "private-service-edge",
+    "hybrid-transition"
+  ],
+  "hard_rules": [
+    "Deployment topology is incomplete until frontend and backend runtime placement are both declared.",
+    "If frontend_platform is gcp-cloud-run, gcp-cloud-storage, gcp-load-balancer, or gcp-firebase-hosting, frontend_deploy_project and ingress_mode must be current and reviewable.",
+    "If domain_routing_mode is cloud-run-domain-mapping or global-external-application-load-balancer, dns_provider, dns_zone_ref, and certificate_mode must be declared before production exposure.",
+    "Migration away from vercel must record both the target GCP hosting surface and the rollback entrypoint before apply planning is approved.",
+    "The contract may describe runtime ownership and operations boundaries, but it must not centralize runtime execution under ai-governance."
+  ],
+  "review_focus": [
+    "frontend-hosting-cutover",
+    "api-edge-separation",
+    "dns-change-safety",
+    "certificate-readiness",
+    "rollback-path",
+    "automation-entrypoint"
+  ]
+}
